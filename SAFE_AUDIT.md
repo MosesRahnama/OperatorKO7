@@ -1,39 +1,76 @@
-# KO7 safe audit - strict gates report (concise)
+# Scope audit for the KO7 Lean artifact (SafeStep fragment)
 
-This file records a compact, source-linked audit against the STRICT EXECUTION CONTRACT (A–G) for the current state of KO7. It is scoped to SafeStep unless stated, and uses exact lemma names as in the repo.
+This document records a source-linked scope audit against the internal "Strict Execution Contract"
+(items A-G) used during development of the `OperatorKO7` Lean formalization.
 
-## requirements checklist
+Scope:
+- Positive, certified results are for the guarded relation `SafeStep` (defined in
+  `OperatorKO7/Meta/Termination_KO7.lean`).
+- The full kernel relation `Step` (defined in `OperatorKO7/Kernel.lean`) is referenced only to
+  state explicit caveats (no full-kernel termination or confluence claim is made here).
 
-- P1 rfl-gate (branch realism): Implemented in `OperatorKO7/Meta/Operational_Incompleteness.lean` (namespace `OperatorKO7.OpIncomp`, P1). It enumerates clauses, checks rfl per-branch, and gives a minimal counterexample for the over-strong global law. Status: Done.
-- P2 duplication realism: Additive non-drop shown; robust orientations given via DM and MPO examples in `Operational_Incompleteness.lean` and `Operational_Incompleteness_Skeleton.lean` with “every RHS piece < LHS redex” premises. Status: Done.
-- P3 symbol realism: One success, one unknown id, and one arity/type mismatch are demonstrated (with unsafe ones kept commented to preserve green build). Status: Done.
-- KO7 per-rule decreases (SafeStep): Lex3 drops provided in `Meta/Termination_KO7.lean`; δ-phase for rec_succ; μ/κᴹ branches elsewhere. Status: Done.
-- Unguarded KO7 drops added: `drop_R_eq_refl`, `drop_R_merge_cancel` implemented with κ-branching and DM lift helper `dm_to_LexDM_left`. Status: Done.
-- Hybrid bridge: `hybrid_R_eq_refl` and `hybrid_R_merge_cancel` now prefer KO7 path when available. Status: Done.
-- Newman bridge (SafeStep): `Meta/Newman_Safe.lean` exposes star–star join and `newman_safe`; confluence is derived under local join assumptions. Status: Done for SafeStep.
-- Full Step caveat: `Meta/Confluence_Safe.lean` proves `MetaSN_KO7.not_localJoinStep_eqW_void_void`, showing the full kernel `Step` is not locally joinable at the overlapping `eqW` peak; no full-Step confluence is claimed. Status: Explicit.
-- Normalizer: `Normalize_Safe.lean` provides a total, sound, noncomputable normalizer for SafeStep via well-founded recursion. Status: Done (noncomputable by design).
+## Contract items (A-G): evidence pointers
 
-## gates A–G (evidence pointers)
+The following pointers are intended for readers/reviewers who want to locate the corresponding
+formal statements in the repository.
 
-- A) Branch-by-branch rfl gate: P1 block in `Operational_Incompleteness.lean` with per-clause rfl and counterexample.
-- B) Duplication stress test: additive identity recorded; DM and MPO orientations with base-order premises (see `OperatorKO7.OpIncomp.R4DM.dm_orient`, `OperatorKO7.OpIncomp.R4MPO.weight` families).
-- C/D) Symbol realism, NameGate/TypeGate: examples in Operational_Incompleteness (*.lean) show one success, one unknown id, and an arity/type mismatch; identifiers are searched and scoped.
-- E) Lex proof gate: KO7 Lex3 proofs split on branches; κ ties established where used, else μ drops strictly; δ drops 1→0 at rec_succ.
-- F) Stop-the-line triggers: eqW reflexive root when κᴹ(a)=0 marked as non-local-join; no global full-Step confluence claimed.
-- G) Required probes P1–P3: implemented and build-participating (sorry-free).
+- A) Branch realism ("rfl gate"):
+  - `OperatorKO7/Meta/Operational_Incompleteness.lean` (namespace `OperatorKO7.OpIncomp`), P1 block.
+  - Exhibits clause-by-clause analysis for pattern-matched definitions, including explicit
+    counterexamples to over-strong global equalities.
 
-## paper ↔ code sync (salient points)
+- B) Duplication realism:
+  - `OperatorKO7/Meta/Operational_Incompleteness.lean` contains the P2 duplication probe, including
+    the standard additive non-decrease identity for duplicating rules and the DM/MPO orientation
+    premise ("each RHS piece is strictly below the removed LHS redex" in a base order).
 
-- rec_succ is `recΔ b s (delta n) → app s (recΔ b s n)` (no duplication). δ-flag handles 1→0 lex drop; paper text reflects this.
-- κᴹ uses multiset union (sup) rather than disjoint-sum; justification is now stated in the paper (DM section) and relied on in κ-branches.
-- Labels: use `drop_R_*` and `mpo_drop_R_*` as in code.
+- C/D) Symbol realism (NameGate/TypeGate):
+  - `OperatorKO7/Meta/Operational_Incompleteness.lean` includes examples illustrating:
+    - one successful reference to an existing lemma/tool,
+    - one unknown identifier example (kept as documentation-only),
+    - one arity/type-mismatch example (kept as documentation-only).
 
-## quality gates (current)
+- E) Lexicographic proof discipline:
+  - `OperatorKO7/Meta/Termination_KO7.lean` proves per-rule decrease for `SafeStep` via the KO7
+    triple-lex order `Lex3` on the measure `μ3`.
+  - The decrease proof is structured by explicit case splits corresponding to the safe rules.
 
-- Build, Lint/Typecheck: PASS (lake build). Tests are proof-level; repo is sorry-free on import chain used by claims.
+- F) Explicit full-kernel caveat (eqW overlap):
+  - `OperatorKO7/Meta/Confluence_Safe.lean` proves
+    `MetaSN_KO7.not_localJoinStep_eqW_void_void : ¬ LocalJoinStep (eqW void void)`.
+  - This records that the two `eqW` kernel rules overlap at `eqW a a`; this is one of the reasons
+    the certified artifact is presented for the guarded fragment.
 
-## next steps (tracked)
+- G) Probes are build-participating and sorry-free:
+  - The probe modules and the certified artifact modules are included in the normal import surface.
 
-- Explore unification to a single global measure (if feasible); otherwise keep HybridDec as an explicit disjunctive bridge with guarded scope.
-- Expand local-join catalog as needed; keep SafeStep scope front-and-center in user docs.
+## Artifact components (reader map)
+
+- Kernel syntax and full kernel step relation:
+  - `OperatorKO7/Kernel.lean` (`Trace`, `Step`, `StepStar`, `NormalForm`)
+
+- Safe fragment and termination (ordinal-based):
+  - `OperatorKO7/Meta/Termination_KO7.lean` (`SafeStep`, `SafeStepRev`, `μ3`, `Lex3`,
+    `measure_decreases_safe`, `wf_SafeStepRev`)
+
+- Certified normalizer (safe fragment):
+  - `OperatorKO7/Meta/Normalize_Safe.lean` (`normalizeSafe` plus certificates `to_norm_safe`,
+    `norm_nf_safe`); `normalizeSafe` is `noncomputable` because it is defined via well-founded
+    recursion on the termination measure.
+
+- Computable termination measure (safe fragment):
+  - `OperatorKO7/Meta/ComputableMeasure.lean` and verification helpers under `Meta/ComputableMeasure_*`.
+
+## Paper-code alignment (salient points)
+
+- The recursion successor rule is `recΔ b s (delta n) → app s (recΔ b s n)`; it does not duplicate
+  its arguments. The `deltaFlag` component is used to enforce the intended phase decrease for this
+  rule in the KO7 triple-lex ordering.
+
+- The multiset component `κᴹ` (`kappaM`) uses multiset union (`∪`) at `merge`/`app`/`eqW` nodes.
+  This design is used in the DM branches of the termination proof.
+
+## Build status (informational)
+
+At the time of preparation, the project builds with `lake build` in an environment where the
+required dependencies are already available locally.
