@@ -63,8 +63,6 @@ Every file in this repository exists for one of: (i) the paper source/license, (
 ### Lean tests (`OperatorKO7/Test/`)
 - **`OperatorKO7/Test/Sanity.lean`**: minimal test file imported by the build to ensure the package compiles in CI and on fresh machines.
 
-*(The sections below were consolidated into the single file-by-file map above.)*
-
 ## How to build
 
 Run:
@@ -86,4 +84,5 @@ For commercial permissions (paper or alternative terms), contact: `moses@minaana
 > *   All files were verified green (compiling successfully) during the paper's initial drafting in **November 2025**.
 > *   The current "organized" release candidate (this standalone package) has been structured offline but could not be freshly compiled against remote dependencies due to connection blocks.
 > *   Any discrepancies or dependency errors will be resolved immediately once stable internet access is restored. The logic remains unchanged from the verified November snapshot.
+
 
