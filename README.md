@@ -6,7 +6,7 @@
 
 **Paper (arXiv):** [https://arxiv.org/abs/2512.00081](https://arxiv.org/abs/2512.00081)  
 **Repository:** [https://github.com/MosesRahnama/OperatorKO7](https://github.com/MosesRahnama/OperatorKO7)  
-**Contact:** moses@minaanalytics.com
+**Contact:** moses.rahnama@live.com
 
 This repository contains the Lean 4 formalization accompanying the paper above.
 
@@ -86,3 +86,4 @@ For commercial permissions (paper or alternative terms), contact: `moses@minaana
 > *   All files were verified green (compiling successfully) during the paper's initial drafting in **November 2025**.
 > *   The current "organized" release candidate (this standalone package) has been structured offline but could not be freshly compiled against remote dependencies due to connection blocks.
 > *   Any discrepancies or dependency errors will be resolved immediately once stable internet access is restored. The logic remains unchanged from the verified November snapshot.
+
