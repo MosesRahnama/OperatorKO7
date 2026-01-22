@@ -35,7 +35,7 @@ Every file in this repository exists for one of: (i) the paper source/license, (
 - **`OperatorKO7.lean`**: the library entry point (umbrella imports for the public build surface).
 
 ### Paper
-- **`Paper/Rahnama_KO7_Submission.tex`**: paper source (includes direct link to this repo).
+- **`Paper/Rahnama_KO7_Submission.pdf`**: paper source (includes direct link to this repo).
 - **`Paper/LICENSE`**: CC BY-NC-ND 4.0 legal code + notice for the paper text.
 
 ### Lean library (`OperatorKO7/`)
@@ -84,5 +84,6 @@ For commercial permissions (paper or alternative terms), contact: `moses@minaana
 > *   All files were verified green (compiling successfully) during the paper's initial drafting in **November 2025**.
 > *   The current "organized" release candidate (this standalone package) has been structured offline but could not be freshly compiled against remote dependencies due to connection blocks.
 > *   Any discrepancies or dependency errors will be resolved immediately once stable internet access is restored. The logic remains unchanged from the verified November snapshot.
+
 
 
