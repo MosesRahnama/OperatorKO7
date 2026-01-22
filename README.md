@@ -1,12 +1,12 @@
-# OperatorKO7 (KO7)
-
-**MAIN RESULT:** A mechanically-verified certified normalizer for a guarded fragment (`SafeStep`) using a novel triple-lexicographic measure.
+# OperatorKO7
 
 **CONJECTURE:** No relational operator-only TRS can have its full-system termination proved by internally definable methods.
 
+**MAIN RESULT:** A mechanically-verified certified normalizer for a guarded fragment (`SafeStep`) using a novel triple-lexicographic measure.
+
 **Paper (arXiv):** [https://arxiv.org/abs/2512.00081](https://arxiv.org/abs/2512.00081)  
 **Repository:** [https://github.com/MosesRahnama/OperatorKO7](https://github.com/MosesRahnama/OperatorKO7)  
-**Contact:** moses.rahnama@live.com
+**Contact:** moses@minaanalytics.com
 
 This repository contains the Lean 4 formalization accompanying the paper above.
 
@@ -27,6 +27,7 @@ Every file in this repository exists for one of: (i) the paper source/license, (
 
 ### Repo root
 - **`README.md`**: this landing page (theory-first, then build instructions, then file map).
+- **`SAFE_AUDIT.md`**: reader-facing scope audit: a concise “what is proved vs. what is not” map, with pointers to the exact Lean files/lemmas establishing the SafeStep artifact and the explicit full-kernel caveat.
 - **`LICENSE`**: Apache-2.0 license for the Lean code in this repository.
 - **`lean-toolchain`**: pins the Lean toolchain version used to build the project.
 - **`lakefile.lean`**: Lake package config (declares package/library `OperatorKO7`, depends on mathlib).
@@ -56,7 +57,6 @@ Every file in this repository exists for one of: (i) the paper source/license, (
 - **`OperatorKO7/Meta/GoodsteinCore.lean`**: small, independent Goodstein-style toy core (exposition/witness support).
 - **`OperatorKO7/Meta/HydraCore.lean`**: small, independent Hydra-style toy core (exposition/witness support).
 - **`OperatorKO7/Meta/FailureModes.lean`**: negative tests / counterexample sketches documenting why naive reasoning fails (kept in the main tree as part of the theory story).
-- **`OperatorKO7/Meta/SAFE_AUDIT.md`**: short, strict "what is proved and what is not" audit (scope, gates, and the safe/full boundary).
 - **`OperatorKO7/Meta/ComputableMeasure_Test.lean`**: small Lean checks that the computable measure API is present (smoke tests).
 - **`OperatorKO7/Meta/ComputableMeasure_Verification.lean`**: extra verification lemmas/examples for the computable measure (non-essential but kept for reproducibility).
 
@@ -78,7 +78,7 @@ lake build
 - **Lean code**: Apache-2.0 (see `LICENSE` at repo root).
 - **Paper text**: CC BY-NC-ND 4.0 (see `Paper/LICENSE`).
 
-For commercial permissions (paper or alternative terms), contact: `moses.rahnama@live.com`
+For commercial permissions (paper or alternative terms), contact: `moses@minaanalytics.com`
 
 
 > **CONNECTIVITY & VERIFICATION DISCLAIMER (January 2026)**
