@@ -1,10 +1,9 @@
--- Impossibility Lemmas - documentation mirror (see Confluence_Safe for helpers)
-
 import OperatorKO7.Meta.Operational_Incompleteness
 import OperatorKO7.Kernel
 import Mathlib.Order.Basic
 import Mathlib.Tactic.Linarith
 import OperatorKO7.Meta.Termination_KO7
+-- Impossibility Lemmas - documentation mirror (see Confluence_Safe for helpers)
 
 /-!
 # Impossibility Lemmas - mirror of failure catalog (fails_central + consolidation)
@@ -167,19 +166,19 @@ commented to keep the build green; they illustrate the bad shapes. -/
 
 /-! ## P2 duplication realism - references and examples (fails_central §G)
 
-We reuse the toy calculus from `OpIncomp.P2`:
-* `dup_additive_failure` gives the exact additive non‑drop identity.
-* `not_strict_drop` forbids strict decrease for the additive `size`.
-* `P2DM.dm_orient_dup` and `P2MPO.mpo_orient_dup` show robust structural fixes.
+We reuse the toy calculus from `OpIncomp`:
+* `r4_size_after_eq_before_plus_piece` gives the exact additive non‑drop identity.
+* `r4_no_strict_drop_additive` forbids strict decrease for the additive `size`.
+* `R4DM.dm_orient` and `R4MPO.mpo_orient_r4` show robust structural fixes.
 -/
 namespace DuplicationRefs
 open OpIncomp
 
 -- Pointers (names checked):
-#check OpIncomp.P2.dup_additive_failure
-#check OpIncomp.P2.not_strict_drop
-#check OpIncomp.P2DM.dm_orient_dup
-#check OpIncomp.P2MPO.mpo_orient_dup
+#check OpIncomp.r4_size_after_eq_before_plus_piece  -- additive identity (dup_additive_failure)
+#check OpIncomp.r4_no_strict_drop_additive          -- no strict drop (not_strict_drop)
+#check OpIncomp.R4DM.dm_orient                      -- DM orientation (dm_orient_dup)
+#check OpIncomp.R4MPO.mpo_orient_r4                 -- MPO orientation (mpo_orient_dup)
 
 end DuplicationRefs
 
