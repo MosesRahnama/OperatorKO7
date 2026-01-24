@@ -79,11 +79,5 @@ lake build
 For commercial permissions (paper or alternative terms), contact: `moses@minaanalytics.com`
 
 
-> **CONNECTIVITY & VERIFICATION DISCLAIMER (January 2026)**
-> This repository was uploaded from **Iran** under severe internet restrictions. 
-> *   All files were verified green (compiling successfully) during the paper's initial drafting in **November 2025**.
-> *   The current "organized" release candidate (this standalone package) has been structured offline but could not be freshly compiled against remote dependencies due to connection blocks.
-> *   Any discrepancies or dependency errors will be resolved immediately once stable internet access is restored. The logic remains unchanged from the verified November snapshot.
-
 
 
