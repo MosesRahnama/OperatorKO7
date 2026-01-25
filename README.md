@@ -269,4 +269,4 @@ Alternatively, use the "Cite this repository" feature in the GitHub sidebar, whi
 - **Lean code**: Apache-2.0 (see `LICENSE` at repo root).
 - **Paper text**: CC BY-NC-ND 4.0 (see `Paper/LICENSE`).
 
-For commercial permissions (paper or alternative terms), contact: `moses@minaanalytics.com`
+For commercial permissions (paper or alternative terms), contact: `moses.rahnama@live.com`
