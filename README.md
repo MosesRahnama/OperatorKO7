@@ -22,6 +22,8 @@ This repository contains the Lean 4 formalization accompanying the paper above.
 
 KO7 is a minimal rewrite calculus with **7 constructors** and **8 reduction rules**. It is deliberately designed as a minimal "relational operator-only" term rewriting system—meaning it can encode ordered computation (comparisons, iteration, sequential counting) using only structural rewrite rules without primitive recursion or arithmetic operators.
 
+**Core definition:** [`OperatorKO7/Kernel.lean`](OperatorKO7/Kernel.lean)
+
 ### What This Repository Proves (Mechanically Verified)
 
 This repository **formally verifies** in Lean 4:
@@ -41,12 +43,12 @@ This repository **formally verifies** in Lean 4:
    - Single-bit flags fail
    - Any measure based on additive invariants fails
 
-### What This Repository CANNOT Prove (The Conjecture)
+### What This Repository Does NOT Prove (The Conjecture)
 
 This repository **does not** claim a proof of termination for the **full kernel `Step` relation**. The full system includes an additional rule (`eqW`) that redistributes step arguments across recursive calls in a way that defeats all known termination measures.
 
-**The Conjecture**: 
-> No relational **operator-only term rewriting system** can have its **full-system termination** proved by methods **definable within the system itself.**
+**The Conjecture** (stated but not proved): 
+> No relational operator-only term rewriting system can have its **full-system termination** proved by methods definable within the system itself.
 
 **Why this matters:**
 - "Relational" means capable of **ordered computation** (comparison, iteration, counting)
@@ -142,7 +144,17 @@ All theorems referenced in the paper are present in the codebase and can be veri
 
 Every file in this repository exists for one of: (i) the paper source/license, (ii) the Lean kernel, (iii) the certified safe fragment, or (iv) small verifier-facing smoke tests.
 
-### Repo root
+### 🔴 Core Definition (START HERE)
+
+- **[`OperatorKO7/Kernel.lean`](OperatorKO7/Kernel.lean)**: 🔑 **THE FOUNDATIONAL FILE**. Defines:
+  - `Trace`: The inductive type with 7 constructors (`v0`, `v1`, `eq`, `eqT`, `eqF`, `eqW`, `eqS`)
+  - `Step`: The full kernel relation with 8 unconditional rewrite rules
+  - `StepStar`: The reflexive-transitive closure of `Step`
+  
+  **This is the entire KO7 system.** Everything else in this repository either proves properties of this system or documents why certain properties cannot be proved.
+
+### Repo root (Configuration & Documentation)
+
 - **`README.md`**: this landing page (theory-first, then build instructions, then file map).
 - **`SAFE_AUDIT.md`**: reader-facing scope audit: a concise "what is proved vs. what is not" map, with pointers to the exact Lean files/lemmas establishing the SafeStep artifact and the explicit full-kernel caveat.
 - **`CITATION.cff`**: machine-readable citation metadata for this software artifact.
@@ -156,35 +168,50 @@ Every file in this repository exists for one of: (i) the paper source/license, (
 - **`OperatorKO7.lean`**: the library entry point (umbrella imports for the public build surface).
 
 ### CI/CD
+
 - **`.github/workflows/build.yml`**: GitHub Actions workflow for continuous integration and build verification.
 
 ### Paper
+
 - **`Paper/Rahnama_KO7_Submission.pdf`**: paper source (includes direct link to this repo).
 - **`Paper/LICENSE`**: CC BY-NC-ND 4.0 legal code + notice for the paper text.
 
-### Lean library (`OperatorKO7/`)
-- **`OperatorKO7/Kernel.lean`**: defines `Trace` (7 constructors), the full kernel relation `Step` (8 unconditional rules), and `StepStar`.
+### Lean meta-theory (`OperatorKO7/Meta/`) - Termination Proofs
 
-### Lean meta-theory (`OperatorKO7/Meta/`)
+**Safe fragment termination (what IS proved):**
+
 - **`OperatorKO7/Meta/Termination.lean`**: ordinal/measure toolkit used by the termination development.
-- **`OperatorKO7/Meta/Termination_KO7.lean`**: defines the certified safe fragment `SafeStep` and proves SN for it via the triple-lex measure.
+- **`OperatorKO7/Meta/Termination_KO7.lean`**: ⭐ **MAIN RESULT**. Defines the certified safe fragment `SafeStep` and proves SN for it via the triple-lex measure (phase bit + multiset + ordinal).
 - **`OperatorKO7/Meta/ComputableMeasure.lean`**: a fully computable termination certificate for `SafeStep`.
 - **`OperatorKO7/Meta/Normalize_Safe.lean`**: certified normalizer for `SafeStep` (total + sound; noncomputable by design).
+
+**Confluence for safe fragment:**
+
 - **`OperatorKO7/Meta/Newman_Safe.lean`**: Newman engine used to derive confluence for the safe fragment under local-join assumptions.
 - **`OperatorKO7/Meta/Confluence_Safe.lean`**: local-join / critical-peak lemmas for the safe fragment; also includes an explicit full-kernel caveat showing the overlap at `eqW` creates a non-joinable peak.
 - **`OperatorKO7/Meta/SafeStep_Ctx.lean`**: context-closure utilities for safe steps (used by join proofs).
+
+**Impossibility results (why simpler measures fail):**
+
 - **`OperatorKO7/Meta/Impossibility_Lemmas.lean`**: impossibility lemmas supporting the conjecture narrative (failure witnesses for simpler measures).
 - **`OperatorKO7/Meta/Operational_Incompleteness.lean`**: the "P1–P3 probes" / operational incompleteness scaffolding (namespace `OperatorKO7.OpIncomp`).
 - **`OperatorKO7/Meta/ContractProbes.lean`**: small auxiliary probes referenced by the impossibility story.
+- **`OperatorKO7/Meta/FailureModes.lean`**: negative tests / counterexample sketches documenting why naive reasoning fails (kept in the main tree as part of the theory story).
+
+**Supporting technical infrastructure:**
+
 - **`OperatorKO7/Meta/DM_MPO_Orientation.lean`**: helper lemmas for DM/MPO orientations used in the measures.
 - **`OperatorKO7/Meta/CNFOrdinal.lean`**: ordinal/CNF support (used by ordinal-based parts of the development).
 - **`OperatorKO7/Meta/GoodsteinCore.lean`**: small, independent Goodstein-style toy core (exposition/witness support).
 - **`OperatorKO7/Meta/HydraCore.lean`**: small, independent Hydra-style toy core (exposition/witness support).
-- **`OperatorKO7/Meta/FailureModes.lean`**: negative tests / counterexample sketches documenting why naive reasoning fails (kept in the main tree as part of the theory story).
+
+**Verification and testing:**
+
 - **`OperatorKO7/Meta/ComputableMeasure_Test.lean`**: small Lean checks that the computable measure API is present (smoke tests).
 - **`OperatorKO7/Meta/ComputableMeasure_Verification.lean`**: extra verification lemmas/examples for the computable measure (non-essential but kept for reproducibility).
 
 ### Lean tests (`OperatorKO7/Test/`)
+
 - **`OperatorKO7/Test/Sanity.lean`**: minimal test file imported by the build to ensure the package compiles in CI and on fresh machines.
 
 ## Citation
