@@ -7,6 +7,7 @@ authors:
     given-names: "Moses"
     email: "moses.rahnama@live.com"
     affiliation: "Mina Analytics"
+    orcid: "https://orcid.org/0009-0009-0922-483X"
 repository-code: "https://github.com/MosesRahnama/OperatorKO7"
 url: "https://github.com/MosesRahnama/OperatorKO7"
 license: Apache-2.0
@@ -18,20 +19,37 @@ keywords:
   - rewrite-systems
   - term-rewriting
   - proof-assistant
+  - strong-normalization
+  - confluence
+  - newman-lemma
+  - multiset-ordering
+  - lexicographic-ordering
 abstract: |
   This repository contains the Lean 4 formalization accompanying the paper
-  "OperatorKO7: Impossibility of Internal Termination Proofs for Full Relational 
-  Operator TRS" (arXiv:2512.00081). The project mechanically verifies a certified 
-  normalizer for the SafeStep fragment using a novel triple-lexicographic measure, 
-  while providing machine-checked impossibility witnesses for simpler approaches.
+  "Strong Normalization for the Safe Fragment of a Minimal Rewrite System: 
+  A Triple-Lexicographic Proof and a Conjecture on the Unprovability of 
+  Full Termination for Any Relational Operator-Only TRS" (arXiv:2512.00081). 
+  
+  The project mechanically verifies:
+  - Strong normalization for the SafeStep fragment via triple-lexicographic measure
+  - A certified normalizer with proven totality and soundness
+  - Confluence for the safe fragment via Newman's lemma
+  - Machine-checked impossibility witnesses showing why simpler measures fail
+  
+  All theorems have been formally verified in Lean 4 and are continuously 
+  built via GitHub Actions CI.
 references:
   - type: article
-    title: "OperatorKO7: Impossibility of Internal Termination Proofs for Full Relational Operator TRS"
+    title: "Strong Normalization for the Safe Fragment of a Minimal Rewrite System: A Triple-Lexicographic Proof and a Conjecture on the Unprovability of Full Termination for Any Relational Operator-Only TRS"
     authors:
       - family-names: "Rahnama"
         given-names: "Moses"
+        orcid: "https://orcid.org/0009-0009-0922-483X"
     year: 2024
     url: "https://arxiv.org/abs/2512.00081"
+    doi: "10.48550/arXiv.2512.00081"
     repository-code: "https://github.com/MosesRahnama/OperatorKO7"
-version: "1.0.0-pre"
-date-released: "2026-01-25"
+    notes: "Submitted for journal publication"
+version: "1.0.0"
+date-released: "2024-11-26"
+doi: "10.48550/arXiv.2512.00081"
