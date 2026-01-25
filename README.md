@@ -144,9 +144,9 @@ All theorems referenced in the paper are present in the codebase and can be veri
 
 Every file in this repository exists for one of: (i) the paper source/license, (ii) the Lean kernel, (iii) the certified safe fragment, or (iv) small verifier-facing smoke tests.
 
-### 🔴 Core Definition (START HERE)
+### Core Definition (START HERE)
 
-- **[`OperatorKO7/Kernel.lean`](OperatorKO7/Kernel.lean)**: 🔑 **THE FOUNDATIONAL FILE**. Defines:
+- **[`OperatorKO7/Kernel.lean`](OperatorKO7/Kernel.lean)**: **THE FOUNDATIONAL FILE**. Defines:
   - `Trace`: The inductive type with 7 constructors (`v0`, `v1`, `eq`, `eqT`, `eqF`, `eqW`, `eqS`)
   - `Step`: The full kernel relation with 8 unconditional rewrite rules
   - `StepStar`: The reflexive-transitive closure of `Step`
@@ -181,7 +181,7 @@ Every file in this repository exists for one of: (i) the paper source/license, (
 **Safe fragment termination (what IS proved):**
 
 - **`Termination.lean`**: ordinal/measure toolkit used by the termination development.
-- **`Termination_KO7.lean`**: ⭐ **MAIN RESULT**. Defines the certified safe fragment `SafeStep` and proves SN for it via the triple-lex measure (phase bit + multiset + ordinal).
+- **`Termination_KO7.lean`**: **MAIN RESULT**. Defines the certified safe fragment `SafeStep` and proves SN for it via the triple-lex measure (phase bit + multiset + ordinal).
 - **`ComputableMeasure.lean`**: a fully computable termination certificate for `SafeStep`.
 - **`Normalize_Safe.lean`**: certified normalizer for `SafeStep` (total + sound; noncomputable by design).
 
