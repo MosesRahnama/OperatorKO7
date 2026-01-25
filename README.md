@@ -85,8 +85,7 @@ This work is permanently archived with the following identifiers:
 
 This repository is continuously built and verified via [GitHub Actions CI](https://github.com/MosesRahnama/OperatorKO7/actions/workflows/build.yml). The build status badge above indicates the current verification state.
 
-**Build Note:** While `lake update` may display dependency resolution warnings, these are informational only and do not affect the correctness of the formal verification. The CI system validates that all proofs compile successfully with the pinned dependencies in `lake-manifest.json`.
-
+**Build Note:** The repository uses Lean 4 v4.22.8-rc4 with dependency versions locked in `lake-manifest.json` and pinned in `lakefile.lean`. When you run `lake update`, it will respect these pinned versions to ensure compatibility. The dependency resolution warnings during build are expected and do not affect the correctness of the formal verification.
 ## Build Instructions
 
 ### Prerequisites
