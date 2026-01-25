@@ -18,14 +18,55 @@ This repository contains the Lean 4 formalization accompanying the paper above.
 
 ## Overview (what is proved vs what is conjectured)
 
-KO7 is a minimal rewrite calculus with 7 constructors and 8 rules.
+### The System: KO7
 
-This repository formally verifies (Lean 4):
-- **Safe fragment (`SafeStep`)**: strong normalization (SN) and a certified normalizer (total + sound).
-- **Confluence (safe fragment)**: derived via Newman's lemma under the stated local-join condition.
-- **Impossibility catalog**: machine-checked "no-go" witnesses showing why simpler measures fail under duplication.
+KO7 is a minimal rewrite calculus with **7 constructors** and **8 reduction rules**. It is deliberately designed as a minimal "relational operator-only" term rewriting system—meaning it can encode ordered computation (comparisons, iteration, sequential counting) using only structural rewrite rules without primitive recursion or arithmetic operators.
 
-This repository does **not** claim a proof of termination for the full kernel `Step` relation; that is the target of the conjecture above.
+### What This Repository Proves (Mechanically Verified)
+
+This repository **formally verifies** in Lean 4:
+
+1. **Safe fragment (`SafeStep`) strong normalization (SN)**: A restricted subset of KO7's reduction rules provably terminates. The proof uses a novel **triple-lexicographic measure** combining:
+   - A phase bit (tracks reduction stage)
+   - Multiset ordering (Dershowitz-Manna)
+   - Ordinal ranking (handles non-additive cases)
+
+2. **Certified normalizer**: A provably-total and provably-sound normalization function for `SafeStep`. Given any term in the safe fragment, it computes the unique normal form.
+
+3. **Confluence (safe fragment)**: Under the assumption of local confluence (verified through critical pair analysis), Newman's Lemma yields confluence, guaranteeing unique normal forms for the safe fragment.
+
+4. **Impossibility catalog**: Machine-checked "no-go" witnesses demonstrating that simpler termination measures **provably fail** for KO7. Specifically:
+   - Additive counters fail (term duplication defeats them)
+   - Polynomial interpretations fail
+   - Single-bit flags fail
+   - Any measure based on additive invariants fails
+
+### What This Repository Does NOT Prove (The Conjecture)
+
+This repository **does not** claim a proof of termination for the **full kernel `Step` relation**. The full system includes an additional rule (`eqW`) that redistributes step arguments across recursive calls in a way that defeats all known termination measures.
+
+**The Conjecture** (stated but not proved): 
+> No relational operator-only term rewriting system can have its **full-system termination** proved by methods definable within the system itself.
+
+**Why this matters:**
+- "Relational" means capable of **ordered computation** (comparison, iteration, counting)
+- Such systems necessarily include recursors that **redistribute** computational resources (step counts, fuel) across subterms
+- This redistribution **defeats additive measures** (the resource can grow locally even as it shrinks globally)
+- The conjecture suggests a **fundamental limitation**: systems expressive enough to encode ordered data cannot prove their own termination using measures they can internally define
+
+**Analogy**: This is similar to Gödel's incompleteness—systems of sufficient expressive power cannot prove all true statements about themselves. Here, we conjecture that rewrite systems expressive enough for relational reasoning cannot prove their own termination using internally definable orderings.
+
+### Evidence for the Conjecture
+
+While the conjecture itself is not formally proved, this repository provides:
+- **Constructive proof** that a large safe fragment terminates (establishing partial progress)
+- **Machine-checked impossibility results** showing why simpler approaches fail
+- **Explicit counterexample** in `Confluence_Safe.lean` demonstrating the non-joinable peak at `eqW` that breaks full termination
+- **Operational incompleteness probes** (P1–P3) showing the boundary where internal methods break down
+
+The gap between what is proved (`SafeStep` terminates) and what is conjectured (full `Step` does not provably terminate by internal methods) is **deliberate and explicit**. This work explores the **limits of self-reference in termination proving**.
+
+For a complete scope audit detailing exactly which theorems are proved and which claims remain conjectural, see [`SAFE_AUDIT.md`](SAFE_AUDIT.md).
 
 ## Archival and Reproducibility
 
@@ -105,6 +146,7 @@ Every file in this repository exists for one of: (i) the paper source/license, (
 - **`README.md`**: this landing page (theory-first, then build instructions, then file map).
 - **`SAFE_AUDIT.md`**: reader-facing scope audit: a concise "what is proved vs. what is not" map, with pointers to the exact Lean files/lemmas establishing the SafeStep artifact and the explicit full-kernel caveat.
 - **`CITATION.cff`**: machine-readable citation metadata for this software artifact.
+- **`ARCHIVAL_STRATEGY.md`**: comprehensive documentation of archival and citation strategy.
 - **`RELEASE_GUIDE.md`**: step-by-step guide for creating releases and DOI archival.
 - **`LICENSE`**: Apache-2.0 license for the Lean code in this repository.
 - **`.gitignore`**: Git ignore patterns (excludes build artifacts).
