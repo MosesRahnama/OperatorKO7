@@ -80,6 +80,14 @@ This work is permanently archived with the following identifiers:
 - **arXiv ID:** [2512.00081](https://arxiv.org/abs/2512.00081)
 - **Repository (live):** [github.com/MosesRahnama/OperatorKO7](https://github.com/MosesRahnama/OperatorKO7)
 - **Zenodo Archive:** [zenodo.org/records/18351560](https://zenodo.org/records/18351560)
+- 
+## Complete Artifact
+
+For reviewers: [**Complete source code documentation (all 19 files in one document)**](./OperatorKO7_Complete_Documentation.md)
+
+This single-file artifact contains the entire OperatorKO7 library with all Lean source code, proofs, and commentary.
+
+---
 
 ### Build Verification
 
