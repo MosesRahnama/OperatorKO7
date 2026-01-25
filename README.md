@@ -180,39 +180,39 @@ Every file in this repository exists for one of: (i) the paper source/license, (
 
 **Safe fragment termination (what IS proved):**
 
-- **`OperatorKO7/Meta/Termination.lean`**: ordinal/measure toolkit used by the termination development.
-- **`OperatorKO7/Meta/Termination_KO7.lean`**: ⭐ **MAIN RESULT**. Defines the certified safe fragment `SafeStep` and proves SN for it via the triple-lex measure (phase bit + multiset + ordinal).
-- **`OperatorKO7/Meta/ComputableMeasure.lean`**: a fully computable termination certificate for `SafeStep`.
-- **`OperatorKO7/Meta/Normalize_Safe.lean`**: certified normalizer for `SafeStep` (total + sound; noncomputable by design).
+- **`Termination.lean`**: ordinal/measure toolkit used by the termination development.
+- **`Termination_KO7.lean`**: ⭐ **MAIN RESULT**. Defines the certified safe fragment `SafeStep` and proves SN for it via the triple-lex measure (phase bit + multiset + ordinal).
+- **`ComputableMeasure.lean`**: a fully computable termination certificate for `SafeStep`.
+- **`Normalize_Safe.lean`**: certified normalizer for `SafeStep` (total + sound; noncomputable by design).
 
 **Confluence for safe fragment:**
 
-- **`OperatorKO7/Meta/Newman_Safe.lean`**: Newman engine used to derive confluence for the safe fragment under local-join assumptions.
-- **`OperatorKO7/Meta/Confluence_Safe.lean`**: local-join / critical-peak lemmas for the safe fragment; also includes an explicit full-kernel caveat showing the overlap at `eqW` creates a non-joinable peak.
-- **`OperatorKO7/Meta/SafeStep_Ctx.lean`**: context-closure utilities for safe steps (used by join proofs).
+- **`Newman_Safe.lean`**: Newman engine used to derive confluence for the safe fragment under local-join assumptions.
+- **`Confluence_Safe.lean`**: local-join / critical-peak lemmas for the safe fragment; also includes an explicit full-kernel caveat showing the overlap at `eqW` creates a non-joinable peak.
+- **`SafeStep_Ctx.lean`**: context-closure utilities for safe steps (used by join proofs).
 
 **Impossibility results (why simpler measures fail):**
 
-- **`OperatorKO7/Meta/Impossibility_Lemmas.lean`**: impossibility lemmas supporting the conjecture narrative (failure witnesses for simpler measures).
-- **`OperatorKO7/Meta/Operational_Incompleteness.lean`**: the "P1–P3 probes" / operational incompleteness scaffolding (namespace `OperatorKO7.OpIncomp`).
-- **`OperatorKO7/Meta/ContractProbes.lean`**: small auxiliary probes referenced by the impossibility story.
-- **`OperatorKO7/Meta/FailureModes.lean`**: negative tests / counterexample sketches documenting why naive reasoning fails (kept in the main tree as part of the theory story).
+- **`Impossibility_Lemmas.lean`**: impossibility lemmas supporting the conjecture narrative (failure witnesses for simpler measures).
+- **`Operational_Incompleteness.lean`**: the "P1–P3 probes" / operational incompleteness scaffolding (namespace `OperatorKO7.OpIncomp`).
+- **`ContractProbes.lean`**: small auxiliary probes referenced by the impossibility story.
+- **`FailureModes.lean`**: negative tests / counterexample sketches documenting why naive reasoning fails (kept in the main tree as part of the theory story).
 
 **Supporting technical infrastructure:**
 
-- **`OperatorKO7/Meta/DM_MPO_Orientation.lean`**: helper lemmas for DM/MPO orientations used in the measures.
-- **`OperatorKO7/Meta/CNFOrdinal.lean`**: ordinal/CNF support (used by ordinal-based parts of the development).
-- **`OperatorKO7/Meta/GoodsteinCore.lean`**: small, independent Goodstein-style toy core (exposition/witness support).
-- **`OperatorKO7/Meta/HydraCore.lean`**: small, independent Hydra-style toy core (exposition/witness support).
+- **`DM_MPO_Orientation.lean`**: helper lemmas for DM/MPO orientations used in the measures.
+- **`CNFOrdinal.lean`**: ordinal/CNF support (used by ordinal-based parts of the development).
+- **`GoodsteinCore.lean`**: small, independent Goodstein-style toy core (exposition/witness support).
+- **`HydraCore.lean`**: small, independent Hydra-style toy core (exposition/witness support).
 
 **Verification and testing:**
 
-- **`OperatorKO7/Meta/ComputableMeasure_Test.lean`**: small Lean checks that the computable measure API is present (smoke tests).
-- **`OperatorKO7/Meta/ComputableMeasure_Verification.lean`**: extra verification lemmas/examples for the computable measure (non-essential but kept for reproducibility).
+- **`ComputableMeasure_Test.lean`**: small Lean checks that the computable measure API is present (smoke tests).
+- **`ComputableMeasure_Verification.lean`**: extra verification lemmas/examples for the computable measure (non-essential but kept for reproducibility).
 
 ### Lean tests (`OperatorKO7/Test/`)
 
-- **`OperatorKO7/Test/Sanity.lean`**: minimal test file imported by the build to ensure the package compiles in CI and on fresh machines.
+- **`Sanity.lean`**: minimal test file imported by the build to ensure the package compiles in CI and on fresh machines.
 
 ## Citation
 
