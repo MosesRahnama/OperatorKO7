@@ -1,0 +1,16 @@
+# Lake build artifacts
+.lake/
+lake-packages/
+
+# OS files
+.DS_Store
+Thumbs.db
+
+# IDE
+.vscode/
+.idea/
+
+# Backup files
+*~
+*.swp
+*.bak
