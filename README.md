@@ -41,12 +41,12 @@ This repository **formally verifies** in Lean 4:
    - Single-bit flags fail
    - Any measure based on additive invariants fails
 
-### What This Repository Does NOT Prove (The Conjecture)
+### What This Repository CANNOT Prove (The Conjecture)
 
 This repository **does not** claim a proof of termination for the **full kernel `Step` relation**. The full system includes an additional rule (`eqW`) that redistributes step arguments across recursive calls in a way that defeats all known termination measures.
 
 **The Conjecture**: 
-> No relational operator-only term rewriting system can have its **full-system termination** proved by methods definable within the system itself.
+> No relational **operator-only term rewriting system** can have its **full-system termination** proved by methods **definable within the system itself.**
 
 **Why this matters:**
 - "Relational" means capable of **ordered computation** (comparison, iteration, counting)
