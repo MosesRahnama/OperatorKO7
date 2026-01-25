@@ -22,4 +22,5 @@ package OperatorKO7 where
 lean_lib OperatorKO7 where
   roots := #[`OperatorKO7]
 
-require mathlib from git "https://github.com/leanprover-community/mathlib4.git"
+require mathlib from git "https://github.com/leanprover-community/mathlib4.git" @ "632465e4b02cb70a5dfa4cfe15468e8a62c2bd85"
+
