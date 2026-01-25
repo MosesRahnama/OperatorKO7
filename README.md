@@ -45,7 +45,7 @@ This repository **formally verifies** in Lean 4:
 
 This repository **does not** claim a proof of termination for the **full kernel `Step` relation**. The full system includes an additional rule (`eqW`) that redistributes step arguments across recursive calls in a way that defeats all known termination measures.
 
-**The Conjecture** (stated but not proved): 
+**The Conjecture**: 
 > No relational operator-only term rewriting system can have its **full-system termination** proved by methods definable within the system itself.
 
 **Why this matters:**
