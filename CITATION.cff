@@ -1,0 +1,37 @@
+cff-version: 1.2.0
+message: "If you use this software, please cite it as below."
+title: "OperatorKO7: Mechanically-Verified Termination Proof for a Relational Operator TRS"
+type: software
+authors:
+  - family-names: "Rahnama"
+    given-names: "Moses"
+    email: "moses.rahnama@live.com"
+    affiliation: "Mina Analytics"
+repository-code: "https://github.com/MosesRahnama/OperatorKO7"
+url: "https://github.com/MosesRahnama/OperatorKO7"
+license: Apache-2.0
+keywords:
+  - lean4
+  - formal-verification
+  - theorem-proving
+  - termination
+  - rewrite-systems
+  - term-rewriting
+  - proof-assistant
+abstract: |
+  This repository contains the Lean 4 formalization accompanying the paper
+  "OperatorKO7: Impossibility of Internal Termination Proofs for Full Relational 
+  Operator TRS" (arXiv:2512.00081). The project mechanically verifies a certified 
+  normalizer for the SafeStep fragment using a novel triple-lexicographic measure, 
+  while providing machine-checked impossibility witnesses for simpler approaches.
+references:
+  - type: article
+    title: "OperatorKO7: Impossibility of Internal Termination Proofs for Full Relational Operator TRS"
+    authors:
+      - family-names: "Rahnama"
+        given-names: "Moses"
+    year: 2024
+    url: "https://arxiv.org/abs/2512.00081"
+    repository-code: "https://github.com/MosesRahnama/OperatorKO7"
+version: "1.0.0-pre"
+date-released: "2026-01-25"
