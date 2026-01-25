@@ -98,6 +98,9 @@ This repository is continuously built and verified via [GitHub Actions CI](https
 git clone https://github.com/MosesRahnama/OperatorKO7.git
 cd OperatorKO7
 
+# CRITICAL: Force Lean to use the pinned version (do this BEFORE lake update)
+elan override set leanprover/lean4:v4.22.0-rc4
+
 # Update dependencies
 lake update
 
