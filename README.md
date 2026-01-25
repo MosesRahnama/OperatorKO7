@@ -64,7 +64,7 @@ While the conjecture itself is not formally proved, this repository provides:
 - **Constructive proof** that a large safe fragment terminates (establishing partial progress)
 - **Machine-checked impossibility results** showing why simpler approaches fail
 - **Explicit counterexample** in `Confluence_Safe.lean` demonstrating the non-joinable peak at `eqW` that breaks full termination
-- **Operational incompleteness probes** (P1–P3) showing the boundary where internal methods break down
+- **Operational incompleteness probes** (P1-P3) showing the boundary where internal methods break down
 
 The gap between what is proved (`SafeStep` terminates) and what is conjectured (full `Step` does not provably terminate by internal methods) is **deliberate and explicit**. This work explores the **limits of self-reference in termination proving**.
 
@@ -192,7 +192,7 @@ Every file in this repository exists for one of: (i) the paper source/license, (
 **Impossibility results (why simpler measures fail):**
 
 - **`Impossibility_Lemmas.lean`**: impossibility lemmas supporting the conjecture narrative (failure witnesses for simpler measures).
-- **`Operational_Incompleteness.lean`**: the "P1–P3 probes" / operational incompleteness scaffolding (namespace `OperatorKO7.OpIncomp`).
+- **`Operational_Incompleteness.lean`**: the "P1-P3 probes" / operational incompleteness scaffolding (namespace `OperatorKO7.OpIncomp`).
 - **`ContractProbes.lean`**: small auxiliary probes referenced by the impossibility story.
 - **`FailureModes.lean`**: negative tests / counterexample sketches documenting why naive reasoning fails (kept in the main tree as part of the theory story).
 
