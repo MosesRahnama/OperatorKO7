@@ -263,6 +263,125 @@ lemma hybrid_eq_diff (a b : Trace) :
 
 end Hybrid_FixPathExamples
 
+/-! ## Approach #9: Complex Hybrid/Constellation Measures (Paper Section 7, line 250)
+
+Paper quote: "Attempts to combine measures in ad-hoc ways failed to provide
+a uniform decrease across all 8 rules."
+
+Constellation theory attempts to track the "shape" or "pattern" of subterms
+rather than their numeric size. The idea is that certain constellations of
+constructors signal termination progress. This fails because the δ-duplication
+rule creates constellations that cannot be uniformly ordered.
+-/
+namespace ConstellationFailure
+
+/-- A constellation is an abstraction of term structure (shape without content).
+    Note: We use `recNode` instead of `rec` to avoid conflict with the eliminator. -/
+inductive Constellation where
+  | atom : Constellation
+  | deltaNode : Constellation → Constellation
+  | integrateNode : Constellation → Constellation
+  | mergeNode : Constellation → Constellation → Constellation
+  | appNode : Constellation → Constellation → Constellation
+  | recNode : Constellation → Constellation → Constellation → Constellation
+  | eqNode : Constellation → Constellation → Constellation
+  deriving DecidableEq, Repr
+
+/-- Extract constellation from a trace (forgetting content, keeping shape). -/
+def toConstellation : Trace → Constellation
+  | .void => .atom
+  | .delta t => .deltaNode (toConstellation t)
+  | .integrate t => .integrateNode (toConstellation t)
+  | .merge a b => .mergeNode (toConstellation a) (toConstellation b)
+  | .app a b => .appNode (toConstellation a) (toConstellation b)
+  | .recΔ b s n => .recNode (toConstellation b) (toConstellation s) (toConstellation n)
+  | .eqW a b => .eqNode (toConstellation a) (toConstellation b)
+
+/-- The δ-duplication step produces structurally different constellations.
+    The RHS has `appNode` at the root while LHS has `recNode` — no simple ordering works. -/
+theorem constellation_shapes_differ (b s n : Trace) :
+    toConstellation (app s (recΔ b s n)) ≠ toConstellation (recΔ b s (delta n)) := by
+  simp only [toConstellation]
+  intro h
+  cases h
+
+/-- A simple constellation size measure (counting nodes). -/
+def constellationSize : Constellation → Nat
+  | .atom => 1
+  | .deltaNode c => constellationSize c + 1
+  | .integrateNode c => constellationSize c + 1
+  | .mergeNode a b => constellationSize a + constellationSize b + 1
+  | .appNode a b => constellationSize a + constellationSize b + 1
+  | .recNode b s n => constellationSize b + constellationSize s + constellationSize n + 1
+  | .eqNode a b => constellationSize a + constellationSize b + 1
+
+/-- The δ-duplication rule does NOT decrease constellation size when s is non-trivial.
+    This shows additive constellation measures fail just like numeric ones.
+    LHS: recNode(b, s, deltaNode(n)) has size = |b| + |s| + (|n| + 1) + 1
+    RHS: appNode(s, recNode(b, s, n)) has size = |s| + (|b| + |s| + |n| + 1) + 1
+    Difference: RHS - LHS = |s| - 1 ≥ 0 when |s| ≥ 1. -/
+theorem constellation_size_not_decreasing (b s n : Trace)
+    (hs : constellationSize (toConstellation s) ≥ 1) :
+    constellationSize (toConstellation (app s (recΔ b s n))) ≥
+    constellationSize (toConstellation (recΔ b s (delta n))) := by
+  simp only [toConstellation, constellationSize]
+  omega
+
+end ConstellationFailure
+
+/-! ## Approach #10: Unchecked Recursion (Paper Section 7, line 251)
+
+Paper quote: "The raw rec_succ rule itself serves as the ultimate counterexample;
+without the SafeStep guards, it permits unbounded recursion that no internal
+measure can bound."
+
+The rule `recΔ b s (delta n) → app s (recΔ b s n)`:
+1. Duplicates `s` (appears once on LHS, twice on RHS)
+2. The recursive `recΔ` call has `n` instead of `delta n`
+3. BUT the `app s (...)` wrapping creates work that grows with each step
+
+The recursion is "checked" only when restricted to `SafeStep`, which gates
+certain steps behind a δ-phase condition.
+-/
+namespace UncheckedRecursionFailure
+
+/-- Concrete witness: with a simple additive size, the RHS is NOT smaller. -/
+def simpleSize : Trace → Nat
+  | .void => 0
+  | .delta t => simpleSize t + 1
+  | .integrate t => simpleSize t + 1
+  | .merge a b => simpleSize a + simpleSize b + 1
+  | .app a b => simpleSize a + simpleSize b + 1
+  | .recΔ b s n => simpleSize b + simpleSize s + simpleSize n + 1
+  | .eqW a b => simpleSize a + simpleSize b + 1
+
+/-- The rec_succ rule is the structural barrier for additive measures.
+    LHS: simpleSize(recΔ b s (delta n)) = |b| + |s| + (|n| + 1) + 1 = |b| + |s| + |n| + 2
+    RHS: simpleSize(app s (recΔ b s n)) = |s| + (|b| + |s| + |n| + 1) + 1 = 2|s| + |b| + |n| + 2
+    Difference: RHS - LHS = |s| ≥ 0. No strict decrease when |s| ≥ 0.
+    This is the "ultimate counterexample" from the paper. -/
+theorem rec_succ_additive_barrier (b s n : Trace) :
+    simpleSize (app s (recΔ b s n)) ≥ simpleSize (recΔ b s (delta n)) := by
+  simp only [simpleSize]
+  omega
+
+/-- Stronger: RHS is strictly LARGER when s is non-void. -/
+theorem rec_succ_size_increases (b s n : Trace) (hs : simpleSize s ≥ 1) :
+    simpleSize (app s (recΔ b s n)) > simpleSize (recΔ b s (delta n)) := by
+  simp only [simpleSize]
+  omega
+
+/-- The full Step relation (not SafeStep) allows this barrier to be hit. -/
+theorem full_step_permits_barrier :
+    ∃ b s n, Step (recΔ b s (delta n)) (app s (recΔ b s n)) := by
+  exact ⟨void, void, void, Step.R_rec_succ void void void⟩
+
+/-- Reference: The SafeStep guard is what makes termination provable.
+    See `MetaSN_KO7.wf_SafeStepRev` for the working proof. -/
+example : WellFounded MetaSN_KO7.SafeStepRev := MetaSN_KO7.wf_SafeStepRev
+
+end UncheckedRecursionFailure
+
 /-! ## Pointers to toy cores for witnesses/examples
 
 For duplication flavor and base-change shape without touching KO7,
