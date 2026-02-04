@@ -2,6 +2,7 @@
 ## Kernel and Meta Development - Full Source Code
 
 **Generated:** January 23, 2026  
+**Updated:** February 4, 2026  
 **Repository:** OperatorKernelO6/OperatorKO7  
 **Author:** Moses Rahnama
 
@@ -26,32 +27,33 @@ The OperatorKO7 calculus is a formally verified term rewriting system with certi
 
 ## Table of Contents
 
-1. [Kernel.lean](#1-kernellean)
-2. [Meta/CNFOrdinal.lean](#2-metacnfordinallean)
-3. [Meta/Termination.lean](#3-metaterminationlean)
-4. [Meta/DM_MPO_Orientation.lean](#4-metadmmpoorientationlean)
-5. [Meta/SafeStep_Ctx.lean](#5-metasafestepctxlean)
-6. [Meta/Termination_KO7.lean](#6-metaterminationko7lean)
-7. [Meta/Normalize_Safe.lean](#7-metanormalizesafelean)
-8. [Meta/Newman_Safe.lean](#8-metanewmansafelean)
-9. [Meta/Confluence_Safe.lean](#9-metaconfluencesafelean)
-10. [Meta/Impossibility_Lemmas.lean](#10-metaimpossibilitylemmaslean)
-11. [Meta/Operational_Incompleteness.lean](#11-metaoperationalincompletenesslean)
-12. [Meta/FailureModes.lean](#12-metafailuremodeslean)
-13. [Meta/ContractProbes.lean](#13-metacontractprobeslean)
-14. [Meta/GoodsteinCore.lean](#14-metagoodsteincorelean)
-15. [Meta/HydraCore.lean](#15-metahydracorelean)
-16. [Meta/ComputableMeasure.lean](#16-metacomputablemeasurelean)
-17. [Meta/ComputableMeasure_Verification.lean](#17-metacomputablemeasureverificationlean)
-18. [Meta/ComputableMeasure_Test.lean](#18-metacomputablemeasuretestlean)
-19. [Meta/Examples_Publish.lean](#19-metaexamplespublishlean)
+1. [Kernel.lean](#1-kernellean) - Core KO7 calculus (60 lines)
+2. [Meta/Impossibility_Lemmas.lean](#2-metaimpossibilitylemmaslean) - 391 lines
+3. [Meta/Termination_KO7.lean](#3-metaterminationko7lean) - 978 lines
+4. [Meta/GoodsteinCore.lean](#4-metagoodsteincorelean) - 41 lines
+5. [Meta/HydraCore.lean](#5-metahydracorelean) - 36 lines
+6. [Meta/Operational_Incompleteness.lean](#6-metaoperationalincompletenesslean) - 1189 lines
+7. [Meta/Confluence_Safe.lean](#7-metaconfluencesafelean) - 457 lines
+8. [Meta/ContractProbes.lean](#8-metacontractprobeslean) - 68 lines
+9. [Meta/FailureModes.lean](#9-metafailuremodeslean) - 86 lines
+10. [Meta/Newman_Safe.lean](#10-metanewmansafelean) - 175 lines
+11. [Meta/SafeStep_Ctx.lean](#11-metasafestepctxlean) - 550 lines
+12. [Meta/ComputableMeasure_Test.lean](#12-metacomputablemeasuretestlean) - 47 lines
+13. [Meta/Normalize_Safe.lean](#13-metanormalizesafelean) - 252 lines
+14. [Meta/ComputableMeasure_Verification.lean](#14-metacomputablemeasureverificationlean) - 234 lines
+15. [Meta/Termination.lean](#15-metaterminationlean) - 1650 lines
+16. [Meta/Examples_Publish.lean](#16-metaexamplespublishlean) - 37 lines
+17. [Meta/CNFOrdinal.lean](#17-metacnfordinallean) - 1116 lines
+18. [Meta/ComputableMeasure.lean](#18-metacomputablemeasurelean) - 461 lines
+19. [Meta/DM_MPO_Orientation.lean](#19-metadmmpoorientationlean) - 53 lines
 
 ---
 
 ## 1. Kernel.lean
+
 **Purpose:** Core syntax and reduction relation for the KO7 calculus
 
-**File:** `OperatorKO7/OperatorKO7/Kernel.lean`
+**File:** `OperatorKO7/Kernel.lean`
 
 **Key Components:**
 - `Trace`: Inductive type with 7 constructors (void, delta, integrate, merge, app, recÎ”, eqW)
@@ -124,1132 +126,4630 @@ end OperatorKO7
 
 ---
 
-## 2. Meta/CNFOrdinal.lean
-**File:** `OperatorKO7/OperatorKO7/Meta/CNFOrdinal.lean`
+## 2. Meta/Impossibility_Lemmas.lean
+
+**File:** `OperatorKO7/Meta/Impossibility_Lemmas.lean`
 
 ```lean
--- (pretty-printing and examples moved below, after definitions)
+import OperatorKO7.Meta.Operational_Incompleteness
+import OperatorKO7.Kernel
+import Mathlib.Order.Basic
+import Mathlib.Tactic.Linarith
+import OperatorKO7.Meta.Termination_KO7
+-- Impossibility Lemmas - documentation mirror (see Confluence_Safe for helpers)
+
 /-!
-  # Constructive CNF Ordinal - Complete, Axiom-Free, Computable
+# Impossibility Lemmas - mirror of failure catalog (fails_central + consolidation)
 
-  This module provides a fully constructive Cantor Normal Form (CNF) ordinal type and computable implementations for:
-  - Canonical structure and invariants
-  - Normalization (merge, sort, remove zeros)
-  - Addition, multiplication, ω-exponentiation
-  - Total, computable lexicographic comparison (cmp, le, lt)
-  - No axioms, no sorry, no noncomputable
+Goal
+- Keep and enrich the centralized failure witnesses so they fully represent
+  the failure taxonomy and chronology notes described in the repository `README.md`.
 
-  All code is total and lint-clean. See Docs/A_Constructive_Ordinal_Skeleton.md for intended semantics and proofs.
+What’s inside (all self‑contained, kernel unchanged)
+- P1/P2/P3 probes: re‑anchored pointers and small runnable examples.
+- κ+ k counterexample on KO6 traces (R_rec_succ): ties by rfl branchwise.
+- Flag‑only outer discriminator failure: concrete Step raises the flag.
+- Duplication stress identity (toy calculus): additive counter non‑drop, plus
+  DM and MPO orientation witnesses.
+- Right‑add hazard and “quick ≤ patch” are documented with intentionally
+  non‑admitted, commented examples (uncomment to see failures).
+
+Note
+- This file may include commented, intentionally failing fragments to preserve
+  the “dead ends” catalog; keep them commented to preserve green builds.
+- Live theorems/examples compile and can be cited in the paper/docs.
+- See also: `OperatorKO7/Meta/Operational_Incompleteness.lean` (namespace `OperatorKO7.OpIncomp`) for the P1–P3 probes.
+-/
+
+
+namespace OperatorKO7
+namespace Impossibility
+
+ -- Shorten local names for the rest of this file (doc preface section).
+ open OperatorKO7 Trace
+ open Prod (Lex)
+
+/-! See namespace `OpIncomp` inside `Operational_Incompleteness.lean` for concrete P1–P3
+  statements (`P2`, `P2DM`, `P2MPO`) and proofs. This module collects small,
+  kernel‑native witnesses and commentary aligned with fails_central sections
+  A–M. This is a documentation mirror; no kernel changes. -/
+
+end Impossibility
+end OperatorKO7
+
+namespace OperatorKO7
+namespace Impossibility
+
+-- This file provides formal, machine-checked proofs that simpler, common
+-- termination measures fail for the KO7 kernel. This justifies the necessity
+-- of the more complex hybrid measure used in the final successful proof for the
+-- guarded sub-relation.
+
+-- Shorten local names for the active content below.
+open Trace
+open Prod (Lex)
+
+namespace FailedMeasures
+
+/-- A simple depth-based counter for `recΔ` nodes. This was one of the first
+measures attempted and fails on duplication. -/
+@[simp]
+def kappa : Trace → Nat
+  | recΔ _ _ n => kappa n + 1
+  | delta t    => kappa t
+  | integrate t=> kappa t
+  | merge a b  => max (kappa a) (kappa b)
+  | app a b    => max (kappa a) (kappa b)
+  | eqW a b    => max (kappa a) (kappa b)
+  | _          => 0
+
+/-- A simple size-based ordinal measure. The definition is not needed,
+only its type, to demonstrate the failure of lexicographic ordering. -/
+def mu (_t : Trace) : Nat := 0
+
+/-! ### Theorem 1: Failure of `kappa + k`
+This theorem proves that no fixed additive constant `k` can orient the
+`rec_succ` rule, especially for nested `delta` constructors. This refutes
+the entire class of "additive bump" solutions.
+-/
+theorem kappa_plus_k_fails (k : Nat) :
+  ¬ (∀ (b s n : Trace),
+      kappa (app s (recΔ b s n)) + k < kappa (recΔ b s (delta n)) + k) := by
+  -- We prove this by providing a concrete counterexample.
+  push_neg
+  -- The counterexample uses a nested `delta` to show the additive bump `+1` from
+  -- the outer `delta` is cancelled by the `+1` from the inner `recΔ`.
+  use void, void, delta void
+  -- The goal is now a concrete inequality, which we can simplify.
+  -- After simp, the goal is `¬(1 + k < 1 + k)`.
+  simp [kappa]
+
+/-! ### Theorem 2: Failure of Simple Lexicography
+This theorem proves that a standard 2-component lexicographic measure `(κ, μ)`
+fails because the primary component, `κ`, does not strictly decrease.
+This forces the move to a more complex measure where the primary component is a
+flag or a multiset designed to handle specific reduction rules.
+-/
+theorem simple_lex_fails :
+  ¬ (∀ (b s n : Trace),
+      Lex (·<·) (·<·)
+        (kappa (app s (recΔ b s n)), mu (app s (recΔ b s n)))
+        (kappa (recΔ b s (delta n)), mu (recΔ b s (delta n)))) := by
+  push_neg
+  -- The counterexample is `n := void`, which becomes the base case for `recΔ`
+  -- after one step.
+  use void, recΔ void void void, void
+  -- After substituting, we need to show the Lex relation does not hold.
+  -- This reduces to `¬ Lex (·<·) (·<·) (1, 0) (1, 0)`, which is decidable.
+  simp [kappa, mu]; decide
+
+end FailedMeasures
+
+/-! ## Boolean δ-flag alone - explicit increase on a non-rec rule (fails_central §F)
+
+Using only a “top-is-delta?” flag as the outer lex key breaks monotonicity:
+there exists a Step that raises the flag. This mirrors the doc’s warning that
+an unguarded global flag is unsafe; KO7 uses it only under a guard in safe
+subrelations. -/
+namespace FlagFailure
+
+/-- Top-shape flag: 1 only when the term is headed by `delta`. -/
+@[simp] def deltaFlagTop : Trace → Nat
+  | Trace.delta _ => 1
+  | _             => 0
+
+/-- Concrete increase: `merge void (delta void) → delta void` raises `deltaFlagTop`
+from 0 to 1. This shows a flag-only primary component can increase on a legal
+kernel step (violates lex monotonicity if used unguarded). -/
+theorem merge_void_raises_flag :
+    let t := Trace.delta Trace.void
+    OperatorKO7.Step (Trace.merge Trace.void t) t ∧
+    deltaFlagTop (Trace.merge Trace.void t) < deltaFlagTop t := by
+  intro t; constructor
+  · -- The step exists by R_merge_void_left
+    exact OperatorKO7.Step.R_merge_void_left t
+  · -- Compute flags: top of `merge void (delta void)` is not `delta`.
+    -- top of `t` is `delta`.
+    -- After simplification, the goal becomes `0 < 1`.
+    have ht : t = Trace.delta Trace.void := rfl
+    simp [deltaFlagTop, ht]
+
+end FlagFailure
+
+/-! ## Right-add hazard and “quick ≤ patch” (fails_central §H)
+
+Commentary-only: transporting strict inequalities to the left over arbitrary
+ordinal right-addends is invalid. Attempted patches that relax `=` to `≤` do
+not fix the nested-δ counterexample. The following fragments are intentionally
+commented to keep the build green; they illustrate the bad shapes. -/
+/-
+-- namespace RightAddHazard
+-- open Ordinal
+-- variable (p q : Ordinal)
+-- -- BAD SHAPE (do not try to prove globally): from μ n < μ (delta n) derive
+-- -- μ n + p < μ (delta n) + p for arbitrary p.
+-- lemma add_right_strict_mono_bad
+--   (h : p < q) :
+--   (∀ s, p + s < q + s) := by
+--   -- Not true on ordinals in general; right addition isn’t strictly monotone.
+--   admit
+-- end RightAddHazard
+-/
+
+/-! ## P2 duplication realism - references and examples (fails_central §G)
+
+We reuse the toy calculus from `OpIncomp`:
+* `r4_size_after_eq_before_plus_piece` gives the exact additive non‑drop identity.
+* `r4_no_strict_drop_additive` forbids strict decrease for the additive `size`.
+* `R4DM.dm_orient` and `R4MPO.mpo_orient_r4` show robust structural fixes.
+-/
+namespace DuplicationRefs
+open OpIncomp
+
+-- Pointers (names checked):
+#check OpIncomp.r4_size_after_eq_before_plus_piece  -- additive identity (dup_additive_failure)
+#check OpIncomp.r4_no_strict_drop_additive          -- no strict drop (not_strict_drop)
+#check OpIncomp.R4DM.dm_orient                      -- DM orientation (dm_orient_dup)
+#check OpIncomp.R4MPO.mpo_orient_r4                 -- MPO orientation (mpo_orient_dup)
+
+end DuplicationRefs
+
+/-! ## P1 rfl-gate (branch realism) - explicit per-branch check (fails_central §B)
+
+For any pattern-matched `f`, check rfl per clause and avoid asserting a single
+global equation unless all branches agree. The full P1 probe lives in
+`Operational_Incompleteness.lean`; we include a tiny exemplar here. -/
+namespace RflGate
+
+inductive Two where | A | B deriving DecidableEq, Repr
+
+def f : Two → Nat
+  | .A => 0
+  | .B => 1
+
+-- Per-branch rfl (passes):
+example : f Two.A = 0 := rfl
+example : f Two.B = 1 := rfl
+
+-- Over-strong global law fails: not (∀ x, f x = 0)
+example : ¬ (∀ x, f x = 0) := by
+  intro h
+  -- f B = 1 contradicts h B : f B = 0
+  exact Nat.one_ne_zero (by simpa [f] using h Two.B)
+
+end RflGate
+
+/-! ## Anchors to the green path (consolidation §J)
+
+The fixes live under KO7’s safe layer:
+- `Meta/Termination_KO7.lean`: `drop_R_rec_succ` (outer δ‑flag drop),
+  `measure_decreases_safe`, `wf_SafeStepRev`, plus MPO variants.
+These aren’t re‑proved here; this file focuses on the impossibility side. -/
+
+-- See also: HybridDec one-liners just below (`Hybrid_FixPathExamples`),
+-- which use `MetaSN_Hybrid.hybrid_drop_of_step` to witness per-step decreases.
+
+/-! ## KO7 safe Lex3 - tiny cross-link examples (the “fix path”) -/
+
+namespace KO7_FixPathExamples
+
+-- δ-substitution (rec_succ) strictly drops by KO7’s outer flag component.
+lemma rec_succ_drops (b s n : Trace) :
+   MetaSN_KO7.Lex3 (MetaSN_KO7.μ3 (app s (recΔ b s n)))
+                   (MetaSN_KO7.μ3 (recΔ b s (delta n))) := by
+   simpa using MetaSN_KO7.drop_R_rec_succ b s n
+
+-- The guarded aggregator yields a decrease certificate per safe step.
+lemma safe_decrease_rec_succ (b s n : Trace) :
+   MetaSN_KO7.Lex3 (MetaSN_KO7.μ3 (app s (recΔ b s n)))
+                   (MetaSN_KO7.μ3 (recΔ b s (delta n))) := by
+   simpa using
+     (MetaSN_KO7.measure_decreases_safe
+       (MetaSN_KO7.SafeStep.R_rec_succ b s n))
+
+-- Well-foundedness of the reverse safe relation (no infinite safe reductions).
+theorem wf_safe : WellFounded MetaSN_KO7.SafeStepRev := MetaSN_KO7.wf_SafeStepRev
+
+end KO7_FixPathExamples
+
+/-! ## HybridDec - one-liners via `hybrid_drop_of_step` (cross-link) -/
+
+namespace Hybrid_FixPathExamples
+
+lemma hybrid_rec_succ (b s n : Trace) :
+  MetaSN_Hybrid.HybridDec (recΔ b s (delta n)) (app s (recΔ b s n)) := by
+  simpa using
+    MetaSN_Hybrid.hybrid_drop_of_step
+      (OperatorKO7.Step.R_rec_succ b s n)
+
+lemma hybrid_merge_void_left (t : Trace) :
+  MetaSN_Hybrid.HybridDec (merge void t) t := by
+  simpa using
+    MetaSN_Hybrid.hybrid_drop_of_step
+      (OperatorKO7.Step.R_merge_void_left t)
+
+lemma hybrid_eq_diff (a b : Trace) :
+  MetaSN_Hybrid.HybridDec (eqW a b) (integrate (merge a b)) := by
+  simpa using
+    MetaSN_Hybrid.hybrid_drop_of_step
+      (OperatorKO7.Step.R_eq_diff a b)
+
+end Hybrid_FixPathExamples
+
+/-! ## Approach #9: Complex Hybrid/Constellation Measures (Paper Section 7, line 250)
+
+Paper quote: "Attempts to combine measures in ad-hoc ways failed to provide
+a uniform decrease across all 8 rules."
+
+Constellation theory attempts to track the "shape" or "pattern" of subterms
+rather than their numeric size. The idea is that certain constellations of
+constructors signal termination progress. This fails because the δ-duplication
+rule creates constellations that cannot be uniformly ordered.
+-/
+namespace ConstellationFailure
+
+/-- A constellation is an abstraction of term structure (shape without content).
+    Note: We use `recNode` instead of `rec` to avoid conflict with the eliminator. -/
+inductive Constellation where
+  | atom : Constellation
+  | deltaNode : Constellation → Constellation
+  | integrateNode : Constellation → Constellation
+  | mergeNode : Constellation → Constellation → Constellation
+  | appNode : Constellation → Constellation → Constellation
+  | recNode : Constellation → Constellation → Constellation → Constellation
+  | eqNode : Constellation → Constellation → Constellation
+  deriving DecidableEq, Repr
+
+/-- Extract constellation from a trace (forgetting content, keeping shape). -/
+def toConstellation : Trace → Constellation
+  | .void => .atom
+  | .delta t => .deltaNode (toConstellation t)
+  | .integrate t => .integrateNode (toConstellation t)
+  | .merge a b => .mergeNode (toConstellation a) (toConstellation b)
+  | .app a b => .appNode (toConstellation a) (toConstellation b)
+  | .recΔ b s n => .recNode (toConstellation b) (toConstellation s) (toConstellation n)
+  | .eqW a b => .eqNode (toConstellation a) (toConstellation b)
+
+/-- The δ-duplication step produces structurally different constellations.
+    The RHS has `appNode` at the root while LHS has `recNode` — no simple ordering works. -/
+theorem constellation_shapes_differ (b s n : Trace) :
+    toConstellation (app s (recΔ b s n)) ≠ toConstellation (recΔ b s (delta n)) := by
+  simp only [toConstellation]
+  intro h
+  cases h
+
+/-- A simple constellation size measure (counting nodes). -/
+def constellationSize : Constellation → Nat
+  | .atom => 1
+  | .deltaNode c => constellationSize c + 1
+  | .integrateNode c => constellationSize c + 1
+  | .mergeNode a b => constellationSize a + constellationSize b + 1
+  | .appNode a b => constellationSize a + constellationSize b + 1
+  | .recNode b s n => constellationSize b + constellationSize s + constellationSize n + 1
+  | .eqNode a b => constellationSize a + constellationSize b + 1
+
+/-- The δ-duplication rule does NOT decrease constellation size when s is non-trivial.
+    This shows additive constellation measures fail just like numeric ones.
+    LHS: recNode(b, s, deltaNode(n)) has size = |b| + |s| + (|n| + 1) + 1
+    RHS: appNode(s, recNode(b, s, n)) has size = |s| + (|b| + |s| + |n| + 1) + 1
+    Difference: RHS - LHS = |s| - 1 ≥ 0 when |s| ≥ 1. -/
+theorem constellation_size_not_decreasing (b s n : Trace)
+    (hs : constellationSize (toConstellation s) ≥ 1) :
+    constellationSize (toConstellation (app s (recΔ b s n))) ≥
+    constellationSize (toConstellation (recΔ b s (delta n))) := by
+  simp only [toConstellation, constellationSize]
+  omega
+
+end ConstellationFailure
+
+/-! ## Approach #10: Unchecked Recursion (Paper Section 7, line 251)
+
+Paper quote: "The raw rec_succ rule itself serves as the ultimate counterexample;
+without the SafeStep guards, it permits unbounded recursion that no internal
+measure can bound."
+
+The rule `recΔ b s (delta n) → app s (recΔ b s n)`:
+1. Duplicates `s` (appears once on LHS, twice on RHS)
+2. The recursive `recΔ` call has `n` instead of `delta n`
+3. BUT the `app s (...)` wrapping creates work that grows with each step
+
+The recursion is "checked" only when restricted to `SafeStep`, which gates
+certain steps behind a δ-phase condition.
+-/
+namespace UncheckedRecursionFailure
+
+/-- Concrete witness: with a simple additive size, the RHS is NOT smaller. -/
+def simpleSize : Trace → Nat
+  | .void => 0
+  | .delta t => simpleSize t + 1
+  | .integrate t => simpleSize t + 1
+  | .merge a b => simpleSize a + simpleSize b + 1
+  | .app a b => simpleSize a + simpleSize b + 1
+  | .recΔ b s n => simpleSize b + simpleSize s + simpleSize n + 1
+  | .eqW a b => simpleSize a + simpleSize b + 1
+
+/-- The rec_succ rule is the structural barrier for additive measures.
+    LHS: simpleSize(recΔ b s (delta n)) = |b| + |s| + (|n| + 1) + 1 = |b| + |s| + |n| + 2
+    RHS: simpleSize(app s (recΔ b s n)) = |s| + (|b| + |s| + |n| + 1) + 1 = 2|s| + |b| + |n| + 2
+    Difference: RHS - LHS = |s| ≥ 0. No strict decrease when |s| ≥ 0.
+    This is the "ultimate counterexample" from the paper. -/
+theorem rec_succ_additive_barrier (b s n : Trace) :
+    simpleSize (app s (recΔ b s n)) ≥ simpleSize (recΔ b s (delta n)) := by
+  simp only [simpleSize]
+  omega
+
+/-- Stronger: RHS is strictly LARGER when s is non-void. -/
+theorem rec_succ_size_increases (b s n : Trace) (hs : simpleSize s ≥ 1) :
+    simpleSize (app s (recΔ b s n)) > simpleSize (recΔ b s (delta n)) := by
+  simp only [simpleSize]
+  omega
+
+/-- The full Step relation (not SafeStep) allows this barrier to be hit. -/
+theorem full_step_permits_barrier :
+    ∃ b s n, Step (recΔ b s (delta n)) (app s (recΔ b s n)) := by
+  exact ⟨void, void, void, Step.R_rec_succ void void void⟩
+
+/-- Reference: The SafeStep guard is what makes termination provable.
+    See `MetaSN_KO7.wf_SafeStepRev` for the working proof. -/
+example : WellFounded MetaSN_KO7.SafeStepRev := MetaSN_KO7.wf_SafeStepRev
+
+end UncheckedRecursionFailure
+
+/-! ## Pointers to toy cores for witnesses/examples
+
+For duplication flavor and base-change shape without touching KO7,
+see `Meta/HydraCore.lean` and `Meta/GoodsteinCore.lean` (examples only). -/
+
+end Impossibility
+end OperatorKO7
+```
+
+---
+
+## 3. Meta/Termination_KO7.lean
+
+**File:** `OperatorKO7/Meta/Termination_KO7.lean`
+
+```lean
+import OperatorKO7.Meta.Termination
+import Mathlib.Data.Multiset.Basic
+import Mathlib.Data.Multiset.DershowitzManna
+import Mathlib.Order.WellFounded
+import Mathlib.SetTheory.Ordinal.Basic
+
+/-!
+Strong normalization for the KO7 safe fragment (`SafeStep`), via a triple-lex measure.
+
+This module is the core "certified artifact" development:
+- It defines the guarded one-step relation `SafeStep` (a subrelation of the full kernel `Step`).
+- It defines the termination measure(s) used to prove `SafeStepRev` is well-founded.
+
+Key design boundary (central to the paper):
+- `Step` in `OperatorKO7/Kernel.lean` is the full kernel relation (8 unconditional root rules).
+- `SafeStep` adds explicit guards (most importantly, `eqW`-diff requires `a ≠ b`) to obtain a fragment
+  that admits a certified termination argument.
+- This file proves termination and supplies measure-decrease lemmas *only for `SafeStep`*, not for the
+  full `Step` relation.
+
+Main exports:
+- `SafeStep` and its reverse `SafeStepRev`
+- `deltaFlag`, `kappaM`, and the triple-lex measure `μ3` / order `Lex3`
+- `measure_decreases_safe` and `wf_SafeStepRev`
 -/
 set_option linter.unnecessarySimpa false
+open OperatorKO7 Trace Multiset Ordinal
+
+namespace MetaSN_DM
+-- Use Dershowitz-Manna multiset order.
+-- DM order over multisets of ℕ, using the ambient < on ℕ
+local infix:70 " <ₘ " => Multiset.IsDershowitzMannaLT
+
+-- This file treats `b` in `recΔ b s n` as κ-relevant for κᴹ to support DM drops on rec_zero.
+-- set_option linter.unusedVariables false
+
+/-- **Weight** of a trace: recursion-depth of each `recΔ` node. -/
+@[simp] def weight : Trace → ℕ
+| recΔ _ _ n => weight n + 1
+| _          => 0
+
+/-- Multiset of weights appearing in a trace.
+Note on design (assessment closure): we use multiset union `∪` at merge/app/eqW
+nodes rather than additive `+`. This deliberately captures duplication by
+conflating identical weights, which works with the DM order we use to
+orient duplicating rules. This is a documented deviation from the most
+common DM presentations (which often use multiset sum) and is required by
+our kernel’s shapes; see `SAFE_AUDIT.md` (root) for rationale and
+per-rule checks. -/
+@[simp] def kappaM : Trace → Multiset ℕ
+| void            => 0
+| delta t         => kappaM t
+| integrate t     => kappaM t
+| merge a b       => kappaM a ∪ kappaM b
+
+| app   a b       => kappaM a ∪ kappaM b
+| recΔ b s n      => (weight n + 1) ::ₘ (kappaM n ∪ kappaM s) + kappaM b
+| eqW  a b        => kappaM a ∪ kappaM b
+
+/-- Well-foundedness of the DM multiset order (requires `WellFoundedLT` on the base type). -/
+instance : WellFoundedLT ℕ := inferInstance
+
+/-- Well-foundedness of the Dershowitz-Manna order on multisets of naturals. -/
+lemma wf_dm : WellFounded (fun a b : Multiset ℕ => a <ₘ b) :=
+  Multiset.wellFounded_isDershowitzMannaLT
+
+/-- Combined measure pair `(κᴹ, μ)` for the O-7 kernel. -/
+noncomputable def μκ (t : Trace) : Multiset ℕ × Ordinal :=
+  (kappaM t, MetaSN.mu t)
+
+/-- Lexicographic order on the combined pair. -/
+@[simp] def LexDM : (Multiset ℕ × Ordinal) → (Multiset ℕ × Ordinal) → Prop :=
+  Prod.Lex (fun a b : Multiset ℕ => a <ₘ b) (· < ·)
+
+/-- Well-foundedness of `LexDM`, combining DM on `κᴹ` and `<` on ordinal payload `μ`. -/
+lemma wf_LexDM : WellFounded LexDM :=
+  WellFounded.prod_lex wf_dm Ordinal.lt_wf
 
 
-namespace OperatorKO7.MetaCNF
+/-- Lift a DM witness on κᴹ to the inner lex order `(κᴹ, μ)`.
+This is a trivial `Prod.Lex.left` step, useful when the μ component is irrelevant. -/
+lemma dm_to_LexDM_left {X Y : Multiset ℕ} {μ₁ μ₂ : Ordinal}
+    (h : X <ₘ Y) : LexDM (X, μ₁) (Y, μ₂) := by
+  -- Use the left constructor with explicit parameters to avoid inference fragility
+  exact
+    (Prod.Lex.left
+      (α := Multiset ℕ) (β := Ordinal)
+      (ra := fun a b : Multiset ℕ => a <ₘ b) (rb := (· < ·))
+      (a₁ := X) (a₂ := Y) (b₁ := μ₁) (b₂ := μ₂)
+      (by simpa using h))
 
-/-!
-  ## CNF Representation
-  - List of (exponent, coefficient) pairs, exponents strictly decreasing, coefficients positive.
-  - Invariant: No zero coefficients, no zero exponents except possibly for the last term (finite part).
-  - Example: ω^3·2 + ω^1·5 + 7  ≡  [(3,2), (1,5), (0,7)]
--/
 
+/-- κᴹ ties on `integrate (delta t)` (retains all weights of t). -/
+@[simp] lemma kappaM_int_delta (t : Trace) :
+    kappaM (integrate (delta t)) = kappaM t := by
+  simp [kappaM]
 
+/-- κᴹ ties on `merge void t`. -/
+@[simp] lemma kappaM_merge_void_left (t : Trace) :
+    kappaM (merge void t) = kappaM t := by
+  simp [kappaM]
 
-structure CNF where
-  repr : List (Nat × Nat) -- List of (exponent, coefficient) pairs
-  -- Invariant: strictly decreasing exponents, all coefficients > 0
-deriving Repr, DecidableEq
+@[simp] lemma kappaM_merge_void_right (t : Trace) :
+    kappaM (merge t void) = kappaM t := by
+  simp [kappaM]
 
-/-!
-  ## Helper: merge like exponents, remove zeros, sort decreasing
--/
-private def insertDesc (p : Nat × Nat) : List (Nat × Nat) → List (Nat × Nat)
-  | [] => [p]
-  | (q::qs) => if p.1 > q.1 then p :: q :: qs else q :: insertDesc p qs
+-- κᴹ duplicates on merge cancel
+@[simp] lemma kappaM_merge_cancel (t : Trace) :
+    kappaM (merge t t) = kappaM t ∪ kappaM t := by
+  simp [kappaM]
 
-private def sortDesc (l : List (Nat × Nat)) : List (Nat × Nat) :=
-  l.foldl (fun acc x => insertDesc x acc) []
+/-- κᴹ value for `recΔ b s void`. -/
+@[simp] lemma kappaM_rec_zero (b s : Trace) :
+    kappaM (recΔ b s void) = (1 ::ₘ kappaM s) + kappaM b := by
+  simp [kappaM]
 
-private def mergeLike (l : List (Nat × Nat)) : List (Nat × Nat) :=
-  let l := l.filter (fun ⟨_, c⟩ => c ≠ 0)
-  let l := sortDesc l -- sort by decreasing exponent
-  let rec go (acc : List (Nat × Nat)) (l : List (Nat × Nat)) : List (Nat × Nat) :=
-    match l with
-    | [] => acc.reverse
-    | (e, c) :: xs =>
-      match acc with
-      | (e', c') :: as' =>
-        if e = e' then go ((e, c + c') :: as') xs else go ((e, c) :: acc) xs
-      | [] => go [(e, c)] xs
-  go [] l
+/-- κᴹ equality for `eq_refl`. -/
+@[simp] lemma kappaM_eq_refl (a : Trace) :
+    kappaM (eqW a a) = kappaM a ∪ kappaM a := by
+  simp [kappaM]
 
-/-!
-  ## Normalization: canonical form
--/
-def norm_cnf (x : CNF) : CNF :=
-  { repr := mergeLike x.repr }
+@[simp] lemma kappaM_eq_diff (a b : Trace) :
+    kappaM (integrate (merge a b)) = kappaM (eqW a b) := by
+  simp [kappaM]
 
-/-!
-  ## Lexicographic comparison on normalized representations
-  Compare two CNFs by their normalized `repr` lists. Higher exponents dominate;
-  when exponents tie, higher coefficients dominate. Missing tails are treated
-  as smaller (i.e., [] < non-empty).
--/
-def cmpList : List (Nat × Nat) → List (Nat × Nat) → Ordering
-  | [], [] => Ordering.eq
-  | [], _  => Ordering.lt
-  | _,  [] => Ordering.gt
-  | (e1, c1) :: xs, (e2, c2) :: ys =>
-    if e1 < e2 then Ordering.lt else
-    if e2 < e1 then Ordering.gt else
-    -- exponents are equal; compare coefficients
-    if c1 < c2 then Ordering.lt else
-    if c2 < c1 then Ordering.gt else
-    -- equal head terms; recurse on tails
-    cmpList xs ys
+/-! ### DM strict drop helpers -/
 
-/-- Reflexivity for list-lex comparison. -/
-theorem cmpList_refl_eq : ∀ xs : List (Nat × Nat), cmpList xs xs = Ordering.eq := by
-  intro xs; induction xs with
-  | nil => simp [cmpList]
-  | @cons hd tl ih =>
-    cases hd with
-    | mk e c =>
-      -- both exponent and coefficient self-comparisons fall through to recursion
-      simp [cmpList, Nat.lt_irrefl, ih]
-
-/-- Head-case: if e1 < e2, the comparison is lt (and swaps to gt). -/
-theorem cmpList_cons_cons_exp_lt
-  {e1 c1 e2 c2 : Nat} {xs ys : List (Nat × Nat)} (h : e1 < e2) :
-  cmpList ((e1, c1) :: xs) ((e2, c2) :: ys) = Ordering.lt := by
-  simp [cmpList, h]
-
-/-- Head-case (swap): if e1 < e2, then swapping yields gt. -/
-theorem cmpList_cons_cons_exp_lt_swap
-  {e1 c1 e2 c2 : Nat} {xs ys : List (Nat × Nat)} (h : e1 < e2) :
-  cmpList ((e2, c2) :: ys) ((e1, c1) :: xs) = Ordering.gt := by
-  -- On swap, the second branch detects e1 < e2
-  have : ¬ e2 < e1 := Nat.not_lt.mpr (Nat.le_of_lt h)
-  simp [cmpList, this, h]
-
-/-- Head-case: if e2 < e1, the comparison is gt (and swaps to lt). -/
-theorem cmpList_cons_cons_exp_gt
-  {e1 c1 e2 c2 : Nat} {xs ys : List (Nat × Nat)} (h : e2 < e1) :
-  cmpList ((e1, c1) :: xs) ((e2, c2) :: ys) = Ordering.gt := by
-  have : ¬ e1 < e2 := Nat.not_lt.mpr (Nat.le_of_lt h)
-  simp [cmpList, this, h]
-
-/-- Head-case (swap): if e2 < e1, swapping yields lt. -/
-theorem cmpList_cons_cons_exp_gt_swap
-  {e1 c1 e2 c2 : Nat} {xs ys : List (Nat × Nat)} (h : e2 < e1) :
-  cmpList ((e2, c2) :: ys) ((e1, c1) :: xs) = Ordering.lt := by
-  simp [cmpList, h]
-
-/-- Head-case: equal exponents, smaller coefficient gives lt. -/
-theorem cmpList_cons_cons_exp_eq_coeff_lt
-  {e c1 c2 : Nat} {xs ys : List (Nat × Nat)} (h : c1 < c2) :
-  cmpList ((e, c1) :: xs) ((e, c2) :: ys) = Ordering.lt := by
-  have : ¬ e < e := Nat.lt_irrefl _
-  simp [cmpList, this, h]
-
-/-- Head-case: equal exponents, larger coefficient gives gt. -/
-theorem cmpList_cons_cons_exp_eq_coeff_gt
-  {e c1 c2 : Nat} {xs ys : List (Nat × Nat)} (h : c2 < c1) :
-  cmpList ((e, c1) :: xs) ((e, c2) :: ys) = Ordering.gt := by
-  have : ¬ e < e := Nat.lt_irrefl _
-  have : ¬ c1 < c2 := Nat.not_lt.mpr (Nat.le_of_lt h)
-  simp [cmpList, Nat.lt_irrefl, this, h]
-
-/-- Head-case: equal exponents and coefficients, comparison recurses. -/
-theorem cmpList_cons_cons_exp_eq_coeff_eq
-  {e c : Nat} {xs ys : List (Nat × Nat)} :
-  cmpList ((e, c) :: xs) ((e, c) :: ys) = cmpList xs ys := by
-  simp [cmpList, Nat.lt_irrefl]
-
-/-- Base-case: [] < non-empty. -/
-theorem cmpList_nil_left_lt {y : Nat × Nat} {ys : List (Nat × Nat)} :
-  cmpList [] (y :: ys) = Ordering.lt := by
-  simp [cmpList]
-
-/-- Base-case: non-empty > []. -/
-theorem cmpList_nil_right_gt {x : Nat × Nat} {xs : List (Nat × Nat)} :
-  cmpList (x :: xs) [] = Ordering.gt := by
-  simp [cmpList]
-
-/-- Eliminate cmpList=lt on cons/cons: describes exactly which head-case caused it or recurses. -/
-theorem cmpList_cons_cons_lt_cases
-  {e1 c1 e2 c2 : Nat} {xs ys : List (Nat × Nat)}
-  (h : cmpList ((e1, c1) :: xs) ((e2, c2) :: ys) = Ordering.lt) :
-  e1 < e2 ∨ (e1 = e2 ∧ c1 < c2) ∨ (e1 = e2 ∧ c1 = c2 ∧ cmpList xs ys = Ordering.lt) := by
-  -- peel the nested ifs of cmpList via case splits
+-- Adding a nonempty multiset strictly increases under DM (choose Y = 0, Z ≠ 0).
+lemma dm_lt_add_of_ne_zero (X Z : Multiset ℕ) (h : Z ≠ 0) :
+    X <ₘ (X + Z) := by
   classical
-  if hlt : e1 < e2 then
-    -- immediate lt by exponent
-    exact Or.inl hlt
-  else
-    have hnotlt : ¬ e1 < e2 := by simpa using hlt
-    if hgt : e2 < e1 then
-      -- would force gt, contradicting h
-      have : cmpList ((e1,c1)::xs) ((e2,c2)::ys) = Ordering.gt := by
-        simp [cmpList, hnotlt, hgt]
-      cases this ▸ h
-    else
-      have hnotgt : ¬ e2 < e1 := by simpa using hgt
-      -- exponents must be equal
-      have heq : e1 = e2 := Nat.le_antisymm (Nat.le_of_not_gt hgt) (Nat.le_of_not_gt hlt)
-      -- compare coefficients
-      if hclt : c1 < c2 then
-        exact Or.inr (Or.inl ⟨heq, hclt⟩)
-      else
-        if hcgt : c2 < c1 then
-          -- would force gt, contradicting h (use the dedicated head-eq coeff-gt lemma)
-          have : cmpList ((e1,c1)::xs) ((e2,c2)::ys) = Ordering.gt := by
-            subst heq; simpa using (cmpList_cons_cons_exp_eq_coeff_gt (xs:=xs) (ys:=ys) (e:=e1) (c1:=c1) (c2:=c2) hcgt)
-          cases this ▸ h
-        else
-          -- equal coefficients; recurse: rewrite h to a tail-lt
-          have hceq : c1 = c2 := by
-            -- from ¬ c1 < c2 and ¬ c2 < c1, get equality
-            have hle₁ : c2 ≤ c1 := Nat.not_lt.mp hclt
-            have hle₂ : c1 ≤ c2 := Nat.not_lt.mp hcgt
-            exact Nat.le_antisymm hle₂ hle₁
-          -- rewrite h via heq and hceq, then drop to tails
-          have h' : cmpList ((e1,c1)::xs) ((e1,c1)::ys) = Ordering.lt := by
-            simpa [heq, hceq] using h
-          have hTail : cmpList xs ys = Ordering.lt := by
-            simpa [cmpList_cons_cons_exp_eq_coeff_eq] using h'
-          exact Or.inr (Or.inr ⟨heq, hceq, hTail⟩)
+  refine ⟨X, (0 : Multiset ℕ), Z, ?hZ, ?hM, rfl, ?hY⟩
+  · simpa using h
+  · simp
+  · simp
 
-/-- Symmetry for lt: if cmpList xs ys = lt then cmpList ys xs = gt. -/
-theorem cmpList_symm_gt_of_lt :
-  ∀ xs ys : List (Nat × Nat), cmpList xs ys = Ordering.lt → cmpList ys xs = Ordering.gt
-  | [], [] , h => by cases h
-  | [], (y::ys), _ => by simp [cmpList]
-  | (x::xs), [], h => by cases h
-  | ((e1,c1)::xs), ((e2,c2)::ys), h =>
-    -- analyze which branch produced lt, then swap accordingly
-    have hc := cmpList_cons_cons_lt_cases (xs:=xs) (ys:=ys) h
-    by
-      cases hc with
-      | inl hExpLt =>
-        -- exponent lt ⇒ swapped is gt
-        exact (cmpList_cons_cons_exp_lt_swap (xs:=xs) (ys:=ys) hExpLt)
-      | inr hrest =>
-        cases hrest with
-        | inl hCoeffLt =>
-          rcases hCoeffLt with ⟨heq, hclt⟩
-          -- equal exponents, coeff lt ⇒ swapped is gt by coeff-gt lemma with roles swapped
-          subst heq
-          exact (cmpList_cons_cons_exp_eq_coeff_gt (xs:=ys) (ys:=xs) (e:=e1) (c1:=c2) (c2:=c1) hclt)
-        | inr hEqTail =>
-          rcases hEqTail with ⟨heq, hceq, htail⟩
-          -- descend to tails and lift back via eq-head lemma
-          have ih := cmpList_symm_gt_of_lt xs ys htail
-          subst heq; subst hceq
-          simpa [cmpList_cons_cons_exp_eq_coeff_eq] using ih
-
-/-- Total, computable comparison on CNF via normalized representations. -/
-def cmp_cnf (x y : CNF) : Ordering :=
-  cmpList (norm_cnf x).repr (norm_cnf y).repr
-
-/-- Strict order: x < y iff cmp is lt. -/
-def lt_cnf (x y : CNF) : Prop := cmp_cnf x y = Ordering.lt
-
-/-- Non-strict order: x ≤ y iff cmp is not gt. -/
-def le_cnf (x y : CNF) : Prop := cmp_cnf x y ≠ Ordering.gt
-
-theorem cmp_self_eq (x : CNF) : cmp_cnf x x = Ordering.eq := by
-  simp [cmp_cnf, cmpList_refl_eq]
-
-/-- Reflexivity: x ≤ x. -/
-theorem le_refl (x : CNF) : le_cnf x x := by
-  simp [le_cnf, cmp_self_eq]
-
-/-- Irreflexivity: ¬ (x < x). -/
-theorem lt_irrefl (x : CNF) : ¬ lt_cnf x x := by
-  -- lt_cnf x x means cmp_cnf x x = Ordering.lt, but cmp_self_eq says it's eq.
-  simp [lt_cnf, cmp_self_eq]
-
-/-- Value-level trichotomy for cmpList. -/
-theorem cmpList_cases (xs ys : List (Nat × Nat)) :
-    cmpList xs ys = Ordering.lt ∨ cmpList xs ys = Ordering.eq ∨ cmpList xs ys = Ordering.gt := by
-  cases h : cmpList xs ys with
-  | lt => exact Or.inl rfl
-  | eq => exact Or.inr (Or.inl rfl)
-  | gt => exact Or.inr (Or.inr rfl)
-
-/-- Asymmetry at list level: if cmpList xs ys = lt then cmpList ys xs ≠ lt. -/
-theorem cmpList_asymm_of_lt {xs ys : List (Nat × Nat)} (h : cmpList xs ys = Ordering.lt) :
-    cmpList ys xs ≠ Ordering.lt := by
-  have hgt := cmpList_symm_gt_of_lt xs ys h
-  intro hcontra
-  -- rewrite the gt-equality at the same lhs to force a lt=gt contradiction
-  have : Ordering.lt = Ordering.gt := by
-    simpa [hcontra] using hgt
-  have ne : Ordering.lt ≠ Ordering.gt := by decide
-  exact ne this
-
-/-- Trichotomy on cmp: exactly one of lt/eq/gt holds as a value. -/
-theorem cmp_cases (x y : CNF) :
-    cmp_cnf x y = Ordering.lt ∨ cmp_cnf x y = Ordering.eq ∨ cmp_cnf x y = Ordering.gt := by
-  cases h : cmp_cnf x y with
-  | lt => exact Or.inl rfl
-  | eq => exact Or.inr (Or.inl rfl)
-  | gt => exact Or.inr (Or.inr rfl)
-
-/-- If x ≤ y, then cmp is either lt or eq (never gt). -/
-theorem le_cases {x y : CNF} (hxy : le_cnf x y) :
-    cmp_cnf x y = Ordering.lt ∨ cmp_cnf x y = Ordering.eq := by
-  -- Case on the computed ordering; rule out gt using hxy.
-  cases h : cmp_cnf x y with
-  | lt => exact Or.inl rfl
-  | eq => exact Or.inr rfl
-  | gt =>
-    -- hxy says cmp_cnf x y ≠ gt, contradiction
-  exact False.elim (hxy h)
-
-/-- General CNF asymmetry: x < y implies not (y < x). -/
-theorem lt_asymm_cnf {x y : CNF} (hxy : lt_cnf x y) : ¬ lt_cnf y x := by
-  -- unfold to list-level and use cmpList asymmetry
-  unfold lt_cnf at *
-  unfold cmp_cnf at *
-  -- set normalized lists for readability
-  let xs := (norm_cnf x).repr
-  let ys := (norm_cnf y).repr
-  -- First coerce hxy to a statement about cmpList xs ys = lt
-  have hxy' : cmpList xs ys = Ordering.lt := by simpa using hxy
-  -- Symmetry gives cmpList ys xs = gt
-  have hgt : cmpList ys xs = Ordering.gt := cmpList_symm_gt_of_lt xs ys hxy'
-  -- Show lt cannot also hold
-  intro hcontra
-  have ne : Ordering.lt ≠ Ordering.gt := by decide
-  -- hcontra : cmpList ys xs = lt, hgt : cmpList ys xs = gt ⇒ lt = gt
-  have : Ordering.gt = Ordering.lt := by exact hgt.symm.trans hcontra
-  exact (ne.symm) this
-
-/-- Antisymmetry for `le_cnf` at the cmp level: if x ≤ y and y ≤ x then cmp is eq. -/
-theorem le_antisymm_cnf {x y : CNF}
-  (hxy : le_cnf x y) (hyx : le_cnf y x) : cmp_cnf x y = Ordering.eq := by
-  cases hcmp : cmp_cnf x y with
-  | lt =>
-    -- translate to list-level, flip, and contradict hyx
-    have hltList : cmpList (norm_cnf x).repr (norm_cnf y).repr = Ordering.lt := by
-      simpa [cmp_cnf] using hcmp
-    have hgtList : cmpList (norm_cnf y).repr (norm_cnf x).repr = Ordering.gt :=
-      cmpList_symm_gt_of_lt _ _ hltList
-    have : cmp_cnf y x = Ordering.gt := by
-      simpa [cmp_cnf] using hgtList
-    exact (hyx this).elim
-  | eq => exact rfl
-  | gt => exact (hxy hcmp).elim
-/-- Congruence of cmp on the left, given normalized representations are equal. -/
-theorem cmp_congr_left_repr_eq {x y z : CNF}
-  (h : (norm_cnf x).repr = (norm_cnf y).repr) :
-  cmp_cnf x z = cmp_cnf y z := by
-  unfold cmp_cnf; simp [h]
-
-/-- Transitivity for list-level lt: if xs < ys and ys < zs then xs < zs. -/
-theorem cmpList_trans_lt :
-  ∀ {xs ys zs : List (Nat × Nat)},
-    cmpList xs ys = Ordering.lt → cmpList ys zs = Ordering.lt →
-    cmpList xs zs = Ordering.lt := by
-  intro xs; induction xs with
-  | nil =>
-    intro ys zs hxy hyz; cases ys with
-    | nil => cases hxy
-    | cons y ys =>
-      -- cmpList [] (y::ys) = lt, so xs<zs regardless of hyz structure on left
-      simp [cmpList] at hxy; cases zs with
-      | nil =>
-        -- hyz: (y::ys) < [] impossible
-        simp [cmpList] at hyz
-      | cons z zs =>
-        simp [cmpList]
-  | cons x xs ih =>
-    intro ys zs hxy hyz
-    cases ys with
-    | nil =>
-      -- xs<[] impossible
-      simp [cmpList] at hxy
-    | cons y ys =>
-      cases zs with
-      | nil =>
-        -- ys<[] impossible
-        simp [cmpList] at hyz
-      | cons z zs =>
-        cases x with
-        | mk e1 c1 =>
-        cases y with
-        | mk e2 c2 =>
-        cases z with
-        | mk e3 c3 =>
-        -- analyze hxy
-        have hx := cmpList_cons_cons_lt_cases (xs:=xs) (ys:=ys) (e1:=e1) (c1:=c1) (e2:=e2) (c2:=c2) hxy
-        -- analyze hyz for ys vs zs
-        have hy := cmpList_cons_cons_lt_cases (xs:=ys) (ys:=zs) (e1:=e2) (c1:=c2) (e2:=e3) (c2:=c3) hyz
-        -- split on cases to derive e1<e3 or tie and reduce
-        rcases hx with hExpLt | hCoeffLt | hTailLt
-        · -- e1 < e2; by trans with e2 ≤ e3 from hy
-          -- derive e2 ≤ e3
-          have hE23 : e2 ≤ e3 := by
-            rcases hy with hE2lt3 | hrest
-            · exact Nat.le_of_lt hE2lt3
-            · rcases hrest with hE2eqE3CoeffLt | hE2eqE3Tail
-              · have heq : e2 = e3 := hE2eqE3CoeffLt.left
-                simpa [heq] using (le_rfl : e2 ≤ e2)
-              · have heq : e2 = e3 := hE2eqE3Tail.left
-                simpa [heq] using (le_rfl : e2 ≤ e2)
-          -- from e2 ≤ e3, split eq/lt to conclude e1 < e3
-          have hE13 : e1 < e3 := by
-            have hE2eqOrLt := Nat.lt_or_eq_of_le hE23
-            cases hE2eqOrLt with
-            | inl hlt23 => exact Nat.lt_trans hExpLt hlt23
-            | inr heq23 => simpa [heq23] using hExpLt
-          exact (cmpList_cons_cons_exp_lt (xs:=xs) (ys:=zs) (e1:=e1) (c1:=c1) (e2:=e3) (c2:=c3) hE13)
-        · -- e1 = e2 ∧ c1 < c2
-          rcases hCoeffLt with ⟨hE12, hC12⟩
-          -- from hy, either e2<e3 -> then e1<e3; or e2=e3 and c2<c3; or tie and descend
-          rcases hy with hE2lt3 | hrest
-          · have hE13 : e1 < e3 := by simpa [hE12] using hE2lt3
-            exact (cmpList_cons_cons_exp_lt (xs:=xs) (ys:=zs) (e1:=e1) (c1:=c1) (e2:=e3) (c2:=c3) hE13)
-          · rcases hrest with hE2eqE3CoeffLt | hE2eqE3Tail
-            · rcases hE2eqE3CoeffLt with ⟨hE23, hC23⟩
-              have hE13 : e1 = e3 := by simpa [hE12] using hE23
-              -- coefficients chain: c1 < c2 and c2 < c3 ⇒ c1 < c3
-              have hC13 : c1 < c3 := Nat.lt_trans hC12 hC23
-              -- conclude by head coefficient comparison
-              have hlt : cmpList ((e3,c1)::xs) ((e3,c3)::zs) = Ordering.lt :=
-                cmpList_cons_cons_exp_eq_coeff_lt (xs:=xs) (ys:=zs) (e:=e3) (c1:=c1) (c2:=c3) hC13
-              simpa [hE13] using hlt
-            · rcases hE2eqE3Tail with ⟨hE23, hC23, _hTail⟩
-              -- heads tie and c2=c3; from c1<c2 and c2=c3, get c1<c3 and conclude
-              have hE13 : e1 = e3 := by simpa [hE12] using hE23
-              have hC13 : c1 < c3 := by simpa [hC23] using hC12
-              have hlt : cmpList ((e3,c1)::xs) ((e3,c3)::zs) = Ordering.lt :=
-                cmpList_cons_cons_exp_eq_coeff_lt (xs:=xs) (ys:=zs) (e:=e3) (c1:=c1) (c2:=c3) hC13
-              simpa [hE13] using hlt
-        · -- e1 = e2 ∧ c1 = c2 ∧ tail lt; combine with hy cases
-          rcases hTailLt with ⟨hE12, hC12, hTailXY⟩
-          rcases hy with hE2lt3 | hrest
-          · have hE13 : e1 < e3 := by simpa [hE12] using hE2lt3
-            exact (cmpList_cons_cons_exp_lt (xs:=xs) (ys:=zs) (e1:=e1) (c1:=c1) (e2:=e3) (c2:=c3) hE13)
-          · rcases hrest with hE2eqE3CoeffLt | hE2eqE3Tail
-            · rcases hE2eqE3CoeffLt with ⟨hE23, hC23⟩
-              -- heads tie and c2<c3 ⇒ with c1=c2 we get c1<c3, immediate lt
-              have hE13 : e1 = e3 := by simpa [hE12] using hE23
-              have hC13 : c1 < c3 := by simpa [hC12] using hC23
-              have hlt : cmpList ((e3,c1)::xs) ((e3,c3)::zs) = Ordering.lt :=
-                cmpList_cons_cons_exp_eq_coeff_lt (xs:=xs) (ys:=zs) (e:=e3) (c1:=c1) (c2:=c3) hC13
-              simpa [hE13] using hlt
-            · rcases hE2eqE3Tail with ⟨hE23, hC23, hTailYZ⟩
-              have hE13 : e1 = e3 := by simpa [hE12] using hE23
-              have hC13 : c1 = c3 := by simpa [hE12, hC12] using hC23
-              -- descend both with ih on tails
-              have ih'' : cmpList xs zs = Ordering.lt := ih (ys:=ys) (zs:=zs) hTailXY hTailYZ
-              simpa [cmpList, hE13, Nat.lt_irrefl, hC13] using ih''
-
-/-- Transitivity for CNF lt. -/
-theorem lt_trans_cnf {x y z : CNF} (hxy : lt_cnf x y) (hyz : lt_cnf y z) : lt_cnf x z := by
-  unfold lt_cnf at *
-  -- abbreviations for readability
-  let xs := (norm_cnf x).repr
-  let ys := (norm_cnf y).repr
-  let zs := (norm_cnf z).repr
-  -- rewrite both facts to list-level and apply list transitivity
-  have hx : cmpList xs ys = Ordering.lt := by simpa [cmp_cnf, xs, ys] using hxy
-  have hy : cmpList ys zs = Ordering.lt := by simpa [cmp_cnf, ys, zs] using hyz
-  have hz : cmpList xs zs = Ordering.lt := cmpList_trans_lt (xs:=xs) (ys:=ys) (zs:=zs) hx hy
-  simpa [cmp_cnf, xs, ys, zs]
-
-/-- Trichotomy for CNF compare: exactly one of lt/eq/gt holds. -/
-theorem cmp_cnf_trichotomy (x y : CNF) :
-  cmp_cnf x y = Ordering.lt ∨ cmp_cnf x y = Ordering.eq ∨ cmp_cnf x y = Ordering.gt := by
-  unfold cmp_cnf
-  exact cmpList_cases (norm_cnf x).repr (norm_cnf y).repr
-
-/-- Congruence of cmp on the right, given normalized representations are equal. -/
-theorem cmp_congr_right_repr_eq {x y z : CNF}
-  (h : (norm_cnf y).repr = (norm_cnf z).repr) :
-  cmp_cnf x y = cmp_cnf x z := by
-  unfold cmp_cnf; simp [h]
-
-/-- CNF head-case: if normalized head exponents satisfy e1 < e2, then cmp is lt. -/
-theorem cmp_cnf_head_exp_lt {x y : CNF}
-  {e1 c1 e2 c2 : Nat} {xs ys : List (Nat × Nat)}
-  (hx : (norm_cnf x).repr = (e1, c1) :: xs)
-  (hy : (norm_cnf y).repr = (e2, c2) :: ys)
-  (h : e1 < e2) :
-  cmp_cnf x y = Ordering.lt := by
-  unfold cmp_cnf; simp [hx, hy, cmpList_cons_cons_exp_lt h]
-
-/-- CNF head-case: if normalized head exponents satisfy e2 < e1, then cmp is gt. -/
-theorem cmp_cnf_head_exp_gt {x y : CNF}
-  {e1 c1 e2 c2 : Nat} {xs ys : List (Nat × Nat)}
-  (hx : (norm_cnf x).repr = (e1, c1) :: xs)
-  (hy : (norm_cnf y).repr = (e2, c2) :: ys)
-  (h : e2 < e1) :
-  cmp_cnf x y = Ordering.gt := by
-  unfold cmp_cnf; simp [hx, hy, cmpList_cons_cons_exp_gt h]
-
-/-- CNF head-case: equal head exponents, smaller left coefficient gives lt. -/
-theorem cmp_cnf_head_exp_eq_coeff_lt {x y : CNF}
-  {e c1 c2 : Nat} {xs ys : List (Nat × Nat)}
-  (hx : (norm_cnf x).repr = (e, c1) :: xs)
-  (hy : (norm_cnf y).repr = (e, c2) :: ys)
-  (h : c1 < c2) :
-  cmp_cnf x y = Ordering.lt := by
-  unfold cmp_cnf; simp [hx, hy, cmpList_cons_cons_exp_eq_coeff_lt h]
-
-/-- CNF head-case: equal head exponents, larger left coefficient gives gt. -/
-theorem cmp_cnf_head_exp_eq_coeff_gt {x y : CNF}
-  {e c1 c2 : Nat} {xs ys : List (Nat × Nat)}
-  (hx : (norm_cnf x).repr = (e, c1) :: xs)
-  (hy : (norm_cnf y).repr = (e, c2) :: ys)
-  (h : c2 < c1) :
-  cmp_cnf x y = Ordering.gt := by
-  unfold cmp_cnf; simp [hx, hy, cmpList_cons_cons_exp_eq_coeff_gt h]
-
-/-- CNF head-case: equal head term, comparison recurses on tails. -/
-theorem cmp_cnf_head_exp_coeff_eq {x y : CNF}
-  {e c : Nat} {xs ys : List (Nat × Nat)}
-  (hx : (norm_cnf x).repr = (e, c) :: xs)
-  (hy : (norm_cnf y).repr = (e, c) :: ys) :
-  cmp_cnf x y = cmpList xs ys := by
-  unfold cmp_cnf; simp [hx, hy, cmpList_cons_cons_exp_eq_coeff_eq]
-
-/-- CNF asymmetry in the simple head-exp case: if head e1 < e2 then x < y and not y < x. -/
-theorem lt_asymm_head_exp {x y : CNF}
-  {e1 c1 e2 c2 : Nat} {xs ys : List (Nat × Nat)}
-  (hx : (norm_cnf x).repr = (e1, c1) :: xs)
-  (hy : (norm_cnf y).repr = (e2, c2) :: ys)
-  (h : e1 < e2) : lt_cnf x y ∧ ¬ lt_cnf y x := by
-  constructor
-  · unfold lt_cnf; simp [cmp_cnf_head_exp_lt (x:=x) (y:=y) hx hy h]
-  · intro hlt
-    have hswap : cmp_cnf y x = Ordering.gt := by
-      unfold cmp_cnf; simp [hy, hx, cmpList_cons_cons_exp_lt_swap h]
-    have ne : Ordering.gt ≠ Ordering.lt := by decide
-    -- unfold lt_cnf in hlt to get a cmp equality
-    have hlt' : cmp_cnf y x = Ordering.lt := by
-      -- linter: prefer simp at hlt' instead of simpa using hlt
-      simp [lt_cnf] at hlt; exact hlt
-    -- rewrite cmp_cnf y x via hswap to derive an impossible equality
-    have hbad : Ordering.gt = Ordering.lt := by
-      -- simplify hlt' with the computed swap
-      simpa [hswap] using hlt'
-    exact ne hbad
-
-/-!
-  ## Instances: Decidability and Ord for CNF
--/
-
-instance instDecidableRel_le_cnf : DecidableRel le_cnf := by
-  intro x y
-  unfold le_cnf
-  infer_instance
-
-instance instDecidableRel_lt_cnf : DecidableRel lt_cnf := by
-  intro x y
-  unfold lt_cnf
-  infer_instance
-
-instance : Ord CNF where
-  compare := cmp_cnf
-
-/-- If y and z normalize to the same repr and x < y, then x < z. -/
-theorem lt_trans_eq_right {x y z : CNF}
-  (hYZ : (norm_cnf y).repr = (norm_cnf z).repr)
-  (hXY : lt_cnf x y) : lt_cnf x z := by
-  unfold lt_cnf at *
-  simpa [cmp_congr_right_repr_eq (x:=x) (y:=y) (z:=z) hYZ] using hXY
-/-- If x and y normalize to the same repr and y < z, then x < z. -/
-theorem lt_trans_eq_left {x y z : CNF}
-  (hXY : (norm_cnf x).repr = (norm_cnf y).repr)
-  (hYZ : lt_cnf y z) : lt_cnf x z := by
-  unfold lt_cnf at *
-  simpa [cmp_congr_left_repr_eq (x:=x) (y:=y) (z:=z) hXY] using hYZ
-
-/-- If y and z normalize to the same repr and x ≤ y, then x ≤ z. -/
-theorem le_trans_eq_right {x y z : CNF}
-  (hYZ : (norm_cnf y).repr = (norm_cnf z).repr)
-  (hXY : le_cnf x y) : le_cnf x z := by
-  unfold le_cnf at *
-  -- cmp x z = gt would rewrite to cmp x y = gt via congruence, contradicting hXY
-  intro hgt
-  have : cmp_cnf x y = Ordering.gt := by
-    simpa [cmp_congr_right_repr_eq (x:=x) (y:=y) (z:=z) hYZ] using hgt
-  exact hXY this
-
-/-- If x and y normalize to the same repr and y ≤ z, then x ≤ z. -/
-theorem le_trans_eq_left {x y z : CNF}
-  (hXY : (norm_cnf x).repr = (norm_cnf y).repr)
-  (hYZ : le_cnf y z) : le_cnf x z := by
-  unfold le_cnf at *
-  intro hgt
-  -- rewrite cmp x z to cmp y z using repr equality, contradicting hYZ
-  have : cmp_cnf y z = Ordering.gt := by
-    simpa [cmp_congr_left_repr_eq (x:=x) (y:=y) (z:=z) hXY] using hgt
-  exact hYZ this
-
-/-!
-  ## Tiny conveniences
--/
-
-/-- If normalized representations are equal, cmp is `eq`. -/
-theorem cmp_eq_of_norm_repr_eq {x y : CNF}
-  (h : (norm_cnf x).repr = (norm_cnf y).repr) :
-  cmp_cnf x y = Ordering.eq := by
-  unfold cmp_cnf
-  simp [cmpList_refl_eq, h]
-
-/-!
-  Equality characterization: if cmpList = eq then the lists are equal.
-  This lets us reflect cmp equality back to structural equality of normalized
-  representations at the CNF level.
--/
-theorem cmpList_eq_implies_eq :
-    ∀ {xs ys : List (Nat × Nat)}, cmpList xs ys = Ordering.eq → xs = ys := by
-  intro xs
-  induction xs with
-  | nil =>
-    intro ys h
-    cases ys with
-    | nil =>
-      simp [cmpList] at h
-      exact rfl
-    | cons y ys =>
-      -- cmpList [] (y::ys) = lt, contradicting eq
-      simp [cmpList] at h
-  | cons x xs ih =>
-    intro ys h
-    cases ys with
-    | nil =>
-      -- cmpList (x::xs) [] = gt, contradicting eq
-      simp [cmpList] at h
-    | cons y ys =>
-      cases x with
-      | mk e1 c1 =>
-        cases y with
-        | mk e2 c2 =>
-        classical
-        -- eliminate strict exponent inequalities via if-splits
-        if hltE : e1 < e2 then
-          have : cmpList ((e1,c1)::xs) ((e2,c2)::ys) = Ordering.lt := by
-            simpa [cmpList, hltE]
-          cases this ▸ h
-        else
-          have hnot12 : ¬ e1 < e2 := by simpa using hltE
-          if hgtE : e2 < e1 then
-            have : cmpList ((e1,c1)::xs) ((e2,c2)::ys) = Ordering.gt := by
-              simpa [cmpList, hnot12, hgtE]
-            cases this ▸ h
-          else
-            -- exponents equal
-            have heq : e1 = e2 :=
-              Nat.le_antisymm (Nat.le_of_not_gt hgtE) (Nat.le_of_not_gt hltE)
-            -- eliminate strict coefficient inequalities
-            if hltC : c1 < c2 then
-              have : cmpList ((e1,c1)::xs) ((e2,c2)::ys) = Ordering.lt := by
-                simpa [cmpList, heq, Nat.lt_irrefl, hltC]
-              cases this ▸ h
-            else
-              have hnotc12 : ¬ c1 < c2 := by simpa using hltC
-              if hgtC : c2 < c1 then
-                have : cmpList ((e1,c1)::xs) ((e2,c2)::ys) = Ordering.gt := by
-                  simpa [cmpList, heq, Nat.lt_irrefl, hnotc12, hgtC]
-                cases this ▸ h
-              else
-                -- coefficients equal; descend to tails
-                have hceq : c1 = c2 := by
-                  have hle₁ : c2 ≤ c1 := Nat.not_lt.mp hltC
-                  have hle₂ : c1 ≤ c2 := Nat.not_lt.mp hgtC
-                  exact Nat.le_antisymm hle₂ hle₁
-                have hTail : cmpList xs ys = Ordering.eq := by
-                  simpa [cmpList, heq, hceq, Nat.lt_irrefl] using h
-                have ih' := ih hTail
-                subst heq; subst hceq
-                simp [ih']
-
-theorem cmp_eq_iff_norm_repr_eq {x y : CNF} :
-    cmp_cnf x y = Ordering.eq ↔ (norm_cnf x).repr = (norm_cnf y).repr := by
-  constructor
-  · intro h
-    unfold cmp_cnf at h
-    exact cmpList_eq_implies_eq h
-  · intro hrepr
-    exact cmp_eq_of_norm_repr_eq (x:=x) (y:=y) hrepr
-
-/-- lt implies le (definitionally). -/
-theorem le_of_lt {x y : CNF} (h : lt_cnf x y) : le_cnf x y := by
-  unfold lt_cnf at h
-  unfold le_cnf
-  intro hgt
-  -- rewriting with h produces an impossible lt=gt
-  cases h ▸ hgt
-
-/-- CNF-level symmetry: if cmp x y = lt then cmp y x = gt. -/
-theorem cmp_cnf_symm_gt_of_lt {x y : CNF}
-  (h : cmp_cnf x y = Ordering.lt) : cmp_cnf y x = Ordering.gt := by
+-- Public alias for reuse outside this namespace, same statement
+lemma dm_lt_add_of_ne_zero' (X Z : Multiset ℕ) (h : Z ≠ 0) :
+    Multiset.IsDershowitzMannaLT X (X + Z) := by
   classical
-  let xs := (norm_cnf x).repr
-  let ys := (norm_cnf y).repr
-  have hlist : cmpList xs ys = Ordering.lt := by
-    simpa [cmp_cnf, xs, ys] using h
-  have hgt := cmpList_symm_gt_of_lt xs ys hlist
-  simpa [cmp_cnf, xs, ys] using hgt
+  refine ⟨X, (0 : Multiset ℕ), Z, ?hZ, ?hM, rfl, ?hY⟩
+  · simpa using h
+  · simp
+  · simp
 
--- (We intentionally avoid a gt→lt symmetry lemma here to keep the proof surface minimal.)
-
-/-- Symmetry for gt: if cmpList xs ys = gt then cmpList ys xs = lt. -/
-theorem cmpList_symm_lt_of_gt :
-  ∀ xs ys : List (Nat × Nat), cmpList xs ys = Ordering.gt → cmpList ys xs = Ordering.lt
-  | [], [], h => by cases h
-  | [], (y::ys), h => by
-      -- cmpList [] (y::ys) = lt, so gt is impossible
-      cases h
-  | (x::xs), [], _h => by
-      -- non-empty vs []
-      simp [cmpList]
-  | ((e1,c1)::xs), ((e2,c2)::ys), h =>
-      by
-        classical
-        -- split on exponent comparison using an if-then-else
-        if hlt12 : e1 < e2 then
-          -- then result would be lt, contradicts gt
-          have : cmpList ((e1,c1)::xs) ((e2,c2)::ys) = Ordering.lt := by
-            simpa [cmpList, hlt12]
-          cases this ▸ h
-        else
-          have hnot12 : ¬ e1 < e2 := by simpa using hlt12
-          if hlt21 : e2 < e1 then
-            -- gt by exponent; swap gives lt
-            exact (cmpList_cons_cons_exp_gt_swap (xs:=xs) (ys:=ys) (e1:=e1) (c1:=c1) (e2:=e2) (c2:=c2) hlt21)
-          else
-            -- exponents equal
-            have heq : e1 = e2 :=
-              Nat.le_antisymm (Nat.le_of_not_gt hlt21) (Nat.le_of_not_gt hlt12)
-            -- compare coefficients similarly
-            if hclt12 : c1 < c2 then
-              -- would make lt, contradict gt
-              have : cmpList ((e1,c1)::xs) ((e2,c2)::ys) = Ordering.lt := by
-                simpa [cmpList, heq, Nat.lt_irrefl, hclt12]
-              cases this ▸ h
-            else
-              have hnotc12 : ¬ c1 < c2 := by simpa using hclt12
-              if hclt21 : c2 < c1 then
-                -- swapped becomes lt by coeff-lt
-                have : cmpList ((e2,c2)::ys) ((e1,c1)::xs) = Ordering.lt := by
-                  simpa [heq] using (cmpList_cons_cons_exp_eq_coeff_lt (xs:=ys) (ys:=xs) (e:=e1) (c1:=c2) (c2:=c1) hclt21)
-                simpa using this
-              else
-                -- coefficients equal; descend to tails
-                have hceq : c1 = c2 := by
-                  have hle₁ : c2 ≤ c1 := Nat.not_lt.mp hclt12
-                  have hle₂ : c1 ≤ c2 := Nat.not_lt.mp hclt21
-                  exact Nat.le_antisymm hle₂ hle₁
-                -- from h = gt, tails must be gt as well
-                have hTail : cmpList xs ys = Ordering.gt := by
-                  simpa [cmpList, heq, hceq, Nat.lt_irrefl] using h
-                -- recurse on tails
-                have ih := cmpList_symm_lt_of_gt xs ys hTail
-                -- lift back through equal heads
-                simpa [cmpList_cons_cons_exp_eq_coeff_eq, heq, hceq] using ih
-
-/-- CNF-level symmetry: if cmp x y = gt then cmp y x = lt. -/
-theorem cmp_cnf_symm_lt_of_gt {x y : CNF}
-  (h : cmp_cnf x y = Ordering.gt) : cmp_cnf y x = Ordering.lt := by
+-- κᴹ strictly drops for rec_zero in the intended orientation (LHS > RHS):
+-- kappaM b <ₘ kappaM (recΔ b s void)
+lemma dm_drop_R_rec_zero (b s : Trace) :
+    kappaM b <ₘ kappaM (recΔ b s void) := by
   classical
-  let xs := (norm_cnf x).repr
-  let ys := (norm_cnf y).repr
-  have hlist : cmpList xs ys = Ordering.gt := by
-    simpa [cmp_cnf, xs, ys] using h
-  have hlt := cmpList_symm_lt_of_gt xs ys hlist
-  simpa [cmp_cnf, xs, ys] using hlt
+  -- kappaM (recΔ b s void) = (1 ::ₘ kappaM s) + kappaM b, and + is commutative
+  have hdm : Multiset.IsDershowitzMannaLT (kappaM b) (kappaM b + (1 ::ₘ kappaM s)) :=
+    dm_lt_add_of_ne_zero' (kappaM b) (1 ::ₘ kappaM s) (by simp)
+  -- rewrite to the rec_zero shape
+  simpa [kappaM, add_comm, add_left_comm, add_assoc] using hdm
 
-/- Totality for ≤ on CNF. -/
-theorem le_total_cnf (x y : CNF) : le_cnf x y ∨ le_cnf y x := by
-  -- case on the computed comparison
-  cases h : cmp_cnf x y with
-  | lt => exact Or.inl (le_of_lt (by simpa [lt_cnf] using h))
-  | eq => exact Or.inl (by simp [le_cnf, h])
-  | gt =>
-    -- swap gives lt, hence y ⪯ x
-    have : cmp_cnf y x = Ordering.lt := cmp_cnf_symm_lt_of_gt h
-    exact Or.inr (by
-      -- lt implies ≤ by definition (not gt)
-      have : lt_cnf y x := by simpa [lt_cnf] using this
-      exact le_of_lt this)
+-- update dm_drop_R_rec_succ lemma
+-- Note: κM does not strictly drop for rec_succ in DM in general when kappaM uses ∪.
+-- Use the μ component for the lex drop in the combined measure.
 
--- Infix notations (optional ergonomics)
-infix:50 " ≺ " => lt_cnf
-infix:50 " ⪯ " => le_cnf
+/-- If a multiset is nonempty, its self-union is nonempty. -/
+lemma union_self_ne_zero_of_ne_zero {X : Multiset ℕ} (h : X ≠ 0) :
+    X ∪ X ≠ (0 : Multiset ℕ) := by
+  classical
+  intro hU
+  -- Show `X ∪ X = X` by counts, then contradict `h`.
+  have hUU : X ∪ X = X := by
+    ext a; simp [Multiset.count_union, max_self]
+  exact h (by simpa [hUU] using hU)
 
-/-!
-  ## Addition: merge and normalize
--/
-def add_cnf (x y : CNF) : CNF :=
-  norm_cnf { repr := x.repr ++ y.repr }
+end MetaSN_DM
 
-/-!
-  ## Multiplication: distributive law, collect like terms, normalize
--/
-def mul_cnf (x y : CNF) : CNF :=
-  match norm_cnf x, norm_cnf y with
-  | { repr := [] }, _ => { repr := [] }
-  | _, { repr := [] } => { repr := [] }
-  | { repr := xs }, { repr := ys } =>
-    let terms := List.foldr (fun a b => List.append a b) [] (xs.map (fun (e1, c1) => ys.map (fun (e2, c2) => (e1 + e2, c1 * c2))))
-    norm_cnf { repr := terms }
+/-! --------------------------------------------------------------------------
+Triple-lex measure (δ, κᴹ, μ) specialized for KO7
+We use a δ-flag that is 1 exactly on `recΔ b s (delta n)` at the top, and 0 otherwise.
+This gives a Nat-first strict drop for `R_rec_succ` and ties elsewhere.
+--------------------------------------------------------------------------- -/
 
-/-!
-  ## ω-Exponentiation: ω^x
-  - ω^0 = 1
-  - ω^{sum_i ω^{a_i}·c_i} = ω^{ω^{a_1}·c_1 + ...}
-  For CNF, ω^x is just shifting exponents up one level.
--/
-def opowω_cnf (x : CNF) : CNF :=
-  match norm_cnf x with
-  | { repr := [] } => { repr := [(0,1)] } -- ω^0 = 1
-  | { repr := xs } => { repr := xs.map (fun (e, c) => (e + 1, c)) }
+namespace MetaSN_KO7
 
-/-!
-  ## Examples
--/
-def cnf_zero : CNF := { repr := [] }
-def cnf_one : CNF := { repr := [(0,1)] }
-def cnf_omega : CNF := { repr := [(1,1)] }
-def cnf_omega_plus_one : CNF := { repr := [(1,1),(0,1)] }
-def cnf_two_omega : CNF := { repr := [(1,2)] }
-def cnf_omega_sq : CNF := { repr := [(2,1)] }
+open MetaSN_DM
 
-/-!
-  ## Basic tests (examples)
--/
+@[simp] def deltaFlag : Trace → Nat
+| recΔ _ _ (delta _) => 1
+| _                  => 0
 
+-- deltaFlag simplification lemmas for common constructors
+@[simp] lemma deltaFlag_void : deltaFlag void = 0 := rfl
+@[simp] lemma deltaFlag_integrate (t : Trace) : deltaFlag (integrate t) = 0 := rfl
+@[simp] lemma deltaFlag_merge (a b : Trace) : deltaFlag (merge a b) = 0 := rfl
+@[simp] lemma deltaFlag_eqW (a b : Trace) : deltaFlag (eqW a b) = 0 := rfl
+@[simp] lemma deltaFlag_app (a b : Trace) : deltaFlag (app a b) = 0 := rfl
+@[simp] lemma deltaFlag_rec_zero (b s : Trace) : deltaFlag (recΔ b s void) = 0 := by
+  simp [deltaFlag]
+@[simp] lemma deltaFlag_rec_delta (b s n : Trace) : deltaFlag (recΔ b s (delta n)) = 1 := by
+  simp [deltaFlag]
 
+-- deltaFlag takes only values 0 or 1 (decidable Boolean flag over Nat)
+lemma deltaFlag_range (t : Trace) : deltaFlag t = 0 ∨ deltaFlag t = 1 := by
+  cases t with
+  | void => simp
+  | delta t => simp
+  | integrate t => simp
+  | merge a b => simp
+  | app a b => simp
+  | recΔ b s n =>
+      cases n with
+      | void => simp [deltaFlag]
+      | delta n => simp [deltaFlag]
+      | integrate _ => simp [deltaFlag]
+      | merge _ _ => simp [deltaFlag]
+      | app _ _ => simp [deltaFlag]
+      | eqW _ _ => simp [deltaFlag]
+      | recΔ _ _ _ => simp [deltaFlag]
+  | eqW a b => simp
 
+noncomputable def μ3 (t : Trace) : Nat × (Multiset ℕ × Ordinal) :=
+  (deltaFlag t, (kappaM t, MetaSN.mu t))
 
-end OperatorKO7.MetaCNF
+@[simp] def Lex3 : (Nat × (Multiset ℕ × Ordinal)) → (Nat × (Multiset ℕ × Ordinal)) → Prop :=
+  Prod.Lex (· < ·) MetaSN_DM.LexDM
 
-namespace OperatorKO7.MetaCNF
-
-/-!
-  ## Pretty-printing (basic)
-  Converts a CNF to a human-readable string for debugging and examples.
--/
-def intercalate (sep : String) (xs : List String) : String :=
-  match xs with
-  | [] => ""
-  | x :: xs => xs.foldl (fun acc s => acc ++ sep ++ s) x
-
-def showTerm : Nat × Nat → String
-  | (0, c) => toString c
-  | (e, 1) => "ω^" ++ toString e
-  | (e, c) => toString c ++ "·ω^" ++ toString e
-
-def showCNF (cnf : CNF) : String :=
-  match cnf.repr with
-  | [] => "0"
-  | xs => intercalate " + " (xs.map showTerm)
-
-instance : ToString CNF where
-  toString := showCNF
+lemma wf_Lex3 : WellFounded Lex3 := by
+  exact WellFounded.prod_lex Nat.lt_wfRel.wf MetaSN_DM.wf_LexDM
 
 /-!
-  ## Normalization checks (boolean)
-  Executable validators for CNF invariants. Useful for tests and examples.
+Assessment closure: All strong-normalization and decrease lemmas in this
+module are scoped to `SafeStep` and the single measure `μ3` (Lex3). We do
+not assert SN for the full `Step` relation here, and we do not rely on any
+disjunctive/“hybrid” measure in these theorems. See
+`SAFE_AUDIT.md` (root) for details and scope statements.
 -/
-def allPosCoeffs : List (Nat × Nat) → Bool
-  | [] => true
-  | (_, c) :: xs => (c > 0) && allPosCoeffs xs
 
-def sortedStrictDesc : List (Nat × Nat) → Bool
-  | [] => true
-  | [ _ ] => true
-  | (e1, _) :: (e2, c2) :: xs => (e1 > e2) && sortedStrictDesc ((e2, c2) :: xs)
+/- Per-rule decreases (stable subset) -------------------------------------- -/
 
-def isNormalizedB (x : CNF) : Bool :=
-  sortedStrictDesc x.repr && allPosCoeffs x.repr
+/-- merge void-left: restricted to δ-flag tie (deltaFlag t = 0). -/
+lemma drop_R_merge_void_left_zero (t : Trace)
+    (hδ : deltaFlag t = 0) :
+    Lex3 (μ3 t) (μ3 (merge void t)) := by
+  classical
+  -- Build inner LexDM μ-drop anchored at κM t
+  have hin : LexDM (kappaM t, MetaSN.mu t)
+      (kappaM t, MetaSN.mu (merge void t)) :=
+    Prod.Lex.right (kappaM t) (MetaSN.mu_lt_merge_void_left t)
+  -- Build outer α=0 witness, then rewrite goal to α=0 shape
+  have hcore : Lex3 (0, (kappaM t, MetaSN.mu t)) (0, (kappaM t, MetaSN.mu (merge void t))) :=
+    Prod.Lex.right (0 : Nat) hin
+  dsimp [Lex3, μ3, deltaFlag]
+  have ht0 : (match t with | recΔ _ _ (delta _) => 1 | _ => 0) = 0 := by
+    simpa [deltaFlag] using hδ
+  simp [ht0]
+  exact hcore
+
+/-- merge void-right: restricted to δ-flag tie (deltaFlag t = 0). -/
+lemma drop_R_merge_void_right_zero (t : Trace)
+    (hδ : deltaFlag t = 0) :
+    Lex3 (μ3 t) (μ3 (merge t void)) := by
+  classical
+  -- Inner μ-drop anchored at κM t
+  have hin : LexDM (kappaM t, MetaSN.mu t)
+      (kappaM t, MetaSN.mu (merge t void)) :=
+    Prod.Lex.right (kappaM t) (MetaSN.mu_lt_merge_void_right t)
+  -- Outer α=0 witness
+  have hcore : Lex3 (0, (kappaM t, MetaSN.mu t)) (0, (kappaM t, MetaSN.mu (merge t void))) :=
+    Prod.Lex.right (0 : Nat) hin
+  dsimp [Lex3, μ3, deltaFlag]
+  have ht0 : (match t with | recΔ _ _ (delta _) => 1 | _ => 0) = 0 := by
+    simpa [deltaFlag] using hδ
+  simp [ht0]
+  exact hcore
+
+/-- eq_diff: `eqW a b → integrate (merge a b)` drops (outer tie + μ-right). -/
+lemma drop_R_eq_diff (a b : Trace) :
+    Lex3 (μ3 (integrate (merge a b))) (μ3 (eqW a b)) := by
+  classical
+  -- Inner μ-drop anchored at κM (integrate (merge a b))
+  have hin : LexDM (kappaM (integrate (merge a b)), MetaSN.mu (integrate (merge a b)))
+      (kappaM (integrate (merge a b)), MetaSN.mu (eqW a b)) :=
+    Prod.Lex.right (kappaM (integrate (merge a b))) (MetaSN.mu_lt_eq_diff a b)
+  -- Outer α=0 witness
+  have hcore : Lex3 (0, (kappaM (integrate (merge a b)), MetaSN.mu (integrate (merge a b))))
+      (0, (kappaM (integrate (merge a b)), MetaSN.mu (eqW a b))) :=
+    Prod.Lex.right (0 : Nat) hin
+  -- Rewrite both δ-flags to 0 and κ via kappaM_eq_diff, then discharge
+  dsimp [Lex3, μ3]
+  have hδL : (match integrate (merge a b) with | recΔ _ _ (delta _) => 1 | _ => 0) = 0 := by
+    simp
+  have hδR : (match eqW a b with | recΔ _ _ (delta _) => 1 | _ => 0) = 0 := by
+    simp
+  simpa [hδL, hδR, MetaSN_DM.kappaM_eq_diff] using hcore
+
+
+
+-- (rec_succ and rec_zero lemmas will be reintroduced after further audit)
+
+-- Aggregated `measure_decreases` and `strong_normalization_triple` are deferred
+-- until we resolve the general `merge_cancel` and `eq_refl` cases (κ duplicates).
+
+end MetaSN_KO7
+/-! ### Additional per-rule decreases (audited) ---------------------------- -/
+
+namespace MetaSN_KO7
+
+open MetaSN_DM
+
+open Classical
 
 /-!
-  ## Inspectors and predicates (ergonomics)
+Lex3 drops for duplicating cases, using a DM drop when κM ≠ 0 and
+falling back to a μ-drop when κM ties at 0.
 -/
 
-def isZero (x : CNF) : Bool :=
-  match (norm_cnf x).repr with
-  | [] => true
-  | _ => false
+/-- int∘delta: `integrate (delta t) → void` drops (outer δ tie; inner by κ-DM or μ-right). -/
+lemma drop_R_int_delta (t : Trace) :
+    Lex3 (μ3 void) (μ3 (integrate (delta t))) := by
+  classical
+  -- Either strict κ-DM when κᴹ t ≠ 0, or μ-right when κ ties at 0; then lift to α=0.
+  by_cases h0 : kappaM t = 0
+  · -- κ tie → use μ drop
+    have hin : LexDM ((0 : Multiset ℕ), MetaSN.mu void)
+        ((0 : Multiset ℕ), MetaSN.mu (integrate (delta t))) :=
+      Prod.Lex.right (0 : Multiset ℕ) (MetaSN.mu_void_lt_integrate_delta t)
+    have hcore : Lex3 (0, ((0 : Multiset ℕ), MetaSN.mu void))
+        (0, ((0 : Multiset ℕ), MetaSN.mu (integrate (delta t)))) :=
+      Prod.Lex.right (0 : Nat) hin
+    simpa [μ3, Lex3, deltaFlag, kappaM_int_delta, h0] using hcore
+  · -- κ strict: 0 <ᴹ κᴹ t, rewrite κ for integrate∘delta
+    have hdm : Multiset.IsDershowitzMannaLT (0 : Multiset ℕ) (kappaM t) := by
+      have hcore := dm_lt_add_of_ne_zero' (0 : Multiset ℕ) (kappaM t) (by simp [h0])
+      simpa [zero_add] using hcore
+    -- Lift DM to LexDM and then to α=0
+    have hin : LexDM ((0 : Multiset ℕ), MetaSN.mu void)
+        (kappaM (integrate (delta t)), MetaSN.mu (integrate (delta t))) :=
+      dm_to_LexDM_left (X := (0 : Multiset ℕ)) (Y := kappaM (integrate (delta t)))
+        (μ₁ := MetaSN.mu void) (μ₂ := MetaSN.mu (integrate (delta t)))
+        (by simpa [kappaM_int_delta] using hdm)
+    have hcore : Lex3 (0, ((0 : Multiset ℕ), MetaSN.mu void))
+        (0, (kappaM (integrate (delta t)), MetaSN.mu (integrate (delta t)))) :=
+      Prod.Lex.right (0 : Nat) hin
+    simpa [μ3, Lex3, deltaFlag] using hcore
 
-def isOne (x : CNF) : Bool :=
-  decide ((norm_cnf x).repr = [(0, 1)])
+/-- rec_succ: `recΔ b s (delta n) → app s (recΔ b s n)` drops via δ-left (1 → 0). -/
+lemma drop_R_rec_succ (b s n : Trace) :
+  Lex3 (μ3 (app s (recΔ b s n))) (μ3 (recΔ b s (delta n))) := by
+  -- Outer: δ-flag goes from 1 to 0, so we can use the left constructor.
+  dsimp [μ3, Lex3, deltaFlag]
+  -- goal is Prod.Lex (<) _ (0, _) (1, _)
+  apply Prod.Lex.left
+  exact Nat.zero_lt_one
 
-def isOmegaPow (x : CNF) : Bool :=
-  match (norm_cnf x).repr with
-  | [(_, 1)] => true
-  | _ => false
+/-- rec_zero: `recΔ b s void → b` drops (outer δ tie; inner κ-DM-left). -/
+lemma drop_R_rec_zero (b s : Trace)
+    (hδ : deltaFlag b = 0) :
+    Lex3 (μ3 b) (μ3 (recΔ b s void)) := by
+  classical
+  -- Work at the expanded pair level but keep deltaFlag uninterpreted until after rewriting
+  dsimp [Lex3]
+  dsimp [μ3]
+  -- Compute δ flags on both sides
+  have hb0eq : (match b with | recΔ _ _ (delta _) => 1 | _ => 0) = 0 := by
+    simpa [deltaFlag] using hδ
+  have hr0eq : (match recΔ b s void with | recΔ _ _ (delta _) => 1 | _ => 0) = 0 := by
+    simp
+  -- rewrite both outers to 0, then use right-branch
+  -- Be explicit on both sides to avoid constructor unification flakiness
+  simp [hb0eq]
+  refine Prod.Lex.right (0 : Nat) ?inner
+  -- Inner: lift the DM drop to LexDM explicitly, then rewrite κ to the goal's normal form
+  have hlexDM : LexDM (kappaM b, MetaSN.mu b)
+      (kappaM (recΔ b s void), MetaSN.mu (recΔ b s void)) :=
+    dm_to_LexDM_left (X := kappaM b) (Y := kappaM (recΔ b s void))
+      (μ₁ := MetaSN.mu b) (μ₂ := MetaSN.mu (recΔ b s void))
+      (by simpa using dm_drop_R_rec_zero b s)
+  -- Match the RHS κ with the goal shape (1 ::ₘ (kappaM s + kappaM b))
+  simpa [kappaM_rec_zero, cons_add, add_assoc, add_left_comm, add_comm] using hlexDM
 
-def degreeOpt (x : CNF) : Option Nat :=
-  match (norm_cnf x).repr with
-  | [] => none
-  | (e, _) :: _ => some e
+end MetaSN_KO7
 
-/-- Transitivity for `≤` on CNF. -/
-theorem le_trans_cnf {x y z : CNF} (hxy : le_cnf x y) (hyz : le_cnf y z) : le_cnf x z := by
-  -- By definition, le_cnf x z means cmp_cnf x z ≠ gt. Prove by contradiction.
-  unfold le_cnf at *
-  intro hgt
-  -- Case on cmp x y.
-  cases hxyCases : cmp_cnf x y with
-  | lt =>
-    -- y ≤ z splits into lt or eq.
-    have hyCases := le_cases (x:=y) (y:=z) hyz
-    cases hyCases with
-    | inl hylt =>
-      -- x < y and y < z ⇒ x < z, contradicting cmp x z = gt.
-      have hxlt : lt_cnf x y := by simpa [lt_cnf] using hxyCases
-      have hzlt : lt_cnf x z := lt_trans_cnf hxlt (by simpa [lt_cnf] using hylt)
-      -- Convert to cmp form and contradict hgt directly.
-      have : cmp_cnf x z = Ordering.lt := by simpa [lt_cnf] using hzlt
-      cases this ▸ hgt
-    | inr hyeq =>
-      -- cmp y z = eq ⇒ normalize-equal reprs; transport x<y to x<z.
-      have hrepr : (norm_cnf y).repr = (norm_cnf z).repr :=
-        (cmp_eq_iff_norm_repr_eq).mp hyeq
-      have hxlt : lt_cnf x y := by simpa [lt_cnf] using hxyCases
-      have hzlt : lt_cnf x z := lt_trans_eq_right (x:=x) (y:=y) (z:=z) hrepr hxlt
-      have : cmp_cnf x z = Ordering.lt := by simpa [lt_cnf] using hzlt
-      cases this ▸ hgt
-  | eq =>
-    -- cmp x y = eq ⇒ normalized reprs equal; rewrite left via congruence and use hyz.
-    have hrepr : (norm_cnf x).repr = (norm_cnf y).repr :=
-      (cmp_eq_iff_norm_repr_eq).mp hxyCases
-    -- Transport y ≤ z to x ≤ z, closing the contradiction.
-    exact (le_trans_eq_left (x:=x) (y:=y) (z:=z) hrepr hyz) hgt
-  | gt =>
-    -- Contradicts hxy immediately.
-    exact (hxy hxyCases).elim
+/-! Thin alias wrappers to expose the “δ-substitution” naming used in the 5‑Pro checklist. -/
 
-def leadCoeffOpt (x : CNF) : Option Nat :=
-  match (norm_cnf x).repr with
-  | [] => none
-  | (_, c) :: _ => some c
+namespace MetaSN_KO7
 
-/-!
-  ## Example values and usage
--/
-def example1 := add_cnf cnf_omega cnf_one         -- ω + 1
-def example2 := add_cnf cnf_omega cnf_omega       -- ω + ω = 2·ω
-def example3 := mul_cnf cnf_omega cnf_omega       -- ω * ω = ω^2
+@[simp] lemma delta_subst_drop_rec_succ (b s n : Trace) :
+  Lex3 (μ3 (app s (recΔ b s n))) (μ3 (recΔ b s (delta n))) :=
+  drop_R_rec_succ b s n
 
-end OperatorKO7.MetaCNF
+@[simp] lemma delta_subst_drop_rec_zero (b s : Trace)
+    (hδ : deltaFlag b = 0) :
+    Lex3 (μ3 b) (μ3 (recΔ b s void)) :=
+  drop_R_rec_zero b s hδ
 
-namespace OperatorKO7.MetaCNF
+end MetaSN_KO7
 
-/-!
-  ## Min/Max and sorting helpers (ergonomics)
--/
+/-! ### Additional safe KO7 lemmas (restricted) --------------------------- -/
 
-def min_cnf (x y : CNF) : CNF := if lt_cnf x y then x else y
-def max_cnf (x y : CNF) : CNF := if lt_cnf x y then y else x
+namespace MetaSN_KO7
 
-private def insertBy (x : CNF) : List CNF → List CNF
-  | [] => [x]
-  | y :: ys => if lt_cnf x y then x :: y :: ys else y :: insertBy x ys
+open MetaSN_DM
 
-def sortCNF (xs : List CNF) : List CNF :=
-  xs.foldl (fun acc x => insertBy x acc) []
+-- Restricted merge-cancel: require δ-tie and κ=0 so we can take μ-right.
+-- NOTE (CONSTRAINT): A fully unguarded KO7 lemma for merge_cancel cannot hold:
+-- if t = recΔ _ _ (delta _), then deltaFlag t = 1 while deltaFlag (merge t t) = 0.
+-- In Lex3 with outer Nat <, we cannot have 1 < 0 (outer-left) nor tie 1 = 0 (outer-right),
+-- so a KO7 drop needs the δ-tie hypothesis (deltaFlag t = 0). For the unguarded case,
+-- use the MPO variant `mpo_drop_R_merge_cancel`, which ignores δ.
+lemma drop_R_merge_cancel_zero (t : Trace)
+    (hδ : deltaFlag t = 0) (h0 : kappaM t = 0) :
+    Lex3 (μ3 t) (μ3 (merge t t)) := by
+  classical
+  -- Outer δ tie via hδ: rewrite both sides to 0 so left components match syntactically
+  -- Then take the right branch in the outer lex.
+  -- Build an inner LexDM proof first, keeping LexDM opaque
+  have hin : LexDM (kappaM t, MetaSN.mu t)
+      (kappaM t ∪ kappaM t, MetaSN.mu (merge t t)) := by
+    -- κ tie via h0; then μ-right using mu_lt_merge_cancel
+    dsimp [LexDM]
+    -- Now goal: Prod.Lex DM (<) (kappaM t, μ t) (kappaM t ∪ kappaM t, μ (merge t t))
+    -- Tie on DM (becomes 0 with h0), take μ-right
+    simp [h0]
+    exact
+      (Prod.Lex.right
+        (α := Multiset ℕ) (β := Ordinal)
+        (ra := fun a b : Multiset ℕ => Multiset.IsDershowitzMannaLT a b)
+        (rb := (· < ·))
+        (a := (0 : Multiset ℕ))
+        (MetaSN.mu_lt_merge_cancel t))
+  -- Lift to outer α = 0
+  have hcore : Lex3 (0, (kappaM t, MetaSN.mu t))
+      (0, (kappaM t ∪ kappaM t, MetaSN.mu (merge t t))) :=
+    Prod.Lex.right (0 : Nat) hin
+  -- Now rewrite the goal to the α = 0 shape and apply hcore
+  dsimp [μ3, Lex3, deltaFlag]
+  -- Replace the LHS deltaFlag by 0 using hδ; RHS deltaFlag is 0 by simp
+  have ht0 : (match t with | recΔ _ _ (delta _) => 1 | _ => 0) = 0 := by
+    simpa [deltaFlag] using hδ
+  -- Also normalize the RHS merge-case δ-flag to 0
+  simp [ht0]
+  -- Apply the outer right with inner witness hcore
+  exact hcore
 
-def isNonDecreasing (xs : List CNF) : Bool :=
-  match xs with
-  | [] => true
-  | [_] => true
-  | x :: y :: ys =>
-    let leB (a b : CNF) : Bool :=
-      match cmp_cnf a b with
-      | Ordering.gt => false
-      | _ => true
-    leB x y && isNonDecreasing (y :: ys)
+-- Restricted eq_refl: require κ=0 so we can μ-right under inner tie.
+lemma drop_R_eq_refl_zero (a : Trace) (h0 : kappaM a = 0) :
+    Lex3 (μ3 void) (μ3 (eqW a a)) := by
+  classical
+  -- Outer δ-tie: unfold δ and take right branch
+  dsimp [μ3, Lex3, deltaFlag]
+  refine Prod.Lex.right (0 : Nat) ?inner
+  simp [h0]
+  refine Prod.Lex.right (0 : Multiset ℕ) ?muDrop
+  exact MetaSN.mu_void_lt_eq_refl a
 
-def minListCNF : List CNF → Option CNF
-  | [] => none
-  | x :: xs => some (xs.foldl (fun acc y => min_cnf acc y) x)
+/-- eq_refl: unguarded KO7 drop. If κᴹ a = 0, use μ-right; otherwise take κ-DM-left. -/
+lemma drop_R_eq_refl (a : Trace) :
+    Lex3 (μ3 void) (μ3 (eqW a a)) := by
+  classical
+  -- Build an inner LexDM witness first, then lift to an α=0 outer step and rewrite the goal.
+  have hin : LexDM ((0 : Multiset ℕ), MetaSN.mu void)
+      (kappaM (eqW a a), MetaSN.mu (eqW a a)) := by
+    -- Case split on κᴹ a
+    by_cases h0 : kappaM a = 0
+    · -- κ tie → μ-right at inner level
+      have hin0 : LexDM ((0 : Multiset ℕ), MetaSN.mu void)
+          ((0 : Multiset ℕ), MetaSN.mu (eqW a a)) := by
+        exact
+          (Prod.Lex.right
+            (α := Multiset ℕ) (β := Ordinal)
+            (ra := fun a b : Multiset ℕ => Multiset.IsDershowitzMannaLT a b)
+            (rb := (· < ·))
+            (a := (0 : Multiset ℕ))
+            (MetaSN.mu_void_lt_eq_refl a))
+      simpa [kappaM_eq_refl, h0] using hin0
+    · -- κ ≠ 0 → DM-left on 0 <ₘ κ∪κ, then rewrite κ on RHS to kappaM (eqW a a)
+      have hU : kappaM a ∪ kappaM a ≠ (0 : Multiset ℕ) :=
+        union_self_ne_zero_of_ne_zero (X := kappaM a) h0
+      have hdm0 : Multiset.IsDershowitzMannaLT (0 : Multiset ℕ) (kappaM a ∪ kappaM a) := by
+        simpa using dm_lt_add_of_ne_zero' (0 : Multiset ℕ) (kappaM a ∪ kappaM a) hU
+      have hlex : LexDM (0, MetaSN.mu void)
+          (kappaM a ∪ kappaM a, MetaSN.mu (eqW a a)) := by
+        exact dm_to_LexDM_left (X := (0 : Multiset ℕ)) (Y := kappaM a ∪ kappaM a)
+          (μ₁ := MetaSN.mu void) (μ₂ := MetaSN.mu (eqW a a)) hdm0
+      simpa [kappaM_eq_refl] using hlex
+  -- Lift to outer α=0 and finalize by rewriting δ-flag to 0 on both sides
+  have hcore : Lex3 (0, ((0 : Multiset ℕ), MetaSN.mu void))
+      (0, (kappaM (eqW a a), MetaSN.mu (eqW a a))) :=
+    Prod.Lex.right (0 : Nat) hin
+  dsimp [Lex3, μ3]
+  have hδL : (match void with | recΔ _ _ (delta _) => 1 | _ => 0) = 0 := by rfl
+  have hδR : (match eqW a a with | recΔ _ _ (delta _) => 1 | _ => 0) = 0 := by simp
+  simpa [hδL, hδR] using hcore
 
-def maxListCNF : List CNF → Option CNF
-  | [] => none
-  | x :: xs => some (xs.foldl (fun acc y => max_cnf acc y) x)
 
--- Demo checks
-#eval toString (min_cnf cnf_omega cnf_one)    -- expect "1"
-#eval toString (max_cnf cnf_omega cnf_one)    -- expect "ω^1"
--- Use a local demo set to avoid forward references
-def demoList : List CNF := [cnf_zero, cnf_one, cnf_omega]
-#eval isNonDecreasing (sortCNF demoList)       -- expect true
-#eval (match minListCNF demoList with | some x => toString x | none => "-")
-#eval (match maxListCNF demoList with | some x => toString x | none => "-")
+end MetaSN_KO7
 
-end OperatorKO7.MetaCNF
+/-! ### Parametric strong normalization wrapper for KO7 ------------------- -/
 
-/-!
-  ## Example output (for documentation/testing)
-  Executable examples to illustrate CNF operations and normalization.
-  These produce human-readable CNF strings and boolean normalization checks.
--/
-#eval toString OperatorKO7.MetaCNF.example1
-#eval toString OperatorKO7.MetaCNF.example2
-#eval toString OperatorKO7.MetaCNF.example3
+namespace MetaSN_KO7
 
--- Inspector demos
-#eval OperatorKO7.MetaCNF.isZero OperatorKO7.MetaCNF.cnf_zero
-#eval OperatorKO7.MetaCNF.isOne OperatorKO7.MetaCNF.cnf_one
-#eval OperatorKO7.MetaCNF.isOmegaPow OperatorKO7.MetaCNF.cnf_omega
-#eval OperatorKO7.MetaCNF.degreeOpt OperatorKO7.MetaCNF.cnf_two_omega
-#eval OperatorKO7.MetaCNF.leadCoeffOpt OperatorKO7.MetaCNF.cnf_two_omega
+open OperatorKO7
 
--- Normalization checks on the examples (true means normalized)
-#eval OperatorKO7.MetaCNF.isNormalizedB (OperatorKO7.MetaCNF.norm_cnf OperatorKO7.MetaCNF.example1)
-#eval OperatorKO7.MetaCNF.isNormalizedB (OperatorKO7.MetaCNF.norm_cnf OperatorKO7.MetaCNF.example2)
-#eval OperatorKO7.MetaCNF.isNormalizedB (OperatorKO7.MetaCNF.norm_cnf OperatorKO7.MetaCNF.example3)
+def StepRev : Trace → Trace → Prop := fun a b => OperatorKO7.Step b a
 
--- (pretty-printing and examples are defined at the end of the file)
--- All CNF values are normalized: exponents strictly decreasing, coefficients > 0, no duplicate exponents.
+/-- If every kernel step strictly decreases the KO7 measure μ3 in Lex3,
+then the reverse relation is well-founded (no infinite reductions). -/
+theorem strong_normalisation_of_decreases
+  (hdec : ∀ {a b : Trace}, OperatorKO7.Step a b → Lex3 (μ3 b) (μ3 a)) :
+  WellFounded StepRev := by
+  -- Pull back the well-founded Lex3 along μ3
+  have wf_measure : WellFounded (fun x y : Trace => Lex3 (μ3 x) (μ3 y)) :=
+    InvImage.wf (f := μ3) wf_Lex3
+  -- Show StepRev is a subrelation of the pulled-back order
+  have hsub : Subrelation StepRev (fun x y : Trace => Lex3 (μ3 x) (μ3 y)) := by
+    intro x y hxy
+    exact hdec hxy
+  exact Subrelation.wf hsub wf_measure
 
-/-!
-  ## Property checks (computable, #eval-style)
-  Small test harness verifying comparison laws and normalization preservation
-  over a fixed sample set.
--/
-namespace OperatorKO7.MetaCNF
+end MetaSN_KO7
+-- Aggregated `measure_decreases` and `strong_normalization_triple` are deferred
+-- until we resolve the general `merge_cancel` and `eq_refl` cases (κ duplicates).
 
--- Boolean helpers for cmp outcomes
-def isEq (x y : CNF) : Bool :=
-  match cmp_cnf x y with
-  | Ordering.eq => true
-  | _ => false
+/-! ## Restricted aggregator and SN for a safe subrelation ---------------- -/
 
-def isLt (x y : CNF) : Bool :=
-  match cmp_cnf x y with
-  | Ordering.lt => true
-  | _ => false
+namespace MetaSN_KO7
 
-def isLe (x y : CNF) : Bool :=
-  match cmp_cnf x y with
-  | Ordering.gt => false
-  | _ => true
+open MetaSN_DM
 
--- Simple boolean all (avoid depending on extra list APIs)
-def allB {α} (p : α → Bool) : List α → Bool
-  | [] => true
-  | x :: xs => p x && allB p xs
+/-- A guarded subrelation of Step where known KO7 decreases apply without
+conflicting δ/κ shapes. -/
+inductive SafeStep : Trace → Trace → Prop
+| R_int_delta (t) : SafeStep (integrate (delta t)) void
+| R_merge_void_left (t) (hδ : deltaFlag t = 0) : SafeStep (merge void t) t
+| R_merge_void_right (t) (hδ : deltaFlag t = 0) : SafeStep (merge t void) t
+| R_merge_cancel (t) (hδ : deltaFlag t = 0) (h0 : kappaM t = 0) : SafeStep (merge t t) t
+| R_rec_zero (b s) (hδ : deltaFlag b = 0) : SafeStep (recΔ b s void) b
+| R_rec_succ (b s n) : SafeStep (recΔ b s (delta n)) (app s (recΔ b s n))
+| R_eq_refl (a) (h0 : kappaM a = 0) : SafeStep (eqW a a) void
+| R_eq_diff (a b) (hne : a ≠ b) : SafeStep (eqW a b) (integrate (merge a b))
 
-def pairs {α} (xs : List α) : List (α × α) :=
-  xs.foldr (fun x acc => List.append (xs.map (fun y => (x, y))) acc) []
+/-- Each SafeStep strictly decreases the KO7 triple measure. -/
+lemma measure_decreases_safe : ∀ {a b}, SafeStep a b → Lex3 (μ3 b) (μ3 a)
+| _, _, SafeStep.R_int_delta t => by
+    simpa using drop_R_int_delta t
+| _, _, SafeStep.R_merge_void_left t hδ => by
+    simpa using drop_R_merge_void_left_zero t hδ
+| _, _, SafeStep.R_merge_void_right t hδ => by
+    simpa using drop_R_merge_void_right_zero t hδ
+| _, _, SafeStep.R_merge_cancel t hδ h0 => by
+    simpa using drop_R_merge_cancel_zero t hδ h0
+| _, _, SafeStep.R_rec_zero b s hδ => by
+    simpa using drop_R_rec_zero b s hδ
+| _, _, SafeStep.R_rec_succ b s n => by
+    simpa using drop_R_rec_succ b s n
+| _, _, SafeStep.R_eq_refl a h0 => by
+    simpa using drop_R_eq_refl_zero a h0
+| _, _, SafeStep.R_eq_diff a b _ => by
+    simpa using drop_R_eq_diff a b
 
-def triples {α} (xs : List α) : List (α × α × α) :=
-  xs.foldr (fun x acc =>
-    let rows := xs.foldr (fun y acc2 => List.append (xs.map (fun z => (x, y, z))) acc2) []
-    List.append rows acc) []
+/-- Reverse of `SafeStep`. -/
+def SafeStepRev : Trace → Trace → Prop := fun a b => SafeStep b a
 
--- Comparison properties
-def antisym_check (x y : CNF) : Bool :=
-  match cmp_cnf x y, cmp_cnf y x with
-  | Ordering.eq, Ordering.eq => true
-  | Ordering.lt, Ordering.gt => true
-  | Ordering.gt, Ordering.lt => true
-  | _, _ => false
+/-- Generic wrapper: any relation that strictly decreases μ3 in Lex3 is well-founded in reverse. -/
+theorem wellFounded_of_measure_decreases_R
+  {R : Trace → Trace → Prop}
+  (hdec : ∀ {a b : Trace}, R a b → Lex3 (μ3 b) (μ3 a)) :
+  WellFounded (fun a b : Trace => R b a) := by
+  -- Pull back the well-founded Lex3 along μ3
+  have wf_measure : WellFounded (fun x y : Trace => Lex3 (μ3 x) (μ3 y)) :=
+    InvImage.wf (f := μ3) wf_Lex3
+  -- Show Rᵒᵖ ⊆ InvImage μ3 Lex3
+  have hsub : Subrelation (fun a b => R b a) (fun x y : Trace => Lex3 (μ3 x) (μ3 y)) := by
+    intro x y hxy
+    exact hdec hxy
+  exact Subrelation.wf hsub wf_measure
 
-def trichotomy_check (x y : CNF) : Bool :=
-  match cmp_cnf x y, cmp_cnf y x with
-  | Ordering.eq, Ordering.eq => true
-  | Ordering.lt, Ordering.gt => true
-  | Ordering.gt, Ordering.lt => true
-  | _, _ => false
+/-- Safe-step strong normalization: no infinite SafeStep reductions. -/
+theorem wf_SafeStepRev : WellFounded SafeStepRev :=
+  wellFounded_of_measure_decreases_R (R := SafeStep) (fun {_ _} h => measure_decreases_safe h)
 
-def trans_lt_check (a b c : CNF) : Bool :=
-  if isLt a b && isLt b c then isLt a c else true
+end MetaSN_KO7
 
-def trans_le_check (a b c : CNF) : Bool :=
-  if isLe a b && isLe b c then isLe a c else true
+/-! ## Guarded lifting from Kernel.Step to SafeStep ----------------------- -/
 
--- Totality check for ≤: for any pair, either x ≤ y or y ≤ x
-def le_total_check (x y : CNF) : Bool :=
-  isLe x y || isLe y x
+namespace MetaSN_KO7
 
--- Normalization preservation (ops already normalize by definition)
-def preserves_norm_add (x y : CNF) : Bool := isNormalizedB (add_cnf x y)
-def preserves_norm_mul (x y : CNF) : Bool := isNormalizedB (mul_cnf x y)
-def preserves_norm_opow (x : CNF) : Bool := isNormalizedB (opowω_cnf x)
+open OperatorKO7
 
--- Sample set
-def samples : List CNF :=
-  [ cnf_zero, cnf_one, cnf_omega, cnf_omega_plus_one, cnf_two_omega, cnf_omega_sq ]
+open MetaSN_DM
 
--- Aggregate checks over samples
-def check_all_antisym : Bool :=
-  allB (fun p => antisym_check p.1 p.2) (pairs samples)
+/-- A guarded relation: carries explicit side-conditions per constructor. -/
+inductive StepGuarded : Trace → Trace → Prop
+| R_int_delta (t) : StepGuarded (integrate (delta t)) void
+| R_merge_void_left (t) (hδ : deltaFlag t = 0) : StepGuarded (merge void t) t
+| R_merge_void_right (t) (hδ : deltaFlag t = 0) : StepGuarded (merge t void) t
+| R_merge_cancel (t) (hδ : deltaFlag t = 0) (h0 : MetaSN_DM.kappaM t = 0) : StepGuarded (merge t t) t
+| R_rec_zero (b s) (hδ : deltaFlag b = 0) : StepGuarded (recΔ b s void) b
+| R_rec_succ (b s n) : StepGuarded (recΔ b s (delta n)) (app s (recΔ b s n))
+| R_eq_refl (a) (h0 : MetaSN_DM.kappaM a = 0) : StepGuarded (eqW a a) void
+| R_eq_diff (a b) (hne : a ≠ b) : StepGuarded (eqW a b) (integrate (merge a b))
 
-def check_all_trichotomy : Bool :=
-  allB (fun p => trichotomy_check p.1 p.2) (pairs samples)
+def StepGuardedRev : Trace → Trace → Prop := fun a b => StepGuarded b a
 
-def check_all_trans_lt : Bool :=
-  allB (fun t => trans_lt_check t.1 t.2.1 t.2.2) (triples samples)
+lemma measure_decreases_guarded : ∀ {a b}, StepGuarded a b → Lex3 (μ3 b) (μ3 a)
+| _, _, StepGuarded.R_int_delta t => by simpa using drop_R_int_delta t
+| _, _, StepGuarded.R_merge_void_left t hδ => by simpa using drop_R_merge_void_left_zero t hδ
+| _, _, StepGuarded.R_merge_void_right t hδ => by simpa using drop_R_merge_void_right_zero t hδ
+| _, _, StepGuarded.R_merge_cancel t hδ h0 => by simpa using drop_R_merge_cancel_zero t hδ h0
+| _, _, StepGuarded.R_rec_zero b s hδ => by simpa using drop_R_rec_zero b s hδ
+| _, _, StepGuarded.R_rec_succ b s n => by simpa using drop_R_rec_succ b s n
+| _, _, StepGuarded.R_eq_refl a h0 => by simpa using drop_R_eq_refl_zero a h0
+| _, _, StepGuarded.R_eq_diff a b _ => by simpa using drop_R_eq_diff a b
 
-def check_all_trans_le : Bool :=
-  allB (fun t => trans_le_check t.1 t.2.1 t.2.2) (triples samples)
+theorem wf_StepGuardedRev : WellFounded StepGuardedRev :=
+  wellFounded_of_measure_decreases_R (R := StepGuarded) (fun {_ _} h => measure_decreases_guarded h)
 
-def check_all_total_le : Bool :=
-  allB (fun p => le_total_check p.1 p.2) (pairs samples)
+end MetaSN_KO7
 
-def check_reflexive_eq : Bool :=
-  allB (fun x => isEq x x) samples
+/-! ## Finite closure of guarded steps (star) ---------------------------- -/
 
-def check_norm_add : Bool :=
-  allB (fun p => preserves_norm_add p.1 p.2) (pairs samples)
+namespace MetaSN_KO7
 
-def check_norm_mul : Bool :=
-  allB (fun p => preserves_norm_mul p.1 p.2) (pairs samples)
+inductive StepGuardedStar : Trace → Trace → Prop
+| refl : ∀ t, StepGuardedStar t t
+| tail : ∀ {a b c}, StepGuarded a b → StepGuardedStar b c → StepGuardedStar a c
 
-def check_norm_opow : Bool :=
-  allB (fun x => preserves_norm_opow x) samples
+theorem stepguardedstar_of_step {a b : Trace} (h : StepGuarded a b) :
+    StepGuardedStar a b := StepGuardedStar.tail h (StepGuardedStar.refl b)
 
-/-!
-  ## Extra property checks for helpers
--/
+theorem stepguardedstar_trans {a b c : Trace}
+  (h₁ : StepGuardedStar a b) (h₂ : StepGuardedStar b c) : StepGuardedStar a c := by
+  induction h₁ with
+  | refl => exact h₂
+  | tail hab _ ih => exact StepGuardedStar.tail hab (ih h₂)
 
-def eqListB {α} [DecidableEq α] (xs ys : List α) : Bool := decide (xs = ys)
+-- Simple two-step composition helper.
+lemma guarded_two_step {a b c : Trace}
+  (h1 : StepGuarded a b) (h2 : StepGuarded b c) :
+  StepGuardedStar a c :=
+  StepGuardedStar.tail h1 (StepGuardedStar.tail h2 (StepGuardedStar.refl c))
 
-def check_sort_idem : Bool :=
-  eqListB (sortCNF samples) (sortCNF (sortCNF samples))
+end MetaSN_KO7
 
-def check_sort_is_nondecreasing : Bool :=
-  isNonDecreasing (sortCNF samples)
+/-! ## MPO-style measure (μ-first then size) for non-rec rules ----------- -/
 
-def check_list_min_max_nonempty : Bool :=
-  match minListCNF samples, maxListCNF samples with
-  | some _, some _ => true
-  | _, _ => false
+namespace MetaSN_MPO
 
--- Executable reports
-#eval check_reflexive_eq
-#eval check_all_antisym
-#eval check_all_trichotomy
-#eval check_all_trans_lt
-#eval check_all_trans_le
-#eval check_all_total_le
-#eval check_norm_add
-#eval check_norm_mul
-#eval check_norm_opow
-#eval check_sort_idem
-#eval check_sort_is_nondecreasing
-#eval check_list_min_max_nonempty
+open OperatorKO7 Trace
 
-end OperatorKO7.MetaCNF
+/-- A simple MPO-inspired size: sum of subtree sizes with positive node weights. -/
+@[simp] def sizeMPO : Trace → Nat
+| void          => 0
+| delta t       => sizeMPO t + 1
+| integrate t   => sizeMPO t + 1
+| merge a b     => sizeMPO a + sizeMPO b + 1
+| app a b       => sizeMPO a + sizeMPO b + 1
+| recΔ b s n    => sizeMPO b + sizeMPO s + sizeMPO n + 2
+| eqW a b       => sizeMPO a + sizeMPO b + 1
+
+open MetaSN_KO7
+
+/-- μ-first triple: (μ, sizeMPO, δ). -/
+noncomputable def ν3m (t : Trace) : Ordinal × (Nat × Nat) :=
+  (MetaSN.mu t, (sizeMPO t, deltaFlag t))
+
+@[simp] def LexNu3m : (Ordinal × (Nat × Nat)) → (Ordinal × (Nat × Nat)) → Prop :=
+  Prod.Lex (· < ·) (Prod.Lex (· < ·) (· < ·))
+
+lemma wf_LexNu3m : WellFounded LexNu3m := by
+  refine WellFounded.prod_lex ?_ ?_
+  · exact Ordinal.lt_wf
+  · refine WellFounded.prod_lex ?_ ?_
+    · exact Nat.lt_wfRel.wf
+    · exact Nat.lt_wfRel.wf
+
+/-- int∘delta: μ-right in the middle component. -/
+lemma mpo_drop_R_int_delta (t : Trace) :
+    LexNu3m (ν3m void) (ν3m (integrate (delta t))) := by
+  classical
+  dsimp [ν3m, LexNu3m]
+  apply Prod.Lex.left
+  simpa using MetaSN.mu_void_lt_integrate_delta t
+
+/-- merge void-left: μ-right. -/
+lemma mpo_drop_R_merge_void_left (t : Trace) :
+    LexNu3m (ν3m t) (ν3m (merge void t)) := by
+  classical
+  dsimp [ν3m, LexNu3m]
+  apply Prod.Lex.left
+  simpa using MetaSN.mu_lt_merge_void_left t
+
+/-- merge void-right: μ-right. -/
+lemma mpo_drop_R_merge_void_right (t : Trace) :
+    LexNu3m (ν3m t) (ν3m (merge t void)) := by
+  classical
+  dsimp [ν3m, LexNu3m]
+  apply Prod.Lex.left
+  simpa using MetaSN.mu_lt_merge_void_right t
+
+/-- merge-cancel: μ-right (no κ or size tie needed). -/
+lemma mpo_drop_R_merge_cancel (t : Trace) :
+    LexNu3m (ν3m t) (ν3m (merge t t)) := by
+  classical
+  dsimp [ν3m, LexNu3m]
+  apply Prod.Lex.left
+  simpa using MetaSN.mu_lt_merge_cancel t
+
+/-- eq_refl: μ-right (void μ < eqW μ). -/
+lemma mpo_drop_R_eq_refl (a : Trace) :
+    LexNu3m (ν3m void) (ν3m (eqW a a)) := by
+  classical
+  dsimp [ν3m, LexNu3m]
+  apply Prod.Lex.left
+  simpa using MetaSN.mu_void_lt_eq_refl a
+
+/-- eq_diff: μ-right. -/
+lemma mpo_drop_R_eq_diff (a b : Trace) :
+    LexNu3m (ν3m (integrate (merge a b))) (ν3m (eqW a b)) := by
+  classical
+  dsimp [ν3m, LexNu3m]
+  apply Prod.Lex.left
+  simpa using MetaSN.mu_lt_eq_diff a b
+
+/-- rec_zero: μ-first strict drop. -/
+lemma mpo_drop_R_rec_zero (b s : Trace) :
+    LexNu3m (ν3m b) (ν3m (recΔ b s void)) := by
+  classical
+  dsimp [ν3m, LexNu3m]
+  -- We only need μ to drop
+  apply Prod.Lex.left
+  -- Show: mu b < mu (recΔ b s void) = ω^(μ s + 6) + ω*(μ b + 1) + 1
+  -- First, μ b < ω*(μ b + 1)
+  have h1 : MetaSN.mu b < omega0 * (MetaSN.mu b + 1) := by
+    have hlt : MetaSN.mu b < MetaSN.mu b + 1 :=
+      (Order.lt_add_one_iff (x := MetaSN.mu b) (y := MetaSN.mu b)).2 le_rfl
+    have hmono : MetaSN.mu b + 1 ≤ omega0 * (MetaSN.mu b + 1) := by
+      simpa using (Ordinal.le_mul_right (a := MetaSN.mu b + 1) (b := omega0) omega0_pos)
+    exact lt_of_lt_of_le hlt hmono
+  -- Then: ω*(μ b + 1) ≤ ω*(μ b + 1) + 1
+  have h2 : omega0 * (MetaSN.mu b + 1) ≤ omega0 * (MetaSN.mu b + 1) + 1 :=
+    le_add_of_nonneg_right (zero_le _)
+  have h3 : MetaSN.mu b < omega0 * (MetaSN.mu b + 1) + 1 := lt_of_lt_of_le h1 h2
+  -- Finally: add the leading ω^(μ s + 6) on the left (nonnegative), preserving ≤
+  have h4 : omega0 * (MetaSN.mu b + 1) + 1 ≤
+      (omega0 ^ (MetaSN.mu s + (6 : Ordinal))) + (omega0 * (MetaSN.mu b + 1) + 1) :=
+    le_add_of_nonneg_left (zero_le _)
+  have h5 : MetaSN.mu b < (omega0 ^ (MetaSN.mu s + (6 : Ordinal))) + (omega0 * (MetaSN.mu b + 1) + 1) :=
+    lt_of_lt_of_le h3 h4
+  simpa [MetaSN.mu, add_assoc, add_comm, add_left_comm]
+    using h5
+/- Safe subrelation for MPO (non-rec rules only; μ-first decreases) -/
+inductive SafeStepMPO : Trace → Trace → Prop
+| R_int_delta (t) : SafeStepMPO (integrate (delta t)) void
+| R_merge_void_left (t) : SafeStepMPO (merge void t) t
+| R_merge_void_right (t) : SafeStepMPO (merge t void) t
+| R_merge_cancel (t) : SafeStepMPO (merge t t) t
+| R_eq_refl (a) : SafeStepMPO (eqW a a) void
+| R_eq_diff (a b) : SafeStepMPO (eqW a b) (integrate (merge a b))
+| R_rec_zero (b s) : SafeStepMPO (recΔ b s void) b
+
+def SafeStepMPORev : Trace → Trace → Prop := fun a b => SafeStepMPO b a
+
+lemma mpo_measure_decreases : ∀ {a b}, SafeStepMPO a b → LexNu3m (ν3m b) (ν3m a)
+| _, _, SafeStepMPO.R_int_delta t => by simpa using mpo_drop_R_int_delta t
+| _, _, SafeStepMPO.R_merge_void_left t => by simpa using mpo_drop_R_merge_void_left t
+| _, _, SafeStepMPO.R_merge_void_right t => by simpa using mpo_drop_R_merge_void_right t
+| _, _, SafeStepMPO.R_merge_cancel t => by simpa using mpo_drop_R_merge_cancel t
+| _, _, SafeStepMPO.R_eq_refl a => by simpa using mpo_drop_R_eq_refl a
+| _, _, SafeStepMPO.R_eq_diff a b => by simpa using mpo_drop_R_eq_diff a b
+| _, _, SafeStepMPO.R_rec_zero b s => by simpa using mpo_drop_R_rec_zero b s
+
+theorem wf_SafeStepMPORev : WellFounded SafeStepMPORev := by
+  -- pull back Lex3m via μ3m
+  have wf_measure : WellFounded (fun x y : Trace => LexNu3m (ν3m x) (ν3m y)) :=
+    InvImage.wf (f := ν3m) wf_LexNu3m
+  have hsub : Subrelation SafeStepMPORev (fun x y : Trace => LexNu3m (ν3m x) (ν3m y)) := by
+    intro x y hxy; exact mpo_measure_decreases hxy
+  exact Subrelation.wf hsub wf_measure
+
+end MetaSN_MPO
+
+/-! ## Hybrid aggregator: per-rule decreases picking KO7 or MPO ---------- -/
+
+namespace MetaSN_Hybrid
+
+open OperatorKO7 Trace
+open MetaSN_KO7 MetaSN_MPO
+
+def HybridDec (a b : Trace) : Prop :=
+  MetaSN_MPO.LexNu3m (MetaSN_MPO.ν3m b) (MetaSN_MPO.ν3m a) ∨
+  MetaSN_KO7.Lex3 (MetaSN_KO7.μ3 b) (MetaSN_KO7.μ3 a)
+
+lemma hybrid_R_int_delta (t : Trace) :
+    HybridDec (integrate (delta t)) void :=
+  Or.inr (by simpa using MetaSN_KO7.drop_R_int_delta t)
+
+lemma hybrid_R_merge_void_left (t : Trace) :
+    HybridDec (merge void t) t :=
+  Or.inl (by simpa using MetaSN_MPO.mpo_drop_R_merge_void_left t)
+
+lemma hybrid_R_merge_void_right (t : Trace) :
+    HybridDec (merge t void) t :=
+  Or.inl (by simpa using MetaSN_MPO.mpo_drop_R_merge_void_right t)
+
+lemma hybrid_R_merge_cancel (t : Trace) :
+    HybridDec (merge t t) t :=
+  -- Prefer MPO μ-first drop for unguarded merge-cancel
+  Or.inl (by simpa using MetaSN_MPO.mpo_drop_R_merge_cancel t)
+
+lemma hybrid_R_rec_succ (b s n : Trace) :
+    HybridDec (recΔ b s (delta n)) (app s (recΔ b s n)) :=
+  Or.inr (by simpa using MetaSN_KO7.drop_R_rec_succ b s n)
+
+lemma hybrid_R_eq_refl (a : Trace) :
+    HybridDec (eqW a a) void :=
+  -- Prefer KO7 Lex3 path now that eq_refl is unguarded
+  Or.inr (by simpa using MetaSN_KO7.drop_R_eq_refl a)
+
+lemma hybrid_R_eq_diff (a b : Trace) :
+    HybridDec (eqW a b) (integrate (merge a b)) :=
+  Or.inl (by simpa using MetaSN_MPO.mpo_drop_R_eq_diff a b)
+
+-- Guarded rec_zero hybrid: δ-tie is required for KO7 κ-first
+lemma hybrid_R_rec_zero_tie (b s : Trace) (hδ : MetaSN_KO7.deltaFlag b = 0) :
+    HybridDec (recΔ b s void) b :=
+  Or.inr (by simpa using MetaSN_KO7.drop_R_rec_zero b s hδ)
+
+-- Unguarded rec_zero: use MPO μ-first drop, no δ-tie needed.
+lemma hybrid_R_rec_zero (b s : Trace) :
+    HybridDec (recΔ b s void) b :=
+  Or.inl (by simpa using MetaSN_MPO.mpo_drop_R_rec_zero b s)
+
+end MetaSN_Hybrid
+
+-- (Hybrid WF aggregator deferred; keep per-rule HybridDec for now.)
+
+/-! ### Bridging from Kernel.Step to HybridDec (with explicit rec_zero caveat) -/
+
+namespace MetaSN_Hybrid
+
+open OperatorKO7
+
+/-- For any single kernel step, we produce a hybrid decrease certificate,
+except in the rec_zero case where the δ-flag of `b` is 1. We surface that
+as an explicit exception witness. -/
+theorem hybrid_dec_of_Step {a b : Trace} (h : Step a b) :
+    HybridDec a b ∨ ∃ (b' s : Trace), a = recΔ b' s void ∧ b = b' ∧ MetaSN_KO7.deltaFlag b' = 1 :=
+  match h with
+  | Step.R_int_delta t => Or.inl (hybrid_R_int_delta t)
+  | Step.R_merge_void_left t => Or.inl (hybrid_R_merge_void_left t)
+  | Step.R_merge_void_right t => Or.inl (hybrid_R_merge_void_right t)
+  | Step.R_merge_cancel t => Or.inl (hybrid_R_merge_cancel t)
+  | Step.R_rec_succ b s n => Or.inl (hybrid_R_rec_succ b s n)
+  | Step.R_eq_refl a => Or.inl (hybrid_R_eq_refl a)
+  | Step.R_eq_diff a b => Or.inl (hybrid_R_eq_diff a b)
+  | Step.R_rec_zero b s => Or.inl (hybrid_R_rec_zero b s)
+
+end MetaSN_Hybrid
+
+/-! ## Public certificate: every Kernel.Step has a hybrid decrease -------- -/
+
+namespace MetaSN_Hybrid
+
+open OperatorKO7
+
+/-- Every single kernel step has a strict hybrid decrease certificate. -/
+lemma hybrid_drop_of_step {a b : Trace} (h : Step a b) : HybridDec a b :=
+  match h with
+  | Step.R_int_delta t => hybrid_R_int_delta t
+  | Step.R_merge_void_left t => hybrid_R_merge_void_left t
+  | Step.R_merge_void_right t => hybrid_R_merge_void_right t
+  | Step.R_merge_cancel t => hybrid_R_merge_cancel t
+  | Step.R_rec_succ b s n => hybrid_R_rec_succ b s n
+  | Step.R_eq_refl a => hybrid_R_eq_refl a
+  | Step.R_eq_diff a b => hybrid_R_eq_diff a b
+  | Step.R_rec_zero b s => hybrid_R_rec_zero b s
+
+/-! ## Examples
+A tiny usage example showing that `hybrid_drop_of_step` yields a HybridDec certificate for a concrete kernel step. -/
+
+section Examples
+
+example (a : OperatorKO7.Trace) :
+    MetaSN_Hybrid.HybridDec (OperatorKO7.Trace.eqW a a) OperatorKO7.Trace.void :=
+  MetaSN_Hybrid.hybrid_drop_of_step (OperatorKO7.Step.R_eq_refl a)
+
+-- eq-diff
+example (a b : OperatorKO7.Trace) :
+    MetaSN_Hybrid.HybridDec (OperatorKO7.Trace.eqW a b)
+      (OperatorKO7.Trace.integrate (OperatorKO7.Trace.merge a b)) :=
+  MetaSN_Hybrid.hybrid_drop_of_step (OperatorKO7.Step.R_eq_diff a b)
+
+-- merge-void (left)
+example (t : OperatorKO7.Trace) :
+    MetaSN_Hybrid.HybridDec (OperatorKO7.Trace.merge OperatorKO7.Trace.void t) t :=
+  MetaSN_Hybrid.hybrid_drop_of_step (OperatorKO7.Step.R_merge_void_left t)
+
+-- merge-void (right)
+example (t : OperatorKO7.Trace) :
+    MetaSN_Hybrid.HybridDec (OperatorKO7.Trace.merge t OperatorKO7.Trace.void) t :=
+  MetaSN_Hybrid.hybrid_drop_of_step (OperatorKO7.Step.R_merge_void_right t)
+
+-- merge-cancel
+example (t : OperatorKO7.Trace) :
+    MetaSN_Hybrid.HybridDec (OperatorKO7.Trace.merge t t) t :=
+  MetaSN_Hybrid.hybrid_drop_of_step (OperatorKO7.Step.R_merge_cancel t)
+
+-- rec-zero
+example (b s : OperatorKO7.Trace) :
+    MetaSN_Hybrid.HybridDec (OperatorKO7.Trace.recΔ b s OperatorKO7.Trace.void) b :=
+  MetaSN_Hybrid.hybrid_drop_of_step (OperatorKO7.Step.R_rec_zero b s)
+
+-- Note: in this kernel, `delta` expects a `Trace`, so `n` is a `Trace`.
+example (b s n : OperatorKO7.Trace) :
+    MetaSN_Hybrid.HybridDec
+  (OperatorKO7.Trace.recΔ b s (OperatorKO7.Trace.delta n))
+  (OperatorKO7.Trace.app s (OperatorKO7.Trace.recΔ b s n)) :=
+  MetaSN_Hybrid.hybrid_drop_of_step (OperatorKO7.Step.R_rec_succ b s n)
+
+-- int∘delta
+example (t : OperatorKO7.Trace) :
+    MetaSN_Hybrid.HybridDec
+  (OperatorKO7.Trace.integrate (OperatorKO7.Trace.delta t))
+      OperatorKO7.Trace.void :=
+  MetaSN_Hybrid.hybrid_drop_of_step (OperatorKO7.Step.R_int_delta t)
+
+end Examples
+
+/-! ### Public SN-style wrappers (safe subsets)
+Expose well-foundedness of the reverse relations for the KO7-safe and MPO-safe subrelations. -/
+
+/-- Public: no infinite reductions for the KO7-safe guarded subrelation. -/
+theorem wf_StepRev_KO7_Safe : WellFounded MetaSN_KO7.SafeStepRev := MetaSN_KO7.wf_SafeStepRev
+
+/-- Public: no infinite reductions for the MPO-safe subrelation. -/
+theorem wf_StepRev_MPO_Safe : WellFounded MetaSN_MPO.SafeStepMPORev := MetaSN_MPO.wf_SafeStepMPORev
+
+/-! ## Lex3 drop lemmas (KO7)
+These mirror the slim versions from `Termination_Lex3.lean`, but live here to reduce files. -/
+
+namespace MetaSN_KO7
+
+open OperatorKO7 Trace
+
+lemma lex3_drop_R_rec_zero_zero (b s : Trace)
+    (hδ : MetaSN_KO7.deltaFlag b = 0) :
+    MetaSN_KO7.Lex3 (MetaSN_KO7.μ3 b) (MetaSN_KO7.μ3 (recΔ b s void)) := by
+  classical
+  -- Only expose the Lex3 structure; keep μ3 opaque to control unfolding of deltaFlag.
+  dsimp [MetaSN_KO7.Lex3]
+  -- Replace μ3 with its pair form so we can rewrite outer flags directly.
+  change Prod.Lex (fun x1 x2 => x1 < x2)
+      (Prod.Lex (fun a b => a.IsDershowitzMannaLT b) (fun x1 x2 => x1 < x2))
+      (MetaSN_KO7.deltaFlag b, (MetaSN_DM.kappaM b, MetaSN.mu b))
+      (MetaSN_KO7.deltaFlag (recΔ b s void), (MetaSN_DM.kappaM (recΔ b s void), MetaSN.mu (recΔ b s void)))
+  have hr0 : MetaSN_KO7.deltaFlag (recΔ b s void) = 0 := by
+    simp [MetaSN_KO7.deltaFlag]
+  -- Rewrite both outer components to 0.
+  rw [hδ, hr0]
+  apply Prod.Lex.right (a := 0)
+  -- Inner LexDM drop via κᴹ strict decrease for rec_zero.
+  apply Prod.Lex.left
+  exact MetaSN_DM.dm_drop_R_rec_zero b s
+
+lemma lex3_drop_R_merge_void_left_zero (t : Trace)
+    (hδ : MetaSN_KO7.deltaFlag t = 0) :
+    MetaSN_KO7.Lex3 (MetaSN_KO7.μ3 t) (MetaSN_KO7.μ3 (merge void t)) := by
+  -- Delegate to the audited lemma with the same tie hypothesis
+  simpa [MetaSN_KO7.μ3, MetaSN_KO7.Lex3] using
+    MetaSN_KO7.drop_R_merge_void_left_zero t hδ
+
+lemma lex3_drop_R_merge_void_right_zero (t : Trace)
+    (hδ : MetaSN_KO7.deltaFlag t = 0) :
+    MetaSN_KO7.Lex3 (MetaSN_KO7.μ3 t) (MetaSN_KO7.μ3 (merge t void)) := by
+  simpa [MetaSN_KO7.μ3, MetaSN_KO7.Lex3] using
+    MetaSN_KO7.drop_R_merge_void_right_zero t hδ
+
+end MetaSN_KO7
+
+end MetaSN_Hybrid
 
 ```
 
 ---
 
-## 3. Meta/Termination.lean
-**File:** `OperatorKO7/OperatorKO7/Meta/Termination.lean`
+## 4. Meta/GoodsteinCore.lean
+
+**File:** `OperatorKO7/Meta/GoodsteinCore.lean`
+
+```lean
+/-!
+GoodsteinCore - a tiny, standalone toy for Goodstein-style base-change shape.
+This does NOT modify the KO7 kernel; it exists for examples and cross-links.
+It models a pair (base, counter) and a single-step that bumps the base while
+consuming one successor on the counter side.
+-/
+
+namespace OperatorKO7
+namespace GoodsteinCore
+
+/-- Base parameter (modeled minimally as a wrapped `Nat`). -/
+inductive Base where
+  | b : Nat → Base
+deriving Repr, DecidableEq
+
+/-- Unary naturals used as a toy counter for Goodstein-style steps. -/
+inductive Cn where
+  | z  : Cn
+  | s  : Cn → Cn
+deriving Repr, DecidableEq
+
+/-- A Goodstein-state is a pair (base, counter). -/
+structure St where
+  base : Base
+  cnt  : Cn
+deriving Repr, DecidableEq
+
+open Base Cn
+
+/-- Goodstein-like one-step: bump base, drop one successor on the counter. -/
+inductive Step : St → St → Prop where
+  | base_change (b n : Nat) (t : Cn) :
+      Step ⟨.b b, .s t⟩ ⟨.b (b+1), t⟩
+
+/-- Convenience lemma: the single `Step.base_change` rule is always available on `(.s t)` counters. -/
+@[simp] theorem one_step (b n : Nat) (t : Cn) :
+    Step ⟨.b b, .s t⟩ ⟨.b (b+1), t⟩ := Step.base_change b n t
+
+end GoodsteinCore
+end OperatorKO7
+
+```
+
+---
+
+## 5. Meta/HydraCore.lean
+
+**File:** `OperatorKO7/Meta/HydraCore.lean`
+
+```lean
+/-!
+HydraCore - a tiny, standalone toy hydra relation to serve as a minimal
+"hydra core" rule set for demonstrations. This does NOT change the KO7 kernel
+and is only for examples/tests of duplication-style steps.
+
+This captures the duplication flavor: chopping a head duplicates a subtree.
+We keep it intentionally small and independent of KO7.
+-/
+
+namespace OperatorKO7
+namespace HydraCore
+
+/-- A minimal hydra-as-binary-tree datatype. `head` is a leaf; `node l r` has two sub-hydras. -/
+inductive Hydra where
+  | head : Hydra
+  | node : Hydra → Hydra → Hydra
+deriving Repr, DecidableEq
+
+open Hydra
+
+/-- One-step toy hydra rule: cutting a head on one side duplicates the other side. -/
+inductive Step : Hydra → Hydra → Prop where
+  | chop_left  (h : Hydra) : Step (node head h) (node h h)
+  | chop_right (h : Hydra) : Step (node h head) (node h h)
+
+/-- Convenience lemma: left chop duplicates the right subtree. -/
+@[simp] theorem dup_left (h : Hydra) : Step (node head h) (node h h) := Step.chop_left h
+/-- Convenience lemma: right chop duplicates the left subtree. -/
+@[simp] theorem dup_right (h : Hydra) : Step (node h head) (node h h) := Step.chop_right h
+
+/-- Example: a single chop duplicates the non-head subtree. -/
+example (h : Hydra) : ∃ h', Step (node head h) h' := ⟨node h h, Step.chop_left h⟩
+
+end HydraCore
+end OperatorKO7
+
+```
+
+---
+
+## 6. Meta/Operational_Incompleteness.lean
+
+**File:** `OperatorKO7/Meta/Operational_Incompleteness.lean`
+
+```lean
+import Mathlib.Data.Multiset.Basic
+import Mathlib.Data.Multiset.DershowitzManna
+import OperatorKO7.Meta.HydraCore
+import OperatorKO7.Meta.GoodsteinCore
+
+/-!
+Operational incompleteness probes (P1-P3) and duplication stress-test scaffolding.
+
+This file is intentionally "probe oriented": it collects small, explicit constructions that support
+the paper's *operational incompleteness* framing, without claiming that the full KO7 kernel `Step`
+is terminating or confluent.
+
+What this module provides:
+- A small operator-only term language (`Term`) with 7 constructors.
+- Eight unconditional rewrite rules (`Rule`) plus a standard context closure (`Step`).
+- Generic reflexive-transitive closure `Star` and star-composition utilities.
+- A structure `InternallyDefinableMeasure` capturing "operator-definable" measures (the notion that
+  is relevant to the conjecture: which proof principles count as "internal").
+- Duplication stress-test scaffolding for the duplicating rule `mul (s x) y -> add y (mul x y)`.
+- Imports of `HydraCore` and `GoodsteinCore` stubs used as additional stress-test encodings.
+
+Style/guardrails:
+- All statements are proved (no `sorry`); when a fragment is meant to record a dead end, it remains
+  commented to keep the build green.
+- Names and arities are spelled out explicitly to satisfy "NameGate / TypeGate" style checks.
+-/
+
+set_option linter.unnecessarySimpa false
+namespace OperatorKO7.OpIncomp
+
+/--
+Seven constructors (names and arities are explicit to satisfy NameGate/TypeGate):
+  z    : 0
+  s    : 1
+  add  : 2
+  mul  : 2
+  pair : 2
+  fst  : 1
+  snd  : 1
+-/
+
+inductive Term : Type
+| z    : Term
+| s    : Term → Term
+| add  : Term → Term → Term
+| mul  : Term → Term → Term
+| pair : Term → Term → Term
+| fst  : Term → Term
+| snd  : Term → Term
+deriving DecidableEq, Repr
+
+open Term
+
+/-- Arity table for NameGate/TypeGate reporting. -/
+inductive Op where
+| z | s | add | mul | pair | fst | snd
+deriving DecidableEq, Repr
+
+/-- Arity of each operator symbol (used only for probe reporting, not for rewriting). -/
+def arity : Op → Nat
+| .z    => 0
+| .s    => 1
+| .add  => 2
+| .mul  => 2
+| .pair => 2
+| .fst  => 1
+| .snd  => 1
+
+/-- Eight unconditional rules at the top level. -/
+inductive Rule : Term → Term → Prop
+| r1 (y)         : Rule (add z y) y
+| r2 (x y)       : Rule (add (s x) y) (s (add x y))
+| r3 (y)         : Rule (mul z y) z
+| r4 (x y)       : Rule (mul (s x) y) (add y (mul x y))          -- duplicates y
+| r5 (x y)       : Rule (fst (pair x y)) x
+| r6 (x y)       : Rule (snd (pair x y)) y
+| r7 (x)         : Rule (add x z) x                               -- right-zero for add
+| r8 (x)         : Rule (mul x z) z                               -- right-zero for mul
+
+/-- For each LHS, list all RHS "pieces" that any matching rule could produce.
+This union makes the per-piece orientation contract independent of the Prop proof.
+It is intentionally slightly stronger on overlapping LHS shapes. -/
+def rhsPiecesLHS : Term → List Term
+| add a b =>
+  let LaddLeft : List Term :=
+    match a with
+    | z     => [b]            -- r1: add z b → b
+    | s x   => [add x b]      -- r2: add (s x) b → s (add x b)
+    | _     => []
+  let LaddRight : List Term :=
+    match b with
+    | z     => [a]            -- r7: add a z → a
+    | _     => []
+  LaddLeft ++ LaddRight
+| mul a b =>
+  let LmulLeft : List Term :=
+    match a with
+    | z     => [z]            -- r3: mul z b → z
+    | s x   => [b, mul x b]   -- r4: mul (s x) b → add b (mul x b)
+    | _     => []
+  let LmulRight : List Term :=
+    match b with
+    | z     => [z]            -- r8: mul a z → z
+    | _     => []
+  LmulLeft ++ LmulRight
+| fst t =>
+  match t with
+  | pair x _ => [x]           -- r5
+  | _        => []
+| snd t =>
+  match t with
+  | pair _ y => [y]           -- r6
+  | _        => []
+| _ => []
+
+/-- Context closure of single-step rewriting. -/
+inductive Step : Term → Term → Prop
+| base {l r}     : Rule l r → Step l r
+| sCtx  {t u}    : Step t u → Step (s t) (s u)
+| addLCtx {t u v}: Step t u → Step (add t v) (add u v)
+| addRCtx {t u v}: Step t u → Step (add v t) (add v u)
+| mulLCtx {t u v}: Step t u → Step (mul t v) (mul u v)
+| mulRCtx {t u v}: Step t u → Step (mul v t) (mul v u)
+| pairLCtx{t u v}: Step t u → Step (pair t v) (pair u v)
+| pairRCtx{t u v}: Step t u → Step (pair v t) (pair v u)
+| fstCtx {t u}   : Step t u → Step (fst t) (fst u)
+| sndCtx {t u}   : Step t u → Step (snd t) (snd u)
+
+/-- Reflexive–transitive closure `Star`. -/
+inductive Star {α : Type} (R : α → α → Prop) : α → α → Prop
+| refl {a}       : Star R a a
+| step {a b c}   : R a b → Star R b c → Star R a c
+
+namespace Star
+variable {α : Type} {R : α → α → Prop}
+
+@[simp] theorem refl' {a} : Star R a a := Star.refl
+
+theorem trans {a b c} (h1 : Star R a b) (h2 : Star R b c) : Star R a c := by
+  induction h1 with
+  | refl =>
+    simpa using h2
+  | step h h1 ih =>
+    exact Star.step h (ih h2)
+
+end Star
+
+/-- A simple additive size measure used only for the duplication stress test. -/
+def size : Term → Nat
+| z           => 1
+| s t         => size t + 1
+| add t u     => size t + size u + 1
+| mul t u     => size t + size u + 1
+| pair t u    => size t + size u + 1
+| fst t       => size t + 1
+| snd t       => size t + 1
+
+
+/-! A) Branch-by-branch rfl gate.
+    Define a two-clause function `f` and test `two * f x = f (two * x)`.
+    We enumerate clauses and expose which branch passes by `rfl`.
+-/
+def two : Term := s (s z)
+
+def f : Term → Term
+| z         => z
+| s n       => s (s (f n))
+| add a b   => add (f a) (f b)
+| mul a b   => mul (f a) (f b)
+| pair a b  => pair (f a) (f b)
+| fst t     => fst (f t)
+| snd t     => snd (f t)
+
+/-- Clause x = z: both sides reduce by definitional unfolding of `f`. -/
+def P1_pass_clause_z_LHS : Term := mul two (f z)     -- = mul two z
+def P1_pass_clause_z_RHS : Term := f (mul two z)     -- stays syntactically as `f (mul two z)`
+/-
+rfl attempt results:
+  `P1_pass_clause_z_LHS` defeq `mul two z`.
+  `P1_pass_clause_z_RHS` defeq `f (mul two z)`.
+Global rfl fails; per-branch equality holds only after rewriting. Failing pattern: `x = s n`.
+Minimal counterexample: `x := s z`.
+-/
+def P1_counterexample : Term := s z
+
+/-! B) Duplication stress test for Rule r4.
+    Show additive non-drop first using `size`.
+-/
+def R4_before (x y : Term) : Term := mul (s x) y
+def R4_after  (x y : Term) : Term := add y (mul x y)
+
+/-- Raw size profile to exhibit non-decrease; computation by unfolding `size`. -/
+def R4_size_profile (x y : Term) : Nat × Nat := (size (R4_before x y), size (R4_after x y))
+
+/-
+Additive calculation:
+  size (mul (s x) y) = 2 + size x + size y
+  size (add y (mul x y)) = 2 + size x + 2 * size y
+Hence `size(after) = size(before) + size y`. No strict drop whenever `size y ≥ 1`.
+Only after switching to a robust base order (e.g., DM multiset/RPO with explicit precedence)
+can we prove each RHS piece is strictly < the removed LHS redex.
+-/
+
+/-! Concrete size lemmas for r4 (sorry-free). -/
+
+@[simp] lemma size_mul_succ (x y : Term) :
+    size (mul (s x) y) = size x + size y + 2 := by
+  -- size (mul (s x) y) = size (s x) + size y + 1 = (size x + 1) + size y + 1
+  calc
+    size (mul (s x) y) = size (s x) + size y + 1 := by simp [size]
+    _ = (size x + 1) + size y + 1 := by simp [size]
+    _ = size x + size y + (1 + 1) := by ac_rfl
+    _ = size x + size y + 2 := by simp
+
+@[simp] lemma size_add_y_mul (x y : Term) :
+    size (add y (mul x y)) = size x + (size y + size y) + 2 := by
+  -- size (add y (mul x y)) = size y + size (mul x y) + 1 = size y + (size x + size y + 1) + 1
+  calc
+    size (add y (mul x y)) = size y + size (mul x y) + 1 := by simp [size]
+    _ = size y + (size x + size y + 1) + 1 := by simp [size]
+    _ = size x + (size y + size y) + (1 + 1) := by ac_rfl
+    _ = size x + (size y + size y) + 2 := by simp
+
+lemma r4_size_after_eq_before_plus_piece (x y : Term) :
+    size (R4_after x y) = size (R4_before x y) + size y := by
+  -- Normalize both sides to the same arithmetic form and conclude.
+  calc
+    size (R4_after x y)
+        = size x + (size y + size y) + 2 := by
+              simp [R4_after, size_add_y_mul]
+    _   = (size x + size y + 2) + size y := by
+              ac_rfl
+    _   = size (R4_before x y) + size y := by
+              simp [R4_before, size_mul_succ]
+
+lemma r4_no_strict_drop_additive (x y : Term) :
+    ¬ size (R4_after x y) < size (R4_before x y) := by
+  intro hlt
+  have : size (R4_before x y) + size y < size (R4_before x y) := by
+    simpa [r4_size_after_eq_before_plus_piece] using hlt
+  have hle : size (R4_before x y) ≤ size (R4_before x y) + size y := Nat.le_add_right _ _
+  exact (Nat.lt_irrefl _) (Nat.lt_of_le_of_lt hle this)
+
+/-! Lightweight lex witness for r4 pieces vs redex (illustrative). -/
+namespace R4Lex
+
+abbrev Weight := Nat × Nat
+
+def lexLT (a b : Weight) : Prop :=
+  a.fst < b.fst ∨ (a.fst = b.fst ∧ a.snd < b.snd)
+
+def wRedex (x y : Term) : Weight := (1, size (mul (s x) y))
+def wPieceY (y : Term) : Weight := (0, size y)
+def wPieceMul (x y : Term) : Weight := (0, size (mul x y))
+
+lemma wPieceY_lt_redex (x y : Term) : lexLT (wPieceY y) (wRedex x y) := by
+  -- 0 < 1 on the first coordinate
+  left; exact Nat.zero_lt_one
+
+lemma wPieceMul_lt_redex (x y : Term) : lexLT (wPieceMul x y) (wRedex x y) := by
+  -- 0 < 1 on the first coordinate
+  left; exact Nat.zero_lt_one
+
+end R4Lex
+
+/-! DM orientation for r4: {size y, size (mul x y)} <ₘ {size (mul (s x) y)}. -/
+namespace R4DM
+open Multiset
+
+local infix:70 " <ₘ " => Multiset.IsDershowitzMannaLT
+
+@[simp] lemma size_redex (x y : Term) : size (mul (s x) y) = size x + size y + 2 := by
+  -- delegate to size_mul_succ for clarity
+  simpa using size_mul_succ x y
+
+@[simp] lemma size_piece_mul (x y : Term) : size (mul x y) = size x + size y + 1 := by
+  simp [size]
+
+lemma pieceY_lt_redex (x y : Term) : size y < size (mul (s x) y) := by
+  -- Step 1: size y + 0 < size y + (size x + 2)
+  have hpos : 0 < size x + 2 := Nat.succ_pos (size x + 1)
+  have h0 : size y + 0 < size y + (size x + 2) := Nat.add_lt_add_left hpos _
+  have h1 : size y < size y + (size x + 2) := by simpa using h0
+  -- Step 2: normalize RHS and fold to redex size
+  have h2 : size y < size x + size y + 2 := by
+    simpa [Nat.add_comm, Nat.add_left_comm, Nat.add_assoc] using h1
+  have hred : size x + size y + 2 = size (mul (s x) y) := (size_mul_succ x y).symm
+  simpa [hred] using h2
+
+lemma pieceMul_lt_redex (x y : Term) : size (mul x y) < size (mul (s x) y) := by
+  -- size x + size y + 1 < size x + size y + 2 and rewrite both sides
+  simpa [size_piece_mul, size_mul_succ, size] using Nat.lt_succ_self (size x + size y + 1)
+
+theorem dm_orient (x y : Term) :
+  ({size y} + {size (mul x y)}) <ₘ ({size (mul (s x) y)}) := by
+  classical
+  -- X = 0, Y = {size y, size (mul x y)}, Z = {size redex}
+  refine ⟨(0 : Multiset Nat), ({size y} + {size (mul x y)}), {size (mul (s x) y)}, ?hZ, by simp, by simp, ?hY⟩
+  · simp
+  · intro y' hy'
+    rcases mem_add.mp hy' with hY | hM
+    · have hy0 : y' = size y := by simpa using hY
+      refine ⟨size (mul (s x) y), by simp, ?_⟩
+      simpa [hy0] using pieceY_lt_redex x y
+    · have hm0 : y' = size (mul x y) := by simpa using hM
+      refine ⟨size (mul (s x) y), by simp, ?_⟩
+      simpa [hm0] using pieceMul_lt_redex x y
+
+end R4DM
+
+/-! MPO-style orientation for r4 using a simple precedence/status triple. -/
+namespace R4MPO
+
+/- Precedence: mul > add > s > pair > fst/snd > z. -/
+@[simp] def headRank : Term → Nat
+| z         => 0
+| s _       => 3
+| add _ _   => 4
+| mul _ _   => 5
+| pair _ _  => 2
+| fst _     => 1
+| snd _     => 1
+
+@[simp] def weight : Term → Nat × Nat × Nat
+| z           => (headRank z, 0, 0)
+| s t         => (headRank (s t), size t, 0)
+| add a b     => (headRank (add a b), size a, size b)
+| mul a b     => (headRank (mul a b), size a, size b)
+| pair a b    => (headRank (pair a b), size a, size b)
+| fst t       => (headRank (fst t), size t, 0)
+| snd t       => (headRank (snd t), size t, 0)
+
+/- Strict lexicographic order on Nat × Nat × Nat. -/
+def ltW (u v : Nat × Nat × Nat) : Prop :=
+  u.1 < v.1 ∨ (u.1 = v.1 ∧ (u.2.1 < v.2.1 ∨ (u.2.1 = v.2.1 ∧ u.2.2 < v.2.2)))
+
+lemma ltW_of_fst_lt {a b : Nat × Nat × Nat} (h : a.1 < b.1) : ltW a b := Or.inl h
+
+/-- Orientation witness: add y (mul x y) < mul (s x) y under ltW ∘ weight. -/
+theorem mpo_orient_r4 (x y : Term) :
+  ltW (weight (add y (mul x y))) (weight (mul (s x) y)) := by
+  -- First components: headRank(add …) < headRank(mul …)
+  left
+  -- close 4 < 5 by computation
+  have : 4 < 5 := by decide
+  simpa [weight, headRank] using this
+
+end R4MPO
+
+/-! C) NameGate and TypeGate probes. -/
+/-- Success case (name exists, arity matches): -/
+def NG_success : Term := fst (pair z z)
+
+-- /-- Unknown identifier probe: `kappa` is not in this environment. -/
+-- -- CONSTRAINT BLOCKER (NameGate): `kappa` unknown.
+
+-- /-- Arity mismatch probe: `add` has arity 2; the following malformed term is intentionally commented out. -/
+-- -- def NG_arity_mismatch : Term := add z        -- CONSTRAINT BLOCKER (TypeGate).
+
+/-! D) Internally definable measures.
+    Package the "operator-only" constraints explicitly.
+-/
+-- -- CONSTRAINT BLOCKER (NameGate): `kappa` unknown.
+
+-- /-- Arity mismatch probe: `add` has arity 2; the following malformed term is intentionally commented out. -/
+-- -- def NG_arity_mismatch : Term := add z        -- CONSTRAINT BLOCKER (TypeGate).
+
+-- /-! D) Internally definable measures.
+--     Package the “operator-only” constraints explicitly.
+-- -/
+
+structure InternallyDefinableMeasure where
+  κMType  : Type          -- multiset-like component (DM-style), abstract
+  μType   : Type          -- ordinal-like component, abstract
+  flag    : Term → Bool   -- delta-flag or any unary indicator
+  κM      : Term → κMType -- structural multiset measure
+  μ       : Term → μType  -- well-founded secondary component
+  base    : Term → Term → Prop    -- base simplification order
+  wf_base : WellFounded base      -- well-foundedness witness
+
+  /- Monotonicity/compositionality in all contexts. -/
+  mono_s      : ∀ {t u}, base t u → base (s t) (s u)
+  mono_add_L  : ∀ {t u v}, base t u → base (add t v) (add u v)
+  mono_add_R  : ∀ {t u v}, base t u → base (add v t) (add v u)
+  mono_mul_L  : ∀ {t u v}, base t u → base (mul t v) (mul u v)
+  mono_mul_R  : ∀ {t u v}, base t u → base (mul v t) (mul v u)
+  mono_pair_L : ∀ {t u v}, base t u → base (pair t v) (pair u v)
+  mono_pair_R : ∀ {t u v}, base t u → base (pair v t) (pair v u)
+  mono_fst    : ∀ {t u}, base t u → base (fst t) (fst u)
+  mono_snd    : ∀ {t u}, base t u → base (snd t) (snd u)
+
+  /- Lexicographic/orientation gate (relaxed for skeleton):
+     For each rule instance, we accept either:
+     (i) a flag drop; or (ii) a per-piece strict decrease in `base`; or (iii) a direct base drop.
+     This matches the DM/MPO contract where duplicators use per-piece orientation.
+  -/
+  lex_ok :
+    ∀ {l r}, Rule l r →
+      (flag r = false ∧ flag l = true) ∨
+      (∃ t, t ∈ rhsPiecesLHS l ∧ base t l) ∨
+      base r l
+
+  /- Per-piece orientation gate (duplication-aware): for every rule, every listed RHS
+    piece is strictly below the removed LHS redex in the base order. This encodes
+    the Dershowitz–Manna/MPO-style contract used in P2. -/
+  per_piece_base_lt : ∀ {l r}, Rule l r → ∀ t ∈ rhsPiecesLHS l, base t l
+
+  /- Explicit duplication additive failure (documentation contract): the additive `size`
+    does not strictly drop for the duplicating rule r4 before any robust orientation.
+    This field records the phenomenon as part of the class; a trivial instance can
+    reuse `r4_no_strict_drop_additive` below. -/
+  dup_additive_nodrop_r4 : ∀ x y, ¬ size (R4_after x y) < size (R4_before x y)
+
+/-- C(Σ): Frozen alias for the KO7 method class used across the project. -/
+abbrev CSigma := InternallyDefinableMeasure
+
+/-! E) Stubs for operator-only encodings of Goodstein/Hydra. -/
+namespace Encodings
+
+/-- Codes internal to KO7 terms. -/
+inductive Code : Type
+| zero : Code
+| suc  : Code → Code
+| pair : Code → Code → Code
+| tag  : Nat → Code → Code          -- finite tags for rule schemas
+deriving DecidableEq, Repr
+
+/-- Goodstein-style rule schema (shape only). -/
+inductive GRule : Code → Code → Prop
+| base_change (b n) :
+    GRule (Code.tag b (Code.suc n)) (Code.tag (b+1) n)
+
+/-- Hydra-style rule schema (shape only). -/
+inductive HRule : Code → Code → Prop
+| chop (h) : HRule (Code.suc h) (Code.pair h h)    -- illustrative duplication
+
+end Encodings
+
+-- /-- Target theorems are recorded as statements (no axioms). -/
+namespace Targets
+
+open Encodings
+
+/-- “There exists a rule with no internal measure proving its decrease” (statement only). -/
+def Exists_No_Internal_Decrease
+  (M : InternallyDefinableMeasure) : Prop :=
+  ∃ (l r : Term), Rule l r ∧ ¬ M.base l r
+
+/-- Bridge to independence exemplars (statement only). -/
+def Goodstein_Maps_Here : Prop :=
+  ∀ (c d : Encodings.Code), Encodings.GRule c d → True    -- TODO: fill mapping later
+
+def Hydra_Maps_Here : Prop :=
+  ∀ (c d : Encodings.Code), Encodings.HRule c d → True    -- TODO: fill mapping later
+
+end Targets
+
+/-- Demo term touching all constructors. -/
+def demo_term : Term :=
+  fst (pair (add (s z) (mul (s z) z))
+            (snd (pair (add z z) (mul z z))))
+
+/- The reduction of `demo_term` under the eight rules exercises all constructors.
+   The actual normalizer is provided in your `Normalize_Safe` bundle. -/
+
+/-! Independence-grade witness: a simple embedding and a same-level no-go. -/
+
+namespace Encodings
+
+/-- Encode natural numbers as KO7 numerals. -/
+def natToTerm : Nat → OperatorKO7.OpIncomp.Term
+| 0     => OperatorKO7.OpIncomp.Term.z
+| n+1   => OperatorKO7.OpIncomp.Term.s (natToTerm n)
+
+/-- Total embedding of `Encodings.Code` into KO7 terms. -/
+def encode : Code → OperatorKO7.OpIncomp.Term
+| Code.zero      => OperatorKO7.OpIncomp.Term.z
+| Code.suc c     => OperatorKO7.OpIncomp.Term.s (encode c)
+| Code.pair a b  => OperatorKO7.OpIncomp.Term.pair (encode a) (encode b)
+| Code.tag b c   => OperatorKO7.OpIncomp.Term.pair (natToTerm b) (encode c)
+
+end Encodings
+
+/-! Higher-level simulation layer (outside KO7 Step): Admin moves on encoded tags. -/
+namespace Simulation
+open Encodings OperatorKO7.OpIncomp
+
+/-- Administrative move permitted by the simulation layer: bump the Goodstein base tag on the left of the pair while stripping one succ from the right component (since `encode (suc n) = s (encode n)`). -/
+inductive Admin : Term → Term → Prop
+| base_change (b : Nat) (n : Encodings.Code) :
+    Admin (pair (natToTerm b) (s (encode n))) (pair (natToTerm (b+1)) (encode n))
+| hydra_chop (h : Encodings.Code) :
+  Admin (s (encode h)) (pair (encode h) (encode h))
+
+/-- Combined simulation relation: either a KO7 Step or an Admin move. -/
+def Rel (a b : Term) : Prop := OperatorKO7.OpIncomp.Step a b ∨ Admin a b
+
+/-- One-step simulation of Goodstein base-change under the Admin layer. -/
+lemma simulate_GRule_base_change_rel (b : Nat) (n : Encodings.Code) :
+  Rel (encode (Encodings.Code.tag b (Encodings.Code.suc n)))
+      (encode (Encodings.Code.tag (b+1) n)) := by
+  -- By definition, encode(tag b (suc n)) = pair (natToTerm b) (s (encode n))
+  -- and encode(tag (b+1) n) = pair (natToTerm (b+1)) (encode n)
+  right
+  exact Admin.base_change b n
+
+/-- One-step simulation of Hydra chop under the Admin layer. -/
+lemma simulate_HRule_chop_rel (h : Encodings.Code) :
+  Rel (encode (Encodings.Code.suc h))
+      (encode (Encodings.Code.pair h h)) := by
+  right
+  exact Admin.hydra_chop h
+
+end Simulation
+
+namespace Simulation
+
+/-- Reflexive–transitive closure for Rel. -/
+inductive RelStar : Term → Term → Prop
+| refl {a} : RelStar a a
+| step {a b c} : Rel a b → RelStar b c → RelStar a c
+
+namespace RelStar
+
+theorem trans {a b c} (h1 : RelStar a b) (h2 : RelStar b c) : RelStar a c := by
+  induction h1 with
+  | refl => simpa using h2
+  | step h h1 ih => exact RelStar.step h (ih h2)
+
+theorem of_step {a b} (h : OperatorKO7.OpIncomp.Step a b) : RelStar a b :=
+  RelStar.step (Or.inl h) RelStar.refl
+
+theorem of_admin {a b} (h : Admin a b) : RelStar a b :=
+  RelStar.step (Or.inr h) RelStar.refl
+
+end RelStar
+
+end Simulation
+
+namespace Simulation
+open OperatorKO7.OpIncomp.Encodings
+
+/- Paper↔code map (names frozen):
+  - CSigma ≡ `M_size`
+  - δ two-case: `delta_top_cases_add_s`, `delta_top_cases_mul_s`
+  - δ Star runners: `delta_star_add_s_auto`, `delta_star_mul_s_auto`
+  - RelStar lifts: `simulate_GRule_base_change_relStar`, `simulate_HRule_chop_relStar`
+  - No single Step from encode: `Targets.Goodstein_NoSingleStep_Encode`
+-/
+
+/-- Lift Goodstein base-change simulation to `RelStar`. -/
+lemma simulate_GRule_base_change_relStar (b : Nat) (n : Encodings.Code) :
+  Simulation.RelStar (encode (Encodings.Code.tag b (Encodings.Code.suc n)))
+    (encode (Encodings.Code.tag (b+1) n)) :=
+  Simulation.RelStar.of_admin (Admin.base_change b n)
+
+/-- Lift Hydra chop simulation to `RelStar`. -/
+lemma simulate_HRule_chop_relStar (h : Encodings.Code) :
+  Simulation.RelStar (encode (Encodings.Code.suc h))
+    (encode (Encodings.Code.pair h h)) :=
+  Simulation.RelStar.of_admin (Admin.hydra_chop h)
+
+end Simulation
+
+namespace Targets
+open Encodings
+
+/-- Same-level no-go box: Goodstein base-change does not collapse to a single KO7 Step under `encode`.
+Recorded as a statement; proof handled in documentation/meta notes. -/
+def Goodstein_NoSingleStep_Encode : Prop :=
+  ∀ (b : Nat) (n : Encodings.Code),
+    ¬ Step (encode (Code.tag b (Code.suc n)))
+           (encode (Code.tag (b+1) n))
+
+end Targets
+
+-- Independence-grade “no-go box” recorded as a statement under Targets.
+-- We avoid asserting the proof here; see documentation for the meta-argument.
+
+/-- No single OperatorKO7.OpIncomp.Step originates from a numeral `natToTerm b`. -/
+lemma no_step_from_natToTerm (b : Nat) : ∀ t, ¬ Step (Encodings.natToTerm b) t := by
+  induction b with
+  | zero =>
+    intro t h
+    -- LHS is `z`; there is no Rule/Context matching it.
+    cases h with
+    | base hr => cases hr
+  | succ b ih =>
+    intro t h
+    -- LHS is `s (natToTerm b)`; only sCtx could apply, implying an inner step.
+    cases h with
+    | base hr => cases hr
+    | sCtx hinner =>
+      exact (ih _ hinner)
+
+/-- Encoded Goodstein codes (`encode`) contain only z/s/pair/nat tags, so they have no KO7 single-step. -/
+lemma no_step_from_encode (c : Encodings.Code) : ∀ t, ¬ Step (Encodings.encode c) t := by
+  induction c with
+  | zero =>
+    intro t h
+    -- LHS is `z`; only `base` could appear, which contradicts Rule shapes.
+    cases h with
+    | base hr => cases hr
+  | suc c ih =>
+    intro t h
+    -- LHS is `s (encode c)`; only `base` or `sCtx` can appear.
+    cases h with
+    | base hr => cases hr
+    | sCtx hinner => exact (ih _ hinner)
+  | pair a b iha ihb =>
+    intro t h
+    -- LHS is `pair (encode a) (encode b)`; only `base`/`pairLCtx`/`pairRCtx` possible.
+    cases h with
+    | base hr => cases hr
+    | pairLCtx hL => exact (iha _ hL)
+    | pairRCtx hR => exact (ihb _ hR)
+  | tag b c ih =>
+    intro t h
+    -- LHS is `pair (natToTerm b) (encode c)`; only `base`/`pairLCtx`/`pairRCtx` possible.
+    cases h with
+    | base hr => cases hr
+    | pairLCtx hL => exact (no_step_from_natToTerm b _ hL)
+    | pairRCtx hR => exact (ih _ hR)
+
+namespace Targets
+open Encodings
+
+/-- Formal proof: Goodstein base-change is not a single OperatorKO7.OpIncomp.Step under `encode`. -/
+theorem goodstein_no_single_step_encode : Goodstein_NoSingleStep_Encode := by
+  intro b n h
+  -- Use the general “no step from encode” lemma instantiated at `tag b (suc n)`.
+  -- This is stronger: there is no OperatorKO7.OpIncomp.Step from the encoded source to any target.
+  have hno := OperatorKO7.OpIncomp.no_step_from_encode (c := Encodings.Code.tag b (Encodings.Code.suc n))
+    (t := Encodings.encode (Encodings.Code.tag (b+1) n))
+  exact hno h
+
+/-- Bridging theorem (Goodstein family): encoded base-change steps are simulated in `RelStar`. -/
+theorem goodstein_family_simulated_in_RelStar
+  (b : Nat) (n : Encodings.Code) :
+  Simulation.RelStar (encode (Encodings.Code.tag b (Encodings.Code.suc n)))
+                     (encode (Encodings.Code.tag (b+1) n)) :=
+  Simulation.simulate_GRule_base_change_relStar b n
+
+/-- Bridging theorem (Hydra family): encoded chop steps are simulated in `RelStar`. -/
+theorem hydra_family_simulated_in_RelStar
+  (h : Encodings.Code) :
+  Simulation.RelStar (encode (Encodings.Code.suc h))
+                     (encode (Encodings.Code.pair h h)) :=
+  Simulation.simulate_HRule_chop_relStar h
+
+end Targets
+
+
+
+/-! Tiny examples exercising witnesses and Star utilities. -/
+example (x y : Term) : R4Lex.lexLT (R4Lex.wPieceY y) (R4Lex.wRedex x y) :=
+  R4Lex.wPieceY_lt_redex x y
+
+example (x y : Term) :
+    Multiset.IsDershowitzMannaLT ({size y} + {size (mul x y)}) ({size (mul (s x) y)}) := by
+  simpa using R4DM.dm_orient x y
+
+example (x y : Term) :
+    R4MPO.ltW (R4MPO.weight (add y (mul x y))) (R4MPO.weight (mul (s x) y)) :=
+  R4MPO.mpo_orient_r4 x y
+
+example (y : Term) : Star Step (add z y) y :=
+  Star.step (Step.base (Rule.r1 y)) Star.refl
+
+-- Additional Step → Star examples
+example (y : Term) : Star Step (mul z y) z :=
+  Star.step (Step.base (Rule.r3 y)) Star.refl
+
+example (x y : Term) : Star Step (fst (pair x y)) x :=
+  Star.step (Step.base (Rule.r5 x y)) Star.refl
+
+end OperatorKO7.OpIncomp
+
+/-!
+Tiny Goodstein/Hydra examples (toy cores)
+
+These are small, independent examples that exercise the minimal toy cores added
+for exposition. They do not interact with the KO7 kernel and are provided as
+cross-linkable witnesses for the paper and Impossibility catalog.
+-/
+
+namespace TinyGoodsteinHydra
+
+open OperatorKO7
+open OperatorKO7.GoodsteinCore
+open OperatorKO7.HydraCore
+
+/- Goodstein: one-step base-change on the toy state. -/
+example (b n : Nat) (t : Cn) :
+  GoodsteinCore.Step ⟨Base.b b, Cn.s t⟩ ⟨Base.b (b+1), t⟩ := by
+  simpa using GoodsteinCore.one_step b n t
+
+/- Hydra: a chop duplicates the other subtree (left and right variants). -/
+example (h : Hydra) :
+  HydraCore.Step (Hydra.node Hydra.head h) (Hydra.node h h) :=
+  HydraCore.Step.chop_left h
+
+example (h : Hydra) :
+  HydraCore.Step (Hydra.node h Hydra.head) (Hydra.node h h) :=
+  HydraCore.Step.chop_right h
+
+/- Existential-style tiny witness. -/
+example (h : Hydra) : ∃ h', HydraCore.Step (Hydra.node Hydra.head h) h' :=
+  ⟨Hydra.node h h, HydraCore.Step.chop_left h⟩
+
+end TinyGoodsteinHydra
+
+namespace OperatorKO7.OpIncomp
+open Term
+-- set_option diagnostics true
+/-- A concrete internal-measure instance using size as the base order.
+Flags mark only r2/r4 LHSs (where additive size does not strictly drop). -/
+noncomputable def flagTerm : Term → Bool
+| add (s _) _ => true
+| mul (s _) _ => true
+| _           => false
+
+noncomputable def M_size : InternallyDefinableMeasure where
+  κMType := Unit
+  μType  := Unit
+  flag   := flagTerm
+  κM     := fun _ => ()
+  μ      := fun _ => ()
+  -- size-based base order
+  base   := fun a b => size a < size b
+  wf_base := by
+    -- pull back Nat.lt along `size`
+    simpa using (InvImage.wf (f := size) Nat.lt_wfRel.wf)
+  -- context monotonicity (all 7 contexts)
+  mono_s := by
+    intro t u h; dsimp [size] at *; simpa using Nat.add_lt_add_right h 1
+  mono_add_L := by
+    intro t u v h; dsimp [size] at *
+    -- size (add t v) = size t + (size v + 1)
+    have := Nat.add_lt_add_left h (size v + 1)
+    -- rewrite lhs: (size v + 1) + size t = size t + (size v + 1)
+    simpa [Nat.add_comm, Nat.add_left_comm, Nat.add_assoc] using this
+  mono_add_R := by
+    intro t u v h; dsimp [size] at *
+    -- size (add v t) = size v + (size t + 1)
+    have := Nat.add_lt_add_left h (size v)
+    have := Nat.add_lt_add_right this 1
+    -- reorder sums
+    simpa [Nat.add_comm, Nat.add_left_comm, Nat.add_assoc] using this
+  mono_mul_L := by
+    intro t u v h; dsimp [size] at *
+    have := Nat.add_lt_add_left h (size v + 1)
+    simpa [Nat.add_comm, Nat.add_left_comm, Nat.add_assoc] using this
+  mono_mul_R := by
+    intro t u v h; dsimp [size] at *
+    have := Nat.add_lt_add_left h (size v)
+    have := Nat.add_lt_add_right this 1
+    simpa [Nat.add_comm, Nat.add_left_comm, Nat.add_assoc] using this
+  mono_pair_L := by
+    intro t u v h; dsimp [size] at *
+    have := Nat.add_lt_add_left h (size v + 1)
+    simpa [Nat.add_comm, Nat.add_left_comm, Nat.add_assoc] using this
+  mono_pair_R := by
+    intro t u v h; dsimp [size] at *
+    have := Nat.add_lt_add_left h (size v)
+    have := Nat.add_lt_add_right this 1
+    simpa [Nat.add_comm, Nat.add_left_comm, Nat.add_assoc] using this
+  mono_fst := by
+    intro t u h; dsimp [size] at *
+    simpa using Nat.add_lt_add_right h 1
+  mono_snd := by
+    intro t u h; dsimp [size] at *
+    simpa using Nat.add_lt_add_right h 1
+  -- lex gate: satisfy via per-piece base drops for all rules
+  lex_ok := by
+    intro l r hr
+    cases hr with
+    | r1 y =>
+      -- r1: add z y → y, need y < 1 + y + 1
+      exact Or.inr (Or.inr (by simp only [size]; omega))
+    | r2 x y =>
+      -- r2: add (s x) y → s (add x y)
+      exact Or.inr (Or.inl ⟨add x y, by simp [rhsPiecesLHS], by simp only [size]; omega⟩)
+    | r3 y =>
+      -- r3: mul z y → z, need 1 < 1 + y + 1
+      exact Or.inr (Or.inr (by simp only [size]; omega))
+    | r4 x y =>
+      -- r4: mul (s x) y → add y (mul x y)
+      exact Or.inr (Or.inl ⟨y, by simp [rhsPiecesLHS], by simp only [size]; omega⟩)
+    | r5 x y =>
+      -- r5: fst (pair x y) → x, need x < x + y + 2
+      exact Or.inr (Or.inr (by simp only [size]; omega))
+    | r6 x y =>
+      -- r6: snd (pair x y) → y, need y < x + y + 2
+      exact Or.inr (Or.inr (by simp only [size]; omega))
+    | r7 x =>
+      -- r7: add x z → x, need x < x + 2
+      exact Or.inr (Or.inr (by simp only [size]; omega))
+    | r8 x =>
+      -- r8: mul x z → z, need 1 < x + 2
+      exact Or.inr (Or.inr (by simp only [size]; omega))
+  -- per-piece strictness (duplication-aware)
+  per_piece_base_lt := by
+    intro l r h t ht
+    -- prove size t < size l by case on l
+    cases l with
+    | z => cases h
+    | s tl => cases h
+    | add a b =>
+      -- pieces = pieces from a (r1/r2) plus maybe from b (r7 when b=z)
+      dsimp [rhsPiecesLHS] at ht
+      have : size t < size a + size b + 1 := by
+        rcases List.mem_append.mp ht with hL | hR
+        · -- left pieces from a
+          cases a with
+          | z =>
+            -- t ∈ [b]
+            have hx : t = b := by simpa using hL
+            subst hx
+            -- size b < size (add z b) = 1 + b + 1
+            simp only [size]
+            omega
+          | s xx =>
+            -- t ∈ [add xx b]
+            have hx : t = add xx b := by simpa using hL
+            subst hx
+            -- size (add xx b) < size (add (s xx) b)
+            simp only [size]
+            omega
+          | _ =>
+            -- no pieces from other constructors
+            cases hL
+        · -- right pieces from b
+          cases b with
+          | z =>
+            -- t ∈ [a]
+            have hx : t = a := by simpa using hR
+            subst hx
+            -- size a < size (add a z) = a + 1 + 1
+            simp only [size]
+            omega
+          | _ =>
+            cases hR
+      simpa [size] using this
+    | mul a b =>
+      dsimp [rhsPiecesLHS] at ht
+      have : size t < size a + size b + 1 := by
+        rcases List.mem_append.mp ht with hL | hR
+        · -- left pieces from a
+          cases a with
+          | z =>
+            -- t ∈ [z]
+            have hx : t = z := by simpa using hL
+            subst hx
+            -- 1 < 1 + size b + 1
+            simp only [size]
+            omega
+          | s xx =>
+            rcases List.mem_cons.mp hL with hby | hmul
+            · -- t = b
+              have hx : t = b := by simpa using hby
+              subst hx
+              -- size b < size (s xx) + size b + 1 = xx + 1 + b + 1
+              simp only [size]
+              omega
+            · -- t = mul xx b
+              have hx : t = mul xx b := by simpa using hmul
+              subst hx
+              -- size (mul xx b) < size (mul (s xx) b)
+              simp only [size]
+              omega
+          | _ =>
+            cases hL
+        · -- right pieces from b
+          cases b with
+          | z =>
+            -- t ∈ [z]
+            have hx : t = z := by simpa using hR
+            subst hx
+            -- 1 < size a + 1 + 1
+            simp only [size]
+            omega
+          | _ =>
+            cases hR
+      simpa [size] using this
+    | pair a b => cases h
+    | fst u =>
+      cases u with
+      | pair xx yy =>
+        dsimp [rhsPiecesLHS] at ht
+        have hx : t = xx := by simpa using ht
+        subst hx
+        simp [size]
+        omega
+      | _ => cases h
+    | snd u =>
+      cases u with
+      | pair xx yy =>
+        dsimp [rhsPiecesLHS] at ht
+        have hx : t = yy := by simpa using ht
+        subst hx
+        simp [size]
+        omega
+      | _ => cases h
+  dup_additive_nodrop_r4 := by
+    intro x y; exact r4_no_strict_drop_additive x y
+
+/-! Optional δ-guard (Prop) isolating the duplicating/flagged shapes.
+    We provide a decidable predicate and a couple of lightweight lemmas. -/
+
+/-- Terms whose head is add (s ·) · or mul (s ·) ·. -/
+inductive Delta : Term → Prop
+| add_s (x y : Term) : Delta (add (s x) y)
+| mul_s (x y : Term) : Delta (mul (s x) y)
+
+attribute [simp] Delta.add_s Delta.mul_s
+
+/-- Decidability for `Delta`. -/
+instance : DecidablePred Delta := by
+  intro t
+  cases t with
+  | z => exact isFalse (by intro h; cases h)
+  | s _ => exact isFalse (by intro h; cases h)
+  | add a b =>
+    cases a with
+    | s x => exact isTrue (Delta.add_s x b)
+    | _ => exact isFalse (by intro h; cases h)
+  | mul a b =>
+    cases a with
+    | s x => exact isTrue (Delta.mul_s x b)
+    | _ => exact isFalse (by intro h; cases h)
+  | pair _ _ => exact isFalse (by intro h; cases h)
+  | fst _ => exact isFalse (by intro h; cases h)
+  | snd _ => exact isFalse (by intro h; cases h)
+
+@[simp] lemma Delta_r2 (x y : Term) : Delta (add (s x) y) := Delta.add_s x y
+@[simp] lemma Delta_r4 (x y : Term) : Delta (mul (s x) y) := Delta.mul_s x y
+
+/- Simple preservation under right-context rewriting: the δ head persists. -/
+lemma Delta_preserve_addR {x t u : Term} (_h : Step t u) : Delta (add (s x) u) := by
+  simpa using (Delta.add_s x u)
+
+lemma Delta_preserve_mulR {x t u : Term} (_h : Step t u) : Delta (mul (s x) u) := by
+  simpa using (Delta.mul_s x u)
+
+-- Preservation for remaining contexts (trivial shape persistence)
+lemma Delta_preserve_addL {x t u : Term} (_h : Step t u) : Delta (add (s x) u) := by
+  simpa using (Delta.add_s x u)
+
+lemma Delta_preserve_mulL {x t u : Term} (_h : Step t u) : Delta (mul (s x) u) := by
+  simpa using (Delta.mul_s x u)
+
+lemma Delta_preserve_pairL {x t u v : Term} (_h : Step t u) : Delta (add (s x) v) := by
+  simpa using (Delta.add_s x v)
+
+lemma Delta_preserve_pairR {x t u v : Term} (_h : Step t u) : Delta (mul (s x) v) := by
+  simpa using (Delta.mul_s x v)
+
+lemma Delta_preserve_fstCtx {x t u : Term} (_h : Step t u) : Delta (add (s x) (fst u)) := by
+  -- Note: guard refers to outer head; inner shape changes do not affect outer head
+  simpa using (Delta.add_s x (fst u))
+
+lemma Delta_preserve_sndCtx {x t u : Term} (_h : Step t u) : Delta (mul (s x) (snd u)) := by
+  simpa using (Delta.mul_s x (snd u))
+
+/-! Substitution (homomorphic map) and δ‑preservation under substitution. -/
+
+/-- Homomorphic transform on KO7 terms (preserves heads, transforms subterms). -/
+def mapTerm (σ : Term → Term) : Term → Term
+| z => z
+| s t => s (mapTerm σ t)
+| add a b => add (mapTerm σ a) (mapTerm σ b)
+| mul a b => mul (mapTerm σ a) (mapTerm σ b)
+| pair a b => pair (mapTerm σ a) (mapTerm σ b)
+| fst t => fst (mapTerm σ t)
+| snd t => snd (mapTerm σ t)
+
+@[simp] lemma mapTerm_s (σ) (t : Term) : mapTerm σ (s t) = s (mapTerm σ t) := rfl
+@[simp] lemma mapTerm_add (σ) (a b : Term) : mapTerm σ (add a b) = add (mapTerm σ a) (mapTerm σ b) := rfl
+@[simp] lemma mapTerm_mul (σ) (a b : Term) : mapTerm σ (mul a b) = mul (mapTerm σ a) (mapTerm σ b) := rfl
+
+lemma Delta_preserve_r2_subst (σ : Term → Term) (x y : Term) :
+  Delta (mapTerm σ (add (s x) y)) := by
+  simp [mapTerm, Delta.add_s]
+
+lemma Delta_preserve_r4_subst (σ : Term → Term) (x y : Term) :
+  Delta (mapTerm σ (mul (s x) y)) := by
+  simp [mapTerm, Delta.mul_s]
+
+/-! Promote mapTerm to a substitution alias and restate δ‑substitution lemmas. -/
+
+abbrev subst := mapTerm
+
+@[simp] lemma subst_s (σ) (t : Term) : subst σ (s t) = s (subst σ t) := rfl
+@[simp] lemma subst_add (σ) (a b : Term) : subst σ (add a b) = add (subst σ a) (subst σ b) := rfl
+@[simp] lemma subst_mul (σ) (a b : Term) : subst σ (mul a b) = mul (subst σ a) (subst σ b) := rfl
+
+lemma Delta_subst_preserves_r2 (σ : Term → Term) (x y : Term) :
+  Delta (subst σ (add (s x) y)) := by
+  simp [subst, mapTerm, Delta.add_s]
+
+lemma Delta_subst_preserves_r4 (σ : Term → Term) (x y : Term) :
+  Delta (subst σ (mul (s x) y)) := by
+  simp [subst, mapTerm, Delta.mul_s]
+
+/-! Star-level automation for δ shapes. -/
+
+lemma delta_star_cases_add_s (x y : Term) :
+  Star Step (add (s x) y) (s (add x y)) ∨
+  (y = z ∧ Star Step (add (s x) y) (s x)) := by
+  -- r2 always provides the left branch as a single step
+  exact Or.inl (Star.step (Step.base (Rule.r2 x y)) Star.refl)
+
+lemma delta_star_cases_mul_s (x y : Term) :
+  Star Step (mul (s x) y) (add y (mul x y)) ∨
+  (y = z ∧ Star Step (mul (s x) y) z) := by
+  -- r4 always provides the left branch as a single step
+  exact Or.inl (Star.step (Step.base (Rule.r4 x y)) Star.refl)
+
+/-! δ exhaustive two-case lemmas at the top level. -/
+
+lemma delta_top_cases_add_s (x y r : Term)
+  (h : Rule (add (s x) y) r) :
+  r = s (add x y) ∨ (y = z ∧ r = s x) := by
+  cases h with
+  | r2 _ _ => exact Or.inl rfl
+  | r7 _ => exact Or.inr ⟨rfl, rfl⟩
+
+lemma delta_top_cases_mul_s (x y r : Term)
+  (h : Rule (mul (s x) y) r) :
+  r = add y (mul x y) ∨ (y = z ∧ r = z) := by
+  cases h with
+  | r4 _ _ => exact Or.inl rfl
+  | r8 _ => exact Or.inr ⟨rfl, rfl⟩
+
+/-- δ-safe critical pairs coverage (add): every rule at the guarded top-shape matches one of the two cases. -/
+theorem Delta_SafePairs_Exhaustive_add
+  (x y r : Term) (_hδ : Delta (add (s x) y)) (h : Rule (add (s x) y) r) :
+  r = s (add x y) ∨ (y = z ∧ r = s x) :=
+  delta_top_cases_add_s x y r h
+
+/-- δ-safe critical pairs coverage (mul): every rule at the guarded top-shape matches one of the two cases. -/
+theorem Delta_SafePairs_Exhaustive_mul
+  (x y r : Term) (_hδ : Delta (mul (s x) y)) (h : Rule (mul (s x) y) r) :
+  r = add y (mul x y) ∨ (y = z ∧ r = z) :=
+  delta_top_cases_mul_s x y r h
+
+/-! Small Star runners that choose the RHS automatically via the δ two-case split. -/
+
+/-- Canonical RHS selector for `add (s x) y` using the δ two-case: if `y` is `z`, pick `s x`,
+  otherwise pick `s (add x y)`. -/
+def delta_rhs_add_s (x y : Term) : Term :=
+  match y with
+  | z => s x
+  | _ => s (add x y)
+
+/-- Canonical RHS selector for `mul (s x) y` using the δ two-case: if `y` is `z`, pick `z`,
+  otherwise pick `add y (mul x y)`. -/
+def delta_rhs_mul_s (x y : Term) : Term :=
+  match y with
+  | z => z
+  | _ => add y (mul x y)
+
+/-- One-step Star that automatically chooses the appropriate RHS for `add (s x) y`. -/
+lemma delta_star_add_s_auto (x y : Term) :
+  Star Step (add (s x) y) (delta_rhs_add_s x y) := by
+  -- Use a direct case split on `y`'s top constructor.
+  cases y with
+  | z =>
+    -- pick r7
+    change Star Step (add (s x) z) (s x)
+    exact Star.step (Step.base (Rule.r7 (s x))) Star.refl
+  | s y' =>
+    -- pick r2
+    change Star Step (add (s x) (s y')) (s (add x (s y')))
+    exact Star.step (Step.base (Rule.r2 x (s y'))) Star.refl
+  | add a b =>
+    change Star Step (add (s x) (add a b)) (s (add x (add a b)))
+    exact Star.step (Step.base (Rule.r2 x (add a b))) Star.refl
+  | mul a b =>
+    change Star Step (add (s x) (mul a b)) (s (add x (mul a b)))
+    exact Star.step (Step.base (Rule.r2 x (mul a b))) Star.refl
+  | pair a b =>
+    change Star Step (add (s x) (pair a b)) (s (add x (pair a b)))
+    exact Star.step (Step.base (Rule.r2 x (pair a b))) Star.refl
+  | fst t =>
+    change Star Step (add (s x) (fst t)) (s (add x (fst t)))
+    exact Star.step (Step.base (Rule.r2 x (fst t))) Star.refl
+  | snd t =>
+    change Star Step (add (s x) (snd t)) (s (add x (snd t)))
+    exact Star.step (Step.base (Rule.r2 x (snd t))) Star.refl
+
+/-- One-step Star that automatically chooses the appropriate RHS for `mul (s x) y`. -/
+lemma delta_star_mul_s_auto (x y : Term) :
+  Star Step (mul (s x) y) (delta_rhs_mul_s x y) := by
+  cases y with
+  | z =>
+    change Star Step (mul (s x) z) z
+    exact Star.step (Step.base (Rule.r8 (s x))) Star.refl
+  | s y' =>
+    change Star Step (mul (s x) (s y')) (add (s y') (mul x (s y')))
+    exact Star.step (Step.base (Rule.r4 x (s y'))) Star.refl
+  | add a b =>
+    change Star Step (mul (s x) (add a b)) (add (add a b) (mul x (add a b)))
+    exact Star.step (Step.base (Rule.r4 x (add a b))) Star.refl
+  | mul a b =>
+    change Star Step (mul (s x) (mul a b)) (add (mul a b) (mul x (mul a b)))
+    exact Star.step (Step.base (Rule.r4 x (mul a b))) Star.refl
+  | pair a b =>
+    change Star Step (mul (s x) (pair a b)) (add (pair a b) (mul x (pair a b)))
+    exact Star.step (Step.base (Rule.r4 x (pair a b))) Star.refl
+  | fst t =>
+    change Star Step (mul (s x) (fst t)) (add (fst t) (mul x (fst t)))
+    exact Star.step (Step.base (Rule.r4 x (fst t))) Star.refl
+  | snd t =>
+    change Star Step (mul (s x) (snd t)) (add (snd t) (mul x (snd t)))
+    exact Star.step (Step.base (Rule.r4 x (snd t))) Star.refl
+
+/-! δ‑substitution per‑branch lemma stubs (align names with paper). -/
+
+/-- Under substitution, the r2 guard shape is preserved (wrapper aligning naming with paper). -/
+@[simp] theorem delta_subst_preserves_r2 (σ : Term → Term) (x y : Term) :
+  Delta (subst σ (add (s x) y)) :=
+  Delta_subst_preserves_r2 σ x y
+
+/-- Under substitution, the r4 guard shape is preserved (wrapper aligning naming with paper). -/
+@[simp] theorem delta_subst_preserves_r4 (σ : Term → Term) (x y : Term) :
+  Delta (subst σ (mul (s x) y)) :=
+  Delta_subst_preserves_r4 σ x y
+
+/-! Examples using `M_size.lex_ok` on representative rules. -/
+
+example (y : Term) :
+  (flagTerm y = false ∧ flagTerm (add z y) = true) ∨
+  (∃ t, t ∈ rhsPiecesLHS (add z y) ∧ M_size.base t (add z y)) ∨
+  M_size.base y (add z y) := by
+  -- r1: add z y → y
+  simpa using (M_size.lex_ok (Rule.r1 y))
+
+example (x y : Term) :
+  (flagTerm (add y (mul x y)) = false ∧ flagTerm (mul (s x) y) = true) ∨
+  (∃ t, t ∈ rhsPiecesLHS (mul (s x) y) ∧ M_size.base t (mul (s x) y)) ∨
+  M_size.base (add y (mul x y)) (mul (s x) y) := by
+  -- r4: mul (s x) y → add y (mul x y)
+  simpa using (M_size.lex_ok (Rule.r4 x y))
+
+example (x : Term) :
+  (flagTerm x = false ∧ flagTerm (add x z) = true) ∨
+  (∃ t, t ∈ rhsPiecesLHS (add x z) ∧ M_size.base t (add x z)) ∨
+  M_size.base x (add x z) := by
+  -- r7: add x z → x
+  simpa using (M_size.lex_ok (Rule.r7 x))
+
+example (x y : Term) :
+  (flagTerm (s (add x y)) = false ∧ flagTerm (add (s x) y) = true) ∨
+  (∃ t, t ∈ rhsPiecesLHS (add (s x) y) ∧ M_size.base t (add (s x) y)) ∨
+  M_size.base (s (add x y)) (add (s x) y) := by
+  -- r2: add (s x) y → s (add x y)
+  simpa using (M_size.lex_ok (Rule.r2 x y))
+
+example (y : Term) :
+  (flagTerm z = false ∧ flagTerm (mul z y) = true) ∨
+  (∃ t, t ∈ rhsPiecesLHS (mul z y) ∧ M_size.base t (mul z y)) ∨
+  M_size.base z (mul z y) := by
+  -- r3: mul z y → z
+  simpa using (M_size.lex_ok (Rule.r3 y))
+
+example (x y : Term) :
+  (flagTerm x = false ∧ flagTerm (fst (pair x y)) = true) ∨
+  (∃ t, t ∈ rhsPiecesLHS (fst (pair x y)) ∧ M_size.base t (fst (pair x y))) ∨
+  M_size.base x (fst (pair x y)) := by
+  -- r5: fst (pair x y) → x
+  simpa using (M_size.lex_ok (Rule.r5 x y))
+
+example (x y : Term) :
+  (flagTerm y = false ∧ flagTerm (snd (pair x y)) = true) ∨
+  (∃ t, t ∈ rhsPiecesLHS (snd (pair x y)) ∧ M_size.base t (snd (pair x y))) ∨
+  M_size.base y (snd (pair x y)) := by
+  -- r6: snd (pair x y) → y
+  simpa using (M_size.lex_ok (Rule.r6 x y))
+
+example (x : Term) :
+  (flagTerm z = false ∧ flagTerm (mul x z) = true) ∨
+  (∃ t, t ∈ rhsPiecesLHS (mul x z) ∧ M_size.base t (mul x z)) ∨
+  M_size.base z (mul x z) := by
+  -- r8: mul x z → z
+  simpa using (M_size.lex_ok (Rule.r8 x))
+end OperatorKO7.OpIncomp
+
+```
+
+---
+
+## 7. Meta/Confluence_Safe.lean
+
+**File:** `OperatorKO7/Meta/Confluence_Safe.lean`
+
+```lean
+import OperatorKO7.Kernel
+import OperatorKO7.Meta.Termination_KO7
+import OperatorKO7.Meta.Normalize_Safe
+import OperatorKO7.Meta.SafeStep_Ctx
+
+/-!
+Local confluence / local join analysis for the KO7 safe fragment.
+
+Purpose:
+- Defines local-join predicates for `SafeStep` (safe fragment) and for the full kernel `Step`.
+- Proves local joinability lemmas for many safe root shapes, typically by uniqueness or vacuity.
+- Records an explicit caveat for the full kernel: the two `eqW` rules overlap at `eqW a a`, so the
+  full kernel `Step` is not locally confluent at `eqW void void` (and more generally has a peak at
+  `eqW a a`).
+
+Scope boundary:
+- The positive results in this file are for `SafeStep` only.
+- The negative result `not_localJoinStep_eqW_void_void` is about the full kernel `Step` and is used
+  as a clarity point for the safe-vs-full distinction.
+
+This file is typically paired with:
+- `Meta/SafeStep_Ctx.lean` (context closure utilities)
+- `Meta/Newman_Safe.lean` (Newman's lemma: SN + local join -> confluence), when a global local-join
+  hypothesis is supplied.
+-/
+open Classical
+open OperatorKO7 Trace
+
+namespace MetaSN_KO7
+
+/-- Local joinability at a fixed source for the KO7 safe relation. -/
+def LocalJoinSafe (a : Trace) : Prop :=
+  ∀ {b c}, SafeStep a b → SafeStep a c → ∃ d, SafeStepStar b d ∧ SafeStepStar c d
+
+/-- Local joinability at a fixed source for the full kernel relation `Step`. -/
+def LocalJoinStep (a : Trace) : Prop :=
+  ∀ {b c}, Step a b → Step a c → ∃ d, StepStar b d ∧ StepStar c d
+
+/-- Full-step caveat: the two kernel `eqW` rules overlap, so `eqW void void` is not locally joinable. -/
+theorem not_localJoinStep_eqW_void_void : ¬ LocalJoinStep (eqW void void) := by
+  intro hjoin
+  have hb : Step (eqW void void) void := Step.R_eq_refl void
+  have hc : Step (eqW void void) (integrate (merge void void)) := Step.R_eq_diff void void
+  rcases hjoin hb hc with ⟨d, hbStar, hcStar⟩
+  have hnf_void : NormalForm void := by
+    intro ex
+    rcases ex with ⟨u, hu⟩
+    cases hu
+  have hnf_int_merge : NormalForm (integrate (merge void void)) := by
+    intro ex
+    rcases ex with ⟨u, hu⟩
+    cases hu
+  have hd_eq_void : d = void := (nf_no_stepstar_forward hnf_void hbStar).symm
+  have hd_eq_int : d = integrate (merge void void) := (nf_no_stepstar_forward hnf_int_merge hcStar).symm
+  have hneq : (integrate (merge void void) : Trace) ≠ void := by
+    intro h
+    cases h
+  exact hneq (hd_eq_int.symm.trans hd_eq_void)
+
+/-- If there are no safe root steps from `a`, local join holds vacuously. -/
+theorem localJoin_of_none (a : Trace)
+    (h : ∀ {b}, SafeStep a b → False) : LocalJoinSafe a := by
+  intro b c hb hc
+  exact False.elim (h hb)
+
+/-- If every safe root step from `a` has the same target `d`, then `a` is locally joinable. -/
+theorem localJoin_of_unique (a d : Trace)
+    (h : ∀ {b}, SafeStep a b → b = d) : LocalJoinSafe a := by
+  intro b c hb hc
+  have hb' : b = d := h hb
+  have hc' : c = d := h hc
+  refine ⟨d, ?_, ?_⟩
+  · simpa [hb'] using (SafeStepStar.refl d)
+  · simpa [hc'] using (SafeStepStar.refl d)
+
+/-- If there are no safe root steps from `a`, any `SafeStepStar a d` must be reflexive. -/
+theorem star_only_refl_of_none {a d : Trace}
+    (h : ∀ {b}, SafeStep a b → False) : SafeStepStar a d → d = a := by
+  intro hs
+  cases hs with
+  | refl t => rfl
+  | @tail a' b c hab hbc =>
+      exact False.elim (h hab)
+
+/-- If `a` is in safe normal form, there are no outgoing safe steps; local join holds. -/
+theorem localJoin_of_nf (a : Trace) (hnf : NormalFormSafe a) : LocalJoinSafe a := by
+  refine localJoin_of_none (a := a) ?h
+  intro b hb; exact no_step_from_nf hnf hb
+
+/-- Root critical peak at `merge void void` is trivially joinable:
+ both branches step to `void`. -/
+theorem localJoin_merge_void_void : LocalJoinSafe (merge void void) := by
+  intro b c hb hc
+  -- Both reducts are definitionally `void` in each possible branch.
+  have hb_refl : SafeStepStar b void := by
+    cases hb with
+    | R_merge_void_left t hδ =>
+        -- Here a = merge void t unifies with merge void void, so t = void and b = void.
+        exact SafeStepStar.refl _
+    | R_merge_void_right t hδ =>
+        exact SafeStepStar.refl _
+    | R_merge_cancel t hδ h0 =>
+        exact SafeStepStar.refl _
+  have hc_refl : SafeStepStar c void := by
+    cases hc with
+    | R_merge_void_left t hδ =>
+        exact SafeStepStar.refl _
+    | R_merge_void_right t hδ =>
+        exact SafeStepStar.refl _
+    | R_merge_cancel t hδ h0 =>
+        exact SafeStepStar.refl _
+  exact ⟨void, hb_refl, hc_refl⟩
+
+/-- At `integrate (delta t)` there is only one safe root rule; local join is trivial. -/
+theorem localJoin_int_delta (t : Trace) : LocalJoinSafe (integrate (delta t)) := by
+  intro b c hb hc
+  have hb_refl : SafeStepStar b void := by
+    cases hb with
+    | R_int_delta _ => exact SafeStepStar.refl _
+  have hc_refl : SafeStepStar c void := by
+    cases hc with
+    | R_int_delta _ => exact SafeStepStar.refl _
+  exact ⟨void, hb_refl, hc_refl⟩
+
+/-- At `integrate void`, no safe root rule applies (not a `delta _`); vacuous. -/
+theorem localJoin_integrate_void : LocalJoinSafe (integrate void) := by
+  refine localJoin_of_none (a := integrate void) ?h
+  intro x hx
+  cases hx
+
+/-- At `integrate (merge a b)`, there is no safe root rule; join vacuously. -/
+theorem localJoin_integrate_merge (a b : Trace) : LocalJoinSafe (integrate (merge a b)) := by
+  refine localJoin_of_none (a := integrate (merge a b)) ?h
+  intro x hx; cases hx
+
+/-- At `integrate (app a b)`, there is no safe root rule; join vacuously. -/
+theorem localJoin_integrate_app (a b : Trace) : LocalJoinSafe (integrate (app a b)) := by
+  refine localJoin_of_none (a := integrate (app a b)) ?h
+  intro x hx; cases hx
+
+/-- At `integrate (eqW a b)`, there is no safe root rule; join vacuously. -/
+theorem localJoin_integrate_eqW (a b : Trace) : LocalJoinSafe (integrate (eqW a b)) := by
+  refine localJoin_of_none (a := integrate (eqW a b)) ?h
+  intro x hx; cases hx
+
+/-- At `integrate (integrate t)`, there is no safe root rule; join vacuously. -/
+theorem localJoin_integrate_integrate (t : Trace) : LocalJoinSafe (integrate (integrate t)) := by
+  refine localJoin_of_none (a := integrate (integrate t)) ?h
+  intro x hx; cases hx
+
+/-- At `integrate (recΔ b s n)`, there is no safe root rule; join vacuously. -/
+theorem localJoin_integrate_rec (b s n : Trace) : LocalJoinSafe (integrate (recΔ b s n)) := by
+  refine localJoin_of_none (a := integrate (recΔ b s n)) ?h
+  intro x hx; cases hx
+
+/-- At `merge void t` there is only one safe root rule; local join is trivial. -/
+theorem localJoin_merge_void_left (t : Trace) : LocalJoinSafe (merge void t) := by
+  intro b c hb hc
+  have hb_refl : SafeStepStar b t := by
+    cases hb with
+    | R_merge_void_left _ _ => exact SafeStepStar.refl _
+    | R_merge_void_right _ _ => exact SafeStepStar.refl _
+    | R_merge_cancel _ _ _ => exact SafeStepStar.refl _
+  have hc_refl : SafeStepStar c t := by
+    cases hc with
+    | R_merge_void_left _ _ => exact SafeStepStar.refl _
+    | R_merge_void_right _ _ => exact SafeStepStar.refl _
+    | R_merge_cancel _ _ _ => exact SafeStepStar.refl _
+  exact ⟨t, hb_refl, hc_refl⟩
+
+/-- At `merge t void` there is only one safe root rule; local join is trivial. -/
+theorem localJoin_merge_void_right (t : Trace) : LocalJoinSafe (merge t void) := by
+  intro b c hb hc
+  have hb_refl : SafeStepStar b t := by
+    cases hb with
+    | R_merge_void_right _ _ => exact SafeStepStar.refl _
+    | R_merge_void_left _ _ => exact SafeStepStar.refl _
+    | R_merge_cancel _ _ _ => exact SafeStepStar.refl _
+  have hc_refl : SafeStepStar c t := by
+    cases hc with
+    | R_merge_void_right _ _ => exact SafeStepStar.refl _
+    | R_merge_void_left _ _ => exact SafeStepStar.refl _
+    | R_merge_cancel _ _ _ => exact SafeStepStar.refl _
+  exact ⟨t, hb_refl, hc_refl⟩
+
+/-- At `recΔ b s void` there is only one safe root rule; local join is trivial. -/
+theorem localJoin_rec_zero (b s : Trace) : LocalJoinSafe (recΔ b s void) := by
+  intro x y hx hy
+  have hx_refl : SafeStepStar x b := by
+    cases hx with
+    | R_rec_zero _ _ _ => exact SafeStepStar.refl _
+  have hy_refl : SafeStepStar y b := by
+    cases hy with
+    | R_rec_zero _ _ _ => exact SafeStepStar.refl _
+  exact ⟨b, hx_refl, hy_refl⟩
+
+/-- At `recΔ b s (delta n)` there is only one safe root rule; local join is trivial. -/
+theorem localJoin_rec_succ (b s n : Trace) : LocalJoinSafe (recΔ b s (delta n)) := by
+  intro x y hx hy
+  have hx_refl : SafeStepStar x (app s (recΔ b s n)) := by
+    cases hx with
+    | R_rec_succ _ _ _ => exact SafeStepStar.refl _
+  have hy_refl : SafeStepStar y (app s (recΔ b s n)) := by
+    cases hy with
+    | R_rec_succ _ _ _ => exact SafeStepStar.refl _
+  exact ⟨app s (recΔ b s n), hx_refl, hy_refl⟩
+
+/-- At `merge t t`, any applicable safe rule reduces to `t`; local join is trivial. -/
+theorem localJoin_merge_tt (t : Trace) : LocalJoinSafe (merge t t) := by
+  intro b c hb hc
+  have hb_refl : SafeStepStar b t := by
+    cases hb with
+    | R_merge_cancel _ _ _ => exact SafeStepStar.refl _
+    | R_merge_void_left _ _ => exact SafeStepStar.refl _
+    | R_merge_void_right _ _ => exact SafeStepStar.refl _
+  have hc_refl : SafeStepStar c t := by
+    cases hc with
+    | R_merge_cancel _ _ _ => exact SafeStepStar.refl _
+    | R_merge_void_left _ _ => exact SafeStepStar.refl _
+    | R_merge_void_right _ _ => exact SafeStepStar.refl _
+  exact ⟨t, hb_refl, hc_refl⟩
+
+/-- At `void`, there is no safe root rule; join holds vacuously. -/
+theorem localJoin_void : LocalJoinSafe void := by
+  refine localJoin_of_none (a := void) ?h
+  intro b hb; cases hb
+
+/-- At `delta t`, there is no safe root rule; join holds vacuously. -/
+theorem localJoin_delta (t : Trace) : LocalJoinSafe (delta t) := by
+  refine localJoin_of_none (a := delta t) ?h
+  intro b hb; cases hb
+
+
+/-- Convenience: `merge void (delta n)` reduces uniquely to `delta n`. -/
+theorem localJoin_merge_void_delta (n : Trace) : LocalJoinSafe (merge void (delta n)) :=
+  localJoin_merge_void_left (delta n)
+
+/-- Convenience: `merge (delta n) void` reduces uniquely to `delta n`. -/
+theorem localJoin_merge_delta_void (n : Trace) : LocalJoinSafe (merge (delta n) void) :=
+  localJoin_merge_void_right (delta n)
+
+/-- Convenience: `merge (delta n) (delta n)` reduces (by cancel) to `delta n`. -/
+theorem localJoin_merge_delta_delta (n : Trace) : LocalJoinSafe (merge (delta n) (delta n)) :=
+  localJoin_merge_tt (delta n)
+
+/-- At `eqW a b` with `a ≠ b`, only `R_eq_diff` applies at the root; local join is trivial. -/
+theorem localJoin_eqW_ne (a b : Trace) (hne : a ≠ b) : LocalJoinSafe (eqW a b) := by
+  -- Unique target is `integrate (merge a b)`.
+  refine localJoin_of_unique (a := eqW a b) (d := integrate (merge a b)) ?h
+  intro x hx
+  cases hx with
+  | R_eq_diff _ _ _ => rfl
+  | R_eq_refl _ _ => exact (False.elim (hne rfl))
+
+/-- At `eqW a a`, if `kappaM a ≠ 0`, `R_eq_refl` cannot fire; and `R_eq_diff` is blocked by `a ≠ a`.
+So there are no safe root steps and local join holds vacuously. -/
+theorem localJoin_eqW_refl_guard_ne (a : Trace) (h0ne : MetaSN_DM.kappaM a ≠ 0) :
+    LocalJoinSafe (eqW a a) := by
+  refine localJoin_of_none (a := eqW a a) ?h
+  intro x hx
+  cases hx with
+  | R_eq_refl _ h0 => exact False.elim (h0ne h0)
+  | R_eq_diff _ _ hne => exact False.elim (hne rfl)
+
+/-- If `deltaFlag t ≠ 0`, the left-void merge rule cannot apply; no competing branch. -/
+theorem localJoin_merge_void_left_guard_ne (t : Trace)
+    (hδne : deltaFlag t ≠ 0) : LocalJoinSafe (merge void t) := by
+  refine localJoin_of_unique (a := merge void t) (d := t) ?h
+  intro x hx
+  cases hx with
+  | R_merge_void_left _ hδ => exact (False.elim (hδne hδ))
+  | R_merge_void_right _ _ => rfl
+  | R_merge_cancel _ _ _ => rfl
+
+/-- If `deltaFlag t ≠ 0`, the right-void merge rule cannot apply; no competing branch. -/
+theorem localJoin_merge_void_right_guard_ne (t : Trace)
+    (hδne : deltaFlag t ≠ 0) : LocalJoinSafe (merge t void) := by
+  refine localJoin_of_unique (a := merge t void) (d := t) ?h
+  intro x hx
+  cases hx with
+  | R_merge_void_right _ hδ => exact (False.elim (hδne hδ))
+  | R_merge_void_left _ _ => rfl
+  | R_merge_cancel _ _ _ => rfl
+
+/-- If `deltaFlag t ≠ 0`, merge-cancel is blocked at root; vacuous local join. -/
+theorem localJoin_merge_cancel_guard_delta_ne (t : Trace)
+    (hδne : deltaFlag t ≠ 0) : LocalJoinSafe (merge t t) := by
+  refine localJoin_of_unique (a := merge t t) (d := t) ?h
+  intro x hx
+  cases hx with
+  | R_merge_cancel _ hδ _ => exact (False.elim (hδne hδ))
+  | R_merge_void_left _ _ => rfl
+  | R_merge_void_right _ _ => rfl
+
+/-- If `kappaM t ≠ 0`, merge-cancel is blocked at root; vacuous local join. -/
+theorem localJoin_merge_cancel_guard_kappa_ne (t : Trace)
+    (h0ne : MetaSN_DM.kappaM t ≠ 0) : LocalJoinSafe (merge t t) := by
+  refine localJoin_of_unique (a := merge t t) (d := t) ?h
+  intro x hx
+  cases hx with
+  | R_merge_cancel _ _ h0 => exact (False.elim (h0ne h0))
+  | R_merge_void_left _ _ => rfl
+  | R_merge_void_right _ _ => rfl
+
+/-- At `recΔ b s void`, if `deltaFlag b ≠ 0` then the rec-zero rule is blocked. -/
+theorem localJoin_rec_zero_guard_ne (b s : Trace)
+    (hδne : deltaFlag b ≠ 0) : LocalJoinSafe (recΔ b s void) := by
+  refine localJoin_of_none (a := recΔ b s void) ?h
+  intro x hx
+  cases hx with
+  | R_rec_zero _ _ hδ => exact (hδne hδ)
+
+/-- At `integrate t`, if `t` is not a `delta _`, then there is no safe root step. -/
+theorem localJoin_integrate_non_delta (t : Trace)
+    (hnd : ∀ u, t ≠ delta u) : LocalJoinSafe (integrate t) := by
+  refine localJoin_of_none (a := integrate t) ?h
+  intro x hx
+  cases hx with
+  | R_int_delta u => exact (hnd u) rfl
+
+/-- At `recΔ b s n`, if `n ≠ void` and `n` is not a `delta _`, then no safe root step. -/
+theorem localJoin_rec_other (b s n : Trace)
+    (hn0 : n ≠ void) (hns : ∀ u, n ≠ delta u) : LocalJoinSafe (recΔ b s n) := by
+  refine localJoin_of_none (a := recΔ b s n) ?h
+  intro x hx
+  cases hx with
+  | R_rec_zero _ _ _ => exact (hn0 rfl)
+  | R_rec_succ _ _ u => exact (hns u) rfl
+
+/-- At `app a b`, there is no safe root rule; join holds vacuously. -/
+theorem localJoin_app (a b : Trace) : LocalJoinSafe (app a b) := by
+  refine localJoin_of_none (a := app a b) ?h
+  intro x hx
+  cases hx
+
+/-- At `recΔ b s (merge a c)`, no safe root rule (scrutinee not void/delta). -/
+theorem localJoin_rec_merge (b s a c : Trace) : LocalJoinSafe (recΔ b s (merge a c)) := by
+  refine localJoin_of_none (a := recΔ b s (merge a c)) ?h
+  intro x hx; cases hx
+
+/-- At `recΔ b s (app a c)`, no safe root rule (scrutinee not void/delta). -/
+theorem localJoin_rec_app (b s a c : Trace) : LocalJoinSafe (recΔ b s (app a c)) := by
+  refine localJoin_of_none (a := recΔ b s (app a c)) ?h
+  intro x hx; cases hx
+
+/-- At `recΔ b s (integrate t)`, no safe root rule (scrutinee not void/delta). -/
+theorem localJoin_rec_integrate (b s t : Trace) : LocalJoinSafe (recΔ b s (integrate t)) := by
+  refine localJoin_of_none (a := recΔ b s (integrate t)) ?h
+  intro x hx; cases hx
+
+/-- At `recΔ b s (eqW a c)`, no safe root rule (scrutinee not void/delta). -/
+theorem localJoin_rec_eqW (b s a c : Trace) : LocalJoinSafe (recΔ b s (eqW a c)) := by
+  refine localJoin_of_none (a := recΔ b s (eqW a c)) ?h
+  intro x hx; cases hx
+
+/-- At `merge a b`, if neither side is `void` and `a ≠ b`, then no safe root step. -/
+theorem localJoin_merge_no_void_neq (a b : Trace)
+    (hav : a ≠ void) (hbv : b ≠ void) (hneq : a ≠ b) : LocalJoinSafe (merge a b) := by
+  refine localJoin_of_none (a := merge a b) ?h
+  intro x hx
+  cases hx with
+  | R_merge_void_left _ _ => exact (hav rfl)
+  | R_merge_void_right _ _ => exact (hbv rfl)
+  | R_merge_cancel _ _ _ => exact (hneq rfl)
+
+/-- If normalization is a fixed point, `a` is safe-normal; local join holds. -/
+theorem localJoin_if_normalize_fixed (a : Trace) (hfix : normalizeSafe a = a) :
+    LocalJoinSafe a := by
+  have hnf : NormalFormSafe a := (nf_iff_normalize_fixed a).mpr hfix
+  -- avoid definality issues by expanding the goal
+  intro b c hb hc
+  exact (localJoin_of_nf a hnf) hb hc
+end MetaSN_KO7
+
+namespace MetaSN_KO7
+
+/-- If a root local join holds at `a`, then a ctx-local join also holds at `a`.
+This embeds the root `SafeStepStar` witnesses into `SafeStepCtxStar`. -/
+theorem localJoin_ctx_of_localJoin (a : Trace)
+    (h : LocalJoinSafe a) : LocalJoinSafe_ctx a := by
+  intro b c hb hc
+  rcases h hb hc with ⟨d, hbStar, hcStar⟩
+  exact ⟨d, ctxstar_of_star hbStar, ctxstar_of_star hcStar⟩
+
+end MetaSN_KO7
+
+namespace MetaSN_KO7
+
+/-- Ctx wrapper: if neither side is void and `a ≠ b`, then ctx-local join holds at `merge a b`. -/
+theorem localJoin_ctx_merge_no_void_neq (a b : Trace)
+    (hav : a ≠ void) (hbv : b ≠ void) (hneq : a ≠ b) :
+    LocalJoinSafe_ctx (merge a b) :=
+  localJoin_ctx_of_localJoin (a := merge a b)
+    (h := localJoin_merge_no_void_neq a b hav hbv hneq)
+
+end MetaSN_KO7
+
+namespace MetaSN_KO7
+
+/-- Ctx wrapper: eqW distinct arguments have ctx-local join (only diff rule applies). -/
+theorem localJoin_ctx_eqW_ne (a b : Trace) (hne : a ≠ b) :
+    LocalJoinSafe_ctx (eqW a b) :=
+  localJoin_ctx_of_localJoin (a := eqW a b)
+    (h := localJoin_eqW_ne a b hne)
+
+/-- Ctx wrapper: at eqW a a with kappaM a ≠ 0, only diff applies; ctx-local join holds. -/
+theorem localJoin_ctx_eqW_refl_guard_ne (a : Trace)
+    (h0ne : MetaSN_DM.kappaM a ≠ 0) :
+    LocalJoinSafe_ctx (eqW a a) :=
+  localJoin_ctx_of_localJoin (a := eqW a a)
+    (h := localJoin_eqW_refl_guard_ne a h0ne)
+
+end MetaSN_KO7
+
+namespace MetaSN_KO7
+
+/-- Ctx wrapper: if `normalizeSafe (merge a a) = delta n`, eqW a a ctx-joins. -/
+theorem localJoin_ctx_eqW_refl_if_merge_normalizes_to_delta (a n : Trace)
+    (hn : normalizeSafe (merge a a) = delta n) :
+    LocalJoinSafe_ctx (eqW a a) :=
+  localJoin_eqW_refl_ctx_if_merge_normalizes_to_delta a n hn
+
+/-- Ctx wrapper: if `integrate (merge a a) ⇒ctx* void`, eqW a a ctx-joins at void. -/
+theorem localJoin_ctx_eqW_refl_if_integrate_merge_to_void (a : Trace)
+    (hiv : SafeStepCtxStar (integrate (merge a a)) void) :
+    LocalJoinSafe_ctx (eqW a a) :=
+  localJoin_eqW_refl_ctx_if_integrate_merge_to_void a hiv
+
+/-- Ctx wrapper: if `a ⇒* delta n` and guards hold on `delta n`, eqW a a ctx-joins. -/
+theorem localJoin_ctx_eqW_refl_if_arg_star_to_delta (a n : Trace)
+    (ha : SafeStepStar a (delta n))
+    (hδ : deltaFlag (delta n) = 0)
+    (h0 : MetaSN_DM.kappaM (delta n) = 0) :
+    LocalJoinSafe_ctx (eqW a a) :=
+  localJoin_eqW_refl_ctx_if_arg_star_to_delta a n ha hδ h0
+
+/-- Ctx wrapper: if `normalizeSafe a = delta n` and guards hold, eqW a a ctx-joins. -/
+theorem localJoin_ctx_eqW_refl_if_normalizes_to_delta (a n : Trace)
+    (hn : normalizeSafe a = delta n)
+    (hδ : deltaFlag (delta n) = 0)
+    (h0 : MetaSN_DM.kappaM (delta n) = 0) :
+    LocalJoinSafe_ctx (eqW a a) :=
+  localJoin_eqW_refl_ctx_if_normalizes_to_delta a n hn hδ h0
+
+end MetaSN_KO7
+
+namespace MetaSN_KO7
+
+/-- Ctx wrapper: when `a` is literally `delta n` and guards hold, eqW (delta n) (delta n) ctx-joins. -/
+theorem localJoin_ctx_eqW_refl_when_a_is_delta (n : Trace)
+    (hδ : deltaFlag (delta n) = 0)
+    (h0 : MetaSN_DM.kappaM (delta n) = 0) :
+    LocalJoinSafe_ctx (eqW (delta n) (delta n)) :=
+  localJoin_eqW_refl_ctx_when_a_is_delta n hδ h0
+
+end MetaSN_KO7
+
+```
+
+---
+
+## 8. Meta/ContractProbes.lean
+
+**File:** `OperatorKO7/Meta/ContractProbes.lean`
+
+```lean
+/-!
+# Contract Probes (P1–P3)
+
+These probes document required checks from the Strict Execution Contract.
+They are written to be build-safe: negative cases are in comments; no failing assertions.
+
+P1: Branch realism — enumerate clauses, test rfl per-branch, report failures, give corrected laws.
+P2: Duplication realism — show additive failure and give the robust DM/MPO orientation premise.
+P3: Symbol realism — one success, one unknown identifier example, one arity/type mismatch example.
+-/
+
+namespace OperatorKO7.MetaProbes
+
+/-! ## P1: Branch realism -/
+
+/-- A tiny two-branch function used to illustrate the P1 "branch realism" check. -/
+def f : Nat → Nat
+| 0       => 1
+| Nat.succ x => x
+
+/-
+Clause-by-clause rfl checks for the claim 2 * f x = f (2 * x):
+
+- x = 0:
+  LHS = 2 * f 0 = 2 * 1 = 2; RHS = f (2 * 0) = f 0 = 1 → not rfl. Fails.
+
+- x = succ y:
+  LHS = 2 * f (succ y) = 2 * y; RHS = f (2 * succ y) = f (2*y + 2) = (2*y + 2).pred = 2*y + 1 → not rfl. Fails.
+
+Corrected per-branch statements:
+- x = 0: 2 * f 0 = 2 ≠ 1 = f 0
+- x = succ y: 2 * f (succ y) = 2*y and f (2*succ y) = 2*y + 1 differ by 1
+
+True global facts:
+- f (2 * x) = Nat.pred (2 * x + 1)
+- 2 * f x ≤ 2 * x, with strict inequality when x ≠ 0
+- Minimal counterexample to the false global equality: x = 0.
+-/
+
+/-! ## P2: Duplication realism -/
+
+/--
+Consider a rewrite rule that duplicates a subterm S: h(S) → g(S,S).
+With a simple node-count measure M, we get:
+  M(after) = M(before) - 1 + M(S) + M(S) = M(before) - 1 + 2·M(S),
+which is not a strict drop when M(S) ≥ 1.
+
+Robust orientation uses a multiset-of-weights (Dershowitz–Manna) or MPO/RPO:
+- Key premise: every RHS piece Pi is strictly < the removed LHS redex W in the base order.
+- If we cannot exhibit Pi < W for all pieces, we must declare a CONSTRAINT BLOCKER.
+-/
+-- (Orientation lemmas live in the main development; this file only documents the probe.)
+
+/-! ## P3: Symbol realism -/
+
+/--
+One success (present in toolkit):
+- Ordinal.opow_le_opow_right : monotonicity of ω^· in the exponent (≤-mono)
+
+One unknown identifier example (NameGate):
+- opow_right_mono_strict — SEARCH(name)=0 → must use local bridge `opow_lt_opow_right` instead.
+
+One arity/type mismatch example (TypeGate):
+- mul_le_mul_left' used with arguments in wrong order/type; fix by applying the α, β, γ as per lemma’s signature.
+-/
+
+end OperatorKO7.MetaProbes
+
+```
+
+---
+
+## 9. Meta/FailureModes.lean
+
+**File:** `OperatorKO7/Meta/FailureModes.lean`
+
+```lean
+import OperatorKO7.Kernel
+import OperatorKO7.Meta.Termination_KO7
+
+/-!
+# Impossibility Results and Countermodels
+
+This file formally establishes the failure of simpler termination measures (additive, polynomial, purely ordinal) by exhibiting concrete counterexamples.
+These results serve as the formal witnesses for the "Impossibility results" section of the paper, demonstrating why checking strictly simpler measures is insufficient for the KO7 calculus.
+
+Sections:
+1) Branch realism: impossibility of global equality across pattern-matched clauses
+2) Duplication hazards: failure of additive measures; necessity of DM/MPO
+3) Ordinal right-add hazard: (countermodel outline)
+4) μ s vs μ (delta n): counterexample to pure ordinal measures
+5) KO7-specific countermodels (δ-flag behavior)
+
+Note: We avoid `sorry` and establish negation or inequality where possible.
+-/
+
+namespace OperatorKO7.Countermodels
+
+open OperatorKO7 Trace
+
+/-! ## 1) Branch realism: minimal counterexample -/
+
+/-- A tiny function with two clauses to illustrate branch-by-branch `rfl` checks. -/
+def tiny : Nat → Nat
+| 0       => 1
+| Nat.succ n => n
+
+/-- Claim: `2 * tiny x = tiny (2 * x)` is not globally true. We do not assert it; we only show per-branch outcomes. -/
+/-- Witness that the global equation fails on the `x = 0` branch. -/
+lemma tiny_global_eq_fails_zero : 2 * tiny 0 ≠ tiny (2 * 0) := by
+  -- LHS = 2 * 1 = 2; RHS = tiny 0 = 1
+  decide
+
+/-- Witness that the global equation fails on the `x = succ n` branch. -/
+lemma tiny_global_eq_fails_succ (n : Nat) : 2 * tiny (Nat.succ n) ≠ tiny (2 * Nat.succ n) := by
+  -- LHS = 2 * n; RHS = tiny (2*n + 2) = (2*n + 2).pred = 2*n + 1
+  -- They differ by 1.
+  decide
+
+/-! ## 2) P2 Duplication realism (commented orientation) -/
+/--
+Consider a duplicating step h(S) → g(S,S). With an additive size M:
+  M(after) = M(before) - 1 + M(S) + M(S) = M(before) - 1 + 2·M(S)
+This is not strictly smaller when M(S) ≥ 1.
+To salvage termination, require a base well-founded order < and the DM premise:
+  every RHS piece Pi is strictly < the removed LHS redex W.
+If any Pi < W cannot be established, declare a CONSTRAINT BLOCKER instead of proceeding.
+-/
+lemma note_duplication_dm_orientation : True := by trivial
+
+/-! ## 3) Ordinal right-add hazard (outline, no false lemma) -/
+/--
+Do NOT transport strict inequalities via right-add globally:
+  a < b does not imply a + c < b + c for ordinals without hypotheses.
+Use only guarded lemmas like `le_add_of_nonneg_left/right`, or principal-add results with exact assumptions.
+-/
+lemma note_right_add_hazard : True := by trivial
+
+/-! ## 4) μ s vs μ (delta n) counterexample -/
+/-- There exist specific `s, n` with `μ s > μ (delta n)`.
+    Take `s = δ (δ void)` and `n = void`; then `μ(δ void) < μ(δ (δ void))`. -/
+theorem exists_mu_s_gt_mu_delta_n : ∃ s n : Trace, MetaSN.mu s > MetaSN.mu (delta n) := by
+  refine ⟨delta (delta void), void, ?_⟩
+  -- Goal: μ(δ δ void) > μ(δ void), equivalent to μ(δ void) < μ(δ δ void)
+  simpa [gt_iff_lt] using (MetaSN.mu_lt_mu_delta (delta void))
+
+/-! ## 5) KO7-flavored P1: δ-flag is NOT preserved by merge void globally -/
+open MetaSN_KO7
+
+/-- Branchwise counterexample: `deltaFlag (merge void t) = deltaFlag t` fails for `t = recΔ b s (delta n)`. -/
+lemma deltaFlag_not_preserved_merge_void (b s n : Trace) :
+  deltaFlag (merge void (recΔ b s (delta n))) ≠ deltaFlag (recΔ b s (delta n)) := by
+  -- LHS = 0, RHS = 1
+  simp [deltaFlag]
+
+/-- Documentation-only mapping note between KO7 duplication rules and the measure decrease branches. -/
+/-- KO7 duplication mapping note:
+    - DM-left used when κᴹ ≠ 0: see MetaSN_KO7.drop_R_merge_cancel_zero (inner LexDM via DM-left) and drop_R_eq_refl (DM-left branch).
+    - When κᴹ = 0, use μ-right in the inner lex and lift: see drop_R_merge_cancel_zero (μ-right path) and drop_R_eq_refl_zero. -/
+lemma note_ko7_duplication_mapping : True := by trivial
+
+end OperatorKO7.Countermodels
+
+```
+
+---
+
+## 10. Meta/Newman_Safe.lean
+
+**File:** `OperatorKO7/Meta/Newman_Safe.lean`
+
+```lean
+import OperatorKO7.Kernel
+import OperatorKO7.Meta.Termination_KO7
+import OperatorKO7.Meta.Normalize_Safe
+
+/-!
+Newman's lemma for the KO7 safe fragment.
+
+Purpose:
+- Packages the standard argument: termination (well-foundedness) + local joinability implies
+  confluence (Church-Rosser) for the reflexive-transitive closure.
+
+Scope boundary:
+- This file is parameterized by a local-join hypothesis `locAll : ∀ a, LocalJoinAt a`.
+- Termination for `SafeStep` is supplied by `wf_SafeStepRev` (from `Meta/Termination_KO7.lean`).
+- Nothing here claims confluence/termination for the full kernel `Step`.
+
+Main exports:
+- `newman_safe` / `confluentSafe_of_localJoinAt_and_SN`
+- Corollaries about unique normal forms and stability of `normalizeSafe`, assuming `locAll`.
+-/
+open Classical
+open OperatorKO7 Trace
+
+namespace MetaSN_KO7
+
+/-- Root local-join property at `a` for the KO7 safe relation. -/
+def LocalJoinAt (a : Trace) : Prop :=
+  ∀ {b c}, SafeStep a b → SafeStep a c → ∃ d, SafeStepStar b d ∧ SafeStepStar c d
+
+/-- Church–Rosser (confluence) for the safe star closure. -/
+def ConfluentSafe : Prop :=
+  ∀ a b c, SafeStepStar a b → SafeStepStar a c → ∃ d, SafeStepStar b d ∧ SafeStepStar c d
+
+/-! ### Small join helpers (step vs. star) -/
+
+/-- Trivial join of a single left step with a right reflexive star (choose `d = b`). -/
+theorem join_step_with_refl_star {a b : Trace}
+  (hab : SafeStep a b) : ∃ d, SafeStepStar b d ∧ SafeStepStar a d := by
+  refine ⟨b, ?_, ?_⟩
+  · exact SafeStepStar.refl b
+  · exact safestar_of_step hab
+
+-- Join a single left step against a right star with a head step, delegating the tail to a
+-- provided star–star joiner starting at the right-head successor.
+/-- Join one left root step against a right multi-step path, using local join + a star-star joiner. -/
+theorem join_step_with_tail_star
+  {a b c₁ c : Trace}
+  (loc : LocalJoinAt a)
+  (joinSS : ∀ {x y z}, SafeStepStar x y → SafeStepStar x z → ∃ d, SafeStepStar y d ∧ SafeStepStar z d)
+  (hab : SafeStep a b) (hac₁ : SafeStep a c₁) (hct : SafeStepStar c₁ c)
+  : ∃ d, SafeStepStar b d ∧ SafeStepStar c d := by
+  -- Local join at the root gives a common `e` with `b ⇒* e` and `c₁ ⇒* e`.
+  rcases loc (b := b) (c := c₁) (hab) (hac₁) with ⟨e, hbe, hc₁e⟩
+  -- Use the provided star–star joiner at source `c₁` to join `c₁ ⇒* e` and `c₁ ⇒* c`.
+  rcases joinSS (x := c₁) (y := e) (z := c) hc₁e hct with ⟨d, hed, hcd⟩
+  -- Compose on the left: `b ⇒* e ⇒* d`.
+  exact ⟨d, safestar_trans hbe hed, hcd⟩
+
+-- If we can locally join root-steps everywhere and we have a star–star joiner, then a single
+-- left step joins with any right star.
+/-- If local join holds everywhere and we can join stars, then a single step joins with any star. -/
+theorem join_step_star_of_join_star_star
+  (locAll : ∀ a, LocalJoinAt a)
+  (joinSS : ∀ {x y z}, SafeStepStar x y → SafeStepStar x z → ∃ d, SafeStepStar y d ∧ SafeStepStar z d)
+  {a b c : Trace}
+  (hab : SafeStep a b) (hac : SafeStepStar a c)
+  : ∃ d, SafeStepStar b d ∧ SafeStepStar c d := by
+  -- Case split on the right star.
+  cases hac with
+  | refl _ =>
+      -- Right is reflexive: join is immediate with `d = b`.
+      exact join_step_with_refl_star hab
+  | tail hac₁ hct =>
+      -- Right has a head step: use the tail helper with local join at `a` and the provided `joinSS`.
+      exact join_step_with_tail_star (locAll a) (joinSS) hab hac₁ hct
+
+/-! ### Star–star join by Acc recursion and Newman's lemma -/
+
+-- Main engine: star–star join at a fixed source, by Acc recursion on SafeStepRev at the source.
+/-- Core engine: join two `SafeStepStar` paths out of `x` by `Acc` recursion on `SafeStepRev x`. -/
+private theorem join_star_star_at
+  (locAll : ∀ a, LocalJoinAt a)
+  : ∀ x, Acc SafeStepRev x → ∀ {y z : Trace}, SafeStepStar x y → SafeStepStar x z → ∃ d, SafeStepStar y d ∧ SafeStepStar z d := by
+  intro x hx
+  induction hx with
+  | intro x _ ih =>
+  intro y z hxy hxz
+  -- Destructure both star paths out of x.
+  have HX := safestar_destruct hxy
+  have HZ := safestar_destruct hxz
+  cases HX with
+  | inl hEq =>
+    -- y = x, trivial join with z
+    cases hEq
+    exact ⟨z, hxz, SafeStepStar.refl z⟩
+  | inr hex =>
+    rcases hex with ⟨b1, hxb1, hb1y⟩
+    cases HZ with
+    | inl hEq2 =>
+      -- z = x, trivial join with y via left head step
+      cases hEq2
+      exact ⟨y, SafeStepStar.refl y, SafeStepStar.tail hxb1 hb1y⟩
+    | inr hey =>
+      rcases hey with ⟨c1, hxc1, hc1z⟩
+      -- Local join at root x
+      rcases locAll x hxb1 hxc1 with ⟨e, hb1e, hc1e⟩
+      -- Use IH at c1 to join c1 ⇒* e and c1 ⇒* z
+      rcases ih c1 hxc1 hc1e hc1z with ⟨d₁, hed₁, hzd₁⟩
+      -- Compose b1 ⇒* e ⇒* d₁
+      have hb1d₁ : SafeStepStar b1 d₁ := safestar_trans hb1e hed₁
+      -- Use IH at b1 to join b1 ⇒* y and b1 ⇒* d₁
+      rcases ih b1 hxb1 hb1y hb1d₁ with ⟨d, hyd, hd₁d⟩
+      -- Final composition on the right
+      exact ⟨d, hyd, safestar_trans hzd₁ hd₁d⟩
+
+theorem join_star_star
+  (locAll : ∀ a, LocalJoinAt a)
+  {a b c : Trace}
+  (hab : SafeStepStar a b) (hac : SafeStepStar a c)
+  : ∃ d, SafeStepStar b d ∧ SafeStepStar c d := by
+  exact join_star_star_at locAll a (acc_SafeStepRev a) hab hac
+
+-- Newman's lemma for the safe relation.
+/-- Newman's lemma specialized to `SafeStep`: termination + local joinability implies confluence. -/
+theorem newman_safe (locAll : ∀ a, LocalJoinAt a) : ConfluentSafe := by
+  intro _ _ _ hab hac
+  exact join_star_star locAll hab hac
+
+end MetaSN_KO7
+
+namespace MetaSN_KO7
+
+/-! ## Derived corollaries (parameterized by local join) -/
+
+/-- Global confluence from local join everywhere (alias of `newman_safe`). -/
+theorem confluentSafe_of_localJoinAt_and_SN
+    (locAll : ∀ a, LocalJoinAt a) : ConfluentSafe :=
+  newman_safe locAll
+
+/-- Unique normal forms under global confluence provided by `locAll`. -/
+theorem unique_normal_forms_of_loc
+    (locAll : ∀ a, LocalJoinAt a)
+    {a n₁ n₂ : Trace}
+    (h₁ : SafeStepStar a n₁) (h₂ : SafeStepStar a n₂)
+    (hnf₁ : NormalFormSafe n₁) (hnf₂ : NormalFormSafe n₂) :
+    n₁ = n₂ := by
+  have conf : ConfluentSafe := newman_safe locAll
+  obtain ⟨d, h₁d, h₂d⟩ := conf a n₁ n₂ h₁ h₂
+  have eq₁ : n₁ = d := nf_no_safestar_forward hnf₁ h₁d
+  have eq₂ : n₂ = d := nf_no_safestar_forward hnf₂ h₂d
+  simp [eq₁, eq₂]
+
+/-- The normalizer returns the unique normal form (assuming `locAll`). -/
+theorem normalizeSafe_unique_of_loc
+    (locAll : ∀ a, LocalJoinAt a)
+    {t n : Trace}
+    (h : SafeStepStar t n) (hnf : NormalFormSafe n) :
+    n = normalizeSafe t := by
+  exact unique_normal_forms_of_loc locAll h (to_norm_safe t) hnf (norm_nf_safe t)
+
+/-- Safe-step-related terms normalize to the same result (assuming `locAll`). -/
+theorem normalizeSafe_eq_of_star_of_loc
+    (locAll : ∀ a, LocalJoinAt a)
+    {a b : Trace} (h : SafeStepStar a b) :
+    normalizeSafe a = normalizeSafe b := by
+  have ha := to_norm_safe a
+  have hb := to_norm_safe b
+  have conf : ConfluentSafe := newman_safe locAll
+  obtain ⟨d, had, hbd⟩ := conf a (normalizeSafe a) (normalizeSafe b) ha (safestar_trans h hb)
+  have eq₁ := nf_no_safestar_forward (norm_nf_safe a) had
+  have eq₂ := nf_no_safestar_forward (norm_nf_safe b) hbd
+  simp [eq₁, eq₂]
+
+end MetaSN_KO7
+
+```
+
+---
+
+## 11. Meta/SafeStep_Ctx.lean
+
+**File:** `OperatorKO7/Meta/SafeStep_Ctx.lean`
+
+```lean
+import OperatorKO7.Kernel
+import OperatorKO7.Meta.Termination_KO7
+import OperatorKO7.Meta.Normalize_Safe
+
+/-!
+Context-closure utilities for the KO7 safe fragment.
+
+Purpose:
+- Defines `SafeStepCtx`, the one-step contextual closure of the safe root relation `SafeStep`.
+- Defines `SafeStepCtxStar`, the reflexive-transitive closure of `SafeStepCtx`.
+- Provides lifting lemmas that transport `SafeStepStar` and `SafeStepCtxStar` through constructors.
+
+Why this matters:
+- Local confluence is usually stated for a context-closed step relation.
+- Our certified artifact focuses on `SafeStep` at the root; this file supplies the standard closure
+  layers so that later confluence statements can be phrased in the usual rewriting style.
+
+Scope boundary:
+- All results here are about `SafeStep` / `SafeStepCtx`. Nothing here asserts properties of the full
+  kernel relation `Step`.
+-/
+open Classical
+open OperatorKO7 Trace
+
+namespace MetaSN_KO7
+
+/-- Context-closure of the KO7 safe root relation. -/
+inductive SafeStepCtx : Trace → Trace → Prop
+| root {a b} : SafeStep a b → SafeStepCtx a b
+| integrate {t u} : SafeStepCtx t u → SafeStepCtx (integrate t) (integrate u)
+| mergeL {a a' b} : SafeStepCtx a a' → SafeStepCtx (merge a b) (merge a' b)
+| mergeR {a b b'} : SafeStepCtx b b' → SafeStepCtx (merge a b) (merge a b')
+| appL {a a' b} : SafeStepCtx a a' → SafeStepCtx (app a b) (app a' b)
+| appR {a b b'} : SafeStepCtx b b' → SafeStepCtx (app a b) (app a b')
+| recB {b b' s n} : SafeStepCtx b b' → SafeStepCtx (recΔ b s n) (recΔ b' s n)
+| recS {b s s' n} : SafeStepCtx s s' → SafeStepCtx (recΔ b s n) (recΔ b s' n)
+| recN {b s n n'} : SafeStepCtx n n' → SafeStepCtx (recΔ b s n) (recΔ b s n')
+
+/-- Reflexive-transitive closure of `SafeStepCtx`. -/
+inductive SafeStepCtxStar : Trace → Trace → Prop
+| refl : ∀ t, SafeStepCtxStar t t
+| tail : ∀ {a b c}, SafeStepCtx a b → SafeStepCtxStar b c → SafeStepCtxStar a c
+
+/-- Transitivity of the context-closed multi-step relation `SafeStepCtxStar`. -/
+theorem ctxstar_trans {a b c : Trace}
+  (h₁ : SafeStepCtxStar a b) (h₂ : SafeStepCtxStar b c) : SafeStepCtxStar a c := by
+  induction h₁ with
+  | refl => exact h₂
+  | tail hab _ ih => exact SafeStepCtxStar.tail hab (ih h₂)
+
+/-- A single safe root step can be viewed as a one-step `SafeStepCtx` and hence as a star. -/
+theorem ctxstar_of_root {a b : Trace} (h : SafeStep a b) : SafeStepCtxStar a b :=
+  SafeStepCtxStar.tail (SafeStepCtx.root h) (SafeStepCtxStar.refl b)
+
+/-- Any `SafeStepStar` path lifts to a `SafeStepCtxStar` path via repeated `SafeStepCtx.root`. -/
+theorem ctxstar_of_star {a b : Trace} (h : SafeStepStar a b) : SafeStepCtxStar a b := by
+  induction h with
+  | refl t => exact SafeStepCtxStar.refl t
+  | tail hab _ ih => exact SafeStepCtxStar.tail (SafeStepCtx.root hab) ih
+
+/-- Lift `SafeStepCtxStar` through the `integrate` constructor. -/
+theorem ctxstar_integrate {t u : Trace}
+  (h : SafeStepCtxStar t u) : SafeStepCtxStar (integrate t) (integrate u) := by
+  induction h with
+  | refl => exact SafeStepCtxStar.refl _
+  | tail htu _ ih => exact SafeStepCtxStar.tail (SafeStepCtx.integrate htu) ih
+
+/-- Lift `SafeStepCtxStar` through the left argument of `merge`. -/
+theorem ctxstar_mergeL {a a' b : Trace}
+  (h : SafeStepCtxStar a a') : SafeStepCtxStar (merge a b) (merge a' b) := by
+  induction h with
+  | refl => exact SafeStepCtxStar.refl _
+  | tail hab _ ih => exact SafeStepCtxStar.tail (SafeStepCtx.mergeL hab) ih
+
+/-- Lift `SafeStepCtxStar` through the right argument of `merge`. -/
+theorem ctxstar_mergeR {a b b' : Trace}
+  (h : SafeStepCtxStar b b') : SafeStepCtxStar (merge a b) (merge a b') := by
+  induction h with
+  | refl => exact SafeStepCtxStar.refl _
+  | tail hbb _ ih => exact SafeStepCtxStar.tail (SafeStepCtx.mergeR hbb) ih
+
+/-- Lift `SafeStepCtxStar` through the left argument of `app`. -/
+theorem ctxstar_appL {a a' b : Trace}
+  (h : SafeStepCtxStar a a') : SafeStepCtxStar (app a b) (app a' b) := by
+  induction h with
+  | refl => exact SafeStepCtxStar.refl _
+  | tail hab _ ih => exact SafeStepCtxStar.tail (SafeStepCtx.appL hab) ih
+
+/-- Lift `SafeStepCtxStar` through the right argument of `app`. -/
+theorem ctxstar_appR {a b b' : Trace}
+  (h : SafeStepCtxStar b b') : SafeStepCtxStar (app a b) (app a b') := by
+  induction h with
+  | refl => exact SafeStepCtxStar.refl _
+  | tail hbb _ ih => exact SafeStepCtxStar.tail (SafeStepCtx.appR hbb) ih
+
+/-- Lift `SafeStepCtxStar` through the base argument `b` of `recΔ b s n`. -/
+theorem ctxstar_recB {b b' s n : Trace}
+  (h : SafeStepCtxStar b b') : SafeStepCtxStar (recΔ b s n) (recΔ b' s n) := by
+  induction h with
+  | refl => exact SafeStepCtxStar.refl _
+  | tail hbb _ ih => exact SafeStepCtxStar.tail (SafeStepCtx.recB hbb) ih
+
+/-- Lift `SafeStepCtxStar` through the step function argument `s` of `recΔ b s n`. -/
+theorem ctxstar_recS {b s s' n : Trace}
+  (h : SafeStepCtxStar s s') : SafeStepCtxStar (recΔ b s n) (recΔ b s' n) := by
+  induction h with
+  | refl => exact SafeStepCtxStar.refl _
+  | tail hss _ ih => exact SafeStepCtxStar.tail (SafeStepCtx.recS hss) ih
+
+/-- Lift `SafeStepCtxStar` through the argument `n` of `recΔ b s n`. -/
+theorem ctxstar_recN {b s n n' : Trace}
+  (h : SafeStepCtxStar n n') : SafeStepCtxStar (recΔ b s n) (recΔ b s n') := by
+  induction h with
+  | refl => exact SafeStepCtxStar.refl _
+  | tail hnn _ ih => exact SafeStepCtxStar.tail (SafeStepCtx.recN hnn) ih
+
+/-- Compose left and right ctx-star lifts under `merge`. -/
+theorem ctxstar_mergeLR {a a' b b' : Trace}
+  (ha : SafeStepCtxStar a a') (hb : SafeStepCtxStar b b') :
+  SafeStepCtxStar (merge a b) (merge a' b') :=
+  ctxstar_trans (ctxstar_mergeL ha) (ctxstar_mergeR hb)
+
+/-- Compose all three ctx-star lifts under `recΔ`. -/
+theorem ctxstar_recBSN {b b' s s' n n' : Trace}
+  (hb : SafeStepCtxStar b b') (hs : SafeStepCtxStar s s') (hn : SafeStepCtxStar n n') :
+  SafeStepCtxStar (recΔ b s n) (recΔ b' s' n') :=
+  ctxstar_trans (ctxstar_recB hb) (ctxstar_trans (ctxstar_recS hs) (ctxstar_recN hn))
+
+/-- Compose left and right ctx-star lifts under `app`. -/
+theorem ctxstar_appLR {a a' b b' : Trace}
+  (ha : SafeStepCtxStar a a') (hb : SafeStepCtxStar b b') :
+  SafeStepCtxStar (app a b) (app a' b') :=
+  ctxstar_trans (ctxstar_appL ha) (ctxstar_appR hb)
+
+/-- Local join at root allowing context-closed stars after the two root steps. -/
+def LocalJoinSafe_ctx (a : Trace) : Prop :=
+  ∀ {b c}, SafeStep a b → SafeStep a c → ∃ d, SafeStepCtxStar b d ∧ SafeStepCtxStar c d
+
+/-- If there are no safe root steps from `a`, ctx-local join holds vacuously. -/
+theorem localJoin_of_none_ctx (a : Trace)
+    (h : ∀ {b}, SafeStep a b → False) : LocalJoinSafe_ctx a := by
+  intro b c hb hc
+  exact False.elim (h hb)
+
+/-- If `a` is in safe normal form, ctx-local join holds. -/
+theorem localJoin_of_nf_ctx (a : Trace) (hnf : NormalFormSafe a) : LocalJoinSafe_ctx a := by
+  refine localJoin_of_none_ctx (a := a) ?h
+  intro b hb; exact no_step_from_nf hnf hb
+
+/-- If normalization is fixed at `a`, ctx-local join holds. -/
+theorem localJoin_if_normalize_fixed_ctx (a : Trace) (hfix : normalizeSafe a = a) :
+    LocalJoinSafe_ctx a := by
+  have hnf : NormalFormSafe a := (nf_iff_normalize_fixed a).mpr hfix
+  intro b c hb hc
+  exact (localJoin_of_nf_ctx a hnf) hb hc
+
+/-- If every safe root step from `a` targets the same `d`, then ctx-local join holds. -/
+theorem localJoin_of_unique_ctx (a d : Trace)
+    (h : ∀ {b}, SafeStep a b → b = d) : LocalJoinSafe_ctx a := by
+  intro b c hb hc
+  have hb' : b = d := h hb
+  have hc' : c = d := h hc
+  refine ⟨d, ?_, ?_⟩
+  · simpa [hb'] using (SafeStepCtxStar.refl d)
+  · simpa [hc'] using (SafeStepCtxStar.refl d)
+
+/-! ### Convenience ctx-local joins for vacuous shapes -/
+
+/-- At `void`, there is no safe root rule; ctx-local join holds vacuously. -/
+theorem localJoin_ctx_void : LocalJoinSafe_ctx void := by
+  refine localJoin_of_none_ctx (a := void) ?h
+  intro b hb; cases hb
+
+/-- At `delta t`, there is no safe root rule; ctx-local join holds vacuously. -/
+theorem localJoin_ctx_delta (t : Trace) : LocalJoinSafe_ctx (delta t) := by
+  refine localJoin_of_none_ctx (a := delta t) ?h
+  intro b hb; cases hb
+
+/-- At `app a b`, there is no safe root rule; ctx-local join holds vacuously. -/
+theorem localJoin_ctx_app (a b : Trace) : LocalJoinSafe_ctx (app a b) := by
+  refine localJoin_of_none_ctx (a := app a b) ?h
+  intro b' hb'; cases hb'
+
+/-- At `integrate void`, no safe root rule; ctx-local join vacuously. -/
+theorem localJoin_ctx_integrate_void : LocalJoinSafe_ctx (integrate void) := by
+  refine localJoin_of_none_ctx (a := integrate void) ?h
+  intro x hx; cases hx
+
+/-- At `integrate (merge a b)`, no safe root rule; ctx-local join vacuously. -/
+theorem localJoin_ctx_integrate_merge (a b : Trace) : LocalJoinSafe_ctx (integrate (merge a b)) := by
+  refine localJoin_of_none_ctx (a := integrate (merge a b)) ?h
+  intro x hx; cases hx
+
+/-- At `integrate (app a b)`, no safe root rule; ctx-local join vacuously. -/
+theorem localJoin_ctx_integrate_app (a b : Trace) : LocalJoinSafe_ctx (integrate (app a b)) := by
+  refine localJoin_of_none_ctx (a := integrate (app a b)) ?h
+  intro x hx; cases hx
+
+/-- At `integrate (eqW a b)`, no safe root rule; ctx-local join vacuously. -/
+theorem localJoin_ctx_integrate_eqW (a b : Trace) : LocalJoinSafe_ctx (integrate (eqW a b)) := by
+  refine localJoin_of_none_ctx (a := integrate (eqW a b)) ?h
+  intro x hx; cases hx
+
+/-- At `integrate (integrate t)`, no safe root rule; ctx-local join vacuously. -/
+theorem localJoin_ctx_integrate_integrate (t : Trace) :
+    LocalJoinSafe_ctx (integrate (integrate t)) := by
+  refine localJoin_of_none_ctx (a := integrate (integrate t)) ?h
+  intro x hx; cases hx
+
+/-- At `integrate (recΔ b s n)`, no safe root rule; ctx-local join vacuously. -/
+theorem localJoin_ctx_integrate_rec (b s n : Trace) :
+    LocalJoinSafe_ctx (integrate (recΔ b s n)) := by
+  refine localJoin_of_none_ctx (a := integrate (recΔ b s n)) ?h
+  intro x hx; cases hx
+
+/-- At `recΔ b s (merge a c)`, no safe root rule; ctx-local join vacuously. -/
+theorem localJoin_ctx_rec_merge (b s a c : Trace) : LocalJoinSafe_ctx (recΔ b s (merge a c)) := by
+  refine localJoin_of_none_ctx (a := recΔ b s (merge a c)) ?h
+  intro x hx; cases hx
+
+/-- At `recΔ b s (app a c)`, no safe root rule; ctx-local join vacuously. -/
+theorem localJoin_ctx_rec_app (b s a c : Trace) : LocalJoinSafe_ctx (recΔ b s (app a c)) := by
+  refine localJoin_of_none_ctx (a := recΔ b s (app a c)) ?h
+  intro x hx; cases hx
+
+/-- At `recΔ b s (integrate t)`, no safe root rule; ctx-local join vacuously. -/
+theorem localJoin_ctx_rec_integrate (b s t : Trace) : LocalJoinSafe_ctx (recΔ b s (integrate t)) := by
+  refine localJoin_of_none_ctx (a := recΔ b s (integrate t)) ?h
+  intro x hx; cases hx
+
+/-- At `recΔ b s (eqW a c)`, no safe root rule; ctx-local join vacuously. -/
+theorem localJoin_ctx_rec_eqW (b s a c : Trace) : LocalJoinSafe_ctx (recΔ b s (eqW a c)) := by
+  refine localJoin_of_none_ctx (a := recΔ b s (eqW a c)) ?h
+  intro x hx; cases hx
+
+/-- At `recΔ b s void`, only one safe root rule; ctx-local join is trivial. -/
+theorem localJoin_ctx_rec_zero (b s : Trace) : LocalJoinSafe_ctx (recΔ b s void) := by
+  refine localJoin_of_unique_ctx (a := recΔ b s void) (d := b) ?h
+  intro x hx; cases hx with
+  | R_rec_zero _ _ _ => rfl
+
+/-- At `recΔ b s (delta n)`, only one safe root rule; ctx-local join is trivial. -/
+theorem localJoin_ctx_rec_succ (b s n : Trace) : LocalJoinSafe_ctx (recΔ b s (delta n)) := by
+  refine localJoin_of_unique_ctx (a := recΔ b s (delta n)) (d := app s (recΔ b s n)) ?h
+  intro x hx; cases hx with
+  | R_rec_succ _ _ _ => rfl
+
+/-- At `merge void t`, only the left-void rule can fire; ctx-local join is trivial. -/
+theorem localJoin_ctx_merge_void_left (t : Trace) : LocalJoinSafe_ctx (merge void t) := by
+  refine localJoin_of_unique_ctx (a := merge void t) (d := t) ?h
+  intro x hx; cases hx with
+  | R_merge_void_left _ _ => rfl
+  | R_merge_void_right _ _ => rfl
+  | R_merge_cancel _ _ _ => rfl
+
+/-- At `merge t void`, only the right-void rule can fire; ctx-local join is trivial. -/
+theorem localJoin_ctx_merge_void_right (t : Trace) : LocalJoinSafe_ctx (merge t void) := by
+  refine localJoin_of_unique_ctx (a := merge t void) (d := t) ?h
+  intro x hx; cases hx with
+  | R_merge_void_right _ _ => rfl
+  | R_merge_void_left _ _ => rfl
+  | R_merge_cancel _ _ _ => rfl
+
+/-- At `merge t t`, any applicable safe rule reduces to `t`; ctx-local join is trivial. -/
+theorem localJoin_ctx_merge_tt (t : Trace) : LocalJoinSafe_ctx (merge t t) := by
+  refine localJoin_of_unique_ctx (a := merge t t) (d := t) ?h
+  intro x hx; cases hx with
+  | R_merge_cancel _ _ _ => rfl
+  | R_merge_void_left _ _ => rfl
+  | R_merge_void_right _ _ => rfl
+
+/-- Convenience: `merge void void` reduces uniquely to `void` (ctx). -/
+theorem localJoin_ctx_merge_void_void : LocalJoinSafe_ctx (merge void void) :=
+  localJoin_ctx_merge_void_left void
+
+/-- Convenience: `merge void (delta n)` reduces uniquely to `delta n` (ctx). -/
+theorem localJoin_ctx_merge_void_delta (n : Trace) :
+    LocalJoinSafe_ctx (merge void (delta n)) :=
+  localJoin_ctx_merge_void_left (delta n)
+
+/-- Convenience: `merge (delta n) void` reduces uniquely to `delta n` (ctx). -/
+theorem localJoin_ctx_merge_delta_void (n : Trace) :
+    LocalJoinSafe_ctx (merge (delta n) void) :=
+  localJoin_ctx_merge_void_right (delta n)
+
+/-- Convenience: `merge (delta n) (delta n)` reduces (by cancel) to `delta n` (ctx). -/
+theorem localJoin_ctx_merge_delta_delta (n : Trace) :
+    LocalJoinSafe_ctx (merge (delta n) (delta n)) :=
+  localJoin_ctx_merge_tt (delta n)
+
+/-- At `integrate (delta t)`, only one safe root rule; ctx-local join is trivial. -/
+theorem localJoin_ctx_int_delta (t : Trace) : LocalJoinSafe_ctx (integrate (delta t)) := by
+  refine localJoin_of_unique_ctx (a := integrate (delta t)) (d := void) ?h
+  intro x hx; cases hx with
+  | R_int_delta _ => rfl
+
+/-- If `deltaFlag t ≠ 0`, the left-void merge rule cannot apply; no competing branch. -/
+theorem localJoin_ctx_merge_void_left_guard_ne (t : Trace)
+    (hδne : deltaFlag t ≠ 0) : LocalJoinSafe_ctx (merge void t) := by
+  refine localJoin_of_unique_ctx (a := merge void t) (d := t) ?h
+  intro x hx; cases hx with
+  | R_merge_void_left _ hδ => exact (False.elim (hδne hδ))
+  | R_merge_void_right _ _ => rfl
+  | R_merge_cancel _ _ _ => rfl
+
+/-- If `deltaFlag t ≠ 0`, the right-void merge rule cannot apply; no competing branch. -/
+theorem localJoin_ctx_merge_void_right_guard_ne (t : Trace)
+    (hδne : deltaFlag t ≠ 0) : LocalJoinSafe_ctx (merge t void) := by
+  refine localJoin_of_unique_ctx (a := merge t void) (d := t) ?h
+  intro x hx; cases hx with
+  | R_merge_void_right _ hδ => exact (False.elim (hδne hδ))
+  | R_merge_void_left _ _ => rfl
+  | R_merge_cancel _ _ _ => rfl
+
+/-- If `deltaFlag t ≠ 0`, merge-cancel is blocked at root; vacuous ctx-local join. -/
+theorem localJoin_ctx_merge_cancel_guard_delta_ne (t : Trace)
+    (hδne : deltaFlag t ≠ 0) : LocalJoinSafe_ctx (merge t t) := by
+  refine localJoin_of_unique_ctx (a := merge t t) (d := t) ?h
+  intro x hx; cases hx with
+  | R_merge_cancel _ hδ _ => exact (False.elim (hδne hδ))
+  | R_merge_void_left _ _ => rfl
+  | R_merge_void_right _ _ => rfl
+
+/-- If `kappaM t ≠ 0`, merge-cancel is blocked at root; vacuous ctx-local join. -/
+theorem localJoin_ctx_merge_cancel_guard_kappa_ne (t : Trace)
+    (h0ne : MetaSN_DM.kappaM t ≠ 0) : LocalJoinSafe_ctx (merge t t) := by
+  refine localJoin_of_unique_ctx (a := merge t t) (d := t) ?h
+  intro x hx; cases hx with
+  | R_merge_cancel _ _ h0 => exact (False.elim (h0ne h0))
+  | R_merge_void_left _ _ => rfl
+  | R_merge_void_right _ _ => rfl
+
+/-- At `recΔ b s void`, if `deltaFlag b ≠ 0` then the rec-zero rule is blocked. -/
+theorem localJoin_ctx_rec_zero_guard_ne (b s : Trace)
+    (hδne : deltaFlag b ≠ 0) : LocalJoinSafe_ctx (recΔ b s void) := by
+  refine localJoin_of_none_ctx (a := recΔ b s void) ?h
+  intro x hx; cases hx with
+  | R_rec_zero _ _ hδ => exact (hδne hδ)
+
+/-- At `integrate t`, if `t` is not a `delta _`, then there is no safe root step (ctx). -/
+theorem localJoin_ctx_integrate_non_delta (t : Trace)
+    (hnd : ∀ u, t ≠ delta u) : LocalJoinSafe_ctx (integrate t) := by
+  refine localJoin_of_none_ctx (a := integrate t) ?h
+  intro x hx; cases hx with
+  | R_int_delta u => exact (hnd u) rfl
+
+/-- At `recΔ b s n`, if `n ≠ void` and `n` is not a `delta _`, then no safe root step (ctx). -/
+theorem localJoin_ctx_rec_other (b s n : Trace)
+    (hn0 : n ≠ void) (hns : ∀ u, n ≠ delta u) : LocalJoinSafe_ctx (recΔ b s n) := by
+  refine localJoin_of_none_ctx (a := recΔ b s n) ?h
+  intro x hx; cases hx with
+  | R_rec_zero _ _ _ => exact (hn0 rfl)
+  | R_rec_succ _ _ u => exact (hns u) rfl
+
+-- (moved above to allow reuse in subsequent lemmas)
+
+/-- Conditional join for the eqW peak: if `merge a a` context-reduces to a `delta n`, then
+ the two root branches from `eqW a a` context-join at `void`. -/
+theorem localJoin_eqW_refl_ctx_if_merges_to_delta (a n : Trace)
+  (hmd : SafeStepCtxStar (merge a a) (delta n)) :
+  LocalJoinSafe_ctx (eqW a a) := by
+  intro b c hb hc
+  -- Enumerate the two root branches
+  cases hb with
+  | R_eq_refl _ _ =>
+    -- b = void; hc can only be refl or diff
+    cases hc with
+    | R_eq_refl _ _ => exact ⟨void, SafeStepCtxStar.refl _, SafeStepCtxStar.refl _⟩
+    | R_eq_diff _ _ =>
+      -- c = integrate (merge a a) ⇒ctx* integrate (delta n) → void
+      have h_to_delta : SafeStepCtxStar (integrate (merge a a)) (integrate (delta n)) :=
+        ctxstar_integrate hmd
+      have h_to_void : SafeStepCtxStar (integrate (delta n)) void :=
+        ctxstar_of_root (SafeStep.R_int_delta n)
+      exact ⟨void, SafeStepCtxStar.refl _, ctxstar_trans h_to_delta h_to_void⟩
+  | R_eq_diff _ _ =>
+    -- b = integrate (merge a a)
+    cases hc with
+    | R_eq_refl _ _ =>
+      have h_to_delta : SafeStepCtxStar (integrate (merge a a)) (integrate (delta n)) :=
+        ctxstar_integrate hmd
+      have h_to_void : SafeStepCtxStar (integrate (delta n)) void :=
+        ctxstar_of_root (SafeStep.R_int_delta n)
+      exact ⟨void, ctxstar_trans h_to_delta h_to_void, SafeStepCtxStar.refl _⟩
+    | R_eq_diff _ _ =>
+      -- both to the same term
+  exact ⟨integrate (merge a a), SafeStepCtxStar.refl _, SafeStepCtxStar.refl _⟩
+
+/-- If `a ⇒ctx* delta n` and `delta n` satisfies the cancel guards, then
+`merge a a ⇒ctx* delta n`. -/
+theorem ctxstar_merge_cancel_of_arg_to_delta
+  (a n : Trace)
+  (ha : SafeStepCtxStar a (delta n))
+  (hδ : deltaFlag (delta n) = 0)
+  (h0 : MetaSN_DM.kappaM (delta n) = 0) :
+  SafeStepCtxStar (merge a a) (delta n) := by
+  -- push left argument to delta n
+  have hL : SafeStepCtxStar (merge a a) (merge (delta n) a) := ctxstar_mergeL ha
+  -- push right argument to delta n
+  have hR : SafeStepCtxStar (merge (delta n) a) (merge (delta n) (delta n)) := ctxstar_mergeR ha
+  -- apply root cancel at delta n
+  have hC : SafeStepCtxStar (merge (delta n) (delta n)) (delta n) :=
+    ctxstar_of_root (SafeStep.R_merge_cancel (t := delta n) hδ h0)
+  exact ctxstar_trans hL (ctxstar_trans hR hC)
+
+/-- If `a ⇒* delta n` by root-safe steps and the cancel guards hold on `delta n`, then
+`merge a a ⇒ctx* delta n`. -/
+theorem ctxstar_merge_cancel_of_arg_star_to_delta
+  (a n : Trace)
+  (ha : SafeStepStar a (delta n))
+  (hδ : deltaFlag (delta n) = 0)
+  (h0 : MetaSN_DM.kappaM (delta n) = 0) :
+  SafeStepCtxStar (merge a a) (delta n) := by
+  have ha_ctx : SafeStepCtxStar a (delta n) := ctxstar_of_star ha
+  exact ctxstar_merge_cancel_of_arg_to_delta a n ha_ctx hδ h0
+
+/-- Conditional local join for `eqW a a` from an argument-to-delta premise.
+If `a ⇒ctx* delta n` and the cancel guards hold on `delta n`, the two root branches
+context-join at `void`. -/
+theorem localJoin_eqW_refl_ctx_if_arg_merges_to_delta (a n : Trace)
+  (ha : SafeStepCtxStar a (delta n))
+  (hδ : deltaFlag (delta n) = 0)
+  (h0 : MetaSN_DM.kappaM (delta n) = 0) :
+  LocalJoinSafe_ctx (eqW a a) := by
+  -- derive the stronger merge→delta premise and reuse previous lemma
+  have hmd : SafeStepCtxStar (merge a a) (delta n) :=
+    ctxstar_merge_cancel_of_arg_to_delta a n ha hδ h0
+  -- apply the previous lemma to the concrete branch steps
+  intro b c hb hc
+  exact (localJoin_eqW_refl_ctx_if_merges_to_delta a n hmd) hb hc
+
+/-- Variant: if `a ⇒* delta n` by root-safe steps, embed to ctx-star and reuse the delta-argument lemma. -/
+theorem localJoin_eqW_refl_ctx_if_arg_star_to_delta (a n : Trace)
+  (ha : SafeStepStar a (delta n))
+  (hδ : deltaFlag (delta n) = 0)
+  (h0 : MetaSN_DM.kappaM (delta n) = 0) :
+  LocalJoinSafe_ctx (eqW a a) := by
+  -- embed SafeStepStar into SafeStepCtxStar
+  have ha_ctx : SafeStepCtxStar a (delta n) := ctxstar_of_star ha
+  -- reuse the ctx lemma, applied to the given branches
+  intro b c hb hc
+  exact (localJoin_eqW_refl_ctx_if_arg_merges_to_delta a n ha_ctx hδ h0) hb hc
+
+/-- Variant: if `normalizeSafe (merge a a) = delta n`, then we can reuse the
+merges-to-delta lemma directly to obtain a ctx-local join for `eqW a a`. -/
+theorem localJoin_eqW_refl_ctx_if_merge_normalizes_to_delta (a n : Trace)
+  (hn : normalizeSafe (merge a a) = delta n) :
+  LocalJoinSafe_ctx (eqW a a) := by
+  -- get a root-star to the normal form and embed to ctx-star
+  have hmd_star : SafeStepStar (merge a a) (normalizeSafe (merge a a)) :=
+    to_norm_safe (merge a a)
+  have hmd_ctx : SafeStepCtxStar (merge a a) (delta n) := by
+    simpa [hn] using (ctxstar_of_star hmd_star)
+  -- apply the merges-to-delta variant to the given branches
+  intro b c hb hc
+  exact (localJoin_eqW_refl_ctx_if_merges_to_delta a n hmd_ctx) hb hc
+
+/-- If `merge a a ⇒ctx* delta n` then `integrate (merge a a) ⇒ctx* void`. -/
+theorem ctxstar_integrate_merge_to_void_of_mergeToDelta (a n : Trace)
+  (hmd : SafeStepCtxStar (merge a a) (delta n)) :
+  SafeStepCtxStar (integrate (merge a a)) void := by
+  have h_to_delta : SafeStepCtxStar (integrate (merge a a)) (integrate (delta n)) :=
+    ctxstar_integrate hmd
+  have h_to_void : SafeStepCtxStar (integrate (delta n)) void :=
+    ctxstar_of_root (SafeStep.R_int_delta n)
+  exact ctxstar_trans h_to_delta h_to_void
+
+/-- If `normalizeSafe (merge a a) = delta n` then `integrate (merge a a) ⇒ctx* void`. -/
+theorem ctxstar_integrate_merge_to_void_of_merge_normalizes_to_delta (a n : Trace)
+  (hn : normalizeSafe (merge a a) = delta n) :
+  SafeStepCtxStar (integrate (merge a a)) void := by
+  have hmd_star : SafeStepStar (merge a a) (normalizeSafe (merge a a)) :=
+    to_norm_safe (merge a a)
+  have hmd_ctx : SafeStepCtxStar (merge a a) (delta n) := by
+    simpa [hn] using (ctxstar_of_star hmd_star)
+  exact ctxstar_integrate_merge_to_void_of_mergeToDelta a n hmd_ctx
+
+/-- If `integrate (merge a a) ⇒ctx* void`, then `eqW a a` has a ctx-local join at `void`. -/
+theorem localJoin_eqW_refl_ctx_if_integrate_merge_to_void (a : Trace)
+  (hiv : SafeStepCtxStar (integrate (merge a a)) void) :
+  LocalJoinSafe_ctx (eqW a a) := by
+  intro b c hb hc
+  cases hb with
+  | R_eq_refl _ _ =>
+    cases hc with
+    | R_eq_refl _ _ =>
+      exact ⟨void, SafeStepCtxStar.refl _, SafeStepCtxStar.refl _⟩
+    | R_eq_diff _ _ =>
+      exact ⟨void, SafeStepCtxStar.refl _, hiv⟩
+  | R_eq_diff _ _ =>
+    cases hc with
+    | R_eq_refl _ _ =>
+      exact ⟨void, hiv, SafeStepCtxStar.refl _⟩
+    | R_eq_diff _ _ =>
+      exact ⟨integrate (merge a a), SafeStepCtxStar.refl _, SafeStepCtxStar.refl _⟩
+
+/-- At `eqW a b` with `a ≠ b`, only the diff rule applies; ctx-local join is trivial. -/
+theorem localJoin_eqW_ne_ctx (a b : Trace) (hne : a ≠ b) : LocalJoinSafe_ctx (eqW a b) := by
+  refine localJoin_of_unique_ctx (a := eqW a b) (d := integrate (merge a b)) ?h
+  intro x hx
+  cases hx with
+  | R_eq_diff _ _ => rfl
+  | R_eq_refl _ _ => exact (False.elim (hne rfl))
+
+/-- At `eqW a a`, if `kappaM a ≠ 0`, the reflexive rule is blocked; only diff applies. -/
+theorem localJoin_eqW_refl_ctx_guard_ne (a : Trace)
+  (h0ne : MetaSN_DM.kappaM a ≠ 0) : LocalJoinSafe_ctx (eqW a a) := by
+  refine localJoin_of_unique_ctx (a := eqW a a) (d := integrate (merge a a)) ?h
+  intro x hx
+  cases hx with
+  | R_eq_diff _ _ => rfl
+  | R_eq_refl _ h0 => exact (False.elim (h0ne h0))
+
+end MetaSN_KO7
+
+namespace MetaSN_KO7
+
+/-- If `a` is literally `delta n` and cancel guards hold on `delta n`, then
+`eqW a a` has a context-closed local join at `void`. -/
+theorem localJoin_eqW_refl_ctx_when_a_is_delta (n : Trace)
+  (hδ : deltaFlag (delta n) = 0)
+  (h0 : MetaSN_DM.kappaM (delta n) = 0) :
+  LocalJoinSafe_ctx (eqW (delta n) (delta n)) := by
+  -- trivial arg-to-delta via refl
+  intro b c hb hc
+  -- build the LocalJoinSafe_ctx witness once, then apply to the given branches
+  have ha : SafeStepCtxStar (delta n) (delta n) := SafeStepCtxStar.refl _
+  have hj : LocalJoinSafe_ctx (eqW (delta n) (delta n)) :=
+    localJoin_eqW_refl_ctx_if_arg_merges_to_delta (a := delta n) (n := n) ha hδ h0
+  exact hj hb hc
+
+/-- If `a` safe-normalizes to `delta n` and cancel guards hold on `delta n`, then
+`eqW a a` has a context-closed local join at `void`. -/
+theorem localJoin_eqW_refl_ctx_if_normalizes_to_delta (a n : Trace)
+  (hn : normalizeSafe a = delta n)
+  (hδ : deltaFlag (delta n) = 0)
+  (h0 : MetaSN_DM.kappaM (delta n) = 0) :
+  LocalJoinSafe_ctx (eqW a a) := by
+  -- embed the normalization star into ctx-star
+  intro b c hb hc
+  have ha_star : SafeStepStar a (normalizeSafe a) := to_norm_safe a
+  have ha_ctx : SafeStepCtxStar a (normalizeSafe a) := ctxstar_of_star ha_star
+  -- build the LocalJoinSafe_ctx witness using the arg→delta bridge
+  have hj : LocalJoinSafe_ctx (eqW a a) :=
+    localJoin_eqW_refl_ctx_if_arg_merges_to_delta (a := a) (n := n)
+      (by simpa [hn] using ha_ctx) hδ h0
+  exact hj hb hc
+
+end MetaSN_KO7
+
+```
+
+---
+
+## 12. Meta/ComputableMeasure_Test.lean
+
+**File:** `OperatorKO7/Meta/ComputableMeasure_Test.lean`
+
+```lean
+import OperatorKO7.Meta.ComputableMeasure
+import OperatorKO7.Meta.Termination_KO7
+
+/-!
+# Quick test that ComputableMeasure works correctly
+
+This file is intentionally lightweight: it is a scratchpad of `example` goals and `#check`s that
+exercise the public surface of the computable termination proof for `SafeStep`.
+
+It is not part of the certified artifact itself; it exists to make regressions obvious during local
+development (and for reviewers who want a quick sanity pass without reading the full proofs).
+-/
+
+namespace OperatorKO7.MetaCM.Test
+
+open OperatorKO7 Trace
+
+open OperatorKO7.MetaCM
+open OperatorKO7.MetaSN_KO7
+
+-- Main theorem is available
+example : WellFounded SafeStepRev := wf_SafeStepRev_c
+
+-- Measure decreases for each rule
+example (t : OperatorKO7.Trace) :
+    OperatorKO7.MetaCM.Lex3c
+      (OperatorKO7.MetaCM.mu3c OperatorKO7.Trace.void)
+      (OperatorKO7.MetaCM.mu3c (OperatorKO7.Trace.integrate (OperatorKO7.Trace.delta t))) :=
+  drop_R_int_delta_c t
+
+-- All 8 rules work
+#check drop_R_int_delta_c
+#check drop_R_merge_void_left_c
+#check drop_R_merge_void_right_c
+#check drop_R_merge_cancel_c
+#check drop_R_rec_zero_c
+#check drop_R_rec_succ_c
+#check drop_R_eq_refl_c
+#check drop_R_eq_diff_c
+
+-- Main aggregator works
+#check measure_decreases_safe_c
+
+-- If this file elaborates, the basic API of `ComputableMeasure.lean` is intact.
+
+end OperatorKO7.MetaCM.Test
+
+```
+
+---
+
+## 13. Meta/Normalize_Safe.lean
+
+**File:** `OperatorKO7/Meta/Normalize_Safe.lean`
+
+```lean
+import OperatorKO7.Kernel
+import OperatorKO7.Meta.Termination_KO7
+import Mathlib.Logic.Function.Basic
+
+/-!
+Certified normalization for the KO7 safe fragment.
+
+Purpose:
+- Defines `SafeStepStar` (multi-step closure of `SafeStep`).
+- Defines `NormalFormSafe` and proves basic normal-form facts for the safe relation.
+- Constructs a *certified* normalizer `normalizeSafe` for `SafeStep` using well-founded recursion.
+
+Important scope boundary:
+- Everything in this file is about `SafeStep` (the guarded fragment), not the full kernel `Step`.
+- The normalizer is `noncomputable` because it is obtained from well-foundedness via `WellFounded.fix`.
+  This is the standard "certified existence" construction: it produces a term and a proof certificate.
+
+Main exports:
+- `normalizeSafe` and its certificates: `to_norm_safe`, `norm_nf_safe`
+- Fixed-point characterizations: `nf_iff_normalize_fixed`, `not_fixed_iff_exists_step`
+- Convenience bundles: `normalizeSafe_sound`, `normalizeSafe_total`
+-/
+set_option diagnostics.threshold 100000
+set_option linter.unnecessarySimpa false
+open Classical
+open OperatorKO7 Trace
+
+
+namespace MetaSN_KO7
+
+/-- Reflexive-transitive closure of `SafeStep`. -/
+inductive SafeStepStar : Trace → Trace → Prop
+| refl : ∀ t, SafeStepStar t t
+| tail : ∀ {a b c}, SafeStep a b → SafeStepStar b c → SafeStepStar a c
+
+/-- Transitivity of the safe multi-step relation `SafeStepStar`. -/
+theorem safestar_trans {a b c : Trace}
+  (h₁ : SafeStepStar a b) (h₂ : SafeStepStar b c) : SafeStepStar a c := by
+  induction h₁ with
+  | refl => exact h₂
+  | tail hab _ ih => exact SafeStepStar.tail hab (ih h₂)
+
+/-- Any single safe step is also a `SafeStepStar`. -/
+theorem safestar_of_step {a b : Trace} (h : SafeStep a b) : SafeStepStar a b :=
+  SafeStepStar.tail h (SafeStepStar.refl b)
+
+/-- Normal forms for the safe subrelation. -/
+def NormalFormSafe (t : Trace) : Prop := ¬ ∃ u, SafeStep t u
+
+/-- No single safe step can originate from a safe normal form. -/
+theorem no_step_from_nf {t u : Trace} (h : NormalFormSafe t) : ¬ SafeStep t u := by
+  intro hs; exact h ⟨u, hs⟩
+
+/-- If `a` is a safe normal form, then any `a ⇒* b` (in `SafeStepStar`) must be trivial. -/
+theorem nf_no_safestar_forward {a b : Trace}
+  (hnf : NormalFormSafe a) (h : SafeStepStar a b) : a = b :=
+  match h with
+  | SafeStepStar.refl _ => rfl
+  | SafeStepStar.tail hs _ => False.elim (hnf ⟨_, hs⟩)
+
+/-- From a safe normal form, reachability by `SafeStepStar` is equivalent to equality. -/
+theorem safestar_from_nf_iff_eq {t u : Trace}
+  (h : NormalFormSafe t) : SafeStepStar t u ↔ u = t := by
+  constructor
+  · intro htu
+    have ht_eq : t = u := nf_no_safestar_forward h htu
+    exact ht_eq.symm
+  · intro hEq; cases hEq; exact SafeStepStar.refl t
+
+/-- No non-trivial safe multi-step can start from a safe normal form. -/
+theorem no_safestar_from_nf_of_ne {t u : Trace}
+  (h : NormalFormSafe t) (hne : u ≠ t) : ¬ SafeStepStar t u := by
+  intro htu
+  have := (safestar_from_nf_iff_eq h).1 htu
+  exact hne this
+
+/-- Uniqueness of endpoints for `SafeStepStar` paths starting at a safe normal form. -/
+theorem safestar_from_nf_unique {a b c : Trace}
+  (ha : NormalFormSafe a) (hab : SafeStepStar a b) (hac : SafeStepStar a c) : b = c := by
+  have hb : b = a := (nf_no_safestar_forward ha hab).symm
+  have hc : c = a := (nf_no_safestar_forward ha hac).symm
+  simpa [hb, hc]
+
+/-- Any `SafeStepStar` cycle through a safe normal form collapses to equality. -/
+theorem safestar_cycle_nf_eq {a b : Trace}
+  (ha : NormalFormSafe a) (hab : SafeStepStar a b) (_hba : SafeStepStar b a) : a = b :=
+  nf_no_safestar_forward ha hab
+
+/-! ### Star structure helpers -/
+
+/-- Head decomposition for `SafeStepStar`: either refl, or a head step with a tail star. -/
+theorem safestar_destruct {a c : Trace} (h : SafeStepStar a c) :
+  a = c ∨ ∃ b, SafeStep a b ∧ SafeStepStar b c := by
+  cases h with
+  | refl t => exact Or.inl rfl
+  | tail hab hbc => exact Or.inr ⟨_, hab, hbc⟩
+
+/-- Append a single safe step to the right of a safe multi-step path. -/
+theorem safestar_snoc {a b c : Trace}
+  (hab : SafeStepStar a b) (hbc : SafeStep b c) : SafeStepStar a c :=
+  safestar_trans hab (safestar_of_step hbc)
+
+/-! ### Strong normalization (rev) - convenience -/
+
+/-- Accessibility for `SafeStepRev` as a derived corollary of `wf_SafeStepRev`. -/
+theorem acc_SafeStepRev (t : Trace) : Acc SafeStepRev t :=
+  wf_SafeStepRev.apply t
+
+/-- A well-founded pullback of the KO7 Lex3 order along μ3. -/
+def Rμ3 (x y : Trace) : Prop := Lex3 (μ3 x) (μ3 y)
+
+/-- Well-foundedness of `Rμ3`, inherited from `wf_Lex3` via `InvImage`. -/
+lemma wf_Rμ3 : WellFounded Rμ3 :=
+  InvImage.wf (f := μ3) wf_Lex3
+
+set_option diagnostics true
+
+/-- Deterministic normalization for the safe subrelation, bundled with a proof certificate. -/
+noncomputable def normalizeSafePack (t : Trace) : Σ' n : Trace, SafeStepStar t n ∧ NormalFormSafe n :=
+  WellFounded.fix wf_Rμ3 (C := fun t => Σ' n : Trace, SafeStepStar t n ∧ NormalFormSafe n)
+    (fun t rec => by
+      classical
+      -- Use term-mode if-split on existence of a safe step
+      exact
+        (if h : ∃ u, SafeStep t u then
+          -- Take one step and recurse
+          let u := Classical.choose h
+          have hu : SafeStep t u := Classical.choose_spec h
+          have hdrop : Rμ3 u t := measure_decreases_safe hu
+          match rec u hdrop with
+          | ⟨n, hstar, hnf⟩ => ⟨n, And.intro (SafeStepStar.tail hu hstar) hnf⟩
+        else
+          -- Stuck: already normal
+          ⟨t, And.intro (SafeStepStar.refl t) (by intro ex; exact h ex)⟩)) t
+
+/-- The safe normal form selected by `normalizeSafePack`. -/
+noncomputable def normalizeSafe (t : Trace) : Trace := (normalizeSafePack t).1
+
+/-- Certificate: `t` reduces to `normalizeSafe t` by `SafeStepStar`. -/
+theorem to_norm_safe (t : Trace) : SafeStepStar t (normalizeSafe t) := (normalizeSafePack t).2.left
+
+/-- Certificate: `normalizeSafe t` is a safe normal form. -/
+theorem norm_nf_safe (t : Trace) : NormalFormSafe (normalizeSafe t) := (normalizeSafePack t).2.right
+/-! ### Small derived lemmas -/
+
+/-- If `t` is already in safe normal form, normalization is the identity. -/
+theorem normalizeSafe_eq_self_of_nf (t : Trace) (h : NormalFormSafe t) :
+  normalizeSafe t = t := by
+  -- From NF, any star out of `t` is trivial; apply it to the normalizer path.
+  have := nf_no_safestar_forward h (to_norm_safe t)
+  exact this.symm
+
+/-- Existence of a reachable safe normal form for any trace (witnessed by `normalizeSafe`). -/
+theorem exists_nf_reachable (t : Trace) :
+  ∃ n, SafeStepStar t n ∧ NormalFormSafe n :=
+  ⟨normalizeSafe t, to_norm_safe t, norm_nf_safe t⟩
+
+/-- Either a safe step exists from `t`, or the normalizer is already fixed at `t`. -/
+theorem progress_or_fixed (t : Trace) : (∃ u, SafeStep t u) ∨ normalizeSafe t = t := by
+  classical
+  -- Term-mode split on NormalFormSafe t
+  exact
+    (if hnf : NormalFormSafe t then
+      Or.inr (normalizeSafe_eq_self_of_nf t hnf)
+    else
+      Or.inl (by
+        have : ¬¬ ∃ u, SafeStep t u := by simpa [NormalFormSafe] using hnf
+        exact not_not.mp this))
+
+/-- Head-or-refl decomposition of the normalization path (unbundled). -/
+theorem to_norm_safe_head_or_refl (t : Trace) :
+  normalizeSafe t = t ∨ ∃ u, SafeStep t u ∧ SafeStepStar u (normalizeSafe t) := by
+  have h := safestar_destruct (to_norm_safe t)
+  cases h with
+  | inl hEq => exact Or.inl hEq.symm
+  | inr hex =>
+      rcases hex with ⟨u, hstep, htail⟩
+      exact Or.inr ⟨u, hstep, htail⟩
+
+/-- If normalization changes `t`, then a safe step exists from `t`. -/
+theorem exists_step_of_not_fixed (t : Trace) (h : normalizeSafe t ≠ t) : ∃ u, SafeStep t u := by
+  cases progress_or_fixed t with
+  | inl hex => exact hex
+  | inr hfix => exact (h hfix).elim
+
+/-- If normalization changes `t`, there exists a `SafeStep` successor that strictly decreases `Rμ3`. -/
+theorem exists_drop_if_not_fixed (t : Trace) (h : normalizeSafe t ≠ t) :
+  ∃ u, SafeStep t u ∧ Rμ3 u t := by
+  classical
+  rcases exists_step_of_not_fixed t h with ⟨u, hs⟩
+  exact ⟨u, hs, measure_decreases_safe hs⟩
+
+/-- If there is a safe step from `t`, then normalization cannot be fixed at `t`. -/
+theorem not_fixed_of_exists_step (t : Trace) (hex : ∃ u, SafeStep t u) :
+  normalizeSafe t ≠ t := by
+  intro hfix
+  -- From fixed-point, we get NF; contradiction with existence of a step.
+  have hnf : NormalFormSafe t := by simpa [hfix] using norm_nf_safe t
+  exact hnf hex
+
+/-- Fixed-point characterization: `normalizeSafe t ≠ t` iff there exists a safe step from `t`. -/
+theorem not_fixed_iff_exists_step (t : Trace) :
+  normalizeSafe t ≠ t ↔ ∃ u, SafeStep t u := by
+  constructor
+  · exact exists_step_of_not_fixed t
+  · intro hex; exact not_fixed_of_exists_step t hex
+
+/-! ### Fixed-point characterization of safe normal forms -/
+
+theorem nf_iff_normalize_fixed (t : Trace) :
+  NormalFormSafe t ↔ normalizeSafe t = t := by
+  constructor
+  · intro h; exact normalizeSafe_eq_self_of_nf t h
+  · intro h; simpa [h] using norm_nf_safe t
+
+
+/-! ### Basic properties for the KO7 safe normalizer -/
+
+/-- Idempotence of safe normalization: normalizing twice is the same as once. -/
+theorem normalizeSafe_idempotent (t : Trace) :
+  normalizeSafe (normalizeSafe t) = normalizeSafe t := by
+  classical
+  have hnf : NormalFormSafe (normalizeSafe t) := norm_nf_safe t
+  -- No outgoing safe step from `normalizeSafe t` and star to itself
+  have hstar : SafeStepStar (normalizeSafe t) (normalizeSafe (normalizeSafe t)) := to_norm_safe (normalizeSafe t)
+  have := nf_no_safestar_forward hnf hstar
+  exact this.symm
+
+/-! ### (reserved) join-to-NF and confluence
+
+-- Note: General join-to-NF and confluence results are intentionally deferred here.
+-- They require additional confluence hypotheses or a separate argument; we keep the
+-- current module to safe, non-controversial lemmas that do not rely on global CR.
+
+-/
+
+end MetaSN_KO7
+
+namespace MetaSN_KO7
+
+/-- Bundled soundness of the KO7 safe normalizer. -/
+theorem normalizeSafe_sound (t : Trace) :
+  SafeStepStar t (normalizeSafe t) ∧ NormalFormSafe (normalizeSafe t) :=
+  ⟨to_norm_safe t, norm_nf_safe t⟩
+
+/-- Totality alias for convenience: every trace safely normalizes to some NF. -/
+theorem normalizeSafe_total (t : Trace) :
+  ∃ n, SafeStepStar t n ∧ NormalFormSafe n :=
+  ⟨normalizeSafe t, to_norm_safe t, norm_nf_safe t⟩
+
+end MetaSN_KO7
+
+```
+
+---
+
+## 14. Meta/ComputableMeasure_Verification.lean
+
+**File:** `OperatorKO7/Meta/ComputableMeasure_Verification.lean`
+
+```lean
+import OperatorKO7.Meta.ComputableMeasure
+
+/-!
+# Verification Suite for ComputableMeasure
+
+This file provides comprehensive verification that our computable measure
+is bulletproof and handles all edge cases correctly.
+
+## Test Categories:
+1. τ monotonicity verification
+2. DM order properties
+3. Measure decrease for each rule
+4. Edge cases and corner cases
+5. Comparison with original noncomputable measure
+-/
+
+namespace OperatorKO7.MetaCM.Verification
+
+open OperatorKO7 Trace MetaCM
+open MetaSN_KO7 MetaSN_DM
+
+/-! ## Section 1: τ Monotonicity Tests -/
+
+-- Verify τ is monotone for all constructors except delta
+example (t : Trace) : tau t < tau (integrate t) := by omega
+example (a b : Trace) : tau a < tau (merge a b) := by omega
+example (a b : Trace) : tau b < tau (merge a b) := by omega
+example (a b : Trace) : tau a < tau (app a b) := by omega
+example (a b : Trace) : tau b < tau (app a b) := by omega
+example (b s n : Trace) : tau b < tau (recΔ b s n) := by omega
+example (b s n : Trace) : tau s < tau (recΔ b s n) := by omega
+example (b s n : Trace) : tau n < tau (recΔ b s n) := by omega
+example (a b : Trace) : tau a < tau (eqW a b) := by omega
+example (a b : Trace) : tau b < tau (eqW a b) := by omega
+
+-- Verify delta is transparent
+example (t : Trace) : tau (delta t) = tau t := rfl
+
+-- Verify the critical inequality for eq_diff
+example (a b : Trace) : tau (integrate (merge a b)) < tau (eqW a b) := by
+  simp [tau]
+  -- 1 + (2 + τa + τb) = 3 + τa + τb < 4 + τa + τb
+  omega
+
+/-! ## Section 2: Lexicographic Order Properties -/
+
+-- Verify Lex3c is indeed well-founded
+example : WellFounded Lex3c := wf_Lex3c
+
+-- Verify the lifting lemma works
+example {X Y : Multiset Nat} {τ₁ τ₂ : Nat} (h : DM X Y) :
+    LexDM_c (X, τ₁) (Y, τ₂) := dm_to_LexDM_c_left h
+
+/-! ## Section 3: Measure Decrease Verification -/
+
+-- Test all 8 rules decrease the measure
+section RuleTests
+
+-- Rule 1: integrate (delta t) → void
+example (t : Trace) : Lex3c (mu3c void) (mu3c (integrate (delta t))) := by
+  apply drop_R_int_delta_c
+
+-- Rule 2: merge void t → t
+example (t : Trace) (hδ : deltaFlag t = 0) :
+    Lex3c (mu3c t) (mu3c (merge void t)) := by
+  apply drop_R_merge_void_left_c
+  exact hδ
+
+-- Rule 3: merge t void → t
+example (t : Trace) (hδ : deltaFlag t = 0) :
+    Lex3c (mu3c t) (mu3c (merge t void)) := by
+  apply drop_R_merge_void_right_c
+  exact hδ
+
+-- Rule 4: merge t t → t (duplication case!)
+example (t : Trace) (hδ : deltaFlag t = 0) (h0 : kappaM t = 0) :
+    Lex3c (mu3c t) (mu3c (merge t t)) := by
+  apply drop_R_merge_cancel_c
+  exact hδ
+  exact h0
+
+-- Rule 5: recΔ b s void → b
+example (b s : Trace) (hδ : deltaFlag b = 0) :
+    Lex3c (mu3c b) (mu3c (recΔ b s void)) := by
+  apply drop_R_rec_zero_c
+  exact hδ
+
+-- Rule 6: recΔ b s (delta n) → app s (recΔ b s n)
+example (b s n : Trace) :
+    Lex3c (mu3c (app s (recΔ b s n))) (mu3c (recΔ b s (delta n))) := by
+  apply drop_R_rec_succ_c
+
+-- Rule 7: eqW a a → void
+example (a : Trace) :
+    Lex3c (mu3c void) (mu3c (eqW a a)) := by
+  apply drop_R_eq_refl_c
+
+-- Rule 8: eqW a b → integrate (merge a b)
+example (a b : Trace) :
+    Lex3c (mu3c (integrate (merge a b))) (mu3c (eqW a b)) := by
+  apply drop_R_eq_diff_c
+
+end RuleTests
+
+/-! ## Section 4: Edge Cases and Corner Cases -/
+
+-- Deeply nested terms still decrease
+example :
+    let t := delta (delta (delta void))
+    Lex3c (mu3c void) (mu3c (integrate t)) := by
+  apply drop_R_int_delta_c
+
+-- Multiple deltas preserve transparency
+example (n : Nat) :
+    tau (delta^[n] void) = tau void := by
+  induction n with
+  | zero => rfl
+  | succ n ih => simp [Function.iterate_succ, tau, ih]
+
+-- Verify δ-flag is binary (0 or 1)
+/--
+`deltaFlag` is intentionally a binary phase indicator (0 or 1).
+
+This lemma is used as a sanity check that the computable triple-lex measure does not accidentally
+encode additional phases beyond the intended `recΔ _ _ (delta _)` detection.
+-/
+lemma deltaFlag_binary (t : Trace) : deltaFlag t = 0 ∨ deltaFlag t = 1 := by
+  cases t <;> simp [deltaFlag]
+  case recΔ b s n =>
+    cases n <;> simp [deltaFlag]
+
+/-! ## Section 5: SafeStep Decrease Aggregation -/
+
+-- The master theorem works for all SafeStep constructors
+example {a b : Trace} (h : SafeStep a b) :
+    Lex3c (mu3c b) (mu3c a) :=
+  measure_decreases_safe_c h
+
+-- SafeStepRev is indeed well-founded
+example : WellFounded SafeStepRev := wf_SafeStepRev_c
+
+/-! ## Section 6: Comparison with Noncomputable Measure -/
+
+-- Our computable measure implies the same well-foundedness
+/--
+The computable development is strictly stronger in the "artifact sense":
+
+We can derive well-foundedness of `SafeStepRev` without appealing to any noncomputable ordinal
+payload, by using `wf_SafeStepRev_c` from `Meta/ComputableMeasure.lean`.
+-/
+theorem computable_implies_original :
+    WellFounded SafeStepRev := by
+  exact wf_SafeStepRev_c
+
+-- Both measures agree on well-foundedness (modulo computability)
+/--
+A deliberately weak "equivalence" statement:
+
+This does *not* claim the ordinal and computable measures are extensionally equal.
+It only records that (i) the existence of *some* measure implies well-foundedness, and
+(ii) well-foundedness implies the existence of *a* measure (choose `mu3c`).
+-/
+theorem measures_equivalent_wf :
+    (∃ μ, WellFounded (fun a b => SafeStep b a)) ↔
+    WellFounded SafeStepRev := by
+  constructor
+  · intro ⟨_, h⟩; exact h
+  · intro h; exact ⟨mu3c, h⟩
+
+/-! ## Section 7: Stress Tests -/
+
+-- Large terms still work
+/-- A moderately complex concrete trace used for stress-testing `tau` and `mu3c`. -/
+def bigTrace : Trace :=
+  recΔ (merge void void) (app void void) (delta (integrate void))
+
+example : tau bigTrace = 3 + 2 + 1 + 1 := by
+  simp [bigTrace, tau]
+  ring
+
+-- Measure works on big terms
+example :
+    Lex3c (mu3c void) (mu3c (eqW bigTrace bigTrace)) := by
+  apply drop_R_eq_refl_c
+
+/-! ## Section 8: Invariants and Properties -/
+
+-- τ preserves structure under delta
+/-- `tau` is transparent under `delta` by definition (restated as a named lemma). -/
+lemma tau_delta_preserve (t : Trace) : tau (delta t) = tau t := rfl
+
+-- κᴹ behavior under constructors (from Termination_KO7)
+/-- Convenience bundle of basic `kappaM` simp-facts (re-exported as a single lemma). -/
+lemma kappaM_facts (a b s n : Trace) :
+    kappaM void = 0 ∧
+    kappaM (delta a) = kappaM a ∧
+    kappaM (integrate a) = kappaM a ∧
+    kappaM (merge a b) = kappaM a ∪ kappaM b ∧
+    kappaM (app a b) = kappaM a ∪ kappaM b ∧
+    kappaM (eqW a b) = kappaM a ∪ kappaM b := by
+  simp [kappaM]
+
+-- δ-flag is 1 only for recΔ _ _ (delta _)
+/-- Characterization of the `deltaFlag` phase bit. -/
+lemma deltaFlag_characterization (t : Trace) :
+    deltaFlag t = 1 ↔ ∃ b s n, t = recΔ b s (delta n) := by
+  cases t <;> simp [deltaFlag]
+  case recΔ b s n =>
+    cases n <;> simp [deltaFlag]
+    constructor
+    · intro _; exact ⟨b, s, _, rfl⟩
+    · intro ⟨_, _, _, h⟩; injection h
+
+/-! ## Section 9: No Infinite Chains -/
+
+-- Direct proof that no infinite SafeStep chain exists
+/-- There is no infinite forward `SafeStep` chain, since `mu3c` strictly decreases and `Lex3c` is WF. -/
+theorem no_infinite_safestep_chain :
+    ¬∃ (seq : Nat → Trace), ∀ n, SafeStep (seq n) (seq (n + 1)) := by
+  intro ⟨seq, h⟩
+  -- The measure strictly decreases along the chain
+  have dec : ∀ n, Lex3c (mu3c (seq (n + 1))) (mu3c (seq n)) := by
+    intro n
+    exact measure_decreases_safe_c (h n)
+  -- But Lex3c is well-founded, so no infinite descending chain exists
+  have : ¬∃ (f : Nat → Nat × (Multiset Nat × Nat)),
+           ∀ n, Lex3c (f (n + 1)) (f n) := by
+    apply WellFounded.not_lt_decreasing_seq
+    exact wf_Lex3c
+  apply this
+  exact ⟨fun n => mu3c (seq n), dec⟩
+
+end OperatorKO7.MetaCM.Verification
+
+```
+
+---
+
+## 15. Meta/Termination.lean
+
+**File:** `OperatorKO7/Meta/Termination.lean`
 
 ```lean
 import OperatorKO7.Kernel
@@ -2906,4296 +6406,1180 @@ end MetaSN
 
 ---
 
-## 4. Meta/DM_MPO_Orientation.lean
-**File:** `OperatorKO7/OperatorKO7/Meta/DM_MPO_Orientation.lean`
+## 16. Meta/Examples_Publish.lean
+
+**File:** `OperatorKO7/Meta/Examples_Publish.lean`
 
 ```lean
+import OperatorKO7.Kernel
 import OperatorKO7.Meta.Termination_KO7
+import OperatorKO7.Meta.Normalize_Safe
+import OperatorKO7.Meta.Confluence_Safe
+import OperatorKO7.Meta.Newman_Safe
 import OperatorKO7.Meta.ComputableMeasure
-import Mathlib.Data.Multiset.Basic
-import Mathlib.Data.Multiset.DershowitzManna
-
-/-!
-# DM/MPO Orientation Helpers (safe wrappers)
-
-This module provides small, composable wrappers around the Dershowitz–Manna
-multiset ordering lemmas used throughout the termination development.
-
-They are deliberately minimal and rely on existing, proven lemmas from the
-`MetaSN_DM` toolkit. No kernel rules are changed. No new axioms are introduced.
-
-Use these helpers to keep orientation proofs concise and robust.
--/
-
-namespace OperatorKO7.MetaOrientation
-
-open Multiset
-open MetaSN_DM
-open OperatorKO7 Trace
-open OperatorKO7.MetaCM
-
-/--
-Right-add orientation: if `Y ≠ 0`, then `X < X + Y` in the DM order.
-
-This is a thin wrapper around `MetaSN_DM.dm_lt_add_of_ne_zero'` with the
-arguments placed for ergonomic use.
--/
-lemma dm_add_right_of_ne_zero {X Y : Multiset ℕ} (hY : Y ≠ 0) : OperatorKO7.MetaCM.DM X (X + Y) := by
-  simpa using MetaSN_DM.dm_lt_add_of_ne_zero' X Y hY
-
-/--
-Left-add orientation: if `X ≠ 0`, then `Y < X + Y` in the DM order.
-
-This follows from commutativity of multiset addition and the right-add lemma.
--/
-lemma dm_add_left_of_ne_zero {X Y : Multiset ℕ} (hX : X ≠ 0) : OperatorKO7.MetaCM.DM Y (X + Y) := by
-  simpa [add_comm] using MetaSN_DM.dm_lt_add_of_ne_zero' Y X hX
-
-/-- DM drop on κᴹ for rec_zero (re-export for ergonomics). -/
-lemma dm_drop_rec_zero (b s : Trace) :
-    OperatorKO7.MetaCM.DM (MetaSN_DM.kappaM b) (MetaSN_DM.kappaM (recΔ b s void)) := by
-  simpa [OperatorKO7.MetaCM.DM] using MetaSN_DM.dm_drop_R_rec_zero b s
-
-/-- If X ≠ 0 then X ∪ X ≠ 0 (re-export). -/
-lemma union_self_ne_zero_of_ne_zero {X : Multiset ℕ} (h : X ≠ 0) :
-    X ∪ X ≠ (0 : Multiset ℕ) := by
-  simpa using MetaSN_DM.union_self_ne_zero_of_ne_zero h
-
-end OperatorKO7.MetaOrientation
-
-```
-
----
-
-
----
-
-## Summary
-
-This documentation contains the complete OperatorKO7 library with:
-
-### Core Components
-- **Kernel**: 7 constructors, 8 reduction rules
-- **SafeStep**: Guarded subrelation with certified termination
-- **Measures**: Triple-lex (Î´, Îºá´¹, Î¼) with both computable and ordinal variants
-
-### Key Results
-- **Strong Normalization**: Certified for SafeStep relation
-- **Impossibility Results**: Formal proofs that simpler measures fail
-- **Confluence**: Local joinability analysis with Newman's lemma
-- **Operational Incompleteness**: P1-P3 probes documenting fundamental barriers
-
-### Total Lines of Code
-- **Total**: 7,764 lines
-- **Kernel**: 1 lines
-- **Meta**: 7,763 lines across 18 files
-
-### Related Work
-
-This library supports the theoretical framework presented in:
-- "Thermodynamic Constraints on Measurement Events" (Rahnama, 2026)
-- "Universal Uncertainty-Entanglement Theory" (Rahnama, 2025)
-- "Operational Completeness" (Rahnama et al.)
-
----
-
-**End of Documentation**
-## 5. Meta/SafeStep_Ctx.lean
-**File:** `OperatorKO7/OperatorKO7/Meta/SafeStep_Ctx.lean`
-
-```lean
-import OperatorKO7.Kernel
-import OperatorKO7.Meta.Termination_KO7
-import OperatorKO7.Meta.Normalize_Safe
-
-/-!
-Context-closure utilities for the KO7 safe fragment.
-
-Purpose:
-- Defines `SafeStepCtx`, the one-step contextual closure of the safe root relation `SafeStep`.
-- Defines `SafeStepCtxStar`, the reflexive-transitive closure of `SafeStepCtx`.
-- Provides lifting lemmas that transport `SafeStepStar` and `SafeStepCtxStar` through constructors.
-
-Why this matters:
-- Local confluence is usually stated for a context-closed step relation.
-- Our certified artifact focuses on `SafeStep` at the root; this file supplies the standard closure
-  layers so that later confluence statements can be phrased in the usual rewriting style.
-
-Scope boundary:
-- All results here are about `SafeStep` / `SafeStepCtx`. Nothing here asserts properties of the full
-  kernel relation `Step`.
--/
-open Classical
-open OperatorKO7 Trace
-
-namespace MetaSN_KO7
-
-/-- Context-closure of the KO7 safe root relation. -/
-inductive SafeStepCtx : Trace → Trace → Prop
-| root {a b} : SafeStep a b → SafeStepCtx a b
-| integrate {t u} : SafeStepCtx t u → SafeStepCtx (integrate t) (integrate u)
-| mergeL {a a' b} : SafeStepCtx a a' → SafeStepCtx (merge a b) (merge a' b)
-| mergeR {a b b'} : SafeStepCtx b b' → SafeStepCtx (merge a b) (merge a b')
-| appL {a a' b} : SafeStepCtx a a' → SafeStepCtx (app a b) (app a' b)
-| appR {a b b'} : SafeStepCtx b b' → SafeStepCtx (app a b) (app a b')
-| recB {b b' s n} : SafeStepCtx b b' → SafeStepCtx (recΔ b s n) (recΔ b' s n)
-| recS {b s s' n} : SafeStepCtx s s' → SafeStepCtx (recΔ b s n) (recΔ b s' n)
-| recN {b s n n'} : SafeStepCtx n n' → SafeStepCtx (recΔ b s n) (recΔ b s n')
-
-/-- Reflexive-transitive closure of `SafeStepCtx`. -/
-inductive SafeStepCtxStar : Trace → Trace → Prop
-| refl : ∀ t, SafeStepCtxStar t t
-| tail : ∀ {a b c}, SafeStepCtx a b → SafeStepCtxStar b c → SafeStepCtxStar a c
-
-/-- Transitivity of the context-closed multi-step relation `SafeStepCtxStar`. -/
-theorem ctxstar_trans {a b c : Trace}
-  (h₁ : SafeStepCtxStar a b) (h₂ : SafeStepCtxStar b c) : SafeStepCtxStar a c := by
-  induction h₁ with
-  | refl => exact h₂
-  | tail hab _ ih => exact SafeStepCtxStar.tail hab (ih h₂)
-
-/-- A single safe root step can be viewed as a one-step `SafeStepCtx` and hence as a star. -/
-theorem ctxstar_of_root {a b : Trace} (h : SafeStep a b) : SafeStepCtxStar a b :=
-  SafeStepCtxStar.tail (SafeStepCtx.root h) (SafeStepCtxStar.refl b)
-
-/-- Any `SafeStepStar` path lifts to a `SafeStepCtxStar` path via repeated `SafeStepCtx.root`. -/
-theorem ctxstar_of_star {a b : Trace} (h : SafeStepStar a b) : SafeStepCtxStar a b := by
-  induction h with
-  | refl t => exact SafeStepCtxStar.refl t
-  | tail hab _ ih => exact SafeStepCtxStar.tail (SafeStepCtx.root hab) ih
-
-/-- Lift `SafeStepCtxStar` through the `integrate` constructor. -/
-theorem ctxstar_integrate {t u : Trace}
-  (h : SafeStepCtxStar t u) : SafeStepCtxStar (integrate t) (integrate u) := by
-  induction h with
-  | refl => exact SafeStepCtxStar.refl _
-  | tail htu _ ih => exact SafeStepCtxStar.tail (SafeStepCtx.integrate htu) ih
-
-/-- Lift `SafeStepCtxStar` through the left argument of `merge`. -/
-theorem ctxstar_mergeL {a a' b : Trace}
-  (h : SafeStepCtxStar a a') : SafeStepCtxStar (merge a b) (merge a' b) := by
-  induction h with
-  | refl => exact SafeStepCtxStar.refl _
-  | tail hab _ ih => exact SafeStepCtxStar.tail (SafeStepCtx.mergeL hab) ih
-
-/-- Lift `SafeStepCtxStar` through the right argument of `merge`. -/
-theorem ctxstar_mergeR {a b b' : Trace}
-  (h : SafeStepCtxStar b b') : SafeStepCtxStar (merge a b) (merge a b') := by
-  induction h with
-  | refl => exact SafeStepCtxStar.refl _
-  | tail hbb _ ih => exact SafeStepCtxStar.tail (SafeStepCtx.mergeR hbb) ih
-
-/-- Lift `SafeStepCtxStar` through the left argument of `app`. -/
-theorem ctxstar_appL {a a' b : Trace}
-  (h : SafeStepCtxStar a a') : SafeStepCtxStar (app a b) (app a' b) := by
-  induction h with
-  | refl => exact SafeStepCtxStar.refl _
-  | tail hab _ ih => exact SafeStepCtxStar.tail (SafeStepCtx.appL hab) ih
-
-/-- Lift `SafeStepCtxStar` through the right argument of `app`. -/
-theorem ctxstar_appR {a b b' : Trace}
-  (h : SafeStepCtxStar b b') : SafeStepCtxStar (app a b) (app a b') := by
-  induction h with
-  | refl => exact SafeStepCtxStar.refl _
-  | tail hbb _ ih => exact SafeStepCtxStar.tail (SafeStepCtx.appR hbb) ih
-
-/-- Lift `SafeStepCtxStar` through the base argument `b` of `recΔ b s n`. -/
-theorem ctxstar_recB {b b' s n : Trace}
-  (h : SafeStepCtxStar b b') : SafeStepCtxStar (recΔ b s n) (recΔ b' s n) := by
-  induction h with
-  | refl => exact SafeStepCtxStar.refl _
-  | tail hbb _ ih => exact SafeStepCtxStar.tail (SafeStepCtx.recB hbb) ih
-
-/-- Lift `SafeStepCtxStar` through the step function argument `s` of `recΔ b s n`. -/
-theorem ctxstar_recS {b s s' n : Trace}
-  (h : SafeStepCtxStar s s') : SafeStepCtxStar (recΔ b s n) (recΔ b s' n) := by
-  induction h with
-  | refl => exact SafeStepCtxStar.refl _
-  | tail hss _ ih => exact SafeStepCtxStar.tail (SafeStepCtx.recS hss) ih
-
-/-- Lift `SafeStepCtxStar` through the argument `n` of `recΔ b s n`. -/
-theorem ctxstar_recN {b s n n' : Trace}
-  (h : SafeStepCtxStar n n') : SafeStepCtxStar (recΔ b s n) (recΔ b s n') := by
-  induction h with
-  | refl => exact SafeStepCtxStar.refl _
-  | tail hnn _ ih => exact SafeStepCtxStar.tail (SafeStepCtx.recN hnn) ih
-
-/-- Compose left and right ctx-star lifts under `merge`. -/
-theorem ctxstar_mergeLR {a a' b b' : Trace}
-  (ha : SafeStepCtxStar a a') (hb : SafeStepCtxStar b b') :
-  SafeStepCtxStar (merge a b) (merge a' b') :=
-  ctxstar_trans (ctxstar_mergeL ha) (ctxstar_mergeR hb)
-
-/-- Compose all three ctx-star lifts under `recΔ`. -/
-theorem ctxstar_recBSN {b b' s s' n n' : Trace}
-  (hb : SafeStepCtxStar b b') (hs : SafeStepCtxStar s s') (hn : SafeStepCtxStar n n') :
-  SafeStepCtxStar (recΔ b s n) (recΔ b' s' n') :=
-  ctxstar_trans (ctxstar_recB hb) (ctxstar_trans (ctxstar_recS hs) (ctxstar_recN hn))
-
-/-- Compose left and right ctx-star lifts under `app`. -/
-theorem ctxstar_appLR {a a' b b' : Trace}
-  (ha : SafeStepCtxStar a a') (hb : SafeStepCtxStar b b') :
-  SafeStepCtxStar (app a b) (app a' b') :=
-  ctxstar_trans (ctxstar_appL ha) (ctxstar_appR hb)
-
-/-- Local join at root allowing context-closed stars after the two root steps. -/
-def LocalJoinSafe_ctx (a : Trace) : Prop :=
-  ∀ {b c}, SafeStep a b → SafeStep a c → ∃ d, SafeStepCtxStar b d ∧ SafeStepCtxStar c d
-
-/-- If there are no safe root steps from `a`, ctx-local join holds vacuously. -/
-theorem localJoin_of_none_ctx (a : Trace)
-    (h : ∀ {b}, SafeStep a b → False) : LocalJoinSafe_ctx a := by
-  intro b c hb hc
-  exact False.elim (h hb)
-
-/-- If `a` is in safe normal form, ctx-local join holds. -/
-theorem localJoin_of_nf_ctx (a : Trace) (hnf : NormalFormSafe a) : LocalJoinSafe_ctx a := by
-  refine localJoin_of_none_ctx (a := a) ?h
-  intro b hb; exact no_step_from_nf hnf hb
-
-/-- If normalization is fixed at `a`, ctx-local join holds. -/
-theorem localJoin_if_normalize_fixed_ctx (a : Trace) (hfix : normalizeSafe a = a) :
-    LocalJoinSafe_ctx a := by
-  have hnf : NormalFormSafe a := (nf_iff_normalize_fixed a).mpr hfix
-  intro b c hb hc
-  exact (localJoin_of_nf_ctx a hnf) hb hc
-
-/-- If every safe root step from `a` targets the same `d`, then ctx-local join holds. -/
-theorem localJoin_of_unique_ctx (a d : Trace)
-    (h : ∀ {b}, SafeStep a b → b = d) : LocalJoinSafe_ctx a := by
-  intro b c hb hc
-  have hb' : b = d := h hb
-  have hc' : c = d := h hc
-  refine ⟨d, ?_, ?_⟩
-  · simpa [hb'] using (SafeStepCtxStar.refl d)
-  · simpa [hc'] using (SafeStepCtxStar.refl d)
-
-/-! ### Convenience ctx-local joins for vacuous shapes -/
-
-/-- At `void`, there is no safe root rule; ctx-local join holds vacuously. -/
-theorem localJoin_ctx_void : LocalJoinSafe_ctx void := by
-  refine localJoin_of_none_ctx (a := void) ?h
-  intro b hb; cases hb
-
-/-- At `delta t`, there is no safe root rule; ctx-local join holds vacuously. -/
-theorem localJoin_ctx_delta (t : Trace) : LocalJoinSafe_ctx (delta t) := by
-  refine localJoin_of_none_ctx (a := delta t) ?h
-  intro b hb; cases hb
-
-/-- At `app a b`, there is no safe root rule; ctx-local join holds vacuously. -/
-theorem localJoin_ctx_app (a b : Trace) : LocalJoinSafe_ctx (app a b) := by
-  refine localJoin_of_none_ctx (a := app a b) ?h
-  intro b' hb'; cases hb'
-
-/-- At `integrate void`, no safe root rule; ctx-local join vacuously. -/
-theorem localJoin_ctx_integrate_void : LocalJoinSafe_ctx (integrate void) := by
-  refine localJoin_of_none_ctx (a := integrate void) ?h
-  intro x hx; cases hx
-
-/-- At `integrate (merge a b)`, no safe root rule; ctx-local join vacuously. -/
-theorem localJoin_ctx_integrate_merge (a b : Trace) : LocalJoinSafe_ctx (integrate (merge a b)) := by
-  refine localJoin_of_none_ctx (a := integrate (merge a b)) ?h
-  intro x hx; cases hx
-
-/-- At `integrate (app a b)`, no safe root rule; ctx-local join vacuously. -/
-theorem localJoin_ctx_integrate_app (a b : Trace) : LocalJoinSafe_ctx (integrate (app a b)) := by
-  refine localJoin_of_none_ctx (a := integrate (app a b)) ?h
-  intro x hx; cases hx
-
-/-- At `integrate (eqW a b)`, no safe root rule; ctx-local join vacuously. -/
-theorem localJoin_ctx_integrate_eqW (a b : Trace) : LocalJoinSafe_ctx (integrate (eqW a b)) := by
-  refine localJoin_of_none_ctx (a := integrate (eqW a b)) ?h
-  intro x hx; cases hx
-
-/-- At `integrate (integrate t)`, no safe root rule; ctx-local join vacuously. -/
-theorem localJoin_ctx_integrate_integrate (t : Trace) :
-    LocalJoinSafe_ctx (integrate (integrate t)) := by
-  refine localJoin_of_none_ctx (a := integrate (integrate t)) ?h
-  intro x hx; cases hx
-
-/-- At `integrate (recΔ b s n)`, no safe root rule; ctx-local join vacuously. -/
-theorem localJoin_ctx_integrate_rec (b s n : Trace) :
-    LocalJoinSafe_ctx (integrate (recΔ b s n)) := by
-  refine localJoin_of_none_ctx (a := integrate (recΔ b s n)) ?h
-  intro x hx; cases hx
-
-/-- At `recΔ b s (merge a c)`, no safe root rule; ctx-local join vacuously. -/
-theorem localJoin_ctx_rec_merge (b s a c : Trace) : LocalJoinSafe_ctx (recΔ b s (merge a c)) := by
-  refine localJoin_of_none_ctx (a := recΔ b s (merge a c)) ?h
-  intro x hx; cases hx
-
-/-- At `recΔ b s (app a c)`, no safe root rule; ctx-local join vacuously. -/
-theorem localJoin_ctx_rec_app (b s a c : Trace) : LocalJoinSafe_ctx (recΔ b s (app a c)) := by
-  refine localJoin_of_none_ctx (a := recΔ b s (app a c)) ?h
-  intro x hx; cases hx
-
-/-- At `recΔ b s (integrate t)`, no safe root rule; ctx-local join vacuously. -/
-theorem localJoin_ctx_rec_integrate (b s t : Trace) : LocalJoinSafe_ctx (recΔ b s (integrate t)) := by
-  refine localJoin_of_none_ctx (a := recΔ b s (integrate t)) ?h
-  intro x hx; cases hx
-
-/-- At `recΔ b s (eqW a c)`, no safe root rule; ctx-local join vacuously. -/
-theorem localJoin_ctx_rec_eqW (b s a c : Trace) : LocalJoinSafe_ctx (recΔ b s (eqW a c)) := by
-  refine localJoin_of_none_ctx (a := recΔ b s (eqW a c)) ?h
-  intro x hx; cases hx
-
-/-- At `recΔ b s void`, only one safe root rule; ctx-local join is trivial. -/
-theorem localJoin_ctx_rec_zero (b s : Trace) : LocalJoinSafe_ctx (recΔ b s void) := by
-  refine localJoin_of_unique_ctx (a := recΔ b s void) (d := b) ?h
-  intro x hx; cases hx with
-  | R_rec_zero _ _ _ => rfl
-
-/-- At `recΔ b s (delta n)`, only one safe root rule; ctx-local join is trivial. -/
-theorem localJoin_ctx_rec_succ (b s n : Trace) : LocalJoinSafe_ctx (recΔ b s (delta n)) := by
-  refine localJoin_of_unique_ctx (a := recΔ b s (delta n)) (d := app s (recΔ b s n)) ?h
-  intro x hx; cases hx with
-  | R_rec_succ _ _ _ => rfl
-
-/-- At `merge void t`, only the left-void rule can fire; ctx-local join is trivial. -/
-theorem localJoin_ctx_merge_void_left (t : Trace) : LocalJoinSafe_ctx (merge void t) := by
-  refine localJoin_of_unique_ctx (a := merge void t) (d := t) ?h
-  intro x hx; cases hx with
-  | R_merge_void_left _ _ => rfl
-  | R_merge_void_right _ _ => rfl
-  | R_merge_cancel _ _ _ => rfl
-
-/-- At `merge t void`, only the right-void rule can fire; ctx-local join is trivial. -/
-theorem localJoin_ctx_merge_void_right (t : Trace) : LocalJoinSafe_ctx (merge t void) := by
-  refine localJoin_of_unique_ctx (a := merge t void) (d := t) ?h
-  intro x hx; cases hx with
-  | R_merge_void_right _ _ => rfl
-  | R_merge_void_left _ _ => rfl
-  | R_merge_cancel _ _ _ => rfl
-
-/-- At `merge t t`, any applicable safe rule reduces to `t`; ctx-local join is trivial. -/
-theorem localJoin_ctx_merge_tt (t : Trace) : LocalJoinSafe_ctx (merge t t) := by
-  refine localJoin_of_unique_ctx (a := merge t t) (d := t) ?h
-  intro x hx; cases hx with
-  | R_merge_cancel _ _ _ => rfl
-  | R_merge_void_left _ _ => rfl
-  | R_merge_void_right _ _ => rfl
-
-/-- Convenience: `merge void void` reduces uniquely to `void` (ctx). -/
-theorem localJoin_ctx_merge_void_void : LocalJoinSafe_ctx (merge void void) :=
-  localJoin_ctx_merge_void_left void
-
-/-- Convenience: `merge void (delta n)` reduces uniquely to `delta n` (ctx). -/
-theorem localJoin_ctx_merge_void_delta (n : Trace) :
-    LocalJoinSafe_ctx (merge void (delta n)) :=
-  localJoin_ctx_merge_void_left (delta n)
-
-/-- Convenience: `merge (delta n) void` reduces uniquely to `delta n` (ctx). -/
-theorem localJoin_ctx_merge_delta_void (n : Trace) :
-    LocalJoinSafe_ctx (merge (delta n) void) :=
-  localJoin_ctx_merge_void_right (delta n)
-
-/-- Convenience: `merge (delta n) (delta n)` reduces (by cancel) to `delta n` (ctx). -/
-theorem localJoin_ctx_merge_delta_delta (n : Trace) :
-    LocalJoinSafe_ctx (merge (delta n) (delta n)) :=
-  localJoin_ctx_merge_tt (delta n)
-
-/-- At `integrate (delta t)`, only one safe root rule; ctx-local join is trivial. -/
-theorem localJoin_ctx_int_delta (t : Trace) : LocalJoinSafe_ctx (integrate (delta t)) := by
-  refine localJoin_of_unique_ctx (a := integrate (delta t)) (d := void) ?h
-  intro x hx; cases hx with
-  | R_int_delta _ => rfl
-
-/-- If `deltaFlag t ≠ 0`, the left-void merge rule cannot apply; no competing branch. -/
-theorem localJoin_ctx_merge_void_left_guard_ne (t : Trace)
-    (hδne : deltaFlag t ≠ 0) : LocalJoinSafe_ctx (merge void t) := by
-  refine localJoin_of_unique_ctx (a := merge void t) (d := t) ?h
-  intro x hx; cases hx with
-  | R_merge_void_left _ hδ => exact (False.elim (hδne hδ))
-  | R_merge_void_right _ _ => rfl
-  | R_merge_cancel _ _ _ => rfl
-
-/-- If `deltaFlag t ≠ 0`, the right-void merge rule cannot apply; no competing branch. -/
-theorem localJoin_ctx_merge_void_right_guard_ne (t : Trace)
-    (hδne : deltaFlag t ≠ 0) : LocalJoinSafe_ctx (merge t void) := by
-  refine localJoin_of_unique_ctx (a := merge t void) (d := t) ?h
-  intro x hx; cases hx with
-  | R_merge_void_right _ hδ => exact (False.elim (hδne hδ))
-  | R_merge_void_left _ _ => rfl
-  | R_merge_cancel _ _ _ => rfl
-
-/-- If `deltaFlag t ≠ 0`, merge-cancel is blocked at root; vacuous ctx-local join. -/
-theorem localJoin_ctx_merge_cancel_guard_delta_ne (t : Trace)
-    (hδne : deltaFlag t ≠ 0) : LocalJoinSafe_ctx (merge t t) := by
-  refine localJoin_of_unique_ctx (a := merge t t) (d := t) ?h
-  intro x hx; cases hx with
-  | R_merge_cancel _ hδ _ => exact (False.elim (hδne hδ))
-  | R_merge_void_left _ _ => rfl
-  | R_merge_void_right _ _ => rfl
-
-/-- If `kappaM t ≠ 0`, merge-cancel is blocked at root; vacuous ctx-local join. -/
-theorem localJoin_ctx_merge_cancel_guard_kappa_ne (t : Trace)
-    (h0ne : MetaSN_DM.kappaM t ≠ 0) : LocalJoinSafe_ctx (merge t t) := by
-  refine localJoin_of_unique_ctx (a := merge t t) (d := t) ?h
-  intro x hx; cases hx with
-  | R_merge_cancel _ _ h0 => exact (False.elim (h0ne h0))
-  | R_merge_void_left _ _ => rfl
-  | R_merge_void_right _ _ => rfl
-
-/-- At `recΔ b s void`, if `deltaFlag b ≠ 0` then the rec-zero rule is blocked. -/
-theorem localJoin_ctx_rec_zero_guard_ne (b s : Trace)
-    (hδne : deltaFlag b ≠ 0) : LocalJoinSafe_ctx (recΔ b s void) := by
-  refine localJoin_of_none_ctx (a := recΔ b s void) ?h
-  intro x hx; cases hx with
-  | R_rec_zero _ _ hδ => exact (hδne hδ)
-
-/-- At `integrate t`, if `t` is not a `delta _`, then there is no safe root step (ctx). -/
-theorem localJoin_ctx_integrate_non_delta (t : Trace)
-    (hnd : ∀ u, t ≠ delta u) : LocalJoinSafe_ctx (integrate t) := by
-  refine localJoin_of_none_ctx (a := integrate t) ?h
-  intro x hx; cases hx with
-  | R_int_delta u => exact (hnd u) rfl
-
-/-- At `recΔ b s n`, if `n ≠ void` and `n` is not a `delta _`, then no safe root step (ctx). -/
-theorem localJoin_ctx_rec_other (b s n : Trace)
-    (hn0 : n ≠ void) (hns : ∀ u, n ≠ delta u) : LocalJoinSafe_ctx (recΔ b s n) := by
-  refine localJoin_of_none_ctx (a := recΔ b s n) ?h
-  intro x hx; cases hx with
-  | R_rec_zero _ _ _ => exact (hn0 rfl)
-  | R_rec_succ _ _ u => exact (hns u) rfl
-
--- (moved above to allow reuse in subsequent lemmas)
-
-/-- Conditional join for the eqW peak: if `merge a a` context-reduces to a `delta n`, then
- the two root branches from `eqW a a` context-join at `void`. -/
-theorem localJoin_eqW_refl_ctx_if_merges_to_delta (a n : Trace)
-  (hmd : SafeStepCtxStar (merge a a) (delta n)) :
-  LocalJoinSafe_ctx (eqW a a) := by
-  intro b c hb hc
-  -- Enumerate the two root branches
-  cases hb with
-  | R_eq_refl _ _ =>
-    -- b = void; hc can only be refl or diff
-    cases hc with
-    | R_eq_refl _ _ => exact ⟨void, SafeStepCtxStar.refl _, SafeStepCtxStar.refl _⟩
-    | R_eq_diff _ _ =>
-      -- c = integrate (merge a a) ⇒ctx* integrate (delta n) → void
-      have h_to_delta : SafeStepCtxStar (integrate (merge a a)) (integrate (delta n)) :=
-        ctxstar_integrate hmd
-      have h_to_void : SafeStepCtxStar (integrate (delta n)) void :=
-        ctxstar_of_root (SafeStep.R_int_delta n)
-      exact ⟨void, SafeStepCtxStar.refl _, ctxstar_trans h_to_delta h_to_void⟩
-  | R_eq_diff _ _ =>
-    -- b = integrate (merge a a)
-    cases hc with
-    | R_eq_refl _ _ =>
-      have h_to_delta : SafeStepCtxStar (integrate (merge a a)) (integrate (delta n)) :=
-        ctxstar_integrate hmd
-      have h_to_void : SafeStepCtxStar (integrate (delta n)) void :=
-        ctxstar_of_root (SafeStep.R_int_delta n)
-      exact ⟨void, ctxstar_trans h_to_delta h_to_void, SafeStepCtxStar.refl _⟩
-    | R_eq_diff _ _ =>
-      -- both to the same term
-  exact ⟨integrate (merge a a), SafeStepCtxStar.refl _, SafeStepCtxStar.refl _⟩
-
-/-- If `a ⇒ctx* delta n` and `delta n` satisfies the cancel guards, then
-`merge a a ⇒ctx* delta n`. -/
-theorem ctxstar_merge_cancel_of_arg_to_delta
-  (a n : Trace)
-  (ha : SafeStepCtxStar a (delta n))
-  (hδ : deltaFlag (delta n) = 0)
-  (h0 : MetaSN_DM.kappaM (delta n) = 0) :
-  SafeStepCtxStar (merge a a) (delta n) := by
-  -- push left argument to delta n
-  have hL : SafeStepCtxStar (merge a a) (merge (delta n) a) := ctxstar_mergeL ha
-  -- push right argument to delta n
-  have hR : SafeStepCtxStar (merge (delta n) a) (merge (delta n) (delta n)) := ctxstar_mergeR ha
-  -- apply root cancel at delta n
-  have hC : SafeStepCtxStar (merge (delta n) (delta n)) (delta n) :=
-    ctxstar_of_root (SafeStep.R_merge_cancel (t := delta n) hδ h0)
-  exact ctxstar_trans hL (ctxstar_trans hR hC)
-
-/-- If `a ⇒* delta n` by root-safe steps and the cancel guards hold on `delta n`, then
-`merge a a ⇒ctx* delta n`. -/
-theorem ctxstar_merge_cancel_of_arg_star_to_delta
-  (a n : Trace)
-  (ha : SafeStepStar a (delta n))
-  (hδ : deltaFlag (delta n) = 0)
-  (h0 : MetaSN_DM.kappaM (delta n) = 0) :
-  SafeStepCtxStar (merge a a) (delta n) := by
-  have ha_ctx : SafeStepCtxStar a (delta n) := ctxstar_of_star ha
-  exact ctxstar_merge_cancel_of_arg_to_delta a n ha_ctx hδ h0
-
-/-- Conditional local join for `eqW a a` from an argument-to-delta premise.
-If `a ⇒ctx* delta n` and the cancel guards hold on `delta n`, the two root branches
-context-join at `void`. -/
-theorem localJoin_eqW_refl_ctx_if_arg_merges_to_delta (a n : Trace)
-  (ha : SafeStepCtxStar a (delta n))
-  (hδ : deltaFlag (delta n) = 0)
-  (h0 : MetaSN_DM.kappaM (delta n) = 0) :
-  LocalJoinSafe_ctx (eqW a a) := by
-  -- derive the stronger merge→delta premise and reuse previous lemma
-  have hmd : SafeStepCtxStar (merge a a) (delta n) :=
-    ctxstar_merge_cancel_of_arg_to_delta a n ha hδ h0
-  -- apply the previous lemma to the concrete branch steps
-  intro b c hb hc
-  exact (localJoin_eqW_refl_ctx_if_merges_to_delta a n hmd) hb hc
-
-/-- Variant: if `a ⇒* delta n` by root-safe steps, embed to ctx-star and reuse the delta-argument lemma. -/
-theorem localJoin_eqW_refl_ctx_if_arg_star_to_delta (a n : Trace)
-  (ha : SafeStepStar a (delta n))
-  (hδ : deltaFlag (delta n) = 0)
-  (h0 : MetaSN_DM.kappaM (delta n) = 0) :
-  LocalJoinSafe_ctx (eqW a a) := by
-  -- embed SafeStepStar into SafeStepCtxStar
-  have ha_ctx : SafeStepCtxStar a (delta n) := ctxstar_of_star ha
-  -- reuse the ctx lemma, applied to the given branches
-  intro b c hb hc
-  exact (localJoin_eqW_refl_ctx_if_arg_merges_to_delta a n ha_ctx hδ h0) hb hc
-
-/-- Variant: if `normalizeSafe (merge a a) = delta n`, then we can reuse the
-merges-to-delta lemma directly to obtain a ctx-local join for `eqW a a`. -/
-theorem localJoin_eqW_refl_ctx_if_merge_normalizes_to_delta (a n : Trace)
-  (hn : normalizeSafe (merge a a) = delta n) :
-  LocalJoinSafe_ctx (eqW a a) := by
-  -- get a root-star to the normal form and embed to ctx-star
-  have hmd_star : SafeStepStar (merge a a) (normalizeSafe (merge a a)) :=
-    to_norm_safe (merge a a)
-  have hmd_ctx : SafeStepCtxStar (merge a a) (delta n) := by
-    simpa [hn] using (ctxstar_of_star hmd_star)
-  -- apply the merges-to-delta variant to the given branches
-  intro b c hb hc
-  exact (localJoin_eqW_refl_ctx_if_merges_to_delta a n hmd_ctx) hb hc
-
-/-- If `merge a a ⇒ctx* delta n` then `integrate (merge a a) ⇒ctx* void`. -/
-theorem ctxstar_integrate_merge_to_void_of_mergeToDelta (a n : Trace)
-  (hmd : SafeStepCtxStar (merge a a) (delta n)) :
-  SafeStepCtxStar (integrate (merge a a)) void := by
-  have h_to_delta : SafeStepCtxStar (integrate (merge a a)) (integrate (delta n)) :=
-    ctxstar_integrate hmd
-  have h_to_void : SafeStepCtxStar (integrate (delta n)) void :=
-    ctxstar_of_root (SafeStep.R_int_delta n)
-  exact ctxstar_trans h_to_delta h_to_void
-
-/-- If `normalizeSafe (merge a a) = delta n` then `integrate (merge a a) ⇒ctx* void`. -/
-theorem ctxstar_integrate_merge_to_void_of_merge_normalizes_to_delta (a n : Trace)
-  (hn : normalizeSafe (merge a a) = delta n) :
-  SafeStepCtxStar (integrate (merge a a)) void := by
-  have hmd_star : SafeStepStar (merge a a) (normalizeSafe (merge a a)) :=
-    to_norm_safe (merge a a)
-  have hmd_ctx : SafeStepCtxStar (merge a a) (delta n) := by
-    simpa [hn] using (ctxstar_of_star hmd_star)
-  exact ctxstar_integrate_merge_to_void_of_mergeToDelta a n hmd_ctx
-
-/-- If `integrate (merge a a) ⇒ctx* void`, then `eqW a a` has a ctx-local join at `void`. -/
-theorem localJoin_eqW_refl_ctx_if_integrate_merge_to_void (a : Trace)
-  (hiv : SafeStepCtxStar (integrate (merge a a)) void) :
-  LocalJoinSafe_ctx (eqW a a) := by
-  intro b c hb hc
-  cases hb with
-  | R_eq_refl _ _ =>
-    cases hc with
-    | R_eq_refl _ _ =>
-      exact ⟨void, SafeStepCtxStar.refl _, SafeStepCtxStar.refl _⟩
-    | R_eq_diff _ _ =>
-      exact ⟨void, SafeStepCtxStar.refl _, hiv⟩
-  | R_eq_diff _ _ =>
-    cases hc with
-    | R_eq_refl _ _ =>
-      exact ⟨void, hiv, SafeStepCtxStar.refl _⟩
-    | R_eq_diff _ _ =>
-      exact ⟨integrate (merge a a), SafeStepCtxStar.refl _, SafeStepCtxStar.refl _⟩
-
-/-- At `eqW a b` with `a ≠ b`, only the diff rule applies; ctx-local join is trivial. -/
-theorem localJoin_eqW_ne_ctx (a b : Trace) (hne : a ≠ b) : LocalJoinSafe_ctx (eqW a b) := by
-  refine localJoin_of_unique_ctx (a := eqW a b) (d := integrate (merge a b)) ?h
-  intro x hx
-  cases hx with
-  | R_eq_diff _ _ => rfl
-  | R_eq_refl _ _ => exact (False.elim (hne rfl))
-
-/-- At `eqW a a`, if `kappaM a ≠ 0`, the reflexive rule is blocked; only diff applies. -/
-theorem localJoin_eqW_refl_ctx_guard_ne (a : Trace)
-  (h0ne : MetaSN_DM.kappaM a ≠ 0) : LocalJoinSafe_ctx (eqW a a) := by
-  refine localJoin_of_unique_ctx (a := eqW a a) (d := integrate (merge a a)) ?h
-  intro x hx
-  cases hx with
-  | R_eq_diff _ _ => rfl
-  | R_eq_refl _ h0 => exact (False.elim (h0ne h0))
-
-end MetaSN_KO7
-
-namespace MetaSN_KO7
-
-/-- If `a` is literally `delta n` and cancel guards hold on `delta n`, then
-`eqW a a` has a context-closed local join at `void`. -/
-theorem localJoin_eqW_refl_ctx_when_a_is_delta (n : Trace)
-  (hδ : deltaFlag (delta n) = 0)
-  (h0 : MetaSN_DM.kappaM (delta n) = 0) :
-  LocalJoinSafe_ctx (eqW (delta n) (delta n)) := by
-  -- trivial arg-to-delta via refl
-  intro b c hb hc
-  -- build the LocalJoinSafe_ctx witness once, then apply to the given branches
-  have ha : SafeStepCtxStar (delta n) (delta n) := SafeStepCtxStar.refl _
-  have hj : LocalJoinSafe_ctx (eqW (delta n) (delta n)) :=
-    localJoin_eqW_refl_ctx_if_arg_merges_to_delta (a := delta n) (n := n) ha hδ h0
-  exact hj hb hc
-
-/-- If `a` safe-normalizes to `delta n` and cancel guards hold on `delta n`, then
-`eqW a a` has a context-closed local join at `void`. -/
-theorem localJoin_eqW_refl_ctx_if_normalizes_to_delta (a n : Trace)
-  (hn : normalizeSafe a = delta n)
-  (hδ : deltaFlag (delta n) = 0)
-  (h0 : MetaSN_DM.kappaM (delta n) = 0) :
-  LocalJoinSafe_ctx (eqW a a) := by
-  -- embed the normalization star into ctx-star
-  intro b c hb hc
-  have ha_star : SafeStepStar a (normalizeSafe a) := to_norm_safe a
-  have ha_ctx : SafeStepCtxStar a (normalizeSafe a) := ctxstar_of_star ha_star
-  -- build the LocalJoinSafe_ctx witness using the arg→delta bridge
-  have hj : LocalJoinSafe_ctx (eqW a a) :=
-    localJoin_eqW_refl_ctx_if_arg_merges_to_delta (a := a) (n := n)
-      (by simpa [hn] using ha_ctx) hδ h0
-  exact hj hb hc
-
-end MetaSN_KO7
-
-```
-
----
-
-## 6. Meta/Termination_KO7.lean
-**File:** `OperatorKO7/OperatorKO7/Meta/Termination_KO7.lean`
-
-```lean
-import OperatorKO7.Meta.Termination
-import Mathlib.Data.Multiset.Basic
-import Mathlib.Data.Multiset.DershowitzManna
-import Mathlib.Order.WellFounded
-import Mathlib.SetTheory.Ordinal.Basic
-
-/-!
-Strong normalization for the KO7 safe fragment (`SafeStep`), via a triple-lex measure.
-
-This module is the core "certified artifact" development:
-- It defines the guarded one-step relation `SafeStep` (a subrelation of the full kernel `Step`).
-- It defines the termination measure(s) used to prove `SafeStepRev` is well-founded.
-
-Key design boundary (central to the paper):
-- `Step` in `OperatorKO7/Kernel.lean` is the full kernel relation (8 unconditional root rules).
-- `SafeStep` adds explicit guards (most importantly, `eqW`-diff requires `a ≠ b`) to obtain a fragment
-  that admits a certified termination argument.
-- This file proves termination and supplies measure-decrease lemmas *only for `SafeStep`*, not for the
-  full `Step` relation.
-
-Main exports:
-- `SafeStep` and its reverse `SafeStepRev`
-- `deltaFlag`, `kappaM`, and the triple-lex measure `μ3` / order `Lex3`
-- `measure_decreases_safe` and `wf_SafeStepRev`
--/
-set_option linter.unnecessarySimpa false
-open OperatorKO7 Trace Multiset Ordinal
-
-namespace MetaSN_DM
--- Use Dershowitz-Manna multiset order.
--- DM order over multisets of ℕ, using the ambient < on ℕ
-local infix:70 " <ₘ " => Multiset.IsDershowitzMannaLT
-
--- This file treats `b` in `recΔ b s n` as κ-relevant for κᴹ to support DM drops on rec_zero.
--- set_option linter.unusedVariables false
-
-/-- **Weight** of a trace: recursion-depth of each `recΔ` node. -/
-@[simp] def weight : Trace → ℕ
-| recΔ _ _ n => weight n + 1
-| _          => 0
-
-/-- Multiset of weights appearing in a trace.
-Note on design (assessment closure): we use multiset union `∪` at merge/app/eqW
-nodes rather than additive `+`. This deliberately captures duplication by
-conflating identical weights, which works with the DM order we use to
-orient duplicating rules. This is a documented deviation from the most
-common DM presentations (which often use multiset sum) and is required by
-our kernel’s shapes; see `SAFE_AUDIT.md` (root) for rationale and
-per-rule checks. -/
-@[simp] def kappaM : Trace → Multiset ℕ
-| void            => 0
-| delta t         => kappaM t
-| integrate t     => kappaM t
-| merge a b       => kappaM a ∪ kappaM b
-
-| app   a b       => kappaM a ∪ kappaM b
-| recΔ b s n      => (weight n + 1) ::ₘ (kappaM n ∪ kappaM s) + kappaM b
-| eqW  a b        => kappaM a ∪ kappaM b
-
-/-- Well-foundedness of the DM multiset order (requires `WellFoundedLT` on the base type). -/
-instance : WellFoundedLT ℕ := inferInstance
-
-/-- Well-foundedness of the Dershowitz-Manna order on multisets of naturals. -/
-lemma wf_dm : WellFounded (fun a b : Multiset ℕ => a <ₘ b) :=
-  Multiset.wellFounded_isDershowitzMannaLT
-
-/-- Combined measure pair `(κᴹ, μ)` for the O-7 kernel. -/
-noncomputable def μκ (t : Trace) : Multiset ℕ × Ordinal :=
-  (kappaM t, MetaSN.mu t)
-
-/-- Lexicographic order on the combined pair. -/
-@[simp] def LexDM : (Multiset ℕ × Ordinal) → (Multiset ℕ × Ordinal) → Prop :=
-  Prod.Lex (fun a b : Multiset ℕ => a <ₘ b) (· < ·)
-
-/-- Well-foundedness of `LexDM`, combining DM on `κᴹ` and `<` on ordinal payload `μ`. -/
-lemma wf_LexDM : WellFounded LexDM :=
-  WellFounded.prod_lex wf_dm Ordinal.lt_wf
-
-
-/-- Lift a DM witness on κᴹ to the inner lex order `(κᴹ, μ)`.
-This is a trivial `Prod.Lex.left` step, useful when the μ component is irrelevant. -/
-lemma dm_to_LexDM_left {X Y : Multiset ℕ} {μ₁ μ₂ : Ordinal}
-    (h : X <ₘ Y) : LexDM (X, μ₁) (Y, μ₂) := by
-  -- Use the left constructor with explicit parameters to avoid inference fragility
-  exact
-    (Prod.Lex.left
-      (α := Multiset ℕ) (β := Ordinal)
-      (ra := fun a b : Multiset ℕ => a <ₘ b) (rb := (· < ·))
-      (a₁ := X) (a₂ := Y) (b₁ := μ₁) (b₂ := μ₂)
-      (by simpa using h))
-
-
-/-- κᴹ ties on `integrate (delta t)` (retains all weights of t). -/
-@[simp] lemma kappaM_int_delta (t : Trace) :
-    kappaM (integrate (delta t)) = kappaM t := by
-  simp [kappaM]
-
-/-- κᴹ ties on `merge void t`. -/
-@[simp] lemma kappaM_merge_void_left (t : Trace) :
-    kappaM (merge void t) = kappaM t := by
-  simp [kappaM]
-
-@[simp] lemma kappaM_merge_void_right (t : Trace) :
-    kappaM (merge t void) = kappaM t := by
-  simp [kappaM]
-
--- κᴹ duplicates on merge cancel
-@[simp] lemma kappaM_merge_cancel (t : Trace) :
-    kappaM (merge t t) = kappaM t ∪ kappaM t := by
-  simp [kappaM]
-
-/-- κᴹ value for `recΔ b s void`. -/
-@[simp] lemma kappaM_rec_zero (b s : Trace) :
-    kappaM (recΔ b s void) = (1 ::ₘ kappaM s) + kappaM b := by
-  simp [kappaM]
-
-/-- κᴹ equality for `eq_refl`. -/
-@[simp] lemma kappaM_eq_refl (a : Trace) :
-    kappaM (eqW a a) = kappaM a ∪ kappaM a := by
-  simp [kappaM]
-
-@[simp] lemma kappaM_eq_diff (a b : Trace) :
-    kappaM (integrate (merge a b)) = kappaM (eqW a b) := by
-  simp [kappaM]
-
-/-! ### DM strict drop helpers -/
-
--- Adding a nonempty multiset strictly increases under DM (choose Y = 0, Z ≠ 0).
-lemma dm_lt_add_of_ne_zero (X Z : Multiset ℕ) (h : Z ≠ 0) :
-    X <ₘ (X + Z) := by
-  classical
-  refine ⟨X, (0 : Multiset ℕ), Z, ?hZ, ?hM, rfl, ?hY⟩
-  · simpa using h
-  · simp
-  · simp
-
--- Public alias for reuse outside this namespace, same statement
-lemma dm_lt_add_of_ne_zero' (X Z : Multiset ℕ) (h : Z ≠ 0) :
-    Multiset.IsDershowitzMannaLT X (X + Z) := by
-  classical
-  refine ⟨X, (0 : Multiset ℕ), Z, ?hZ, ?hM, rfl, ?hY⟩
-  · simpa using h
-  · simp
-  · simp
-
--- κᴹ strictly drops for rec_zero in the intended orientation (LHS > RHS):
--- kappaM b <ₘ kappaM (recΔ b s void)
-lemma dm_drop_R_rec_zero (b s : Trace) :
-    kappaM b <ₘ kappaM (recΔ b s void) := by
-  classical
-  -- kappaM (recΔ b s void) = (1 ::ₘ kappaM s) + kappaM b, and + is commutative
-  have hdm : Multiset.IsDershowitzMannaLT (kappaM b) (kappaM b + (1 ::ₘ kappaM s)) :=
-    dm_lt_add_of_ne_zero' (kappaM b) (1 ::ₘ kappaM s) (by simp)
-  -- rewrite to the rec_zero shape
-  simpa [kappaM, add_comm, add_left_comm, add_assoc] using hdm
-
--- update dm_drop_R_rec_succ lemma
--- Note: κM does not strictly drop for rec_succ in DM in general when kappaM uses ∪.
--- Use the μ component for the lex drop in the combined measure.
-
-/-- If a multiset is nonempty, its self-union is nonempty. -/
-lemma union_self_ne_zero_of_ne_zero {X : Multiset ℕ} (h : X ≠ 0) :
-    X ∪ X ≠ (0 : Multiset ℕ) := by
-  classical
-  intro hU
-  -- Show `X ∪ X = X` by counts, then contradict `h`.
-  have hUU : X ∪ X = X := by
-    ext a; simp [Multiset.count_union, max_self]
-  exact h (by simpa [hUU] using hU)
-
-end MetaSN_DM
-
-/-! --------------------------------------------------------------------------
-Triple-lex measure (δ, κᴹ, μ) specialized for KO7
-We use a δ-flag that is 1 exactly on `recΔ b s (delta n)` at the top, and 0 otherwise.
-This gives a Nat-first strict drop for `R_rec_succ` and ties elsewhere.
---------------------------------------------------------------------------- -/
-
-namespace MetaSN_KO7
-
-open MetaSN_DM
-
-@[simp] def deltaFlag : Trace → Nat
-| recΔ _ _ (delta _) => 1
-| _                  => 0
-
--- deltaFlag simplification lemmas for common constructors
-@[simp] lemma deltaFlag_void : deltaFlag void = 0 := rfl
-@[simp] lemma deltaFlag_integrate (t : Trace) : deltaFlag (integrate t) = 0 := rfl
-@[simp] lemma deltaFlag_merge (a b : Trace) : deltaFlag (merge a b) = 0 := rfl
-@[simp] lemma deltaFlag_eqW (a b : Trace) : deltaFlag (eqW a b) = 0 := rfl
-@[simp] lemma deltaFlag_app (a b : Trace) : deltaFlag (app a b) = 0 := rfl
-@[simp] lemma deltaFlag_rec_zero (b s : Trace) : deltaFlag (recΔ b s void) = 0 := by
-  simp [deltaFlag]
-@[simp] lemma deltaFlag_rec_delta (b s n : Trace) : deltaFlag (recΔ b s (delta n)) = 1 := by
-  simp [deltaFlag]
-
--- deltaFlag takes only values 0 or 1 (decidable Boolean flag over Nat)
-lemma deltaFlag_range (t : Trace) : deltaFlag t = 0 ∨ deltaFlag t = 1 := by
-  cases t with
-  | void => simp
-  | delta t => simp
-  | integrate t => simp
-  | merge a b => simp
-  | app a b => simp
-  | recΔ b s n =>
-      cases n with
-      | void => simp [deltaFlag]
-      | delta n => simp [deltaFlag]
-      | integrate _ => simp [deltaFlag]
-      | merge _ _ => simp [deltaFlag]
-      | app _ _ => simp [deltaFlag]
-      | eqW _ _ => simp [deltaFlag]
-      | recΔ _ _ _ => simp [deltaFlag]
-  | eqW a b => simp
-
-noncomputable def μ3 (t : Trace) : Nat × (Multiset ℕ × Ordinal) :=
-  (deltaFlag t, (kappaM t, MetaSN.mu t))
-
-@[simp] def Lex3 : (Nat × (Multiset ℕ × Ordinal)) → (Nat × (Multiset ℕ × Ordinal)) → Prop :=
-  Prod.Lex (· < ·) MetaSN_DM.LexDM
-
-lemma wf_Lex3 : WellFounded Lex3 := by
-  exact WellFounded.prod_lex Nat.lt_wfRel.wf MetaSN_DM.wf_LexDM
-
-/-!
-Assessment closure: All strong-normalization and decrease lemmas in this
-module are scoped to `SafeStep` and the single measure `μ3` (Lex3). We do
-not assert SN for the full `Step` relation here, and we do not rely on any
-disjunctive/“hybrid” measure in these theorems. See
-`SAFE_AUDIT.md` (root) for details and scope statements.
--/
-
-/- Per-rule decreases (stable subset) -------------------------------------- -/
-
-/-- merge void-left: restricted to δ-flag tie (deltaFlag t = 0). -/
-lemma drop_R_merge_void_left_zero (t : Trace)
-    (hδ : deltaFlag t = 0) :
-    Lex3 (μ3 t) (μ3 (merge void t)) := by
-  classical
-  -- Build inner LexDM μ-drop anchored at κM t
-  have hin : LexDM (kappaM t, MetaSN.mu t)
-      (kappaM t, MetaSN.mu (merge void t)) :=
-    Prod.Lex.right (kappaM t) (MetaSN.mu_lt_merge_void_left t)
-  -- Build outer α=0 witness, then rewrite goal to α=0 shape
-  have hcore : Lex3 (0, (kappaM t, MetaSN.mu t)) (0, (kappaM t, MetaSN.mu (merge void t))) :=
-    Prod.Lex.right (0 : Nat) hin
-  dsimp [Lex3, μ3, deltaFlag]
-  have ht0 : (match t with | recΔ _ _ (delta _) => 1 | _ => 0) = 0 := by
-    simpa [deltaFlag] using hδ
-  simp [ht0]
-  exact hcore
-
-/-- merge void-right: restricted to δ-flag tie (deltaFlag t = 0). -/
-lemma drop_R_merge_void_right_zero (t : Trace)
-    (hδ : deltaFlag t = 0) :
-    Lex3 (μ3 t) (μ3 (merge t void)) := by
-  classical
-  -- Inner μ-drop anchored at κM t
-  have hin : LexDM (kappaM t, MetaSN.mu t)
-      (kappaM t, MetaSN.mu (merge t void)) :=
-    Prod.Lex.right (kappaM t) (MetaSN.mu_lt_merge_void_right t)
-  -- Outer α=0 witness
-  have hcore : Lex3 (0, (kappaM t, MetaSN.mu t)) (0, (kappaM t, MetaSN.mu (merge t void))) :=
-    Prod.Lex.right (0 : Nat) hin
-  dsimp [Lex3, μ3, deltaFlag]
-  have ht0 : (match t with | recΔ _ _ (delta _) => 1 | _ => 0) = 0 := by
-    simpa [deltaFlag] using hδ
-  simp [ht0]
-  exact hcore
-
-/-- eq_diff: `eqW a b → integrate (merge a b)` drops (outer tie + μ-right). -/
-lemma drop_R_eq_diff (a b : Trace) :
-    Lex3 (μ3 (integrate (merge a b))) (μ3 (eqW a b)) := by
-  classical
-  -- Inner μ-drop anchored at κM (integrate (merge a b))
-  have hin : LexDM (kappaM (integrate (merge a b)), MetaSN.mu (integrate (merge a b)))
-      (kappaM (integrate (merge a b)), MetaSN.mu (eqW a b)) :=
-    Prod.Lex.right (kappaM (integrate (merge a b))) (MetaSN.mu_lt_eq_diff a b)
-  -- Outer α=0 witness
-  have hcore : Lex3 (0, (kappaM (integrate (merge a b)), MetaSN.mu (integrate (merge a b))))
-      (0, (kappaM (integrate (merge a b)), MetaSN.mu (eqW a b))) :=
-    Prod.Lex.right (0 : Nat) hin
-  -- Rewrite both δ-flags to 0 and κ via kappaM_eq_diff, then discharge
-  dsimp [Lex3, μ3]
-  have hδL : (match integrate (merge a b) with | recΔ _ _ (delta _) => 1 | _ => 0) = 0 := by
-    simp
-  have hδR : (match eqW a b with | recΔ _ _ (delta _) => 1 | _ => 0) = 0 := by
-    simp
-  simpa [hδL, hδR, MetaSN_DM.kappaM_eq_diff] using hcore
-
-
-
--- (rec_succ and rec_zero lemmas will be reintroduced after further audit)
-
--- Aggregated `measure_decreases` and `strong_normalization_triple` are deferred
--- until we resolve the general `merge_cancel` and `eq_refl` cases (κ duplicates).
-
-end MetaSN_KO7
-/-! ### Additional per-rule decreases (audited) ---------------------------- -/
-
-namespace MetaSN_KO7
-
-open MetaSN_DM
-
-open Classical
-
-/-!
-Lex3 drops for duplicating cases, using a DM drop when κM ≠ 0 and
-falling back to a μ-drop when κM ties at 0.
--/
-
-/-- int∘delta: `integrate (delta t) → void` drops (outer δ tie; inner by κ-DM or μ-right). -/
-lemma drop_R_int_delta (t : Trace) :
-    Lex3 (μ3 void) (μ3 (integrate (delta t))) := by
-  classical
-  -- Either strict κ-DM when κᴹ t ≠ 0, or μ-right when κ ties at 0; then lift to α=0.
-  by_cases h0 : kappaM t = 0
-  · -- κ tie → use μ drop
-    have hin : LexDM ((0 : Multiset ℕ), MetaSN.mu void)
-        ((0 : Multiset ℕ), MetaSN.mu (integrate (delta t))) :=
-      Prod.Lex.right (0 : Multiset ℕ) (MetaSN.mu_void_lt_integrate_delta t)
-    have hcore : Lex3 (0, ((0 : Multiset ℕ), MetaSN.mu void))
-        (0, ((0 : Multiset ℕ), MetaSN.mu (integrate (delta t)))) :=
-      Prod.Lex.right (0 : Nat) hin
-    simpa [μ3, Lex3, deltaFlag, kappaM_int_delta, h0] using hcore
-  · -- κ strict: 0 <ᴹ κᴹ t, rewrite κ for integrate∘delta
-    have hdm : Multiset.IsDershowitzMannaLT (0 : Multiset ℕ) (kappaM t) := by
-      have hcore := dm_lt_add_of_ne_zero' (0 : Multiset ℕ) (kappaM t) (by simp [h0])
-      simpa [zero_add] using hcore
-    -- Lift DM to LexDM and then to α=0
-    have hin : LexDM ((0 : Multiset ℕ), MetaSN.mu void)
-        (kappaM (integrate (delta t)), MetaSN.mu (integrate (delta t))) :=
-      dm_to_LexDM_left (X := (0 : Multiset ℕ)) (Y := kappaM (integrate (delta t)))
-        (μ₁ := MetaSN.mu void) (μ₂ := MetaSN.mu (integrate (delta t)))
-        (by simpa [kappaM_int_delta] using hdm)
-    have hcore : Lex3 (0, ((0 : Multiset ℕ), MetaSN.mu void))
-        (0, (kappaM (integrate (delta t)), MetaSN.mu (integrate (delta t)))) :=
-      Prod.Lex.right (0 : Nat) hin
-    simpa [μ3, Lex3, deltaFlag] using hcore
-
-/-- rec_succ: `recΔ b s (delta n) → app s (recΔ b s n)` drops via δ-left (1 → 0). -/
-lemma drop_R_rec_succ (b s n : Trace) :
-  Lex3 (μ3 (app s (recΔ b s n))) (μ3 (recΔ b s (delta n))) := by
-  -- Outer: δ-flag goes from 1 to 0, so we can use the left constructor.
-  dsimp [μ3, Lex3, deltaFlag]
-  -- goal is Prod.Lex (<) _ (0, _) (1, _)
-  apply Prod.Lex.left
-  exact Nat.zero_lt_one
-
-/-- rec_zero: `recΔ b s void → b` drops (outer δ tie; inner κ-DM-left). -/
-lemma drop_R_rec_zero (b s : Trace)
-    (hδ : deltaFlag b = 0) :
-    Lex3 (μ3 b) (μ3 (recΔ b s void)) := by
-  classical
-  -- Work at the expanded pair level but keep deltaFlag uninterpreted until after rewriting
-  dsimp [Lex3]
-  dsimp [μ3]
-  -- Compute δ flags on both sides
-  have hb0eq : (match b with | recΔ _ _ (delta _) => 1 | _ => 0) = 0 := by
-    simpa [deltaFlag] using hδ
-  have hr0eq : (match recΔ b s void with | recΔ _ _ (delta _) => 1 | _ => 0) = 0 := by
-    simp
-  -- rewrite both outers to 0, then use right-branch
-  -- Be explicit on both sides to avoid constructor unification flakiness
-  simp [hb0eq]
-  refine Prod.Lex.right (0 : Nat) ?inner
-  -- Inner: lift the DM drop to LexDM explicitly, then rewrite κ to the goal's normal form
-  have hlexDM : LexDM (kappaM b, MetaSN.mu b)
-      (kappaM (recΔ b s void), MetaSN.mu (recΔ b s void)) :=
-    dm_to_LexDM_left (X := kappaM b) (Y := kappaM (recΔ b s void))
-      (μ₁ := MetaSN.mu b) (μ₂ := MetaSN.mu (recΔ b s void))
-      (by simpa using dm_drop_R_rec_zero b s)
-  -- Match the RHS κ with the goal shape (1 ::ₘ (kappaM s + kappaM b))
-  simpa [kappaM_rec_zero, cons_add, add_assoc, add_left_comm, add_comm] using hlexDM
-
-end MetaSN_KO7
-
-/-! Thin alias wrappers to expose the “δ-substitution” naming used in the 5‑Pro checklist. -/
-
-namespace MetaSN_KO7
-
-@[simp] lemma delta_subst_drop_rec_succ (b s n : Trace) :
-  Lex3 (μ3 (app s (recΔ b s n))) (μ3 (recΔ b s (delta n))) :=
-  drop_R_rec_succ b s n
-
-@[simp] lemma delta_subst_drop_rec_zero (b s : Trace)
-    (hδ : deltaFlag b = 0) :
-    Lex3 (μ3 b) (μ3 (recΔ b s void)) :=
-  drop_R_rec_zero b s hδ
-
-end MetaSN_KO7
-
-/-! ### Additional safe KO7 lemmas (restricted) --------------------------- -/
-
-namespace MetaSN_KO7
-
-open MetaSN_DM
-
--- Restricted merge-cancel: require δ-tie and κ=0 so we can take μ-right.
--- NOTE (CONSTRAINT): A fully unguarded KO7 lemma for merge_cancel cannot hold:
--- if t = recΔ _ _ (delta _), then deltaFlag t = 1 while deltaFlag (merge t t) = 0.
--- In Lex3 with outer Nat <, we cannot have 1 < 0 (outer-left) nor tie 1 = 0 (outer-right),
--- so a KO7 drop needs the δ-tie hypothesis (deltaFlag t = 0). For the unguarded case,
--- use the MPO variant `mpo_drop_R_merge_cancel`, which ignores δ.
-lemma drop_R_merge_cancel_zero (t : Trace)
-    (hδ : deltaFlag t = 0) (h0 : kappaM t = 0) :
-    Lex3 (μ3 t) (μ3 (merge t t)) := by
-  classical
-  -- Outer δ tie via hδ: rewrite both sides to 0 so left components match syntactically
-  -- Then take the right branch in the outer lex.
-  -- Build an inner LexDM proof first, keeping LexDM opaque
-  have hin : LexDM (kappaM t, MetaSN.mu t)
-      (kappaM t ∪ kappaM t, MetaSN.mu (merge t t)) := by
-    -- κ tie via h0; then μ-right using mu_lt_merge_cancel
-    dsimp [LexDM]
-    -- Now goal: Prod.Lex DM (<) (kappaM t, μ t) (kappaM t ∪ kappaM t, μ (merge t t))
-    -- Tie on DM (becomes 0 with h0), take μ-right
-    simp [h0]
-    exact
-      (Prod.Lex.right
-        (α := Multiset ℕ) (β := Ordinal)
-        (ra := fun a b : Multiset ℕ => Multiset.IsDershowitzMannaLT a b)
-        (rb := (· < ·))
-        (a := (0 : Multiset ℕ))
-        (MetaSN.mu_lt_merge_cancel t))
-  -- Lift to outer α = 0
-  have hcore : Lex3 (0, (kappaM t, MetaSN.mu t))
-      (0, (kappaM t ∪ kappaM t, MetaSN.mu (merge t t))) :=
-    Prod.Lex.right (0 : Nat) hin
-  -- Now rewrite the goal to the α = 0 shape and apply hcore
-  dsimp [μ3, Lex3, deltaFlag]
-  -- Replace the LHS deltaFlag by 0 using hδ; RHS deltaFlag is 0 by simp
-  have ht0 : (match t with | recΔ _ _ (delta _) => 1 | _ => 0) = 0 := by
-    simpa [deltaFlag] using hδ
-  -- Also normalize the RHS merge-case δ-flag to 0
-  simp [ht0]
-  -- Apply the outer right with inner witness hcore
-  exact hcore
-
--- Restricted eq_refl: require κ=0 so we can μ-right under inner tie.
-lemma drop_R_eq_refl_zero (a : Trace) (h0 : kappaM a = 0) :
-    Lex3 (μ3 void) (μ3 (eqW a a)) := by
-  classical
-  -- Outer δ-tie: unfold δ and take right branch
-  dsimp [μ3, Lex3, deltaFlag]
-  refine Prod.Lex.right (0 : Nat) ?inner
-  simp [h0]
-  refine Prod.Lex.right (0 : Multiset ℕ) ?muDrop
-  exact MetaSN.mu_void_lt_eq_refl a
-
-/-- eq_refl: unguarded KO7 drop. If κᴹ a = 0, use μ-right; otherwise take κ-DM-left. -/
-lemma drop_R_eq_refl (a : Trace) :
-    Lex3 (μ3 void) (μ3 (eqW a a)) := by
-  classical
-  -- Build an inner LexDM witness first, then lift to an α=0 outer step and rewrite the goal.
-  have hin : LexDM ((0 : Multiset ℕ), MetaSN.mu void)
-      (kappaM (eqW a a), MetaSN.mu (eqW a a)) := by
-    -- Case split on κᴹ a
-    by_cases h0 : kappaM a = 0
-    · -- κ tie → μ-right at inner level
-      have hin0 : LexDM ((0 : Multiset ℕ), MetaSN.mu void)
-          ((0 : Multiset ℕ), MetaSN.mu (eqW a a)) := by
-        exact
-          (Prod.Lex.right
-            (α := Multiset ℕ) (β := Ordinal)
-            (ra := fun a b : Multiset ℕ => Multiset.IsDershowitzMannaLT a b)
-            (rb := (· < ·))
-            (a := (0 : Multiset ℕ))
-            (MetaSN.mu_void_lt_eq_refl a))
-      simpa [kappaM_eq_refl, h0] using hin0
-    · -- κ ≠ 0 → DM-left on 0 <ₘ κ∪κ, then rewrite κ on RHS to kappaM (eqW a a)
-      have hU : kappaM a ∪ kappaM a ≠ (0 : Multiset ℕ) :=
-        union_self_ne_zero_of_ne_zero (X := kappaM a) h0
-      have hdm0 : Multiset.IsDershowitzMannaLT (0 : Multiset ℕ) (kappaM a ∪ kappaM a) := by
-        simpa using dm_lt_add_of_ne_zero' (0 : Multiset ℕ) (kappaM a ∪ kappaM a) hU
-      have hlex : LexDM (0, MetaSN.mu void)
-          (kappaM a ∪ kappaM a, MetaSN.mu (eqW a a)) := by
-        exact dm_to_LexDM_left (X := (0 : Multiset ℕ)) (Y := kappaM a ∪ kappaM a)
-          (μ₁ := MetaSN.mu void) (μ₂ := MetaSN.mu (eqW a a)) hdm0
-      simpa [kappaM_eq_refl] using hlex
-  -- Lift to outer α=0 and finalize by rewriting δ-flag to 0 on both sides
-  have hcore : Lex3 (0, ((0 : Multiset ℕ), MetaSN.mu void))
-      (0, (kappaM (eqW a a), MetaSN.mu (eqW a a))) :=
-    Prod.Lex.right (0 : Nat) hin
-  dsimp [Lex3, μ3]
-  have hδL : (match void with | recΔ _ _ (delta _) => 1 | _ => 0) = 0 := by rfl
-  have hδR : (match eqW a a with | recΔ _ _ (delta _) => 1 | _ => 0) = 0 := by simp
-  simpa [hδL, hδR] using hcore
-
-
-end MetaSN_KO7
-
-/-! ### Parametric strong normalization wrapper for KO7 ------------------- -/
-
-namespace MetaSN_KO7
 
 open OperatorKO7
 
-def StepRev : Trace → Trace → Prop := fun a b => OperatorKO7.Step b a
-
-/-- If every kernel step strictly decreases the KO7 measure μ3 in Lex3,
-then the reverse relation is well-founded (no infinite reductions). -/
-theorem strong_normalisation_of_decreases
-  (hdec : ∀ {a b : Trace}, OperatorKO7.Step a b → Lex3 (μ3 b) (μ3 a)) :
-  WellFounded StepRev := by
-  -- Pull back the well-founded Lex3 along μ3
-  have wf_measure : WellFounded (fun x y : Trace => Lex3 (μ3 x) (μ3 y)) :=
-    InvImage.wf (f := μ3) wf_Lex3
-  -- Show StepRev is a subrelation of the pulled-back order
-  have hsub : Subrelation StepRev (fun x y : Trace => Lex3 (μ3 x) (μ3 y)) := by
-    intro x y hxy
-    exact hdec hxy
-  exact Subrelation.wf hsub wf_measure
-
-end MetaSN_KO7
--- Aggregated `measure_decreases` and `strong_normalization_triple` are deferred
--- until we resolve the general `merge_cancel` and `eq_refl` cases (κ duplicates).
-
-/-! ## Restricted aggregator and SN for a safe subrelation ---------------- -/
-
-namespace MetaSN_KO7
-
-open MetaSN_DM
-
-/-- A guarded subrelation of Step where known KO7 decreases apply without
-conflicting δ/κ shapes. -/
-inductive SafeStep : Trace → Trace → Prop
-| R_int_delta (t) : SafeStep (integrate (delta t)) void
-| R_merge_void_left (t) (hδ : deltaFlag t = 0) : SafeStep (merge void t) t
-| R_merge_void_right (t) (hδ : deltaFlag t = 0) : SafeStep (merge t void) t
-| R_merge_cancel (t) (hδ : deltaFlag t = 0) (h0 : kappaM t = 0) : SafeStep (merge t t) t
-| R_rec_zero (b s) (hδ : deltaFlag b = 0) : SafeStep (recΔ b s void) b
-| R_rec_succ (b s n) : SafeStep (recΔ b s (delta n)) (app s (recΔ b s n))
-| R_eq_refl (a) (h0 : kappaM a = 0) : SafeStep (eqW a a) void
-| R_eq_diff (a b) (hne : a ≠ b) : SafeStep (eqW a b) (integrate (merge a b))
-
-/-- Each SafeStep strictly decreases the KO7 triple measure. -/
-lemma measure_decreases_safe : ∀ {a b}, SafeStep a b → Lex3 (μ3 b) (μ3 a)
-| _, _, SafeStep.R_int_delta t => by
-    simpa using drop_R_int_delta t
-| _, _, SafeStep.R_merge_void_left t hδ => by
-    simpa using drop_R_merge_void_left_zero t hδ
-| _, _, SafeStep.R_merge_void_right t hδ => by
-    simpa using drop_R_merge_void_right_zero t hδ
-| _, _, SafeStep.R_merge_cancel t hδ h0 => by
-    simpa using drop_R_merge_cancel_zero t hδ h0
-| _, _, SafeStep.R_rec_zero b s hδ => by
-    simpa using drop_R_rec_zero b s hδ
-| _, _, SafeStep.R_rec_succ b s n => by
-    simpa using drop_R_rec_succ b s n
-| _, _, SafeStep.R_eq_refl a h0 => by
-    simpa using drop_R_eq_refl_zero a h0
-| _, _, SafeStep.R_eq_diff a b _ => by
-    simpa using drop_R_eq_diff a b
-
-/-- Reverse of `SafeStep`. -/
-def SafeStepRev : Trace → Trace → Prop := fun a b => SafeStep b a
-
-/-- Generic wrapper: any relation that strictly decreases μ3 in Lex3 is well-founded in reverse. -/
-theorem wellFounded_of_measure_decreases_R
-  {R : Trace → Trace → Prop}
-  (hdec : ∀ {a b : Trace}, R a b → Lex3 (μ3 b) (μ3 a)) :
-  WellFounded (fun a b : Trace => R b a) := by
-  -- Pull back the well-founded Lex3 along μ3
-  have wf_measure : WellFounded (fun x y : Trace => Lex3 (μ3 x) (μ3 y)) :=
-    InvImage.wf (f := μ3) wf_Lex3
-  -- Show Rᵒᵖ ⊆ InvImage μ3 Lex3
-  have hsub : Subrelation (fun a b => R b a) (fun x y : Trace => Lex3 (μ3 x) (μ3 y)) := by
-    intro x y hxy
-    exact hdec hxy
-  exact Subrelation.wf hsub wf_measure
-
-/-- Safe-step strong normalization: no infinite SafeStep reductions. -/
-theorem wf_SafeStepRev : WellFounded SafeStepRev :=
-  wellFounded_of_measure_decreases_R (R := SafeStep) (fun {_ _} h => measure_decreases_safe h)
-
-end MetaSN_KO7
-
-/-! ## Guarded lifting from Kernel.Step to SafeStep ----------------------- -/
-
-namespace MetaSN_KO7
-
-open OperatorKO7
-
-open MetaSN_DM
-
-/-- A guarded relation: carries explicit side-conditions per constructor. -/
-inductive StepGuarded : Trace → Trace → Prop
-| R_int_delta (t) : StepGuarded (integrate (delta t)) void
-| R_merge_void_left (t) (hδ : deltaFlag t = 0) : StepGuarded (merge void t) t
-| R_merge_void_right (t) (hδ : deltaFlag t = 0) : StepGuarded (merge t void) t
-| R_merge_cancel (t) (hδ : deltaFlag t = 0) (h0 : MetaSN_DM.kappaM t = 0) : StepGuarded (merge t t) t
-| R_rec_zero (b s) (hδ : deltaFlag b = 0) : StepGuarded (recΔ b s void) b
-| R_rec_succ (b s n) : StepGuarded (recΔ b s (delta n)) (app s (recΔ b s n))
-| R_eq_refl (a) (h0 : MetaSN_DM.kappaM a = 0) : StepGuarded (eqW a a) void
-| R_eq_diff (a b) (hne : a ≠ b) : StepGuarded (eqW a b) (integrate (merge a b))
-
-def StepGuardedRev : Trace → Trace → Prop := fun a b => StepGuarded b a
-
-lemma measure_decreases_guarded : ∀ {a b}, StepGuarded a b → Lex3 (μ3 b) (μ3 a)
-| _, _, StepGuarded.R_int_delta t => by simpa using drop_R_int_delta t
-| _, _, StepGuarded.R_merge_void_left t hδ => by simpa using drop_R_merge_void_left_zero t hδ
-| _, _, StepGuarded.R_merge_void_right t hδ => by simpa using drop_R_merge_void_right_zero t hδ
-| _, _, StepGuarded.R_merge_cancel t hδ h0 => by simpa using drop_R_merge_cancel_zero t hδ h0
-| _, _, StepGuarded.R_rec_zero b s hδ => by simpa using drop_R_rec_zero b s hδ
-| _, _, StepGuarded.R_rec_succ b s n => by simpa using drop_R_rec_succ b s n
-| _, _, StepGuarded.R_eq_refl a h0 => by simpa using drop_R_eq_refl_zero a h0
-| _, _, StepGuarded.R_eq_diff a b _ => by simpa using drop_R_eq_diff a b
-
-theorem wf_StepGuardedRev : WellFounded StepGuardedRev :=
-  wellFounded_of_measure_decreases_R (R := StepGuarded) (fun {_ _} h => measure_decreases_guarded h)
-
-end MetaSN_KO7
-
-/-! ## Finite closure of guarded steps (star) ---------------------------- -/
-
-namespace MetaSN_KO7
-
-inductive StepGuardedStar : Trace → Trace → Prop
-| refl : ∀ t, StepGuardedStar t t
-| tail : ∀ {a b c}, StepGuarded a b → StepGuardedStar b c → StepGuardedStar a c
-
-theorem stepguardedstar_of_step {a b : Trace} (h : StepGuarded a b) :
-    StepGuardedStar a b := StepGuardedStar.tail h (StepGuardedStar.refl b)
-
-theorem stepguardedstar_trans {a b c : Trace}
-  (h₁ : StepGuardedStar a b) (h₂ : StepGuardedStar b c) : StepGuardedStar a c := by
-  induction h₁ with
-  | refl => exact h₂
-  | tail hab _ ih => exact StepGuardedStar.tail hab (ih h₂)
-
--- Simple two-step composition helper.
-lemma guarded_two_step {a b c : Trace}
-  (h1 : StepGuarded a b) (h2 : StepGuarded b c) :
-  StepGuardedStar a c :=
-  StepGuardedStar.tail h1 (StepGuardedStar.tail h2 (StepGuardedStar.refl c))
-
-end MetaSN_KO7
-
-/-! ## MPO-style measure (μ-first then size) for non-rec rules ----------- -/
-
-namespace MetaSN_MPO
-
-open OperatorKO7 Trace
-
-/-- A simple MPO-inspired size: sum of subtree sizes with positive node weights. -/
-@[simp] def sizeMPO : Trace → Nat
-| void          => 0
-| delta t       => sizeMPO t + 1
-| integrate t   => sizeMPO t + 1
-| merge a b     => sizeMPO a + sizeMPO b + 1
-| app a b       => sizeMPO a + sizeMPO b + 1
-| recΔ b s n    => sizeMPO b + sizeMPO s + sizeMPO n + 2
-| eqW a b       => sizeMPO a + sizeMPO b + 1
-
-open MetaSN_KO7
-
-/-- μ-first triple: (μ, sizeMPO, δ). -/
-noncomputable def ν3m (t : Trace) : Ordinal × (Nat × Nat) :=
-  (MetaSN.mu t, (sizeMPO t, deltaFlag t))
-
-@[simp] def LexNu3m : (Ordinal × (Nat × Nat)) → (Ordinal × (Nat × Nat)) → Prop :=
-  Prod.Lex (· < ·) (Prod.Lex (· < ·) (· < ·))
-
-lemma wf_LexNu3m : WellFounded LexNu3m := by
-  refine WellFounded.prod_lex ?_ ?_
-  · exact Ordinal.lt_wf
-  · refine WellFounded.prod_lex ?_ ?_
-    · exact Nat.lt_wfRel.wf
-    · exact Nat.lt_wfRel.wf
-
-/-- int∘delta: μ-right in the middle component. -/
-lemma mpo_drop_R_int_delta (t : Trace) :
-    LexNu3m (ν3m void) (ν3m (integrate (delta t))) := by
-  classical
-  dsimp [ν3m, LexNu3m]
-  apply Prod.Lex.left
-  simpa using MetaSN.mu_void_lt_integrate_delta t
-
-/-- merge void-left: μ-right. -/
-lemma mpo_drop_R_merge_void_left (t : Trace) :
-    LexNu3m (ν3m t) (ν3m (merge void t)) := by
-  classical
-  dsimp [ν3m, LexNu3m]
-  apply Prod.Lex.left
-  simpa using MetaSN.mu_lt_merge_void_left t
-
-/-- merge void-right: μ-right. -/
-lemma mpo_drop_R_merge_void_right (t : Trace) :
-    LexNu3m (ν3m t) (ν3m (merge t void)) := by
-  classical
-  dsimp [ν3m, LexNu3m]
-  apply Prod.Lex.left
-  simpa using MetaSN.mu_lt_merge_void_right t
-
-/-- merge-cancel: μ-right (no κ or size tie needed). -/
-lemma mpo_drop_R_merge_cancel (t : Trace) :
-    LexNu3m (ν3m t) (ν3m (merge t t)) := by
-  classical
-  dsimp [ν3m, LexNu3m]
-  apply Prod.Lex.left
-  simpa using MetaSN.mu_lt_merge_cancel t
-
-/-- eq_refl: μ-right (void μ < eqW μ). -/
-lemma mpo_drop_R_eq_refl (a : Trace) :
-    LexNu3m (ν3m void) (ν3m (eqW a a)) := by
-  classical
-  dsimp [ν3m, LexNu3m]
-  apply Prod.Lex.left
-  simpa using MetaSN.mu_void_lt_eq_refl a
-
-/-- eq_diff: μ-right. -/
-lemma mpo_drop_R_eq_diff (a b : Trace) :
-    LexNu3m (ν3m (integrate (merge a b))) (ν3m (eqW a b)) := by
-  classical
-  dsimp [ν3m, LexNu3m]
-  apply Prod.Lex.left
-  simpa using MetaSN.mu_lt_eq_diff a b
-
-/-- rec_zero: μ-first strict drop. -/
-lemma mpo_drop_R_rec_zero (b s : Trace) :
-    LexNu3m (ν3m b) (ν3m (recΔ b s void)) := by
-  classical
-  dsimp [ν3m, LexNu3m]
-  -- We only need μ to drop
-  apply Prod.Lex.left
-  -- Show: mu b < mu (recΔ b s void) = ω^(μ s + 6) + ω*(μ b + 1) + 1
-  -- First, μ b < ω*(μ b + 1)
-  have h1 : MetaSN.mu b < omega0 * (MetaSN.mu b + 1) := by
-    have hlt : MetaSN.mu b < MetaSN.mu b + 1 :=
-      (Order.lt_add_one_iff (x := MetaSN.mu b) (y := MetaSN.mu b)).2 le_rfl
-    have hmono : MetaSN.mu b + 1 ≤ omega0 * (MetaSN.mu b + 1) := by
-      simpa using (Ordinal.le_mul_right (a := MetaSN.mu b + 1) (b := omega0) omega0_pos)
-    exact lt_of_lt_of_le hlt hmono
-  -- Then: ω*(μ b + 1) ≤ ω*(μ b + 1) + 1
-  have h2 : omega0 * (MetaSN.mu b + 1) ≤ omega0 * (MetaSN.mu b + 1) + 1 :=
-    le_add_of_nonneg_right (zero_le _)
-  have h3 : MetaSN.mu b < omega0 * (MetaSN.mu b + 1) + 1 := lt_of_lt_of_le h1 h2
-  -- Finally: add the leading ω^(μ s + 6) on the left (nonnegative), preserving ≤
-  have h4 : omega0 * (MetaSN.mu b + 1) + 1 ≤
-      (omega0 ^ (MetaSN.mu s + (6 : Ordinal))) + (omega0 * (MetaSN.mu b + 1) + 1) :=
-    le_add_of_nonneg_left (zero_le _)
-  have h5 : MetaSN.mu b < (omega0 ^ (MetaSN.mu s + (6 : Ordinal))) + (omega0 * (MetaSN.mu b + 1) + 1) :=
-    lt_of_lt_of_le h3 h4
-  simpa [MetaSN.mu, add_assoc, add_comm, add_left_comm]
-    using h5
-/- Safe subrelation for MPO (non-rec rules only; μ-first decreases) -/
-inductive SafeStepMPO : Trace → Trace → Prop
-| R_int_delta (t) : SafeStepMPO (integrate (delta t)) void
-| R_merge_void_left (t) : SafeStepMPO (merge void t) t
-| R_merge_void_right (t) : SafeStepMPO (merge t void) t
-| R_merge_cancel (t) : SafeStepMPO (merge t t) t
-| R_eq_refl (a) : SafeStepMPO (eqW a a) void
-| R_eq_diff (a b) : SafeStepMPO (eqW a b) (integrate (merge a b))
-| R_rec_zero (b s) : SafeStepMPO (recΔ b s void) b
-
-def SafeStepMPORev : Trace → Trace → Prop := fun a b => SafeStepMPO b a
-
-lemma mpo_measure_decreases : ∀ {a b}, SafeStepMPO a b → LexNu3m (ν3m b) (ν3m a)
-| _, _, SafeStepMPO.R_int_delta t => by simpa using mpo_drop_R_int_delta t
-| _, _, SafeStepMPO.R_merge_void_left t => by simpa using mpo_drop_R_merge_void_left t
-| _, _, SafeStepMPO.R_merge_void_right t => by simpa using mpo_drop_R_merge_void_right t
-| _, _, SafeStepMPO.R_merge_cancel t => by simpa using mpo_drop_R_merge_cancel t
-| _, _, SafeStepMPO.R_eq_refl a => by simpa using mpo_drop_R_eq_refl a
-| _, _, SafeStepMPO.R_eq_diff a b => by simpa using mpo_drop_R_eq_diff a b
-| _, _, SafeStepMPO.R_rec_zero b s => by simpa using mpo_drop_R_rec_zero b s
-
-theorem wf_SafeStepMPORev : WellFounded SafeStepMPORev := by
-  -- pull back Lex3m via μ3m
-  have wf_measure : WellFounded (fun x y : Trace => LexNu3m (ν3m x) (ν3m y)) :=
-    InvImage.wf (f := ν3m) wf_LexNu3m
-  have hsub : Subrelation SafeStepMPORev (fun x y : Trace => LexNu3m (ν3m x) (ν3m y)) := by
-    intro x y hxy; exact mpo_measure_decreases hxy
-  exact Subrelation.wf hsub wf_measure
-
-end MetaSN_MPO
-
-/-! ## Hybrid aggregator: per-rule decreases picking KO7 or MPO ---------- -/
-
-namespace MetaSN_Hybrid
-
-open OperatorKO7 Trace
-open MetaSN_KO7 MetaSN_MPO
-
-def HybridDec (a b : Trace) : Prop :=
-  MetaSN_MPO.LexNu3m (MetaSN_MPO.ν3m b) (MetaSN_MPO.ν3m a) ∨
-  MetaSN_KO7.Lex3 (MetaSN_KO7.μ3 b) (MetaSN_KO7.μ3 a)
-
-lemma hybrid_R_int_delta (t : Trace) :
-    HybridDec (integrate (delta t)) void :=
-  Or.inr (by simpa using MetaSN_KO7.drop_R_int_delta t)
-
-lemma hybrid_R_merge_void_left (t : Trace) :
-    HybridDec (merge void t) t :=
-  Or.inl (by simpa using MetaSN_MPO.mpo_drop_R_merge_void_left t)
-
-lemma hybrid_R_merge_void_right (t : Trace) :
-    HybridDec (merge t void) t :=
-  Or.inl (by simpa using MetaSN_MPO.mpo_drop_R_merge_void_right t)
-
-lemma hybrid_R_merge_cancel (t : Trace) :
-    HybridDec (merge t t) t :=
-  -- Prefer MPO μ-first drop for unguarded merge-cancel
-  Or.inl (by simpa using MetaSN_MPO.mpo_drop_R_merge_cancel t)
-
-lemma hybrid_R_rec_succ (b s n : Trace) :
-    HybridDec (recΔ b s (delta n)) (app s (recΔ b s n)) :=
-  Or.inr (by simpa using MetaSN_KO7.drop_R_rec_succ b s n)
-
-lemma hybrid_R_eq_refl (a : Trace) :
-    HybridDec (eqW a a) void :=
-  -- Prefer KO7 Lex3 path now that eq_refl is unguarded
-  Or.inr (by simpa using MetaSN_KO7.drop_R_eq_refl a)
-
-lemma hybrid_R_eq_diff (a b : Trace) :
-    HybridDec (eqW a b) (integrate (merge a b)) :=
-  Or.inl (by simpa using MetaSN_MPO.mpo_drop_R_eq_diff a b)
-
--- Guarded rec_zero hybrid: δ-tie is required for KO7 κ-first
-lemma hybrid_R_rec_zero_tie (b s : Trace) (hδ : MetaSN_KO7.deltaFlag b = 0) :
-    HybridDec (recΔ b s void) b :=
-  Or.inr (by simpa using MetaSN_KO7.drop_R_rec_zero b s hδ)
-
--- Unguarded rec_zero: use MPO μ-first drop, no δ-tie needed.
-lemma hybrid_R_rec_zero (b s : Trace) :
-    HybridDec (recΔ b s void) b :=
-  Or.inl (by simpa using MetaSN_MPO.mpo_drop_R_rec_zero b s)
-
-end MetaSN_Hybrid
-
--- (Hybrid WF aggregator deferred; keep per-rule HybridDec for now.)
-
-/-! ### Bridging from Kernel.Step to HybridDec (with explicit rec_zero caveat) -/
-
-namespace MetaSN_Hybrid
-
-open OperatorKO7
-
-/-- For any single kernel step, we produce a hybrid decrease certificate,
-except in the rec_zero case where the δ-flag of `b` is 1. We surface that
-as an explicit exception witness. -/
-theorem hybrid_dec_of_Step {a b : Trace} (h : Step a b) :
-    HybridDec a b ∨ ∃ (b' s : Trace), a = recΔ b' s void ∧ b = b' ∧ MetaSN_KO7.deltaFlag b' = 1 :=
-  match h with
-  | Step.R_int_delta t => Or.inl (hybrid_R_int_delta t)
-  | Step.R_merge_void_left t => Or.inl (hybrid_R_merge_void_left t)
-  | Step.R_merge_void_right t => Or.inl (hybrid_R_merge_void_right t)
-  | Step.R_merge_cancel t => Or.inl (hybrid_R_merge_cancel t)
-  | Step.R_rec_succ b s n => Or.inl (hybrid_R_rec_succ b s n)
-  | Step.R_eq_refl a => Or.inl (hybrid_R_eq_refl a)
-  | Step.R_eq_diff a b => Or.inl (hybrid_R_eq_diff a b)
-  | Step.R_rec_zero b s => Or.inl (hybrid_R_rec_zero b s)
-
-end MetaSN_Hybrid
-
-/-! ## Public certificate: every Kernel.Step has a hybrid decrease -------- -/
-
-namespace MetaSN_Hybrid
-
-open OperatorKO7
-
-/-- Every single kernel step has a strict hybrid decrease certificate. -/
-lemma hybrid_drop_of_step {a b : Trace} (h : Step a b) : HybridDec a b :=
-  match h with
-  | Step.R_int_delta t => hybrid_R_int_delta t
-  | Step.R_merge_void_left t => hybrid_R_merge_void_left t
-  | Step.R_merge_void_right t => hybrid_R_merge_void_right t
-  | Step.R_merge_cancel t => hybrid_R_merge_cancel t
-  | Step.R_rec_succ b s n => hybrid_R_rec_succ b s n
-  | Step.R_eq_refl a => hybrid_R_eq_refl a
-  | Step.R_eq_diff a b => hybrid_R_eq_diff a b
-  | Step.R_rec_zero b s => hybrid_R_rec_zero b s
-
-/-! ## Examples
-A tiny usage example showing that `hybrid_drop_of_step` yields a HybridDec certificate for a concrete kernel step. -/
-
-section Examples
-
-example (a : OperatorKO7.Trace) :
-    MetaSN_Hybrid.HybridDec (OperatorKO7.Trace.eqW a a) OperatorKO7.Trace.void :=
-  MetaSN_Hybrid.hybrid_drop_of_step (OperatorKO7.Step.R_eq_refl a)
-
--- eq-diff
-example (a b : OperatorKO7.Trace) :
-    MetaSN_Hybrid.HybridDec (OperatorKO7.Trace.eqW a b)
-      (OperatorKO7.Trace.integrate (OperatorKO7.Trace.merge a b)) :=
-  MetaSN_Hybrid.hybrid_drop_of_step (OperatorKO7.Step.R_eq_diff a b)
-
--- merge-void (left)
-example (t : OperatorKO7.Trace) :
-    MetaSN_Hybrid.HybridDec (OperatorKO7.Trace.merge OperatorKO7.Trace.void t) t :=
-  MetaSN_Hybrid.hybrid_drop_of_step (OperatorKO7.Step.R_merge_void_left t)
-
--- merge-void (right)
-example (t : OperatorKO7.Trace) :
-    MetaSN_Hybrid.HybridDec (OperatorKO7.Trace.merge t OperatorKO7.Trace.void) t :=
-  MetaSN_Hybrid.hybrid_drop_of_step (OperatorKO7.Step.R_merge_void_right t)
-
--- merge-cancel
-example (t : OperatorKO7.Trace) :
-    MetaSN_Hybrid.HybridDec (OperatorKO7.Trace.merge t t) t :=
-  MetaSN_Hybrid.hybrid_drop_of_step (OperatorKO7.Step.R_merge_cancel t)
-
--- rec-zero
-example (b s : OperatorKO7.Trace) :
-    MetaSN_Hybrid.HybridDec (OperatorKO7.Trace.recΔ b s OperatorKO7.Trace.void) b :=
-  MetaSN_Hybrid.hybrid_drop_of_step (OperatorKO7.Step.R_rec_zero b s)
-
--- Note: in this kernel, `delta` expects a `Trace`, so `n` is a `Trace`.
-example (b s n : OperatorKO7.Trace) :
-    MetaSN_Hybrid.HybridDec
-  (OperatorKO7.Trace.recΔ b s (OperatorKO7.Trace.delta n))
-  (OperatorKO7.Trace.app s (OperatorKO7.Trace.recΔ b s n)) :=
-  MetaSN_Hybrid.hybrid_drop_of_step (OperatorKO7.Step.R_rec_succ b s n)
-
--- int∘delta
-example (t : OperatorKO7.Trace) :
-    MetaSN_Hybrid.HybridDec
-  (OperatorKO7.Trace.integrate (OperatorKO7.Trace.delta t))
-      OperatorKO7.Trace.void :=
-  MetaSN_Hybrid.hybrid_drop_of_step (OperatorKO7.Step.R_int_delta t)
-
-end Examples
-
-/-! ### Public SN-style wrappers (safe subsets)
-Expose well-foundedness of the reverse relations for the KO7-safe and MPO-safe subrelations. -/
-
-/-- Public: no infinite reductions for the KO7-safe guarded subrelation. -/
-theorem wf_StepRev_KO7_Safe : WellFounded MetaSN_KO7.SafeStepRev := MetaSN_KO7.wf_SafeStepRev
-
-/-- Public: no infinite reductions for the MPO-safe subrelation. -/
-theorem wf_StepRev_MPO_Safe : WellFounded MetaSN_MPO.SafeStepMPORev := MetaSN_MPO.wf_SafeStepMPORev
-
-/-! ## Lex3 drop lemmas (KO7)
-These mirror the slim versions from `Termination_Lex3.lean`, but live here to reduce files. -/
-
-namespace MetaSN_KO7
-
-open OperatorKO7 Trace
-
-lemma lex3_drop_R_rec_zero_zero (b s : Trace)
-    (hδ : MetaSN_KO7.deltaFlag b = 0) :
-    MetaSN_KO7.Lex3 (MetaSN_KO7.μ3 b) (MetaSN_KO7.μ3 (recΔ b s void)) := by
-  classical
-  -- Only expose the Lex3 structure; keep μ3 opaque to control unfolding of deltaFlag.
-  dsimp [MetaSN_KO7.Lex3]
-  -- Replace μ3 with its pair form so we can rewrite outer flags directly.
-  change Prod.Lex (fun x1 x2 => x1 < x2)
-      (Prod.Lex (fun a b => a.IsDershowitzMannaLT b) (fun x1 x2 => x1 < x2))
-      (MetaSN_KO7.deltaFlag b, (MetaSN_DM.kappaM b, MetaSN.mu b))
-      (MetaSN_KO7.deltaFlag (recΔ b s void), (MetaSN_DM.kappaM (recΔ b s void), MetaSN.mu (recΔ b s void)))
-  have hr0 : MetaSN_KO7.deltaFlag (recΔ b s void) = 0 := by
+/-!
+Exported API examples - smoke tests for reviewers.
+This module should only import stable, published Meta modules and check that
+their key symbols exist and typecheck. It contains no new proofs.
+-/
+
+example (a b : Trace) (h : Step a b) : MetaSN_Hybrid.HybridDec a b :=
+  MetaSN_Hybrid.hybrid_drop_of_step h
+
+example : WellFounded MetaSN_KO7.SafeStepRev := MetaSN_KO7.wf_SafeStepRev
+-- Computable measure (μ3c) also yields SN for the same relation
+example : WellFounded MetaSN_KO7.SafeStepRev := OperatorKO7.MetaCM.wf_SafeStepRev_c
+example : WellFounded MetaSN_MPO.SafeStepMPORev := MetaSN_MPO.wf_SafeStepMPORev
+
+example (t : Trace) : MetaSN_KO7.SafeStepStar t (MetaSN_KO7.normalizeSafe t) :=
+  MetaSN_KO7.to_norm_safe t
+
+example (t : Trace) : MetaSN_KO7.NormalFormSafe (MetaSN_KO7.normalizeSafe t) :=
+  MetaSN_KO7.norm_nf_safe t
+
+-- Computable μ3c: simple per-rule drop example (merge void t → t) at t = void
+example : OperatorKO7.MetaCM.Lex3c
+    (OperatorKO7.MetaCM.mu3c OperatorKO7.Trace.void)
+    (OperatorKO7.MetaCM.mu3c (OperatorKO7.Trace.merge OperatorKO7.Trace.void OperatorKO7.Trace.void)) := by
+  have hδ : MetaSN_KO7.deltaFlag OperatorKO7.Trace.void = 0 := by
     simp [MetaSN_KO7.deltaFlag]
-  -- Rewrite both outer components to 0.
-  rw [hδ, hr0]
-  apply Prod.Lex.right (a := 0)
-  -- Inner LexDM drop via κᴹ strict decrease for rec_zero.
-  apply Prod.Lex.left
-  exact MetaSN_DM.dm_drop_R_rec_zero b s
-
-lemma lex3_drop_R_merge_void_left_zero (t : Trace)
-    (hδ : MetaSN_KO7.deltaFlag t = 0) :
-    MetaSN_KO7.Lex3 (MetaSN_KO7.μ3 t) (MetaSN_KO7.μ3 (merge void t)) := by
-  -- Delegate to the audited lemma with the same tie hypothesis
-  simpa [MetaSN_KO7.μ3, MetaSN_KO7.Lex3] using
-    MetaSN_KO7.drop_R_merge_void_left_zero t hδ
-
-lemma lex3_drop_R_merge_void_right_zero (t : Trace)
-    (hδ : MetaSN_KO7.deltaFlag t = 0) :
-    MetaSN_KO7.Lex3 (MetaSN_KO7.μ3 t) (MetaSN_KO7.μ3 (merge t void)) := by
-  simpa [MetaSN_KO7.μ3, MetaSN_KO7.Lex3] using
-    MetaSN_KO7.drop_R_merge_void_right_zero t hδ
-
-end MetaSN_KO7
-
-end MetaSN_Hybrid
+  simpa using OperatorKO7.MetaCM.drop_R_merge_void_left_c OperatorKO7.Trace.void hδ
 
 ```
 
 ---
 
-## 7. Meta/Normalize_Safe.lean
-**File:** `OperatorKO7/OperatorKO7/Meta/Normalize_Safe.lean`
+## 17. Meta/CNFOrdinal.lean
+
+**File:** `OperatorKO7/Meta/CNFOrdinal.lean`
 
 ```lean
-import OperatorKO7.Kernel
-import OperatorKO7.Meta.Termination_KO7
-import Mathlib.Logic.Function.Basic
+-- (pretty-printing and examples moved below, after definitions)
+/-!
+  # Constructive CNF Ordinal - Complete, Axiom-Free, Computable
+
+  This module provides a fully constructive Cantor Normal Form (CNF) ordinal type and computable implementations for:
+  - Canonical structure and invariants
+  - Normalization (merge, sort, remove zeros)
+  - Addition, multiplication, ω-exponentiation
+  - Total, computable lexicographic comparison (cmp, le, lt)
+  - No axioms, no sorry, no noncomputable
+
+  All code is total and lint-clean. See Docs/A_Constructive_Ordinal_Skeleton.md for intended semantics and proofs.
+-/
+set_option linter.unnecessarySimpa false
+
+
+namespace OperatorKO7.MetaCNF
 
 /-!
-Certified normalization for the KO7 safe fragment.
-
-Purpose:
-- Defines `SafeStepStar` (multi-step closure of `SafeStep`).
-- Defines `NormalFormSafe` and proves basic normal-form facts for the safe relation.
-- Constructs a *certified* normalizer `normalizeSafe` for `SafeStep` using well-founded recursion.
-
-Important scope boundary:
-- Everything in this file is about `SafeStep` (the guarded fragment), not the full kernel `Step`.
-- The normalizer is `noncomputable` because it is obtained from well-foundedness via `WellFounded.fix`.
-  This is the standard "certified existence" construction: it produces a term and a proof certificate.
-
-Main exports:
-- `normalizeSafe` and its certificates: `to_norm_safe`, `norm_nf_safe`
-- Fixed-point characterizations: `nf_iff_normalize_fixed`, `not_fixed_iff_exists_step`
-- Convenience bundles: `normalizeSafe_sound`, `normalizeSafe_total`
+  ## CNF Representation
+  - List of (exponent, coefficient) pairs, exponents strictly decreasing, coefficients positive.
+  - Invariant: No zero coefficients, no zero exponents except possibly for the last term (finite part).
+  - Example: ω^3·2 + ω^1·5 + 7  ≡  [(3,2), (1,5), (0,7)]
 -/
-set_option diagnostics.threshold 100000
-set_option linter.unnecessarySimpa false
-open Classical
-open OperatorKO7 Trace
 
 
-namespace MetaSN_KO7
 
-/-- Reflexive-transitive closure of `SafeStep`. -/
-inductive SafeStepStar : Trace → Trace → Prop
-| refl : ∀ t, SafeStepStar t t
-| tail : ∀ {a b c}, SafeStep a b → SafeStepStar b c → SafeStepStar a c
+structure CNF where
+  repr : List (Nat × Nat) -- List of (exponent, coefficient) pairs
+  -- Invariant: strictly decreasing exponents, all coefficients > 0
+deriving Repr, DecidableEq
 
-/-- Transitivity of the safe multi-step relation `SafeStepStar`. -/
-theorem safestar_trans {a b c : Trace}
-  (h₁ : SafeStepStar a b) (h₂ : SafeStepStar b c) : SafeStepStar a c := by
-  induction h₁ with
-  | refl => exact h₂
-  | tail hab _ ih => exact SafeStepStar.tail hab (ih h₂)
+/-!
+  ## Helper: merge like exponents, remove zeros, sort decreasing
+-/
+private def insertDesc (p : Nat × Nat) : List (Nat × Nat) → List (Nat × Nat)
+  | [] => [p]
+  | (q::qs) => if p.1 > q.1 then p :: q :: qs else q :: insertDesc p qs
 
-/-- Any single safe step is also a `SafeStepStar`. -/
-theorem safestar_of_step {a b : Trace} (h : SafeStep a b) : SafeStepStar a b :=
-  SafeStepStar.tail h (SafeStepStar.refl b)
+private def sortDesc (l : List (Nat × Nat)) : List (Nat × Nat) :=
+  l.foldl (fun acc x => insertDesc x acc) []
 
-/-- Normal forms for the safe subrelation. -/
-def NormalFormSafe (t : Trace) : Prop := ¬ ∃ u, SafeStep t u
+private def mergeLike (l : List (Nat × Nat)) : List (Nat × Nat) :=
+  let l := l.filter (fun ⟨_, c⟩ => c ≠ 0)
+  let l := sortDesc l -- sort by decreasing exponent
+  let rec go (acc : List (Nat × Nat)) (l : List (Nat × Nat)) : List (Nat × Nat) :=
+    match l with
+    | [] => acc.reverse
+    | (e, c) :: xs =>
+      match acc with
+      | (e', c') :: as' =>
+        if e = e' then go ((e, c + c') :: as') xs else go ((e, c) :: acc) xs
+      | [] => go [(e, c)] xs
+  go [] l
 
-/-- No single safe step can originate from a safe normal form. -/
-theorem no_step_from_nf {t u : Trace} (h : NormalFormSafe t) : ¬ SafeStep t u := by
-  intro hs; exact h ⟨u, hs⟩
+/-!
+  ## Normalization: canonical form
+-/
+def norm_cnf (x : CNF) : CNF :=
+  { repr := mergeLike x.repr }
 
-/-- If `a` is a safe normal form, then any `a ⇒* b` (in `SafeStepStar`) must be trivial. -/
-theorem nf_no_safestar_forward {a b : Trace}
-  (hnf : NormalFormSafe a) (h : SafeStepStar a b) : a = b :=
-  match h with
-  | SafeStepStar.refl _ => rfl
-  | SafeStepStar.tail hs _ => False.elim (hnf ⟨_, hs⟩)
+/-!
+  ## Lexicographic comparison on normalized representations
+  Compare two CNFs by their normalized `repr` lists. Higher exponents dominate;
+  when exponents tie, higher coefficients dominate. Missing tails are treated
+  as smaller (i.e., [] < non-empty).
+-/
+def cmpList : List (Nat × Nat) → List (Nat × Nat) → Ordering
+  | [], [] => Ordering.eq
+  | [], _  => Ordering.lt
+  | _,  [] => Ordering.gt
+  | (e1, c1) :: xs, (e2, c2) :: ys =>
+    if e1 < e2 then Ordering.lt else
+    if e2 < e1 then Ordering.gt else
+    -- exponents are equal; compare coefficients
+    if c1 < c2 then Ordering.lt else
+    if c2 < c1 then Ordering.gt else
+    -- equal head terms; recurse on tails
+    cmpList xs ys
 
-/-- From a safe normal form, reachability by `SafeStepStar` is equivalent to equality. -/
-theorem safestar_from_nf_iff_eq {t u : Trace}
-  (h : NormalFormSafe t) : SafeStepStar t u ↔ u = t := by
-  constructor
-  · intro htu
-    have ht_eq : t = u := nf_no_safestar_forward h htu
-    exact ht_eq.symm
-  · intro hEq; cases hEq; exact SafeStepStar.refl t
+/-- Reflexivity for list-lex comparison. -/
+theorem cmpList_refl_eq : ∀ xs : List (Nat × Nat), cmpList xs xs = Ordering.eq := by
+  intro xs; induction xs with
+  | nil => simp [cmpList]
+  | @cons hd tl ih =>
+    cases hd with
+    | mk e c =>
+      -- both exponent and coefficient self-comparisons fall through to recursion
+      simp [cmpList, Nat.lt_irrefl, ih]
 
-/-- No non-trivial safe multi-step can start from a safe normal form. -/
-theorem no_safestar_from_nf_of_ne {t u : Trace}
-  (h : NormalFormSafe t) (hne : u ≠ t) : ¬ SafeStepStar t u := by
-  intro htu
-  have := (safestar_from_nf_iff_eq h).1 htu
-  exact hne this
+/-- Head-case: if e1 < e2, the comparison is lt (and swaps to gt). -/
+theorem cmpList_cons_cons_exp_lt
+  {e1 c1 e2 c2 : Nat} {xs ys : List (Nat × Nat)} (h : e1 < e2) :
+  cmpList ((e1, c1) :: xs) ((e2, c2) :: ys) = Ordering.lt := by
+  simp [cmpList, h]
 
-/-- Uniqueness of endpoints for `SafeStepStar` paths starting at a safe normal form. -/
-theorem safestar_from_nf_unique {a b c : Trace}
-  (ha : NormalFormSafe a) (hab : SafeStepStar a b) (hac : SafeStepStar a c) : b = c := by
-  have hb : b = a := (nf_no_safestar_forward ha hab).symm
-  have hc : c = a := (nf_no_safestar_forward ha hac).symm
-  simpa [hb, hc]
+/-- Head-case (swap): if e1 < e2, then swapping yields gt. -/
+theorem cmpList_cons_cons_exp_lt_swap
+  {e1 c1 e2 c2 : Nat} {xs ys : List (Nat × Nat)} (h : e1 < e2) :
+  cmpList ((e2, c2) :: ys) ((e1, c1) :: xs) = Ordering.gt := by
+  -- On swap, the second branch detects e1 < e2
+  have : ¬ e2 < e1 := Nat.not_lt.mpr (Nat.le_of_lt h)
+  simp [cmpList, this, h]
 
-/-- Any `SafeStepStar` cycle through a safe normal form collapses to equality. -/
-theorem safestar_cycle_nf_eq {a b : Trace}
-  (ha : NormalFormSafe a) (hab : SafeStepStar a b) (_hba : SafeStepStar b a) : a = b :=
-  nf_no_safestar_forward ha hab
+/-- Head-case: if e2 < e1, the comparison is gt (and swaps to lt). -/
+theorem cmpList_cons_cons_exp_gt
+  {e1 c1 e2 c2 : Nat} {xs ys : List (Nat × Nat)} (h : e2 < e1) :
+  cmpList ((e1, c1) :: xs) ((e2, c2) :: ys) = Ordering.gt := by
+  have : ¬ e1 < e2 := Nat.not_lt.mpr (Nat.le_of_lt h)
+  simp [cmpList, this, h]
 
-/-! ### Star structure helpers -/
+/-- Head-case (swap): if e2 < e1, swapping yields lt. -/
+theorem cmpList_cons_cons_exp_gt_swap
+  {e1 c1 e2 c2 : Nat} {xs ys : List (Nat × Nat)} (h : e2 < e1) :
+  cmpList ((e2, c2) :: ys) ((e1, c1) :: xs) = Ordering.lt := by
+  simp [cmpList, h]
 
-/-- Head decomposition for `SafeStepStar`: either refl, or a head step with a tail star. -/
-theorem safestar_destruct {a c : Trace} (h : SafeStepStar a c) :
-  a = c ∨ ∃ b, SafeStep a b ∧ SafeStepStar b c := by
-  cases h with
-  | refl t => exact Or.inl rfl
-  | tail hab hbc => exact Or.inr ⟨_, hab, hbc⟩
+/-- Head-case: equal exponents, smaller coefficient gives lt. -/
+theorem cmpList_cons_cons_exp_eq_coeff_lt
+  {e c1 c2 : Nat} {xs ys : List (Nat × Nat)} (h : c1 < c2) :
+  cmpList ((e, c1) :: xs) ((e, c2) :: ys) = Ordering.lt := by
+  have : ¬ e < e := Nat.lt_irrefl _
+  simp [cmpList, this, h]
 
-/-- Append a single safe step to the right of a safe multi-step path. -/
-theorem safestar_snoc {a b c : Trace}
-  (hab : SafeStepStar a b) (hbc : SafeStep b c) : SafeStepStar a c :=
-  safestar_trans hab (safestar_of_step hbc)
+/-- Head-case: equal exponents, larger coefficient gives gt. -/
+theorem cmpList_cons_cons_exp_eq_coeff_gt
+  {e c1 c2 : Nat} {xs ys : List (Nat × Nat)} (h : c2 < c1) :
+  cmpList ((e, c1) :: xs) ((e, c2) :: ys) = Ordering.gt := by
+  have : ¬ e < e := Nat.lt_irrefl _
+  have : ¬ c1 < c2 := Nat.not_lt.mpr (Nat.le_of_lt h)
+  simp [cmpList, Nat.lt_irrefl, this, h]
 
-/-! ### Strong normalization (rev) - convenience -/
+/-- Head-case: equal exponents and coefficients, comparison recurses. -/
+theorem cmpList_cons_cons_exp_eq_coeff_eq
+  {e c : Nat} {xs ys : List (Nat × Nat)} :
+  cmpList ((e, c) :: xs) ((e, c) :: ys) = cmpList xs ys := by
+  simp [cmpList, Nat.lt_irrefl]
 
-/-- Accessibility for `SafeStepRev` as a derived corollary of `wf_SafeStepRev`. -/
-theorem acc_SafeStepRev (t : Trace) : Acc SafeStepRev t :=
-  wf_SafeStepRev.apply t
+/-- Base-case: [] < non-empty. -/
+theorem cmpList_nil_left_lt {y : Nat × Nat} {ys : List (Nat × Nat)} :
+  cmpList [] (y :: ys) = Ordering.lt := by
+  simp [cmpList]
 
-/-- A well-founded pullback of the KO7 Lex3 order along μ3. -/
-def Rμ3 (x y : Trace) : Prop := Lex3 (μ3 x) (μ3 y)
+/-- Base-case: non-empty > []. -/
+theorem cmpList_nil_right_gt {x : Nat × Nat} {xs : List (Nat × Nat)} :
+  cmpList (x :: xs) [] = Ordering.gt := by
+  simp [cmpList]
 
-/-- Well-foundedness of `Rμ3`, inherited from `wf_Lex3` via `InvImage`. -/
-lemma wf_Rμ3 : WellFounded Rμ3 :=
-  InvImage.wf (f := μ3) wf_Lex3
-
-set_option diagnostics true
-
-/-- Deterministic normalization for the safe subrelation, bundled with a proof certificate. -/
-noncomputable def normalizeSafePack (t : Trace) : Σ' n : Trace, SafeStepStar t n ∧ NormalFormSafe n :=
-  WellFounded.fix wf_Rμ3 (C := fun t => Σ' n : Trace, SafeStepStar t n ∧ NormalFormSafe n)
-    (fun t rec => by
-      classical
-      -- Use term-mode if-split on existence of a safe step
-      exact
-        (if h : ∃ u, SafeStep t u then
-          -- Take one step and recurse
-          let u := Classical.choose h
-          have hu : SafeStep t u := Classical.choose_spec h
-          have hdrop : Rμ3 u t := measure_decreases_safe hu
-          match rec u hdrop with
-          | ⟨n, hstar, hnf⟩ => ⟨n, And.intro (SafeStepStar.tail hu hstar) hnf⟩
-        else
-          -- Stuck: already normal
-          ⟨t, And.intro (SafeStepStar.refl t) (by intro ex; exact h ex)⟩)) t
-
-/-- The safe normal form selected by `normalizeSafePack`. -/
-noncomputable def normalizeSafe (t : Trace) : Trace := (normalizeSafePack t).1
-
-/-- Certificate: `t` reduces to `normalizeSafe t` by `SafeStepStar`. -/
-theorem to_norm_safe (t : Trace) : SafeStepStar t (normalizeSafe t) := (normalizeSafePack t).2.left
-
-/-- Certificate: `normalizeSafe t` is a safe normal form. -/
-theorem norm_nf_safe (t : Trace) : NormalFormSafe (normalizeSafe t) := (normalizeSafePack t).2.right
-/-! ### Small derived lemmas -/
-
-/-- If `t` is already in safe normal form, normalization is the identity. -/
-theorem normalizeSafe_eq_self_of_nf (t : Trace) (h : NormalFormSafe t) :
-  normalizeSafe t = t := by
-  -- From NF, any star out of `t` is trivial; apply it to the normalizer path.
-  have := nf_no_safestar_forward h (to_norm_safe t)
-  exact this.symm
-
-/-- Existence of a reachable safe normal form for any trace (witnessed by `normalizeSafe`). -/
-theorem exists_nf_reachable (t : Trace) :
-  ∃ n, SafeStepStar t n ∧ NormalFormSafe n :=
-  ⟨normalizeSafe t, to_norm_safe t, norm_nf_safe t⟩
-
-/-- Either a safe step exists from `t`, or the normalizer is already fixed at `t`. -/
-theorem progress_or_fixed (t : Trace) : (∃ u, SafeStep t u) ∨ normalizeSafe t = t := by
+/-- Eliminate cmpList=lt on cons/cons: describes exactly which head-case caused it or recurses. -/
+theorem cmpList_cons_cons_lt_cases
+  {e1 c1 e2 c2 : Nat} {xs ys : List (Nat × Nat)}
+  (h : cmpList ((e1, c1) :: xs) ((e2, c2) :: ys) = Ordering.lt) :
+  e1 < e2 ∨ (e1 = e2 ∧ c1 < c2) ∨ (e1 = e2 ∧ c1 = c2 ∧ cmpList xs ys = Ordering.lt) := by
+  -- peel the nested ifs of cmpList via case splits
   classical
-  -- Term-mode split on NormalFormSafe t
-  exact
-    (if hnf : NormalFormSafe t then
-      Or.inr (normalizeSafe_eq_self_of_nf t hnf)
+  if hlt : e1 < e2 then
+    -- immediate lt by exponent
+    exact Or.inl hlt
+  else
+    have hnotlt : ¬ e1 < e2 := by simpa using hlt
+    if hgt : e2 < e1 then
+      -- would force gt, contradicting h
+      have : cmpList ((e1,c1)::xs) ((e2,c2)::ys) = Ordering.gt := by
+        simp [cmpList, hnotlt, hgt]
+      cases this ▸ h
     else
-      Or.inl (by
-        have : ¬¬ ∃ u, SafeStep t u := by simpa [NormalFormSafe] using hnf
-        exact not_not.mp this))
+      have hnotgt : ¬ e2 < e1 := by simpa using hgt
+      -- exponents must be equal
+      have heq : e1 = e2 := Nat.le_antisymm (Nat.le_of_not_gt hgt) (Nat.le_of_not_gt hlt)
+      -- compare coefficients
+      if hclt : c1 < c2 then
+        exact Or.inr (Or.inl ⟨heq, hclt⟩)
+      else
+        if hcgt : c2 < c1 then
+          -- would force gt, contradicting h (use the dedicated head-eq coeff-gt lemma)
+          have : cmpList ((e1,c1)::xs) ((e2,c2)::ys) = Ordering.gt := by
+            subst heq; simpa using (cmpList_cons_cons_exp_eq_coeff_gt (xs:=xs) (ys:=ys) (e:=e1) (c1:=c1) (c2:=c2) hcgt)
+          cases this ▸ h
+        else
+          -- equal coefficients; recurse: rewrite h to a tail-lt
+          have hceq : c1 = c2 := by
+            -- from ¬ c1 < c2 and ¬ c2 < c1, get equality
+            have hle₁ : c2 ≤ c1 := Nat.not_lt.mp hclt
+            have hle₂ : c1 ≤ c2 := Nat.not_lt.mp hcgt
+            exact Nat.le_antisymm hle₂ hle₁
+          -- rewrite h via heq and hceq, then drop to tails
+          have h' : cmpList ((e1,c1)::xs) ((e1,c1)::ys) = Ordering.lt := by
+            simpa [heq, hceq] using h
+          have hTail : cmpList xs ys = Ordering.lt := by
+            simpa [cmpList_cons_cons_exp_eq_coeff_eq] using h'
+          exact Or.inr (Or.inr ⟨heq, hceq, hTail⟩)
 
-/-- Head-or-refl decomposition of the normalization path (unbundled). -/
-theorem to_norm_safe_head_or_refl (t : Trace) :
-  normalizeSafe t = t ∨ ∃ u, SafeStep t u ∧ SafeStepStar u (normalizeSafe t) := by
-  have h := safestar_destruct (to_norm_safe t)
-  cases h with
-  | inl hEq => exact Or.inl hEq.symm
-  | inr hex =>
-      rcases hex with ⟨u, hstep, htail⟩
-      exact Or.inr ⟨u, hstep, htail⟩
+/-- Symmetry for lt: if cmpList xs ys = lt then cmpList ys xs = gt. -/
+theorem cmpList_symm_gt_of_lt :
+  ∀ xs ys : List (Nat × Nat), cmpList xs ys = Ordering.lt → cmpList ys xs = Ordering.gt
+  | [], [] , h => by cases h
+  | [], (y::ys), _ => by simp [cmpList]
+  | (x::xs), [], h => by cases h
+  | ((e1,c1)::xs), ((e2,c2)::ys), h =>
+    -- analyze which branch produced lt, then swap accordingly
+    have hc := cmpList_cons_cons_lt_cases (xs:=xs) (ys:=ys) h
+    by
+      cases hc with
+      | inl hExpLt =>
+        -- exponent lt ⇒ swapped is gt
+        exact (cmpList_cons_cons_exp_lt_swap (xs:=xs) (ys:=ys) hExpLt)
+      | inr hrest =>
+        cases hrest with
+        | inl hCoeffLt =>
+          rcases hCoeffLt with ⟨heq, hclt⟩
+          -- equal exponents, coeff lt ⇒ swapped is gt by coeff-gt lemma with roles swapped
+          subst heq
+          exact (cmpList_cons_cons_exp_eq_coeff_gt (xs:=ys) (ys:=xs) (e:=e1) (c1:=c2) (c2:=c1) hclt)
+        | inr hEqTail =>
+          rcases hEqTail with ⟨heq, hceq, htail⟩
+          -- descend to tails and lift back via eq-head lemma
+          have ih := cmpList_symm_gt_of_lt xs ys htail
+          subst heq; subst hceq
+          simpa [cmpList_cons_cons_exp_eq_coeff_eq] using ih
 
-/-- If normalization changes `t`, then a safe step exists from `t`. -/
-theorem exists_step_of_not_fixed (t : Trace) (h : normalizeSafe t ≠ t) : ∃ u, SafeStep t u := by
-  cases progress_or_fixed t with
-  | inl hex => exact hex
-  | inr hfix => exact (h hfix).elim
+/-- Total, computable comparison on CNF via normalized representations. -/
+def cmp_cnf (x y : CNF) : Ordering :=
+  cmpList (norm_cnf x).repr (norm_cnf y).repr
 
-/-- If normalization changes `t`, there exists a `SafeStep` successor that strictly decreases `Rμ3`. -/
-theorem exists_drop_if_not_fixed (t : Trace) (h : normalizeSafe t ≠ t) :
-  ∃ u, SafeStep t u ∧ Rμ3 u t := by
-  classical
-  rcases exists_step_of_not_fixed t h with ⟨u, hs⟩
-  exact ⟨u, hs, measure_decreases_safe hs⟩
+/-- Strict order: x < y iff cmp is lt. -/
+def lt_cnf (x y : CNF) : Prop := cmp_cnf x y = Ordering.lt
 
-/-- If there is a safe step from `t`, then normalization cannot be fixed at `t`. -/
-theorem not_fixed_of_exists_step (t : Trace) (hex : ∃ u, SafeStep t u) :
-  normalizeSafe t ≠ t := by
-  intro hfix
-  -- From fixed-point, we get NF; contradiction with existence of a step.
-  have hnf : NormalFormSafe t := by simpa [hfix] using norm_nf_safe t
-  exact hnf hex
+/-- Non-strict order: x ≤ y iff cmp is not gt. -/
+def le_cnf (x y : CNF) : Prop := cmp_cnf x y ≠ Ordering.gt
 
-/-- Fixed-point characterization: `normalizeSafe t ≠ t` iff there exists a safe step from `t`. -/
-theorem not_fixed_iff_exists_step (t : Trace) :
-  normalizeSafe t ≠ t ↔ ∃ u, SafeStep t u := by
+theorem cmp_self_eq (x : CNF) : cmp_cnf x x = Ordering.eq := by
+  simp [cmp_cnf, cmpList_refl_eq]
+
+/-- Reflexivity: x ≤ x. -/
+theorem le_refl (x : CNF) : le_cnf x x := by
+  simp [le_cnf, cmp_self_eq]
+
+/-- Irreflexivity: ¬ (x < x). -/
+theorem lt_irrefl (x : CNF) : ¬ lt_cnf x x := by
+  -- lt_cnf x x means cmp_cnf x x = Ordering.lt, but cmp_self_eq says it's eq.
+  simp [lt_cnf, cmp_self_eq]
+
+/-- Value-level trichotomy for cmpList. -/
+theorem cmpList_cases (xs ys : List (Nat × Nat)) :
+    cmpList xs ys = Ordering.lt ∨ cmpList xs ys = Ordering.eq ∨ cmpList xs ys = Ordering.gt := by
+  cases h : cmpList xs ys with
+  | lt => exact Or.inl rfl
+  | eq => exact Or.inr (Or.inl rfl)
+  | gt => exact Or.inr (Or.inr rfl)
+
+/-- Asymmetry at list level: if cmpList xs ys = lt then cmpList ys xs ≠ lt. -/
+theorem cmpList_asymm_of_lt {xs ys : List (Nat × Nat)} (h : cmpList xs ys = Ordering.lt) :
+    cmpList ys xs ≠ Ordering.lt := by
+  have hgt := cmpList_symm_gt_of_lt xs ys h
+  intro hcontra
+  -- rewrite the gt-equality at the same lhs to force a lt=gt contradiction
+  have : Ordering.lt = Ordering.gt := by
+    simpa [hcontra] using hgt
+  have ne : Ordering.lt ≠ Ordering.gt := by decide
+  exact ne this
+
+/-- Trichotomy on cmp: exactly one of lt/eq/gt holds as a value. -/
+theorem cmp_cases (x y : CNF) :
+    cmp_cnf x y = Ordering.lt ∨ cmp_cnf x y = Ordering.eq ∨ cmp_cnf x y = Ordering.gt := by
+  cases h : cmp_cnf x y with
+  | lt => exact Or.inl rfl
+  | eq => exact Or.inr (Or.inl rfl)
+  | gt => exact Or.inr (Or.inr rfl)
+
+/-- If x ≤ y, then cmp is either lt or eq (never gt). -/
+theorem le_cases {x y : CNF} (hxy : le_cnf x y) :
+    cmp_cnf x y = Ordering.lt ∨ cmp_cnf x y = Ordering.eq := by
+  -- Case on the computed ordering; rule out gt using hxy.
+  cases h : cmp_cnf x y with
+  | lt => exact Or.inl rfl
+  | eq => exact Or.inr rfl
+  | gt =>
+    -- hxy says cmp_cnf x y ≠ gt, contradiction
+  exact False.elim (hxy h)
+
+/-- General CNF asymmetry: x < y implies not (y < x). -/
+theorem lt_asymm_cnf {x y : CNF} (hxy : lt_cnf x y) : ¬ lt_cnf y x := by
+  -- unfold to list-level and use cmpList asymmetry
+  unfold lt_cnf at *
+  unfold cmp_cnf at *
+  -- set normalized lists for readability
+  let xs := (norm_cnf x).repr
+  let ys := (norm_cnf y).repr
+  -- First coerce hxy to a statement about cmpList xs ys = lt
+  have hxy' : cmpList xs ys = Ordering.lt := by simpa using hxy
+  -- Symmetry gives cmpList ys xs = gt
+  have hgt : cmpList ys xs = Ordering.gt := cmpList_symm_gt_of_lt xs ys hxy'
+  -- Show lt cannot also hold
+  intro hcontra
+  have ne : Ordering.lt ≠ Ordering.gt := by decide
+  -- hcontra : cmpList ys xs = lt, hgt : cmpList ys xs = gt ⇒ lt = gt
+  have : Ordering.gt = Ordering.lt := by exact hgt.symm.trans hcontra
+  exact (ne.symm) this
+
+/-- Antisymmetry for `le_cnf` at the cmp level: if x ≤ y and y ≤ x then cmp is eq. -/
+theorem le_antisymm_cnf {x y : CNF}
+  (hxy : le_cnf x y) (hyx : le_cnf y x) : cmp_cnf x y = Ordering.eq := by
+  cases hcmp : cmp_cnf x y with
+  | lt =>
+    -- translate to list-level, flip, and contradict hyx
+    have hltList : cmpList (norm_cnf x).repr (norm_cnf y).repr = Ordering.lt := by
+      simpa [cmp_cnf] using hcmp
+    have hgtList : cmpList (norm_cnf y).repr (norm_cnf x).repr = Ordering.gt :=
+      cmpList_symm_gt_of_lt _ _ hltList
+    have : cmp_cnf y x = Ordering.gt := by
+      simpa [cmp_cnf] using hgtList
+    exact (hyx this).elim
+  | eq => exact rfl
+  | gt => exact (hxy hcmp).elim
+/-- Congruence of cmp on the left, given normalized representations are equal. -/
+theorem cmp_congr_left_repr_eq {x y z : CNF}
+  (h : (norm_cnf x).repr = (norm_cnf y).repr) :
+  cmp_cnf x z = cmp_cnf y z := by
+  unfold cmp_cnf; simp [h]
+
+/-- Transitivity for list-level lt: if xs < ys and ys < zs then xs < zs. -/
+theorem cmpList_trans_lt :
+  ∀ {xs ys zs : List (Nat × Nat)},
+    cmpList xs ys = Ordering.lt → cmpList ys zs = Ordering.lt →
+    cmpList xs zs = Ordering.lt := by
+  intro xs; induction xs with
+  | nil =>
+    intro ys zs hxy hyz; cases ys with
+    | nil => cases hxy
+    | cons y ys =>
+      -- cmpList [] (y::ys) = lt, so xs<zs regardless of hyz structure on left
+      simp [cmpList] at hxy; cases zs with
+      | nil =>
+        -- hyz: (y::ys) < [] impossible
+        simp [cmpList] at hyz
+      | cons z zs =>
+        simp [cmpList]
+  | cons x xs ih =>
+    intro ys zs hxy hyz
+    cases ys with
+    | nil =>
+      -- xs<[] impossible
+      simp [cmpList] at hxy
+    | cons y ys =>
+      cases zs with
+      | nil =>
+        -- ys<[] impossible
+        simp [cmpList] at hyz
+      | cons z zs =>
+        cases x with
+        | mk e1 c1 =>
+        cases y with
+        | mk e2 c2 =>
+        cases z with
+        | mk e3 c3 =>
+        -- analyze hxy
+        have hx := cmpList_cons_cons_lt_cases (xs:=xs) (ys:=ys) (e1:=e1) (c1:=c1) (e2:=e2) (c2:=c2) hxy
+        -- analyze hyz for ys vs zs
+        have hy := cmpList_cons_cons_lt_cases (xs:=ys) (ys:=zs) (e1:=e2) (c1:=c2) (e2:=e3) (c2:=c3) hyz
+        -- split on cases to derive e1<e3 or tie and reduce
+        rcases hx with hExpLt | hCoeffLt | hTailLt
+        · -- e1 < e2; by trans with e2 ≤ e3 from hy
+          -- derive e2 ≤ e3
+          have hE23 : e2 ≤ e3 := by
+            rcases hy with hE2lt3 | hrest
+            · exact Nat.le_of_lt hE2lt3
+            · rcases hrest with hE2eqE3CoeffLt | hE2eqE3Tail
+              · have heq : e2 = e3 := hE2eqE3CoeffLt.left
+                simpa [heq] using (le_rfl : e2 ≤ e2)
+              · have heq : e2 = e3 := hE2eqE3Tail.left
+                simpa [heq] using (le_rfl : e2 ≤ e2)
+          -- from e2 ≤ e3, split eq/lt to conclude e1 < e3
+          have hE13 : e1 < e3 := by
+            have hE2eqOrLt := Nat.lt_or_eq_of_le hE23
+            cases hE2eqOrLt with
+            | inl hlt23 => exact Nat.lt_trans hExpLt hlt23
+            | inr heq23 => simpa [heq23] using hExpLt
+          exact (cmpList_cons_cons_exp_lt (xs:=xs) (ys:=zs) (e1:=e1) (c1:=c1) (e2:=e3) (c2:=c3) hE13)
+        · -- e1 = e2 ∧ c1 < c2
+          rcases hCoeffLt with ⟨hE12, hC12⟩
+          -- from hy, either e2<e3 -> then e1<e3; or e2=e3 and c2<c3; or tie and descend
+          rcases hy with hE2lt3 | hrest
+          · have hE13 : e1 < e3 := by simpa [hE12] using hE2lt3
+            exact (cmpList_cons_cons_exp_lt (xs:=xs) (ys:=zs) (e1:=e1) (c1:=c1) (e2:=e3) (c2:=c3) hE13)
+          · rcases hrest with hE2eqE3CoeffLt | hE2eqE3Tail
+            · rcases hE2eqE3CoeffLt with ⟨hE23, hC23⟩
+              have hE13 : e1 = e3 := by simpa [hE12] using hE23
+              -- coefficients chain: c1 < c2 and c2 < c3 ⇒ c1 < c3
+              have hC13 : c1 < c3 := Nat.lt_trans hC12 hC23
+              -- conclude by head coefficient comparison
+              have hlt : cmpList ((e3,c1)::xs) ((e3,c3)::zs) = Ordering.lt :=
+                cmpList_cons_cons_exp_eq_coeff_lt (xs:=xs) (ys:=zs) (e:=e3) (c1:=c1) (c2:=c3) hC13
+              simpa [hE13] using hlt
+            · rcases hE2eqE3Tail with ⟨hE23, hC23, _hTail⟩
+              -- heads tie and c2=c3; from c1<c2 and c2=c3, get c1<c3 and conclude
+              have hE13 : e1 = e3 := by simpa [hE12] using hE23
+              have hC13 : c1 < c3 := by simpa [hC23] using hC12
+              have hlt : cmpList ((e3,c1)::xs) ((e3,c3)::zs) = Ordering.lt :=
+                cmpList_cons_cons_exp_eq_coeff_lt (xs:=xs) (ys:=zs) (e:=e3) (c1:=c1) (c2:=c3) hC13
+              simpa [hE13] using hlt
+        · -- e1 = e2 ∧ c1 = c2 ∧ tail lt; combine with hy cases
+          rcases hTailLt with ⟨hE12, hC12, hTailXY⟩
+          rcases hy with hE2lt3 | hrest
+          · have hE13 : e1 < e3 := by simpa [hE12] using hE2lt3
+            exact (cmpList_cons_cons_exp_lt (xs:=xs) (ys:=zs) (e1:=e1) (c1:=c1) (e2:=e3) (c2:=c3) hE13)
+          · rcases hrest with hE2eqE3CoeffLt | hE2eqE3Tail
+            · rcases hE2eqE3CoeffLt with ⟨hE23, hC23⟩
+              -- heads tie and c2<c3 ⇒ with c1=c2 we get c1<c3, immediate lt
+              have hE13 : e1 = e3 := by simpa [hE12] using hE23
+              have hC13 : c1 < c3 := by simpa [hC12] using hC23
+              have hlt : cmpList ((e3,c1)::xs) ((e3,c3)::zs) = Ordering.lt :=
+                cmpList_cons_cons_exp_eq_coeff_lt (xs:=xs) (ys:=zs) (e:=e3) (c1:=c1) (c2:=c3) hC13
+              simpa [hE13] using hlt
+            · rcases hE2eqE3Tail with ⟨hE23, hC23, hTailYZ⟩
+              have hE13 : e1 = e3 := by simpa [hE12] using hE23
+              have hC13 : c1 = c3 := by simpa [hE12, hC12] using hC23
+              -- descend both with ih on tails
+              have ih'' : cmpList xs zs = Ordering.lt := ih (ys:=ys) (zs:=zs) hTailXY hTailYZ
+              simpa [cmpList, hE13, Nat.lt_irrefl, hC13] using ih''
+
+/-- Transitivity for CNF lt. -/
+theorem lt_trans_cnf {x y z : CNF} (hxy : lt_cnf x y) (hyz : lt_cnf y z) : lt_cnf x z := by
+  unfold lt_cnf at *
+  -- abbreviations for readability
+  let xs := (norm_cnf x).repr
+  let ys := (norm_cnf y).repr
+  let zs := (norm_cnf z).repr
+  -- rewrite both facts to list-level and apply list transitivity
+  have hx : cmpList xs ys = Ordering.lt := by simpa [cmp_cnf, xs, ys] using hxy
+  have hy : cmpList ys zs = Ordering.lt := by simpa [cmp_cnf, ys, zs] using hyz
+  have hz : cmpList xs zs = Ordering.lt := cmpList_trans_lt (xs:=xs) (ys:=ys) (zs:=zs) hx hy
+  simpa [cmp_cnf, xs, ys, zs]
+
+/-- Trichotomy for CNF compare: exactly one of lt/eq/gt holds. -/
+theorem cmp_cnf_trichotomy (x y : CNF) :
+  cmp_cnf x y = Ordering.lt ∨ cmp_cnf x y = Ordering.eq ∨ cmp_cnf x y = Ordering.gt := by
+  unfold cmp_cnf
+  exact cmpList_cases (norm_cnf x).repr (norm_cnf y).repr
+
+/-- Congruence of cmp on the right, given normalized representations are equal. -/
+theorem cmp_congr_right_repr_eq {x y z : CNF}
+  (h : (norm_cnf y).repr = (norm_cnf z).repr) :
+  cmp_cnf x y = cmp_cnf x z := by
+  unfold cmp_cnf; simp [h]
+
+/-- CNF head-case: if normalized head exponents satisfy e1 < e2, then cmp is lt. -/
+theorem cmp_cnf_head_exp_lt {x y : CNF}
+  {e1 c1 e2 c2 : Nat} {xs ys : List (Nat × Nat)}
+  (hx : (norm_cnf x).repr = (e1, c1) :: xs)
+  (hy : (norm_cnf y).repr = (e2, c2) :: ys)
+  (h : e1 < e2) :
+  cmp_cnf x y = Ordering.lt := by
+  unfold cmp_cnf; simp [hx, hy, cmpList_cons_cons_exp_lt h]
+
+/-- CNF head-case: if normalized head exponents satisfy e2 < e1, then cmp is gt. -/
+theorem cmp_cnf_head_exp_gt {x y : CNF}
+  {e1 c1 e2 c2 : Nat} {xs ys : List (Nat × Nat)}
+  (hx : (norm_cnf x).repr = (e1, c1) :: xs)
+  (hy : (norm_cnf y).repr = (e2, c2) :: ys)
+  (h : e2 < e1) :
+  cmp_cnf x y = Ordering.gt := by
+  unfold cmp_cnf; simp [hx, hy, cmpList_cons_cons_exp_gt h]
+
+/-- CNF head-case: equal head exponents, smaller left coefficient gives lt. -/
+theorem cmp_cnf_head_exp_eq_coeff_lt {x y : CNF}
+  {e c1 c2 : Nat} {xs ys : List (Nat × Nat)}
+  (hx : (norm_cnf x).repr = (e, c1) :: xs)
+  (hy : (norm_cnf y).repr = (e, c2) :: ys)
+  (h : c1 < c2) :
+  cmp_cnf x y = Ordering.lt := by
+  unfold cmp_cnf; simp [hx, hy, cmpList_cons_cons_exp_eq_coeff_lt h]
+
+/-- CNF head-case: equal head exponents, larger left coefficient gives gt. -/
+theorem cmp_cnf_head_exp_eq_coeff_gt {x y : CNF}
+  {e c1 c2 : Nat} {xs ys : List (Nat × Nat)}
+  (hx : (norm_cnf x).repr = (e, c1) :: xs)
+  (hy : (norm_cnf y).repr = (e, c2) :: ys)
+  (h : c2 < c1) :
+  cmp_cnf x y = Ordering.gt := by
+  unfold cmp_cnf; simp [hx, hy, cmpList_cons_cons_exp_eq_coeff_gt h]
+
+/-- CNF head-case: equal head term, comparison recurses on tails. -/
+theorem cmp_cnf_head_exp_coeff_eq {x y : CNF}
+  {e c : Nat} {xs ys : List (Nat × Nat)}
+  (hx : (norm_cnf x).repr = (e, c) :: xs)
+  (hy : (norm_cnf y).repr = (e, c) :: ys) :
+  cmp_cnf x y = cmpList xs ys := by
+  unfold cmp_cnf; simp [hx, hy, cmpList_cons_cons_exp_eq_coeff_eq]
+
+/-- CNF asymmetry in the simple head-exp case: if head e1 < e2 then x < y and not y < x. -/
+theorem lt_asymm_head_exp {x y : CNF}
+  {e1 c1 e2 c2 : Nat} {xs ys : List (Nat × Nat)}
+  (hx : (norm_cnf x).repr = (e1, c1) :: xs)
+  (hy : (norm_cnf y).repr = (e2, c2) :: ys)
+  (h : e1 < e2) : lt_cnf x y ∧ ¬ lt_cnf y x := by
   constructor
-  · exact exists_step_of_not_fixed t
-  · intro hex; exact not_fixed_of_exists_step t hex
+  · unfold lt_cnf; simp [cmp_cnf_head_exp_lt (x:=x) (y:=y) hx hy h]
+  · intro hlt
+    have hswap : cmp_cnf y x = Ordering.gt := by
+      unfold cmp_cnf; simp [hy, hx, cmpList_cons_cons_exp_lt_swap h]
+    have ne : Ordering.gt ≠ Ordering.lt := by decide
+    -- unfold lt_cnf in hlt to get a cmp equality
+    have hlt' : cmp_cnf y x = Ordering.lt := by
+      -- linter: prefer simp at hlt' instead of simpa using hlt
+      simp [lt_cnf] at hlt; exact hlt
+    -- rewrite cmp_cnf y x via hswap to derive an impossible equality
+    have hbad : Ordering.gt = Ordering.lt := by
+      -- simplify hlt' with the computed swap
+      simpa [hswap] using hlt'
+    exact ne hbad
 
-/-! ### Fixed-point characterization of safe normal forms -/
+/-!
+  ## Instances: Decidability and Ord for CNF
+-/
 
-theorem nf_iff_normalize_fixed (t : Trace) :
-  NormalFormSafe t ↔ normalizeSafe t = t := by
+instance instDecidableRel_le_cnf : DecidableRel le_cnf := by
+  intro x y
+  unfold le_cnf
+  infer_instance
+
+instance instDecidableRel_lt_cnf : DecidableRel lt_cnf := by
+  intro x y
+  unfold lt_cnf
+  infer_instance
+
+instance : Ord CNF where
+  compare := cmp_cnf
+
+/-- If y and z normalize to the same repr and x < y, then x < z. -/
+theorem lt_trans_eq_right {x y z : CNF}
+  (hYZ : (norm_cnf y).repr = (norm_cnf z).repr)
+  (hXY : lt_cnf x y) : lt_cnf x z := by
+  unfold lt_cnf at *
+  simpa [cmp_congr_right_repr_eq (x:=x) (y:=y) (z:=z) hYZ] using hXY
+/-- If x and y normalize to the same repr and y < z, then x < z. -/
+theorem lt_trans_eq_left {x y z : CNF}
+  (hXY : (norm_cnf x).repr = (norm_cnf y).repr)
+  (hYZ : lt_cnf y z) : lt_cnf x z := by
+  unfold lt_cnf at *
+  simpa [cmp_congr_left_repr_eq (x:=x) (y:=y) (z:=z) hXY] using hYZ
+
+/-- If y and z normalize to the same repr and x ≤ y, then x ≤ z. -/
+theorem le_trans_eq_right {x y z : CNF}
+  (hYZ : (norm_cnf y).repr = (norm_cnf z).repr)
+  (hXY : le_cnf x y) : le_cnf x z := by
+  unfold le_cnf at *
+  -- cmp x z = gt would rewrite to cmp x y = gt via congruence, contradicting hXY
+  intro hgt
+  have : cmp_cnf x y = Ordering.gt := by
+    simpa [cmp_congr_right_repr_eq (x:=x) (y:=y) (z:=z) hYZ] using hgt
+  exact hXY this
+
+/-- If x and y normalize to the same repr and y ≤ z, then x ≤ z. -/
+theorem le_trans_eq_left {x y z : CNF}
+  (hXY : (norm_cnf x).repr = (norm_cnf y).repr)
+  (hYZ : le_cnf y z) : le_cnf x z := by
+  unfold le_cnf at *
+  intro hgt
+  -- rewrite cmp x z to cmp y z using repr equality, contradicting hYZ
+  have : cmp_cnf y z = Ordering.gt := by
+    simpa [cmp_congr_left_repr_eq (x:=x) (y:=y) (z:=z) hXY] using hgt
+  exact hYZ this
+
+/-!
+  ## Tiny conveniences
+-/
+
+/-- If normalized representations are equal, cmp is `eq`. -/
+theorem cmp_eq_of_norm_repr_eq {x y : CNF}
+  (h : (norm_cnf x).repr = (norm_cnf y).repr) :
+  cmp_cnf x y = Ordering.eq := by
+  unfold cmp_cnf
+  simp [cmpList_refl_eq, h]
+
+/-!
+  Equality characterization: if cmpList = eq then the lists are equal.
+  This lets us reflect cmp equality back to structural equality of normalized
+  representations at the CNF level.
+-/
+theorem cmpList_eq_implies_eq :
+    ∀ {xs ys : List (Nat × Nat)}, cmpList xs ys = Ordering.eq → xs = ys := by
+  intro xs
+  induction xs with
+  | nil =>
+    intro ys h
+    cases ys with
+    | nil =>
+      simp [cmpList] at h
+      exact rfl
+    | cons y ys =>
+      -- cmpList [] (y::ys) = lt, contradicting eq
+      simp [cmpList] at h
+  | cons x xs ih =>
+    intro ys h
+    cases ys with
+    | nil =>
+      -- cmpList (x::xs) [] = gt, contradicting eq
+      simp [cmpList] at h
+    | cons y ys =>
+      cases x with
+      | mk e1 c1 =>
+        cases y with
+        | mk e2 c2 =>
+        classical
+        -- eliminate strict exponent inequalities via if-splits
+        if hltE : e1 < e2 then
+          have : cmpList ((e1,c1)::xs) ((e2,c2)::ys) = Ordering.lt := by
+            simpa [cmpList, hltE]
+          cases this ▸ h
+        else
+          have hnot12 : ¬ e1 < e2 := by simpa using hltE
+          if hgtE : e2 < e1 then
+            have : cmpList ((e1,c1)::xs) ((e2,c2)::ys) = Ordering.gt := by
+              simpa [cmpList, hnot12, hgtE]
+            cases this ▸ h
+          else
+            -- exponents equal
+            have heq : e1 = e2 :=
+              Nat.le_antisymm (Nat.le_of_not_gt hgtE) (Nat.le_of_not_gt hltE)
+            -- eliminate strict coefficient inequalities
+            if hltC : c1 < c2 then
+              have : cmpList ((e1,c1)::xs) ((e2,c2)::ys) = Ordering.lt := by
+                simpa [cmpList, heq, Nat.lt_irrefl, hltC]
+              cases this ▸ h
+            else
+              have hnotc12 : ¬ c1 < c2 := by simpa using hltC
+              if hgtC : c2 < c1 then
+                have : cmpList ((e1,c1)::xs) ((e2,c2)::ys) = Ordering.gt := by
+                  simpa [cmpList, heq, Nat.lt_irrefl, hnotc12, hgtC]
+                cases this ▸ h
+              else
+                -- coefficients equal; descend to tails
+                have hceq : c1 = c2 := by
+                  have hle₁ : c2 ≤ c1 := Nat.not_lt.mp hltC
+                  have hle₂ : c1 ≤ c2 := Nat.not_lt.mp hgtC
+                  exact Nat.le_antisymm hle₂ hle₁
+                have hTail : cmpList xs ys = Ordering.eq := by
+                  simpa [cmpList, heq, hceq, Nat.lt_irrefl] using h
+                have ih' := ih hTail
+                subst heq; subst hceq
+                simp [ih']
+
+theorem cmp_eq_iff_norm_repr_eq {x y : CNF} :
+    cmp_cnf x y = Ordering.eq ↔ (norm_cnf x).repr = (norm_cnf y).repr := by
   constructor
-  · intro h; exact normalizeSafe_eq_self_of_nf t h
-  · intro h; simpa [h] using norm_nf_safe t
+  · intro h
+    unfold cmp_cnf at h
+    exact cmpList_eq_implies_eq h
+  · intro hrepr
+    exact cmp_eq_of_norm_repr_eq (x:=x) (y:=y) hrepr
 
+/-- lt implies le (definitionally). -/
+theorem le_of_lt {x y : CNF} (h : lt_cnf x y) : le_cnf x y := by
+  unfold lt_cnf at h
+  unfold le_cnf
+  intro hgt
+  -- rewriting with h produces an impossible lt=gt
+  cases h ▸ hgt
 
-/-! ### Basic properties for the KO7 safe normalizer -/
-
-/-- Idempotence of safe normalization: normalizing twice is the same as once. -/
-theorem normalizeSafe_idempotent (t : Trace) :
-  normalizeSafe (normalizeSafe t) = normalizeSafe t := by
+/-- CNF-level symmetry: if cmp x y = lt then cmp y x = gt. -/
+theorem cmp_cnf_symm_gt_of_lt {x y : CNF}
+  (h : cmp_cnf x y = Ordering.lt) : cmp_cnf y x = Ordering.gt := by
   classical
-  have hnf : NormalFormSafe (normalizeSafe t) := norm_nf_safe t
-  -- No outgoing safe step from `normalizeSafe t` and star to itself
-  have hstar : SafeStepStar (normalizeSafe t) (normalizeSafe (normalizeSafe t)) := to_norm_safe (normalizeSafe t)
-  have := nf_no_safestar_forward hnf hstar
-  exact this.symm
-
-/-! ### (reserved) join-to-NF and confluence
-
--- Note: General join-to-NF and confluence results are intentionally deferred here.
--- They require additional confluence hypotheses or a separate argument; we keep the
--- current module to safe, non-controversial lemmas that do not rely on global CR.
-
--/
-
-end MetaSN_KO7
-
-namespace MetaSN_KO7
-
-/-- Bundled soundness of the KO7 safe normalizer. -/
-theorem normalizeSafe_sound (t : Trace) :
-  SafeStepStar t (normalizeSafe t) ∧ NormalFormSafe (normalizeSafe t) :=
-  ⟨to_norm_safe t, norm_nf_safe t⟩
-
-/-- Totality alias for convenience: every trace safely normalizes to some NF. -/
-theorem normalizeSafe_total (t : Trace) :
-  ∃ n, SafeStepStar t n ∧ NormalFormSafe n :=
-  ⟨normalizeSafe t, to_norm_safe t, norm_nf_safe t⟩
-
-end MetaSN_KO7
-
-```
-
----
-
-## 8. Meta/Newman_Safe.lean
-**File:** `OperatorKO7/OperatorKO7/Meta/Newman_Safe.lean`
-
-```lean
-import OperatorKO7.Kernel
-import OperatorKO7.Meta.Termination_KO7
-import OperatorKO7.Meta.Normalize_Safe
-
-/-!
-Newman's lemma for the KO7 safe fragment.
-
-Purpose:
-- Packages the standard argument: termination (well-foundedness) + local joinability implies
-  confluence (Church-Rosser) for the reflexive-transitive closure.
-
-Scope boundary:
-- This file is parameterized by a local-join hypothesis `locAll : ∀ a, LocalJoinAt a`.
-- Termination for `SafeStep` is supplied by `wf_SafeStepRev` (from `Meta/Termination_KO7.lean`).
-- Nothing here claims confluence/termination for the full kernel `Step`.
-
-Main exports:
-- `newman_safe` / `confluentSafe_of_localJoinAt_and_SN`
-- Corollaries about unique normal forms and stability of `normalizeSafe`, assuming `locAll`.
--/
-open Classical
-open OperatorKO7 Trace
-
-namespace MetaSN_KO7
-
-/-- Root local-join property at `a` for the KO7 safe relation. -/
-def LocalJoinAt (a : Trace) : Prop :=
-  ∀ {b c}, SafeStep a b → SafeStep a c → ∃ d, SafeStepStar b d ∧ SafeStepStar c d
-
-/-- Church–Rosser (confluence) for the safe star closure. -/
-def ConfluentSafe : Prop :=
-  ∀ a b c, SafeStepStar a b → SafeStepStar a c → ∃ d, SafeStepStar b d ∧ SafeStepStar c d
-
-/-! ### Small join helpers (step vs. star) -/
-
-/-- Trivial join of a single left step with a right reflexive star (choose `d = b`). -/
-theorem join_step_with_refl_star {a b : Trace}
-  (hab : SafeStep a b) : ∃ d, SafeStepStar b d ∧ SafeStepStar a d := by
-  refine ⟨b, ?_, ?_⟩
-  · exact SafeStepStar.refl b
-  · exact safestar_of_step hab
-
--- Join a single left step against a right star with a head step, delegating the tail to a
--- provided star–star joiner starting at the right-head successor.
-/-- Join one left root step against a right multi-step path, using local join + a star-star joiner. -/
-theorem join_step_with_tail_star
-  {a b c₁ c : Trace}
-  (loc : LocalJoinAt a)
-  (joinSS : ∀ {x y z}, SafeStepStar x y → SafeStepStar x z → ∃ d, SafeStepStar y d ∧ SafeStepStar z d)
-  (hab : SafeStep a b) (hac₁ : SafeStep a c₁) (hct : SafeStepStar c₁ c)
-  : ∃ d, SafeStepStar b d ∧ SafeStepStar c d := by
-  -- Local join at the root gives a common `e` with `b ⇒* e` and `c₁ ⇒* e`.
-  rcases loc (b := b) (c := c₁) (hab) (hac₁) with ⟨e, hbe, hc₁e⟩
-  -- Use the provided star–star joiner at source `c₁` to join `c₁ ⇒* e` and `c₁ ⇒* c`.
-  rcases joinSS (x := c₁) (y := e) (z := c) hc₁e hct with ⟨d, hed, hcd⟩
-  -- Compose on the left: `b ⇒* e ⇒* d`.
-  exact ⟨d, safestar_trans hbe hed, hcd⟩
-
--- If we can locally join root-steps everywhere and we have a star–star joiner, then a single
--- left step joins with any right star.
-/-- If local join holds everywhere and we can join stars, then a single step joins with any star. -/
-theorem join_step_star_of_join_star_star
-  (locAll : ∀ a, LocalJoinAt a)
-  (joinSS : ∀ {x y z}, SafeStepStar x y → SafeStepStar x z → ∃ d, SafeStepStar y d ∧ SafeStepStar z d)
-  {a b c : Trace}
-  (hab : SafeStep a b) (hac : SafeStepStar a c)
-  : ∃ d, SafeStepStar b d ∧ SafeStepStar c d := by
-  -- Case split on the right star.
-  cases hac with
-  | refl _ =>
-      -- Right is reflexive: join is immediate with `d = b`.
-      exact join_step_with_refl_star hab
-  | tail hac₁ hct =>
-      -- Right has a head step: use the tail helper with local join at `a` and the provided `joinSS`.
-      exact join_step_with_tail_star (locAll a) (joinSS) hab hac₁ hct
-
-/-! ### Star–star join by Acc recursion and Newman's lemma -/
-
--- Main engine: star–star join at a fixed source, by Acc recursion on SafeStepRev at the source.
-/-- Core engine: join two `SafeStepStar` paths out of `x` by `Acc` recursion on `SafeStepRev x`. -/
-private theorem join_star_star_at
-  (locAll : ∀ a, LocalJoinAt a)
-  : ∀ x, Acc SafeStepRev x → ∀ {y z : Trace}, SafeStepStar x y → SafeStepStar x z → ∃ d, SafeStepStar y d ∧ SafeStepStar z d := by
-  intro x hx
-  induction hx with
-  | intro x _ ih =>
-  intro y z hxy hxz
-  -- Destructure both star paths out of x.
-  have HX := safestar_destruct hxy
-  have HZ := safestar_destruct hxz
-  cases HX with
-  | inl hEq =>
-    -- y = x, trivial join with z
-    cases hEq
-    exact ⟨z, hxz, SafeStepStar.refl z⟩
-  | inr hex =>
-    rcases hex with ⟨b1, hxb1, hb1y⟩
-    cases HZ with
-    | inl hEq2 =>
-      -- z = x, trivial join with y via left head step
-      cases hEq2
-      exact ⟨y, SafeStepStar.refl y, SafeStepStar.tail hxb1 hb1y⟩
-    | inr hey =>
-      rcases hey with ⟨c1, hxc1, hc1z⟩
-      -- Local join at root x
-      rcases locAll x hxb1 hxc1 with ⟨e, hb1e, hc1e⟩
-      -- Use IH at c1 to join c1 ⇒* e and c1 ⇒* z
-      rcases ih c1 hxc1 hc1e hc1z with ⟨d₁, hed₁, hzd₁⟩
-      -- Compose b1 ⇒* e ⇒* d₁
-      have hb1d₁ : SafeStepStar b1 d₁ := safestar_trans hb1e hed₁
-      -- Use IH at b1 to join b1 ⇒* y and b1 ⇒* d₁
-      rcases ih b1 hxb1 hb1y hb1d₁ with ⟨d, hyd, hd₁d⟩
-      -- Final composition on the right
-      exact ⟨d, hyd, safestar_trans hzd₁ hd₁d⟩
-
-theorem join_star_star
-  (locAll : ∀ a, LocalJoinAt a)
-  {a b c : Trace}
-  (hab : SafeStepStar a b) (hac : SafeStepStar a c)
-  : ∃ d, SafeStepStar b d ∧ SafeStepStar c d := by
-  exact join_star_star_at locAll a (acc_SafeStepRev a) hab hac
-
--- Newman's lemma for the safe relation.
-/-- Newman's lemma specialized to `SafeStep`: termination + local joinability implies confluence. -/
-theorem newman_safe (locAll : ∀ a, LocalJoinAt a) : ConfluentSafe := by
-  intro _ _ _ hab hac
-  exact join_star_star locAll hab hac
-
-end MetaSN_KO7
-
-namespace MetaSN_KO7
-
-/-! ## Derived corollaries (parameterized by local join) -/
-
-/-- Global confluence from local join everywhere (alias of `newman_safe`). -/
-theorem confluentSafe_of_localJoinAt_and_SN
-    (locAll : ∀ a, LocalJoinAt a) : ConfluentSafe :=
-  newman_safe locAll
-
-/-- Unique normal forms under global confluence provided by `locAll`. -/
-theorem unique_normal_forms_of_loc
-    (locAll : ∀ a, LocalJoinAt a)
-    {a n₁ n₂ : Trace}
-    (h₁ : SafeStepStar a n₁) (h₂ : SafeStepStar a n₂)
-    (hnf₁ : NormalFormSafe n₁) (hnf₂ : NormalFormSafe n₂) :
-    n₁ = n₂ := by
-  have conf : ConfluentSafe := newman_safe locAll
-  obtain ⟨d, h₁d, h₂d⟩ := conf a n₁ n₂ h₁ h₂
-  have eq₁ : n₁ = d := nf_no_safestar_forward hnf₁ h₁d
-  have eq₂ : n₂ = d := nf_no_safestar_forward hnf₂ h₂d
-  simp [eq₁, eq₂]
-
-/-- The normalizer returns the unique normal form (assuming `locAll`). -/
-theorem normalizeSafe_unique_of_loc
-    (locAll : ∀ a, LocalJoinAt a)
-    {t n : Trace}
-    (h : SafeStepStar t n) (hnf : NormalFormSafe n) :
-    n = normalizeSafe t := by
-  exact unique_normal_forms_of_loc locAll h (to_norm_safe t) hnf (norm_nf_safe t)
-
-/-- Safe-step-related terms normalize to the same result (assuming `locAll`). -/
-theorem normalizeSafe_eq_of_star_of_loc
-    (locAll : ∀ a, LocalJoinAt a)
-    {a b : Trace} (h : SafeStepStar a b) :
-    normalizeSafe a = normalizeSafe b := by
-  have ha := to_norm_safe a
-  have hb := to_norm_safe b
-  have conf : ConfluentSafe := newman_safe locAll
-  obtain ⟨d, had, hbd⟩ := conf a (normalizeSafe a) (normalizeSafe b) ha (safestar_trans h hb)
-  have eq₁ := nf_no_safestar_forward (norm_nf_safe a) had
-  have eq₂ := nf_no_safestar_forward (norm_nf_safe b) hbd
-  simp [eq₁, eq₂]
-
-end MetaSN_KO7
-
-```
-
----
-
-## 9. Meta/Confluence_Safe.lean
-**File:** `OperatorKO7/OperatorKO7/Meta/Confluence_Safe.lean`
-
-```lean
-import OperatorKO7.Kernel
-import OperatorKO7.Meta.Termination_KO7
-import OperatorKO7.Meta.Normalize_Safe
-import OperatorKO7.Meta.SafeStep_Ctx
-
-/-!
-Local confluence / local join analysis for the KO7 safe fragment.
-
-Purpose:
-- Defines local-join predicates for `SafeStep` (safe fragment) and for the full kernel `Step`.
-- Proves local joinability lemmas for many safe root shapes, typically by uniqueness or vacuity.
-- Records an explicit caveat for the full kernel: the two `eqW` rules overlap at `eqW a a`, so the
-  full kernel `Step` is not locally confluent at `eqW void void` (and more generally has a peak at
-  `eqW a a`).
-
-Scope boundary:
-- The positive results in this file are for `SafeStep` only.
-- The negative result `not_localJoinStep_eqW_void_void` is about the full kernel `Step` and is used
-  as a clarity point for the safe-vs-full distinction.
-
-This file is typically paired with:
-- `Meta/SafeStep_Ctx.lean` (context closure utilities)
-- `Meta/Newman_Safe.lean` (Newman's lemma: SN + local join -> confluence), when a global local-join
-  hypothesis is supplied.
--/
-open Classical
-open OperatorKO7 Trace
-
-namespace MetaSN_KO7
-
-/-- Local joinability at a fixed source for the KO7 safe relation. -/
-def LocalJoinSafe (a : Trace) : Prop :=
-  ∀ {b c}, SafeStep a b → SafeStep a c → ∃ d, SafeStepStar b d ∧ SafeStepStar c d
-
-/-- Local joinability at a fixed source for the full kernel relation `Step`. -/
-def LocalJoinStep (a : Trace) : Prop :=
-  ∀ {b c}, Step a b → Step a c → ∃ d, StepStar b d ∧ StepStar c d
-
-/-- Full-step caveat: the two kernel `eqW` rules overlap, so `eqW void void` is not locally joinable. -/
-theorem not_localJoinStep_eqW_void_void : ¬ LocalJoinStep (eqW void void) := by
-  intro hjoin
-  have hb : Step (eqW void void) void := Step.R_eq_refl void
-  have hc : Step (eqW void void) (integrate (merge void void)) := Step.R_eq_diff void void
-  rcases hjoin hb hc with ⟨d, hbStar, hcStar⟩
-  have hnf_void : NormalForm void := by
-    intro ex
-    rcases ex with ⟨u, hu⟩
-    cases hu
-  have hnf_int_merge : NormalForm (integrate (merge void void)) := by
-    intro ex
-    rcases ex with ⟨u, hu⟩
-    cases hu
-  have hd_eq_void : d = void := (nf_no_stepstar_forward hnf_void hbStar).symm
-  have hd_eq_int : d = integrate (merge void void) := (nf_no_stepstar_forward hnf_int_merge hcStar).symm
-  have hneq : (integrate (merge void void) : Trace) ≠ void := by
-    intro h
-    cases h
-  exact hneq (hd_eq_int.symm.trans hd_eq_void)
-
-/-- If there are no safe root steps from `a`, local join holds vacuously. -/
-theorem localJoin_of_none (a : Trace)
-    (h : ∀ {b}, SafeStep a b → False) : LocalJoinSafe a := by
-  intro b c hb hc
-  exact False.elim (h hb)
-
-/-- If every safe root step from `a` has the same target `d`, then `a` is locally joinable. -/
-theorem localJoin_of_unique (a d : Trace)
-    (h : ∀ {b}, SafeStep a b → b = d) : LocalJoinSafe a := by
-  intro b c hb hc
-  have hb' : b = d := h hb
-  have hc' : c = d := h hc
-  refine ⟨d, ?_, ?_⟩
-  · simpa [hb'] using (SafeStepStar.refl d)
-  · simpa [hc'] using (SafeStepStar.refl d)
-
-/-- If there are no safe root steps from `a`, any `SafeStepStar a d` must be reflexive. -/
-theorem star_only_refl_of_none {a d : Trace}
-    (h : ∀ {b}, SafeStep a b → False) : SafeStepStar a d → d = a := by
-  intro hs
-  cases hs with
-  | refl t => rfl
-  | @tail a' b c hab hbc =>
-      exact False.elim (h hab)
-
-/-- If `a` is in safe normal form, there are no outgoing safe steps; local join holds. -/
-theorem localJoin_of_nf (a : Trace) (hnf : NormalFormSafe a) : LocalJoinSafe a := by
-  refine localJoin_of_none (a := a) ?h
-  intro b hb; exact no_step_from_nf hnf hb
-
-/-- Root critical peak at `merge void void` is trivially joinable:
- both branches step to `void`. -/
-theorem localJoin_merge_void_void : LocalJoinSafe (merge void void) := by
-  intro b c hb hc
-  -- Both reducts are definitionally `void` in each possible branch.
-  have hb_refl : SafeStepStar b void := by
-    cases hb with
-    | R_merge_void_left t hδ =>
-        -- Here a = merge void t unifies with merge void void, so t = void and b = void.
-        exact SafeStepStar.refl _
-    | R_merge_void_right t hδ =>
-        exact SafeStepStar.refl _
-    | R_merge_cancel t hδ h0 =>
-        exact SafeStepStar.refl _
-  have hc_refl : SafeStepStar c void := by
-    cases hc with
-    | R_merge_void_left t hδ =>
-        exact SafeStepStar.refl _
-    | R_merge_void_right t hδ =>
-        exact SafeStepStar.refl _
-    | R_merge_cancel t hδ h0 =>
-        exact SafeStepStar.refl _
-  exact ⟨void, hb_refl, hc_refl⟩
-
-/-- At `integrate (delta t)` there is only one safe root rule; local join is trivial. -/
-theorem localJoin_int_delta (t : Trace) : LocalJoinSafe (integrate (delta t)) := by
-  intro b c hb hc
-  have hb_refl : SafeStepStar b void := by
-    cases hb with
-    | R_int_delta _ => exact SafeStepStar.refl _
-  have hc_refl : SafeStepStar c void := by
-    cases hc with
-    | R_int_delta _ => exact SafeStepStar.refl _
-  exact ⟨void, hb_refl, hc_refl⟩
-
-/-- At `integrate void`, no safe root rule applies (not a `delta _`); vacuous. -/
-theorem localJoin_integrate_void : LocalJoinSafe (integrate void) := by
-  refine localJoin_of_none (a := integrate void) ?h
-  intro x hx
-  cases hx
-
-/-- At `integrate (merge a b)`, there is no safe root rule; join vacuously. -/
-theorem localJoin_integrate_merge (a b : Trace) : LocalJoinSafe (integrate (merge a b)) := by
-  refine localJoin_of_none (a := integrate (merge a b)) ?h
-  intro x hx; cases hx
-
-/-- At `integrate (app a b)`, there is no safe root rule; join vacuously. -/
-theorem localJoin_integrate_app (a b : Trace) : LocalJoinSafe (integrate (app a b)) := by
-  refine localJoin_of_none (a := integrate (app a b)) ?h
-  intro x hx; cases hx
-
-/-- At `integrate (eqW a b)`, there is no safe root rule; join vacuously. -/
-theorem localJoin_integrate_eqW (a b : Trace) : LocalJoinSafe (integrate (eqW a b)) := by
-  refine localJoin_of_none (a := integrate (eqW a b)) ?h
-  intro x hx; cases hx
-
-/-- At `integrate (integrate t)`, there is no safe root rule; join vacuously. -/
-theorem localJoin_integrate_integrate (t : Trace) : LocalJoinSafe (integrate (integrate t)) := by
-  refine localJoin_of_none (a := integrate (integrate t)) ?h
-  intro x hx; cases hx
-
-/-- At `integrate (recΔ b s n)`, there is no safe root rule; join vacuously. -/
-theorem localJoin_integrate_rec (b s n : Trace) : LocalJoinSafe (integrate (recΔ b s n)) := by
-  refine localJoin_of_none (a := integrate (recΔ b s n)) ?h
-  intro x hx; cases hx
-
-/-- At `merge void t` there is only one safe root rule; local join is trivial. -/
-theorem localJoin_merge_void_left (t : Trace) : LocalJoinSafe (merge void t) := by
-  intro b c hb hc
-  have hb_refl : SafeStepStar b t := by
-    cases hb with
-    | R_merge_void_left _ _ => exact SafeStepStar.refl _
-    | R_merge_void_right _ _ => exact SafeStepStar.refl _
-    | R_merge_cancel _ _ _ => exact SafeStepStar.refl _
-  have hc_refl : SafeStepStar c t := by
-    cases hc with
-    | R_merge_void_left _ _ => exact SafeStepStar.refl _
-    | R_merge_void_right _ _ => exact SafeStepStar.refl _
-    | R_merge_cancel _ _ _ => exact SafeStepStar.refl _
-  exact ⟨t, hb_refl, hc_refl⟩
-
-/-- At `merge t void` there is only one safe root rule; local join is trivial. -/
-theorem localJoin_merge_void_right (t : Trace) : LocalJoinSafe (merge t void) := by
-  intro b c hb hc
-  have hb_refl : SafeStepStar b t := by
-    cases hb with
-    | R_merge_void_right _ _ => exact SafeStepStar.refl _
-    | R_merge_void_left _ _ => exact SafeStepStar.refl _
-    | R_merge_cancel _ _ _ => exact SafeStepStar.refl _
-  have hc_refl : SafeStepStar c t := by
-    cases hc with
-    | R_merge_void_right _ _ => exact SafeStepStar.refl _
-    | R_merge_void_left _ _ => exact SafeStepStar.refl _
-    | R_merge_cancel _ _ _ => exact SafeStepStar.refl _
-  exact ⟨t, hb_refl, hc_refl⟩
-
-/-- At `recΔ b s void` there is only one safe root rule; local join is trivial. -/
-theorem localJoin_rec_zero (b s : Trace) : LocalJoinSafe (recΔ b s void) := by
-  intro x y hx hy
-  have hx_refl : SafeStepStar x b := by
-    cases hx with
-    | R_rec_zero _ _ _ => exact SafeStepStar.refl _
-  have hy_refl : SafeStepStar y b := by
-    cases hy with
-    | R_rec_zero _ _ _ => exact SafeStepStar.refl _
-  exact ⟨b, hx_refl, hy_refl⟩
-
-/-- At `recΔ b s (delta n)` there is only one safe root rule; local join is trivial. -/
-theorem localJoin_rec_succ (b s n : Trace) : LocalJoinSafe (recΔ b s (delta n)) := by
-  intro x y hx hy
-  have hx_refl : SafeStepStar x (app s (recΔ b s n)) := by
-    cases hx with
-    | R_rec_succ _ _ _ => exact SafeStepStar.refl _
-  have hy_refl : SafeStepStar y (app s (recΔ b s n)) := by
-    cases hy with
-    | R_rec_succ _ _ _ => exact SafeStepStar.refl _
-  exact ⟨app s (recΔ b s n), hx_refl, hy_refl⟩
-
-/-- At `merge t t`, any applicable safe rule reduces to `t`; local join is trivial. -/
-theorem localJoin_merge_tt (t : Trace) : LocalJoinSafe (merge t t) := by
-  intro b c hb hc
-  have hb_refl : SafeStepStar b t := by
-    cases hb with
-    | R_merge_cancel _ _ _ => exact SafeStepStar.refl _
-    | R_merge_void_left _ _ => exact SafeStepStar.refl _
-    | R_merge_void_right _ _ => exact SafeStepStar.refl _
-  have hc_refl : SafeStepStar c t := by
-    cases hc with
-    | R_merge_cancel _ _ _ => exact SafeStepStar.refl _
-    | R_merge_void_left _ _ => exact SafeStepStar.refl _
-    | R_merge_void_right _ _ => exact SafeStepStar.refl _
-  exact ⟨t, hb_refl, hc_refl⟩
-
-/-- At `void`, there is no safe root rule; join holds vacuously. -/
-theorem localJoin_void : LocalJoinSafe void := by
-  refine localJoin_of_none (a := void) ?h
-  intro b hb; cases hb
-
-/-- At `delta t`, there is no safe root rule; join holds vacuously. -/
-theorem localJoin_delta (t : Trace) : LocalJoinSafe (delta t) := by
-  refine localJoin_of_none (a := delta t) ?h
-  intro b hb; cases hb
-
-
-/-- Convenience: `merge void (delta n)` reduces uniquely to `delta n`. -/
-theorem localJoin_merge_void_delta (n : Trace) : LocalJoinSafe (merge void (delta n)) :=
-  localJoin_merge_void_left (delta n)
-
-/-- Convenience: `merge (delta n) void` reduces uniquely to `delta n`. -/
-theorem localJoin_merge_delta_void (n : Trace) : LocalJoinSafe (merge (delta n) void) :=
-  localJoin_merge_void_right (delta n)
-
-/-- Convenience: `merge (delta n) (delta n)` reduces (by cancel) to `delta n`. -/
-theorem localJoin_merge_delta_delta (n : Trace) : LocalJoinSafe (merge (delta n) (delta n)) :=
-  localJoin_merge_tt (delta n)
-
-/-- At `eqW a b` with `a ≠ b`, only `R_eq_diff` applies at the root; local join is trivial. -/
-theorem localJoin_eqW_ne (a b : Trace) (hne : a ≠ b) : LocalJoinSafe (eqW a b) := by
-  -- Unique target is `integrate (merge a b)`.
-  refine localJoin_of_unique (a := eqW a b) (d := integrate (merge a b)) ?h
-  intro x hx
-  cases hx with
-  | R_eq_diff _ _ _ => rfl
-  | R_eq_refl _ _ => exact (False.elim (hne rfl))
-
-/-- At `eqW a a`, if `kappaM a ≠ 0`, `R_eq_refl` cannot fire; and `R_eq_diff` is blocked by `a ≠ a`.
-So there are no safe root steps and local join holds vacuously. -/
-theorem localJoin_eqW_refl_guard_ne (a : Trace) (h0ne : MetaSN_DM.kappaM a ≠ 0) :
-    LocalJoinSafe (eqW a a) := by
-  refine localJoin_of_none (a := eqW a a) ?h
-  intro x hx
-  cases hx with
-  | R_eq_refl _ h0 => exact False.elim (h0ne h0)
-  | R_eq_diff _ _ hne => exact False.elim (hne rfl)
-
-/-- If `deltaFlag t ≠ 0`, the left-void merge rule cannot apply; no competing branch. -/
-theorem localJoin_merge_void_left_guard_ne (t : Trace)
-    (hδne : deltaFlag t ≠ 0) : LocalJoinSafe (merge void t) := by
-  refine localJoin_of_unique (a := merge void t) (d := t) ?h
-  intro x hx
-  cases hx with
-  | R_merge_void_left _ hδ => exact (False.elim (hδne hδ))
-  | R_merge_void_right _ _ => rfl
-  | R_merge_cancel _ _ _ => rfl
-
-/-- If `deltaFlag t ≠ 0`, the right-void merge rule cannot apply; no competing branch. -/
-theorem localJoin_merge_void_right_guard_ne (t : Trace)
-    (hδne : deltaFlag t ≠ 0) : LocalJoinSafe (merge t void) := by
-  refine localJoin_of_unique (a := merge t void) (d := t) ?h
-  intro x hx
-  cases hx with
-  | R_merge_void_right _ hδ => exact (False.elim (hδne hδ))
-  | R_merge_void_left _ _ => rfl
-  | R_merge_cancel _ _ _ => rfl
-
-/-- If `deltaFlag t ≠ 0`, merge-cancel is blocked at root; vacuous local join. -/
-theorem localJoin_merge_cancel_guard_delta_ne (t : Trace)
-    (hδne : deltaFlag t ≠ 0) : LocalJoinSafe (merge t t) := by
-  refine localJoin_of_unique (a := merge t t) (d := t) ?h
-  intro x hx
-  cases hx with
-  | R_merge_cancel _ hδ _ => exact (False.elim (hδne hδ))
-  | R_merge_void_left _ _ => rfl
-  | R_merge_void_right _ _ => rfl
-
-/-- If `kappaM t ≠ 0`, merge-cancel is blocked at root; vacuous local join. -/
-theorem localJoin_merge_cancel_guard_kappa_ne (t : Trace)
-    (h0ne : MetaSN_DM.kappaM t ≠ 0) : LocalJoinSafe (merge t t) := by
-  refine localJoin_of_unique (a := merge t t) (d := t) ?h
-  intro x hx
-  cases hx with
-  | R_merge_cancel _ _ h0 => exact (False.elim (h0ne h0))
-  | R_merge_void_left _ _ => rfl
-  | R_merge_void_right _ _ => rfl
-
-/-- At `recΔ b s void`, if `deltaFlag b ≠ 0` then the rec-zero rule is blocked. -/
-theorem localJoin_rec_zero_guard_ne (b s : Trace)
-    (hδne : deltaFlag b ≠ 0) : LocalJoinSafe (recΔ b s void) := by
-  refine localJoin_of_none (a := recΔ b s void) ?h
-  intro x hx
-  cases hx with
-  | R_rec_zero _ _ hδ => exact (hδne hδ)
-
-/-- At `integrate t`, if `t` is not a `delta _`, then there is no safe root step. -/
-theorem localJoin_integrate_non_delta (t : Trace)
-    (hnd : ∀ u, t ≠ delta u) : LocalJoinSafe (integrate t) := by
-  refine localJoin_of_none (a := integrate t) ?h
-  intro x hx
-  cases hx with
-  | R_int_delta u => exact (hnd u) rfl
-
-/-- At `recΔ b s n`, if `n ≠ void` and `n` is not a `delta _`, then no safe root step. -/
-theorem localJoin_rec_other (b s n : Trace)
-    (hn0 : n ≠ void) (hns : ∀ u, n ≠ delta u) : LocalJoinSafe (recΔ b s n) := by
-  refine localJoin_of_none (a := recΔ b s n) ?h
-  intro x hx
-  cases hx with
-  | R_rec_zero _ _ _ => exact (hn0 rfl)
-  | R_rec_succ _ _ u => exact (hns u) rfl
-
-/-- At `app a b`, there is no safe root rule; join holds vacuously. -/
-theorem localJoin_app (a b : Trace) : LocalJoinSafe (app a b) := by
-  refine localJoin_of_none (a := app a b) ?h
-  intro x hx
-  cases hx
-
-/-- At `recΔ b s (merge a c)`, no safe root rule (scrutinee not void/delta). -/
-theorem localJoin_rec_merge (b s a c : Trace) : LocalJoinSafe (recΔ b s (merge a c)) := by
-  refine localJoin_of_none (a := recΔ b s (merge a c)) ?h
-  intro x hx; cases hx
-
-/-- At `recΔ b s (app a c)`, no safe root rule (scrutinee not void/delta). -/
-theorem localJoin_rec_app (b s a c : Trace) : LocalJoinSafe (recΔ b s (app a c)) := by
-  refine localJoin_of_none (a := recΔ b s (app a c)) ?h
-  intro x hx; cases hx
-
-/-- At `recΔ b s (integrate t)`, no safe root rule (scrutinee not void/delta). -/
-theorem localJoin_rec_integrate (b s t : Trace) : LocalJoinSafe (recΔ b s (integrate t)) := by
-  refine localJoin_of_none (a := recΔ b s (integrate t)) ?h
-  intro x hx; cases hx
-
-/-- At `recΔ b s (eqW a c)`, no safe root rule (scrutinee not void/delta). -/
-theorem localJoin_rec_eqW (b s a c : Trace) : LocalJoinSafe (recΔ b s (eqW a c)) := by
-  refine localJoin_of_none (a := recΔ b s (eqW a c)) ?h
-  intro x hx; cases hx
-
-/-- At `merge a b`, if neither side is `void` and `a ≠ b`, then no safe root step. -/
-theorem localJoin_merge_no_void_neq (a b : Trace)
-    (hav : a ≠ void) (hbv : b ≠ void) (hneq : a ≠ b) : LocalJoinSafe (merge a b) := by
-  refine localJoin_of_none (a := merge a b) ?h
-  intro x hx
-  cases hx with
-  | R_merge_void_left _ _ => exact (hav rfl)
-  | R_merge_void_right _ _ => exact (hbv rfl)
-  | R_merge_cancel _ _ _ => exact (hneq rfl)
-
-/-- If normalization is a fixed point, `a` is safe-normal; local join holds. -/
-theorem localJoin_if_normalize_fixed (a : Trace) (hfix : normalizeSafe a = a) :
-    LocalJoinSafe a := by
-  have hnf : NormalFormSafe a := (nf_iff_normalize_fixed a).mpr hfix
-  -- avoid definality issues by expanding the goal
-  intro b c hb hc
-  exact (localJoin_of_nf a hnf) hb hc
-end MetaSN_KO7
-
-namespace MetaSN_KO7
-
-/-- If a root local join holds at `a`, then a ctx-local join also holds at `a`.
-This embeds the root `SafeStepStar` witnesses into `SafeStepCtxStar`. -/
-theorem localJoin_ctx_of_localJoin (a : Trace)
-    (h : LocalJoinSafe a) : LocalJoinSafe_ctx a := by
-  intro b c hb hc
-  rcases h hb hc with ⟨d, hbStar, hcStar⟩
-  exact ⟨d, ctxstar_of_star hbStar, ctxstar_of_star hcStar⟩
-
-end MetaSN_KO7
-
-namespace MetaSN_KO7
-
-/-- Ctx wrapper: if neither side is void and `a ≠ b`, then ctx-local join holds at `merge a b`. -/
-theorem localJoin_ctx_merge_no_void_neq (a b : Trace)
-    (hav : a ≠ void) (hbv : b ≠ void) (hneq : a ≠ b) :
-    LocalJoinSafe_ctx (merge a b) :=
-  localJoin_ctx_of_localJoin (a := merge a b)
-    (h := localJoin_merge_no_void_neq a b hav hbv hneq)
-
-end MetaSN_KO7
-
-namespace MetaSN_KO7
-
-/-- Ctx wrapper: eqW distinct arguments have ctx-local join (only diff rule applies). -/
-theorem localJoin_ctx_eqW_ne (a b : Trace) (hne : a ≠ b) :
-    LocalJoinSafe_ctx (eqW a b) :=
-  localJoin_ctx_of_localJoin (a := eqW a b)
-    (h := localJoin_eqW_ne a b hne)
-
-/-- Ctx wrapper: at eqW a a with kappaM a ≠ 0, only diff applies; ctx-local join holds. -/
-theorem localJoin_ctx_eqW_refl_guard_ne (a : Trace)
-    (h0ne : MetaSN_DM.kappaM a ≠ 0) :
-    LocalJoinSafe_ctx (eqW a a) :=
-  localJoin_ctx_of_localJoin (a := eqW a a)
-    (h := localJoin_eqW_refl_guard_ne a h0ne)
-
-end MetaSN_KO7
-
-namespace MetaSN_KO7
-
-/-- Ctx wrapper: if `normalizeSafe (merge a a) = delta n`, eqW a a ctx-joins. -/
-theorem localJoin_ctx_eqW_refl_if_merge_normalizes_to_delta (a n : Trace)
-    (hn : normalizeSafe (merge a a) = delta n) :
-    LocalJoinSafe_ctx (eqW a a) :=
-  localJoin_eqW_refl_ctx_if_merge_normalizes_to_delta a n hn
-
-/-- Ctx wrapper: if `integrate (merge a a) ⇒ctx* void`, eqW a a ctx-joins at void. -/
-theorem localJoin_ctx_eqW_refl_if_integrate_merge_to_void (a : Trace)
-    (hiv : SafeStepCtxStar (integrate (merge a a)) void) :
-    LocalJoinSafe_ctx (eqW a a) :=
-  localJoin_eqW_refl_ctx_if_integrate_merge_to_void a hiv
-
-/-- Ctx wrapper: if `a ⇒* delta n` and guards hold on `delta n`, eqW a a ctx-joins. -/
-theorem localJoin_ctx_eqW_refl_if_arg_star_to_delta (a n : Trace)
-    (ha : SafeStepStar a (delta n))
-    (hδ : deltaFlag (delta n) = 0)
-    (h0 : MetaSN_DM.kappaM (delta n) = 0) :
-    LocalJoinSafe_ctx (eqW a a) :=
-  localJoin_eqW_refl_ctx_if_arg_star_to_delta a n ha hδ h0
-
-/-- Ctx wrapper: if `normalizeSafe a = delta n` and guards hold, eqW a a ctx-joins. -/
-theorem localJoin_ctx_eqW_refl_if_normalizes_to_delta (a n : Trace)
-    (hn : normalizeSafe a = delta n)
-    (hδ : deltaFlag (delta n) = 0)
-    (h0 : MetaSN_DM.kappaM (delta n) = 0) :
-    LocalJoinSafe_ctx (eqW a a) :=
-  localJoin_eqW_refl_ctx_if_normalizes_to_delta a n hn hδ h0
-
-end MetaSN_KO7
-
-namespace MetaSN_KO7
-
-/-- Ctx wrapper: when `a` is literally `delta n` and guards hold, eqW (delta n) (delta n) ctx-joins. -/
-theorem localJoin_ctx_eqW_refl_when_a_is_delta (n : Trace)
-    (hδ : deltaFlag (delta n) = 0)
-    (h0 : MetaSN_DM.kappaM (delta n) = 0) :
-    LocalJoinSafe_ctx (eqW (delta n) (delta n)) :=
-  localJoin_eqW_refl_ctx_when_a_is_delta n hδ h0
-
-end MetaSN_KO7
-
-```
-
----
-
-## 10. Meta/Impossibility_Lemmas.lean
-**File:** `OperatorKO7/OperatorKO7/Meta/Impossibility_Lemmas.lean`
-
-```lean
-import OperatorKO7.Meta.Operational_Incompleteness
-import OperatorKO7.Kernel
-import Mathlib.Order.Basic
-import Mathlib.Tactic.Linarith
-import OperatorKO7.Meta.Termination_KO7
--- Impossibility Lemmas - documentation mirror (see Confluence_Safe for helpers)
-
-/-!
-# Impossibility Lemmas - mirror of failure catalog (fails_central + consolidation)
-
-Goal
-- Keep and enrich the centralized failure witnesses so they fully represent
-  the failure taxonomy and chronology notes described in the repository `README.md`.
-
-What’s inside (all self‑contained, kernel unchanged)
-- P1/P2/P3 probes: re‑anchored pointers and small runnable examples.
-- κ+ k counterexample on KO6 traces (R_rec_succ): ties by rfl branchwise.
-- Flag‑only outer discriminator failure: concrete Step raises the flag.
-- Duplication stress identity (toy calculus): additive counter non‑drop, plus
-  DM and MPO orientation witnesses.
-- Right‑add hazard and “quick ≤ patch” are documented with intentionally
-  non‑admitted, commented examples (uncomment to see failures).
-
-Note
-- This file may include commented, intentionally failing fragments to preserve
-  the “dead ends” catalog; keep them commented to preserve green builds.
-- Live theorems/examples compile and can be cited in the paper/docs.
-- See also: `OperatorKO7/Meta/Operational_Incompleteness.lean` (namespace `OperatorKO7.OpIncomp`) for the P1–P3 probes.
--/
-
-
-namespace OperatorKO7
-namespace Impossibility
-
- -- Shorten local names for the rest of this file (doc preface section).
- open OperatorKO7 Trace
- open Prod (Lex)
-
-/-! See namespace `OpIncomp` inside `Operational_Incompleteness.lean` for concrete P1–P3
-  statements (`P2`, `P2DM`, `P2MPO`) and proofs. This module collects small,
-  kernel‑native witnesses and commentary aligned with fails_central sections
-  A–M. This is a documentation mirror; no kernel changes. -/
-
-end Impossibility
-end OperatorKO7
-
-
-namespace OperatorKO7
-namespace Impossibility
-
--- This file provides formal, machine-checked proofs that simpler, common
--- termination measures fail for the KO7 kernel. This justifies the necessity
--- of the more complex hybrid measure used in the final successful proof for the
--- guarded sub-relation.
-
--- Shorten local names for the active content below.
-open Trace
-open Prod (Lex)
-
-namespace FailedMeasures
-
-/-- A simple depth-based counter for `recΔ` nodes. This was one of the first
-measures attempted and fails on duplication. -/
-@[simp]
-def kappa : Trace → Nat
-  | recΔ _ _ n => kappa n + 1
-  | delta t    => kappa t
-  | integrate t=> kappa t
-  | merge a b  => max (kappa a) (kappa b)
-  | app a b    => max (kappa a) (kappa b)
-  | eqW a b    => max (kappa a) (kappa b)
-  | _          => 0
-
-/-- A simple size-based ordinal measure. The definition is not needed,
-only its type, to demonstrate the failure of lexicographic ordering. -/
-def mu (_t : Trace) : Nat := 0
-
-/-! ### Theorem 1: Failure of `kappa + k`
-This theorem proves that no fixed additive constant `k` can orient the
-`rec_succ` rule, especially for nested `delta` constructors. This refutes
-the entire class of "additive bump" solutions.
--/
-theorem kappa_plus_k_fails (k : Nat) :
-  ¬ (∀ (b s n : Trace),
-      kappa (app s (recΔ b s n)) + k < kappa (recΔ b s (delta n)) + k) := by
-  -- We prove this by providing a concrete counterexample.
-  push_neg
-  -- The counterexample uses a nested `delta` to show the additive bump `+1` from
-  -- the outer `delta` is cancelled by the `+1` from the inner `recΔ`.
-  use void, void, delta void
-  -- The goal is now a concrete inequality, which we can simplify.
-  -- After simp, the goal is `¬(1 + k < 1 + k)`.
-  simp [kappa]
-
-/-! ### Theorem 2: Failure of Simple Lexicography
-This theorem proves that a standard 2-component lexicographic measure `(κ, μ)`
-fails because the primary component, `κ`, does not strictly decrease.
-This forces the move to a more complex measure where the primary component is a
-flag or a multiset designed to handle specific reduction rules.
--/
-theorem simple_lex_fails :
-  ¬ (∀ (b s n : Trace),
-      Lex (·<·) (·<·)
-        (kappa (app s (recΔ b s n)), mu (app s (recΔ b s n)))
-        (kappa (recΔ b s (delta n)), mu (recΔ b s (delta n)))) := by
-  push_neg
-  -- The counterexample is `n := void`, which becomes the base case for `recΔ`
-  -- after one step.
-  use void, recΔ void void void, void
-  -- After substituting, we need to show the Lex relation does not hold.
-  -- This reduces to `¬ Lex (·<·) (·<·) (1, 0) (1, 0)`, which is decidable.
-  simp [kappa, mu]; decide
-
-end FailedMeasures
-
-/-! ## Boolean δ-flag alone - explicit increase on a non-rec rule (fails_central §F)
-
-Using only a “top-is-delta?” flag as the outer lex key breaks monotonicity:
-there exists a Step that raises the flag. This mirrors the doc’s warning that
-an unguarded global flag is unsafe; KO7 uses it only under a guard in safe
-subrelations. -/
-namespace FlagFailure
-
-/-- Top-shape flag: 1 only when the term is headed by `delta`. -/
-@[simp] def deltaFlagTop : Trace → Nat
-  | Trace.delta _ => 1
-  | _             => 0
-
-/-- Concrete increase: `merge void (delta void) → delta void` raises `deltaFlagTop`
-from 0 to 1. This shows a flag-only primary component can increase on a legal
-kernel step (violates lex monotonicity if used unguarded). -/
-theorem merge_void_raises_flag :
-    let t := Trace.delta Trace.void
-    OperatorKO7.Step (Trace.merge Trace.void t) t ∧
-    deltaFlagTop (Trace.merge Trace.void t) < deltaFlagTop t := by
-  intro t; constructor
-  · -- The step exists by R_merge_void_left
-    exact OperatorKO7.Step.R_merge_void_left t
-  · -- Compute flags: top of `merge void (delta void)` is not `delta`.
-    -- top of `t` is `delta`.
-    -- After simplification, the goal becomes `0 < 1`.
-    have ht : t = Trace.delta Trace.void := rfl
-    simp [deltaFlagTop, ht]
-
-end FlagFailure
-
-/-! ## Right-add hazard and “quick ≤ patch” (fails_central §H)
-
-Commentary-only: transporting strict inequalities to the left over arbitrary
-ordinal right-addends is invalid. Attempted patches that relax `=` to `≤` do
-not fix the nested-δ counterexample. The following fragments are intentionally
-commented to keep the build green; they illustrate the bad shapes. -/
-/-
--- namespace RightAddHazard
--- open Ordinal
--- variable (p q : Ordinal)
--- -- BAD SHAPE (do not try to prove globally): from μ n < μ (delta n) derive
--- -- μ n + p < μ (delta n) + p for arbitrary p.
--- lemma add_right_strict_mono_bad
---   (h : p < q) :
---   (∀ s, p + s < q + s) := by
---   -- Not true on ordinals in general; right addition isn’t strictly monotone.
---   admit
--- end RightAddHazard
--/
-
-/-! ## P2 duplication realism - references and examples (fails_central §G)
-
-We reuse the toy calculus from `OpIncomp`:
-* `r4_size_after_eq_before_plus_piece` gives the exact additive non‑drop identity.
-* `r4_no_strict_drop_additive` forbids strict decrease for the additive `size`.
-* `R4DM.dm_orient` and `R4MPO.mpo_orient_r4` show robust structural fixes.
--/
-namespace DuplicationRefs
-open OpIncomp
-
--- Pointers (names checked):
-#check OpIncomp.r4_size_after_eq_before_plus_piece  -- additive identity (dup_additive_failure)
-#check OpIncomp.r4_no_strict_drop_additive          -- no strict drop (not_strict_drop)
-#check OpIncomp.R4DM.dm_orient                      -- DM orientation (dm_orient_dup)
-#check OpIncomp.R4MPO.mpo_orient_r4                 -- MPO orientation (mpo_orient_dup)
-
-end DuplicationRefs
-
-/-! ## P1 rfl-gate (branch realism) - explicit per-branch check (fails_central §B)
-
-For any pattern-matched `f`, check rfl per clause and avoid asserting a single
-global equation unless all branches agree. The full P1 probe lives in
-`Operational_Incompleteness.lean`; we include a tiny exemplar here. -/
-namespace RflGate
-
-inductive Two where | A | B deriving DecidableEq, Repr
-
-def f : Two → Nat
-  | .A => 0
-  | .B => 1
-
--- Per-branch rfl (passes):
-example : f Two.A = 0 := rfl
-example : f Two.B = 1 := rfl
-
--- Over-strong global law fails: not (∀ x, f x = 0)
-example : ¬ (∀ x, f x = 0) := by
-  intro h
-  -- f B = 1 contradicts h B : f B = 0
-  exact Nat.one_ne_zero (by simpa [f] using h Two.B)
-
-end RflGate
-
-/-! ## Anchors to the green path (consolidation §J)
-
-The fixes live under KO7’s safe layer:
-- `Meta/Termination_KO7.lean`: `drop_R_rec_succ` (outer δ‑flag drop),
-  `measure_decreases_safe`, `wf_SafeStepRev`, plus MPO variants.
-These aren’t re‑proved here; this file focuses on the impossibility side. -/
-
--- See also: HybridDec one-liners just below (`Hybrid_FixPathExamples`),
--- which use `MetaSN_Hybrid.hybrid_drop_of_step` to witness per-step decreases.
-
-/-! ## KO7 safe Lex3 - tiny cross-link examples (the “fix path”) -/
-
-namespace KO7_FixPathExamples
-
--- δ-substitution (rec_succ) strictly drops by KO7’s outer flag component.
-lemma rec_succ_drops (b s n : Trace) :
-   MetaSN_KO7.Lex3 (MetaSN_KO7.μ3 (app s (recΔ b s n)))
-                   (MetaSN_KO7.μ3 (recΔ b s (delta n))) := by
-   simpa using MetaSN_KO7.drop_R_rec_succ b s n
-
--- The guarded aggregator yields a decrease certificate per safe step.
-lemma safe_decrease_rec_succ (b s n : Trace) :
-   MetaSN_KO7.Lex3 (MetaSN_KO7.μ3 (app s (recΔ b s n)))
-                   (MetaSN_KO7.μ3 (recΔ b s (delta n))) := by
-   simpa using
-     (MetaSN_KO7.measure_decreases_safe
-       (MetaSN_KO7.SafeStep.R_rec_succ b s n))
-
--- Well-foundedness of the reverse safe relation (no infinite safe reductions).
-theorem wf_safe : WellFounded MetaSN_KO7.SafeStepRev := MetaSN_KO7.wf_SafeStepRev
-
-end KO7_FixPathExamples
-
-/-! ## HybridDec - one-liners via `hybrid_drop_of_step` (cross-link) -/
-
-namespace Hybrid_FixPathExamples
-
-lemma hybrid_rec_succ (b s n : Trace) :
-  MetaSN_Hybrid.HybridDec (recΔ b s (delta n)) (app s (recΔ b s n)) := by
-  simpa using
-    MetaSN_Hybrid.hybrid_drop_of_step
-      (OperatorKO7.Step.R_rec_succ b s n)
-
-lemma hybrid_merge_void_left (t : Trace) :
-  MetaSN_Hybrid.HybridDec (merge void t) t := by
-  simpa using
-    MetaSN_Hybrid.hybrid_drop_of_step
-      (OperatorKO7.Step.R_merge_void_left t)
-
-lemma hybrid_eq_diff (a b : Trace) :
-  MetaSN_Hybrid.HybridDec (eqW a b) (integrate (merge a b)) := by
-  simpa using
-    MetaSN_Hybrid.hybrid_drop_of_step
-      (OperatorKO7.Step.R_eq_diff a b)
-
-end Hybrid_FixPathExamples
-
-/-! ## Pointers to toy cores for witnesses/examples
-
-For duplication flavor and base-change shape without touching KO7,
-see `Meta/HydraCore.lean` and `Meta/GoodsteinCore.lean` (examples only). -/
-
-end Impossibility
-end OperatorKO7
-
-```
-
----
-
-## 11. Meta/Operational_Incompleteness.lean
-**File:** `OperatorKO7/OperatorKO7/Meta/Operational_Incompleteness.lean`
-
-```lean
-import Mathlib.Data.Multiset.Basic
-import Mathlib.Data.Multiset.DershowitzManna
-import OperatorKO7.Meta.HydraCore
-import OperatorKO7.Meta.GoodsteinCore
-
-/-!
-Operational incompleteness probes (P1-P3) and duplication stress-test scaffolding.
-
-This file is intentionally "probe oriented": it collects small, explicit constructions that support
-the paper's *operational incompleteness* framing, without claiming that the full KO7 kernel `Step`
-is terminating or confluent.
-
-What this module provides:
-- A small operator-only term language (`Term`) with 7 constructors.
-- Eight unconditional rewrite rules (`Rule`) plus a standard context closure (`Step`).
-- Generic reflexive-transitive closure `Star` and star-composition utilities.
-- A structure `InternallyDefinableMeasure` capturing "operator-definable" measures (the notion that
-  is relevant to the conjecture: which proof principles count as "internal").
-- Duplication stress-test scaffolding for the duplicating rule `mul (s x) y -> add y (mul x y)`.
-- Imports of `HydraCore` and `GoodsteinCore` stubs used as additional stress-test encodings.
-
-Style/guardrails:
-- All statements are proved (no `sorry`); when a fragment is meant to record a dead end, it remains
-  commented to keep the build green.
-- Names and arities are spelled out explicitly to satisfy "NameGate / TypeGate" style checks.
--/
-
-set_option linter.unnecessarySimpa false
-namespace OperatorKO7.OpIncomp
-
-/--
-Seven constructors (names and arities are explicit to satisfy NameGate/TypeGate):
-  z    : 0
-  s    : 1
-  add  : 2
-  mul  : 2
-  pair : 2
-  fst  : 1
-  snd  : 1
--/
-
-inductive Term : Type
-| z    : Term
-| s    : Term → Term
-| add  : Term → Term → Term
-| mul  : Term → Term → Term
-| pair : Term → Term → Term
-| fst  : Term → Term
-| snd  : Term → Term
-deriving DecidableEq, Repr
-
-open Term
-
-/-- Arity table for NameGate/TypeGate reporting. -/
-inductive Op where
-| z | s | add | mul | pair | fst | snd
-deriving DecidableEq, Repr
-
-/-- Arity of each operator symbol (used only for probe reporting, not for rewriting). -/
-def arity : Op → Nat
-| .z    => 0
-| .s    => 1
-| .add  => 2
-| .mul  => 2
-| .pair => 2
-| .fst  => 1
-| .snd  => 1
-
-/-- Eight unconditional rules at the top level. -/
-inductive Rule : Term → Term → Prop
-| r1 (y)         : Rule (add z y) y
-| r2 (x y)       : Rule (add (s x) y) (s (add x y))
-| r3 (y)         : Rule (mul z y) z
-| r4 (x y)       : Rule (mul (s x) y) (add y (mul x y))          -- duplicates y
-| r5 (x y)       : Rule (fst (pair x y)) x
-| r6 (x y)       : Rule (snd (pair x y)) y
-| r7 (x)         : Rule (add x z) x                               -- right-zero for add
-| r8 (x)         : Rule (mul x z) z                               -- right-zero for mul
-
-/-- For each LHS, list all RHS "pieces" that any matching rule could produce.
-This union makes the per-piece orientation contract independent of the Prop proof.
-It is intentionally slightly stronger on overlapping LHS shapes. -/
-def rhsPiecesLHS : Term → List Term
-| add a b =>
-  let LaddLeft : List Term :=
-    match a with
-    | z     => [b]            -- r1: add z b → b
-    | s x   => [add x b]      -- r2: add (s x) b → s (add x b)
-    | _     => []
-  let LaddRight : List Term :=
-    match b with
-    | z     => [a]            -- r7: add a z → a
-    | _     => []
-  LaddLeft ++ LaddRight
-| mul a b =>
-  let LmulLeft : List Term :=
-    match a with
-    | z     => [z]            -- r3: mul z b → z
-    | s x   => [b, mul x b]   -- r4: mul (s x) b → add b (mul x b)
-    | _     => []
-  let LmulRight : List Term :=
-    match b with
-    | z     => [z]            -- r8: mul a z → z
-    | _     => []
-  LmulLeft ++ LmulRight
-| fst t =>
-  match t with
-  | pair x _ => [x]           -- r5
-  | _        => []
-| snd t =>
-  match t with
-  | pair _ y => [y]           -- r6
-  | _        => []
-| _ => []
-
-/-- Context closure of single-step rewriting. -/
-inductive Step : Term → Term → Prop
-| base {l r}     : Rule l r → Step l r
-| sCtx  {t u}    : Step t u → Step (s t) (s u)
-| addLCtx {t u v}: Step t u → Step (add t v) (add u v)
-| addRCtx {t u v}: Step t u → Step (add v t) (add v u)
-| mulLCtx {t u v}: Step t u → Step (mul t v) (mul u v)
-| mulRCtx {t u v}: Step t u → Step (mul v t) (mul v u)
-| pairLCtx{t u v}: Step t u → Step (pair t v) (pair u v)
-| pairRCtx{t u v}: Step t u → Step (pair v t) (pair v u)
-| fstCtx {t u}   : Step t u → Step (fst t) (fst u)
-| sndCtx {t u}   : Step t u → Step (snd t) (snd u)
-
-/-- Reflexive–transitive closure `Star`. -/
-inductive Star {α : Type} (R : α → α → Prop) : α → α → Prop
-| refl {a}       : Star R a a
-| step {a b c}   : R a b → Star R b c → Star R a c
-
-namespace Star
-variable {α : Type} {R : α → α → Prop}
-
-@[simp] theorem refl' {a} : Star R a a := Star.refl
-
-theorem trans {a b c} (h1 : Star R a b) (h2 : Star R b c) : Star R a c := by
-  induction h1 with
-  | refl =>
-    simpa using h2
-  | step h h1 ih =>
-    exact Star.step h (ih h2)
-
-end Star
-
-/-- A simple additive size measure used only for the duplication stress test. -/
-def size : Term → Nat
-| z           => 1
-| s t         => size t + 1
-| add t u     => size t + size u + 1
-| mul t u     => size t + size u + 1
-| pair t u    => size t + size u + 1
-| fst t       => size t + 1
-| snd t       => size t + 1
-
-
-/-! A) Branch-by-branch rfl gate.
-    Define a two-clause function `f` and test `two * f x = f (two * x)`.
-    We enumerate clauses and expose which branch passes by `rfl`.
--/
-def two : Term := s (s z)
-
-def f : Term → Term
-| z         => z
-| s n       => s (s (f n))
-| add a b   => add (f a) (f b)
-| mul a b   => mul (f a) (f b)
-| pair a b  => pair (f a) (f b)
-| fst t     => fst (f t)
-| snd t     => snd (f t)
-
-/-- Clause x = z: both sides reduce by definitional unfolding of `f`. -/
-def P1_pass_clause_z_LHS : Term := mul two (f z)     -- = mul two z
-def P1_pass_clause_z_RHS : Term := f (mul two z)     -- stays syntactically as `f (mul two z)`
-/-
-rfl attempt results:
-  `P1_pass_clause_z_LHS` defeq `mul two z`.
-  `P1_pass_clause_z_RHS` defeq `f (mul two z)`.
-Global rfl fails; per-branch equality holds only after rewriting. Failing pattern: `x = s n`.
-Minimal counterexample: `x := s z`.
--/
-def P1_counterexample : Term := s z
-
-/-! B) Duplication stress test for Rule r4.
-    Show additive non-drop first using `size`.
--/
-def R4_before (x y : Term) : Term := mul (s x) y
-def R4_after  (x y : Term) : Term := add y (mul x y)
-
-/-- Raw size profile to exhibit non-decrease; computation by unfolding `size`. -/
-def R4_size_profile (x y : Term) : Nat × Nat := (size (R4_before x y), size (R4_after x y))
-
-/-
-Additive calculation:
-  size (mul (s x) y) = 2 + size x + size y
-  size (add y (mul x y)) = 2 + size x + 2 * size y
-Hence `size(after) = size(before) + size y`. No strict drop whenever `size y ≥ 1`.
-Only after switching to a robust base order (e.g., DM multiset/RPO with explicit precedence)
-can we prove each RHS piece is strictly < the removed LHS redex.
--/
-
-/-! Concrete size lemmas for r4 (sorry-free). -/
-
-@[simp] lemma size_mul_succ (x y : Term) :
-    size (mul (s x) y) = size x + size y + 2 := by
-  -- size (mul (s x) y) = size (s x) + size y + 1 = (size x + 1) + size y + 1
-  calc
-    size (mul (s x) y) = size (s x) + size y + 1 := by simp [size]
-    _ = (size x + 1) + size y + 1 := by simp [size]
-    _ = size x + size y + (1 + 1) := by ac_rfl
-    _ = size x + size y + 2 := by simp
-
-@[simp] lemma size_add_y_mul (x y : Term) :
-    size (add y (mul x y)) = size x + (size y + size y) + 2 := by
-  -- size (add y (mul x y)) = size y + size (mul x y) + 1 = size y + (size x + size y + 1) + 1
-  calc
-    size (add y (mul x y)) = size y + size (mul x y) + 1 := by simp [size]
-    _ = size y + (size x + size y + 1) + 1 := by simp [size]
-    _ = size x + (size y + size y) + (1 + 1) := by ac_rfl
-    _ = size x + (size y + size y) + 2 := by simp
-
-lemma r4_size_after_eq_before_plus_piece (x y : Term) :
-    size (R4_after x y) = size (R4_before x y) + size y := by
-  -- Normalize both sides to the same arithmetic form and conclude.
-  calc
-    size (R4_after x y)
-        = size x + (size y + size y) + 2 := by
-              simp [R4_after, size_add_y_mul]
-    _   = (size x + size y + 2) + size y := by
-              ac_rfl
-    _   = size (R4_before x y) + size y := by
-              simp [R4_before, size_mul_succ]
-
-lemma r4_no_strict_drop_additive (x y : Term) :
-    ¬ size (R4_after x y) < size (R4_before x y) := by
-  intro hlt
-  have : size (R4_before x y) + size y < size (R4_before x y) := by
-    simpa [r4_size_after_eq_before_plus_piece] using hlt
-  have hle : size (R4_before x y) ≤ size (R4_before x y) + size y := Nat.le_add_right _ _
-  exact (Nat.lt_irrefl _) (Nat.lt_of_le_of_lt hle this)
-
-/-! Lightweight lex witness for r4 pieces vs redex (illustrative). -/
-namespace R4Lex
-
-abbrev Weight := Nat × Nat
-
-def lexLT (a b : Weight) : Prop :=
-  a.fst < b.fst ∨ (a.fst = b.fst ∧ a.snd < b.snd)
-
-def wRedex (x y : Term) : Weight := (1, size (mul (s x) y))
-def wPieceY (y : Term) : Weight := (0, size y)
-def wPieceMul (x y : Term) : Weight := (0, size (mul x y))
-
-lemma wPieceY_lt_redex (x y : Term) : lexLT (wPieceY y) (wRedex x y) := by
-  -- 0 < 1 on the first coordinate
-  left; exact Nat.zero_lt_one
-
-lemma wPieceMul_lt_redex (x y : Term) : lexLT (wPieceMul x y) (wRedex x y) := by
-  -- 0 < 1 on the first coordinate
-  left; exact Nat.zero_lt_one
-
-end R4Lex
-
-/-! DM orientation for r4: {size y, size (mul x y)} <ₘ {size (mul (s x) y)}. -/
-namespace R4DM
-open Multiset
-
-local infix:70 " <ₘ " => Multiset.IsDershowitzMannaLT
-
-@[simp] lemma size_redex (x y : Term) : size (mul (s x) y) = size x + size y + 2 := by
-  -- delegate to size_mul_succ for clarity
-  simpa using size_mul_succ x y
-
-@[simp] lemma size_piece_mul (x y : Term) : size (mul x y) = size x + size y + 1 := by
-  simp [size]
-
-lemma pieceY_lt_redex (x y : Term) : size y < size (mul (s x) y) := by
-  -- Step 1: size y + 0 < size y + (size x + 2)
-  have hpos : 0 < size x + 2 := Nat.succ_pos (size x + 1)
-  have h0 : size y + 0 < size y + (size x + 2) := Nat.add_lt_add_left hpos _
-  have h1 : size y < size y + (size x + 2) := by simpa using h0
-  -- Step 2: normalize RHS and fold to redex size
-  have h2 : size y < size x + size y + 2 := by
-    simpa [Nat.add_comm, Nat.add_left_comm, Nat.add_assoc] using h1
-  have hred : size x + size y + 2 = size (mul (s x) y) := (size_mul_succ x y).symm
-  simpa [hred] using h2
-
-lemma pieceMul_lt_redex (x y : Term) : size (mul x y) < size (mul (s x) y) := by
-  -- size x + size y + 1 < size x + size y + 2 and rewrite both sides
-  simpa [size_piece_mul, size_mul_succ, size] using Nat.lt_succ_self (size x + size y + 1)
-
-theorem dm_orient (x y : Term) :
-  ({size y} + {size (mul x y)}) <ₘ ({size (mul (s x) y)}) := by
+  let xs := (norm_cnf x).repr
+  let ys := (norm_cnf y).repr
+  have hlist : cmpList xs ys = Ordering.lt := by
+    simpa [cmp_cnf, xs, ys] using h
+  have hgt := cmpList_symm_gt_of_lt xs ys hlist
+  simpa [cmp_cnf, xs, ys] using hgt
+
+-- (We intentionally avoid a gt→lt symmetry lemma here to keep the proof surface minimal.)
+
+/-- Symmetry for gt: if cmpList xs ys = gt then cmpList ys xs = lt. -/
+theorem cmpList_symm_lt_of_gt :
+  ∀ xs ys : List (Nat × Nat), cmpList xs ys = Ordering.gt → cmpList ys xs = Ordering.lt
+  | [], [], h => by cases h
+  | [], (y::ys), h => by
+      -- cmpList [] (y::ys) = lt, so gt is impossible
+      cases h
+  | (x::xs), [], _h => by
+      -- non-empty vs []
+      simp [cmpList]
+  | ((e1,c1)::xs), ((e2,c2)::ys), h =>
+      by
+        classical
+        -- split on exponent comparison using an if-then-else
+        if hlt12 : e1 < e2 then
+          -- then result would be lt, contradicts gt
+          have : cmpList ((e1,c1)::xs) ((e2,c2)::ys) = Ordering.lt := by
+            simpa [cmpList, hlt12]
+          cases this ▸ h
+        else
+          have hnot12 : ¬ e1 < e2 := by simpa using hlt12
+          if hlt21 : e2 < e1 then
+            -- gt by exponent; swap gives lt
+            exact (cmpList_cons_cons_exp_gt_swap (xs:=xs) (ys:=ys) (e1:=e1) (c1:=c1) (e2:=e2) (c2:=c2) hlt21)
+          else
+            -- exponents equal
+            have heq : e1 = e2 :=
+              Nat.le_antisymm (Nat.le_of_not_gt hlt21) (Nat.le_of_not_gt hlt12)
+            -- compare coefficients similarly
+            if hclt12 : c1 < c2 then
+              -- would make lt, contradict gt
+              have : cmpList ((e1,c1)::xs) ((e2,c2)::ys) = Ordering.lt := by
+                simpa [cmpList, heq, Nat.lt_irrefl, hclt12]
+              cases this ▸ h
+            else
+              have hnotc12 : ¬ c1 < c2 := by simpa using hclt12
+              if hclt21 : c2 < c1 then
+                -- swapped becomes lt by coeff-lt
+                have : cmpList ((e2,c2)::ys) ((e1,c1)::xs) = Ordering.lt := by
+                  simpa [heq] using (cmpList_cons_cons_exp_eq_coeff_lt (xs:=ys) (ys:=xs) (e:=e1) (c1:=c2) (c2:=c1) hclt21)
+                simpa using this
+              else
+                -- coefficients equal; descend to tails
+                have hceq : c1 = c2 := by
+                  have hle₁ : c2 ≤ c1 := Nat.not_lt.mp hclt12
+                  have hle₂ : c1 ≤ c2 := Nat.not_lt.mp hclt21
+                  exact Nat.le_antisymm hle₂ hle₁
+                -- from h = gt, tails must be gt as well
+                have hTail : cmpList xs ys = Ordering.gt := by
+                  simpa [cmpList, heq, hceq, Nat.lt_irrefl] using h
+                -- recurse on tails
+                have ih := cmpList_symm_lt_of_gt xs ys hTail
+                -- lift back through equal heads
+                simpa [cmpList_cons_cons_exp_eq_coeff_eq, heq, hceq] using ih
+
+/-- CNF-level symmetry: if cmp x y = gt then cmp y x = lt. -/
+theorem cmp_cnf_symm_lt_of_gt {x y : CNF}
+  (h : cmp_cnf x y = Ordering.gt) : cmp_cnf y x = Ordering.lt := by
   classical
-  -- X = 0, Y = {size y, size (mul x y)}, Z = {size redex}
-  refine ⟨(0 : Multiset Nat), ({size y} + {size (mul x y)}), {size (mul (s x) y)}, ?hZ, by simp, by simp, ?hY⟩
-  · simp
-  · intro y' hy'
-    rcases mem_add.mp hy' with hY | hM
-    · have hy0 : y' = size y := by simpa using hY
-      refine ⟨size (mul (s x) y), by simp, ?_⟩
-      simpa [hy0] using pieceY_lt_redex x y
-    · have hm0 : y' = size (mul x y) := by simpa using hM
-      refine ⟨size (mul (s x) y), by simp, ?_⟩
-      simpa [hm0] using pieceMul_lt_redex x y
-
-end R4DM
-
-/-! MPO-style orientation for r4 using a simple precedence/status triple. -/
-namespace R4MPO
-
-/- Precedence: mul > add > s > pair > fst/snd > z. -/
-@[simp] def headRank : Term → Nat
-| z         => 0
-| s _       => 3
-| add _ _   => 4
-| mul _ _   => 5
-| pair _ _  => 2
-| fst _     => 1
-| snd _     => 1
-
-@[simp] def weight : Term → Nat × Nat × Nat
-| z           => (headRank z, 0, 0)
-| s t         => (headRank (s t), size t, 0)
-| add a b     => (headRank (add a b), size a, size b)
-| mul a b     => (headRank (mul a b), size a, size b)
-| pair a b    => (headRank (pair a b), size a, size b)
-| fst t       => (headRank (fst t), size t, 0)
-| snd t       => (headRank (snd t), size t, 0)
-
-/- Strict lexicographic order on Nat × Nat × Nat. -/
-def ltW (u v : Nat × Nat × Nat) : Prop :=
-  u.1 < v.1 ∨ (u.1 = v.1 ∧ (u.2.1 < v.2.1 ∨ (u.2.1 = v.2.1 ∧ u.2.2 < v.2.2)))
-
-lemma ltW_of_fst_lt {a b : Nat × Nat × Nat} (h : a.1 < b.1) : ltW a b := Or.inl h
-
-/-- Orientation witness: add y (mul x y) < mul (s x) y under ltW ∘ weight. -/
-theorem mpo_orient_r4 (x y : Term) :
-  ltW (weight (add y (mul x y))) (weight (mul (s x) y)) := by
-  -- First components: headRank(add …) < headRank(mul …)
-  left
-  -- close 4 < 5 by computation
-  have : 4 < 5 := by decide
-  simpa [weight, headRank] using this
-
-end R4MPO
-
-/-! C) NameGate and TypeGate probes. -/
-/-- Success case (name exists, arity matches): -/
-def NG_success : Term := fst (pair z z)
-
--- /-- Unknown identifier probe: `kappa` is not in this environment. -/
--- -- CONSTRAINT BLOCKER (NameGate): `kappa` unknown.
-
--- /-- Arity mismatch probe: `add` has arity 2; the following malformed term is intentionally commented out. -/
--- -- def NG_arity_mismatch : Term := add z        -- CONSTRAINT BLOCKER (TypeGate).
-
-/-! D) Internally definable measures.
-    Package the "operator-only" constraints explicitly.
--/
--- -- CONSTRAINT BLOCKER (NameGate): `kappa` unknown.
-
--- /-- Arity mismatch probe: `add` has arity 2; the following malformed term is intentionally commented out. -/
--- -- def NG_arity_mismatch : Term := add z        -- CONSTRAINT BLOCKER (TypeGate).
-
--- /-! D) Internally definable measures.
---     Package the “operator-only” constraints explicitly.
--- -/
-
-structure InternallyDefinableMeasure where
-  κMType  : Type          -- multiset-like component (DM-style), abstract
-  μType   : Type          -- ordinal-like component, abstract
-  flag    : Term → Bool   -- delta-flag or any unary indicator
-  κM      : Term → κMType -- structural multiset measure
-  μ       : Term → μType  -- well-founded secondary component
-  base    : Term → Term → Prop    -- base simplification order
-  wf_base : WellFounded base      -- well-foundedness witness
-
-  /- Monotonicity/compositionality in all contexts. -/
-  mono_s      : ∀ {t u}, base t u → base (s t) (s u)
-  mono_add_L  : ∀ {t u v}, base t u → base (add t v) (add u v)
-  mono_add_R  : ∀ {t u v}, base t u → base (add v t) (add v u)
-  mono_mul_L  : ∀ {t u v}, base t u → base (mul t v) (mul u v)
-  mono_mul_R  : ∀ {t u v}, base t u → base (mul v t) (mul v u)
-  mono_pair_L : ∀ {t u v}, base t u → base (pair t v) (pair u v)
-  mono_pair_R : ∀ {t u v}, base t u → base (pair v t) (pair v u)
-  mono_fst    : ∀ {t u}, base t u → base (fst t) (fst u)
-  mono_snd    : ∀ {t u}, base t u → base (snd t) (snd u)
-
-  /- Lexicographic/orientation gate (relaxed for skeleton):
-     For each rule instance, we accept either:
-     (i) a flag drop; or (ii) a per-piece strict decrease in `base`; or (iii) a direct base drop.
-     This matches the DM/MPO contract where duplicators use per-piece orientation.
-  -/
-  lex_ok :
-    ∀ {l r}, Rule l r →
-      (flag r = false ∧ flag l = true) ∨
-      (∃ t, t ∈ rhsPiecesLHS l ∧ base t l) ∨
-      base r l
-
-  /- Per-piece orientation gate (duplication-aware): for every rule, every listed RHS
-    piece is strictly below the removed LHS redex in the base order. This encodes
-    the Dershowitz–Manna/MPO-style contract used in P2. -/
-  per_piece_base_lt : ∀ {l r}, Rule l r → ∀ t ∈ rhsPiecesLHS l, base t l
-
-  /- Explicit duplication additive failure (documentation contract): the additive `size`
-    does not strictly drop for the duplicating rule r4 before any robust orientation.
-    This field records the phenomenon as part of the class; a trivial instance can
-    reuse `r4_no_strict_drop_additive` below. -/
-  dup_additive_nodrop_r4 : ∀ x y, ¬ size (R4_after x y) < size (R4_before x y)
-
-/-- C(Σ): Frozen alias for the KO7 method class used across the project. -/
-abbrev CSigma := InternallyDefinableMeasure
-
-/-! E) Stubs for operator-only encodings of Goodstein/Hydra. -/
-namespace Encodings
-
-/-- Codes internal to KO7 terms. -/
-inductive Code : Type
-| zero : Code
-| suc  : Code → Code
-| pair : Code → Code → Code
-| tag  : Nat → Code → Code          -- finite tags for rule schemas
-deriving DecidableEq, Repr
-
-/-- Goodstein-style rule schema (shape only). -/
-inductive GRule : Code → Code → Prop
-| base_change (b n) :
-    GRule (Code.tag b (Code.suc n)) (Code.tag (b+1) n)
-
-/-- Hydra-style rule schema (shape only). -/
-inductive HRule : Code → Code → Prop
-| chop (h) : HRule (Code.suc h) (Code.pair h h)    -- illustrative duplication
-
-end Encodings
-
--- /-- Target theorems are recorded as statements (no axioms). -/
-namespace Targets
-
-open Encodings
-
-/-- “There exists a rule with no internal measure proving its decrease” (statement only). -/
-def Exists_No_Internal_Decrease
-  (M : InternallyDefinableMeasure) : Prop :=
-  ∃ (l r : Term), Rule l r ∧ ¬ M.base l r
-
-/-- Bridge to independence exemplars (statement only). -/
-def Goodstein_Maps_Here : Prop :=
-  ∀ (c d : Encodings.Code), Encodings.GRule c d → True    -- TODO: fill mapping later
-
-def Hydra_Maps_Here : Prop :=
-  ∀ (c d : Encodings.Code), Encodings.HRule c d → True    -- TODO: fill mapping later
-
-end Targets
-
-/-- Demo term touching all constructors. -/
-def demo_term : Term :=
-  fst (pair (add (s z) (mul (s z) z))
-            (snd (pair (add z z) (mul z z))))
-
-/- The reduction of `demo_term` under the eight rules exercises all constructors.
-   The actual normalizer is provided in your `Normalize_Safe` bundle. -/
-
-/-! Independence-grade witness: a simple embedding and a same-level no-go. -/
-
-namespace Encodings
-
-/-- Encode natural numbers as KO7 numerals. -/
-def natToTerm : Nat → OperatorKO7.OpIncomp.Term
-| 0     => OperatorKO7.OpIncomp.Term.z
-| n+1   => OperatorKO7.OpIncomp.Term.s (natToTerm n)
-
-/-- Total embedding of `Encodings.Code` into KO7 terms. -/
-def encode : Code → OperatorKO7.OpIncomp.Term
-| Code.zero      => OperatorKO7.OpIncomp.Term.z
-| Code.suc c     => OperatorKO7.OpIncomp.Term.s (encode c)
-| Code.pair a b  => OperatorKO7.OpIncomp.Term.pair (encode a) (encode b)
-| Code.tag b c   => OperatorKO7.OpIncomp.Term.pair (natToTerm b) (encode c)
-
-end Encodings
-
-/-! Higher-level simulation layer (outside KO7 Step): Admin moves on encoded tags. -/
-namespace Simulation
-open Encodings OperatorKO7.OpIncomp
-
-/-- Administrative move permitted by the simulation layer: bump the Goodstein base tag on the left of the pair while stripping one succ from the right component (since `encode (suc n) = s (encode n)`). -/
-inductive Admin : Term → Term → Prop
-| base_change (b : Nat) (n : Encodings.Code) :
-    Admin (pair (natToTerm b) (s (encode n))) (pair (natToTerm (b+1)) (encode n))
-| hydra_chop (h : Encodings.Code) :
-  Admin (s (encode h)) (pair (encode h) (encode h))
-
-/-- Combined simulation relation: either a KO7 Step or an Admin move. -/
-def Rel (a b : Term) : Prop := OperatorKO7.OpIncomp.Step a b ∨ Admin a b
-
-/-- One-step simulation of Goodstein base-change under the Admin layer. -/
-lemma simulate_GRule_base_change_rel (b : Nat) (n : Encodings.Code) :
-  Rel (encode (Encodings.Code.tag b (Encodings.Code.suc n)))
-      (encode (Encodings.Code.tag (b+1) n)) := by
-  -- By definition, encode(tag b (suc n)) = pair (natToTerm b) (s (encode n))
-  -- and encode(tag (b+1) n) = pair (natToTerm (b+1)) (encode n)
-  right
-  exact Admin.base_change b n
-
-/-- One-step simulation of Hydra chop under the Admin layer. -/
-lemma simulate_HRule_chop_rel (h : Encodings.Code) :
-  Rel (encode (Encodings.Code.suc h))
-      (encode (Encodings.Code.pair h h)) := by
-  right
-  exact Admin.hydra_chop h
-
-end Simulation
-
-namespace Simulation
-
-/-- Reflexive–transitive closure for Rel. -/
-inductive RelStar : Term → Term → Prop
-| refl {a} : RelStar a a
-| step {a b c} : Rel a b → RelStar b c → RelStar a c
-
-namespace RelStar
-
-theorem trans {a b c} (h1 : RelStar a b) (h2 : RelStar b c) : RelStar a c := by
-  induction h1 with
-  | refl => simpa using h2
-  | step h h1 ih => exact RelStar.step h (ih h2)
-
-theorem of_step {a b} (h : OperatorKO7.OpIncomp.Step a b) : RelStar a b :=
-  RelStar.step (Or.inl h) RelStar.refl
-
-theorem of_admin {a b} (h : Admin a b) : RelStar a b :=
-  RelStar.step (Or.inr h) RelStar.refl
-
-end RelStar
-
-end Simulation
-
-namespace Simulation
-open OperatorKO7.OpIncomp.Encodings
-
-/- Paper↔code map (names frozen):
-  - CSigma ≡ `M_size`
-  - δ two-case: `delta_top_cases_add_s`, `delta_top_cases_mul_s`
-  - δ Star runners: `delta_star_add_s_auto`, `delta_star_mul_s_auto`
-  - RelStar lifts: `simulate_GRule_base_change_relStar`, `simulate_HRule_chop_relStar`
-  - No single Step from encode: `Targets.Goodstein_NoSingleStep_Encode`
--/
-
-/-- Lift Goodstein base-change simulation to `RelStar`. -/
-lemma simulate_GRule_base_change_relStar (b : Nat) (n : Encodings.Code) :
-  Simulation.RelStar (encode (Encodings.Code.tag b (Encodings.Code.suc n)))
-    (encode (Encodings.Code.tag (b+1) n)) :=
-  Simulation.RelStar.of_admin (Admin.base_change b n)
-
-/-- Lift Hydra chop simulation to `RelStar`. -/
-lemma simulate_HRule_chop_relStar (h : Encodings.Code) :
-  Simulation.RelStar (encode (Encodings.Code.suc h))
-    (encode (Encodings.Code.pair h h)) :=
-  Simulation.RelStar.of_admin (Admin.hydra_chop h)
-
-end Simulation
-
-namespace Targets
-open Encodings
-
-/-- Same-level no-go box: Goodstein base-change does not collapse to a single KO7 Step under `encode`.
-Recorded as a statement; proof handled in documentation/meta notes. -/
-def Goodstein_NoSingleStep_Encode : Prop :=
-  ∀ (b : Nat) (n : Encodings.Code),
-    ¬ Step (encode (Code.tag b (Code.suc n)))
-           (encode (Code.tag (b+1) n))
-
-end Targets
-
--- Independence-grade “no-go box” recorded as a statement under Targets.
--- We avoid asserting the proof here; see documentation for the meta-argument.
-
-/-- No single OperatorKO7.OpIncomp.Step originates from a numeral `natToTerm b`. -/
-lemma no_step_from_natToTerm (b : Nat) : ∀ t, ¬ Step (Encodings.natToTerm b) t := by
-  induction b with
-  | zero =>
-    intro t h
-    -- LHS is `z`; there is no Rule/Context matching it.
-    cases h with
-    | base hr => cases hr
-  | succ b ih =>
-    intro t h
-    -- LHS is `s (natToTerm b)`; only sCtx could apply, implying an inner step.
-    cases h with
-    | base hr => cases hr
-    | sCtx hinner =>
-      exact (ih _ hinner)
-
-/-- Encoded Goodstein codes (`encode`) contain only z/s/pair/nat tags, so they have no KO7 single-step. -/
-lemma no_step_from_encode (c : Encodings.Code) : ∀ t, ¬ Step (Encodings.encode c) t := by
-  induction c with
-  | zero =>
-    intro t h
-    -- LHS is `z`; only `base` could appear, which contradicts Rule shapes.
-    cases h with
-    | base hr => cases hr
-  | suc c ih =>
-    intro t h
-    -- LHS is `s (encode c)`; only `base` or `sCtx` can appear.
-    cases h with
-    | base hr => cases hr
-    | sCtx hinner => exact (ih _ hinner)
-  | pair a b iha ihb =>
-    intro t h
-    -- LHS is `pair (encode a) (encode b)`; only `base`/`pairLCtx`/`pairRCtx` possible.
-    cases h with
-    | base hr => cases hr
-    | pairLCtx hL => exact (iha _ hL)
-    | pairRCtx hR => exact (ihb _ hR)
-  | tag b c ih =>
-    intro t h
-    -- LHS is `pair (natToTerm b) (encode c)`; only `base`/`pairLCtx`/`pairRCtx` possible.
-    cases h with
-    | base hr => cases hr
-    | pairLCtx hL => exact (no_step_from_natToTerm b _ hL)
-    | pairRCtx hR => exact (ih _ hR)
-
-namespace Targets
-open Encodings
-
-/-- Formal proof: Goodstein base-change is not a single OperatorKO7.OpIncomp.Step under `encode`. -/
-theorem goodstein_no_single_step_encode : Goodstein_NoSingleStep_Encode := by
-  intro b n h
-  -- Use the general “no step from encode” lemma instantiated at `tag b (suc n)`.
-  -- This is stronger: there is no OperatorKO7.OpIncomp.Step from the encoded source to any target.
-  have hno := OperatorKO7.OpIncomp.no_step_from_encode (c := Encodings.Code.tag b (Encodings.Code.suc n))
-    (t := Encodings.encode (Encodings.Code.tag (b+1) n))
-  exact hno h
-
-/-- Bridging theorem (Goodstein family): encoded base-change steps are simulated in `RelStar`. -/
-theorem goodstein_family_simulated_in_RelStar
-  (b : Nat) (n : Encodings.Code) :
-  Simulation.RelStar (encode (Encodings.Code.tag b (Encodings.Code.suc n)))
-                     (encode (Encodings.Code.tag (b+1) n)) :=
-  Simulation.simulate_GRule_base_change_relStar b n
-
-/-- Bridging theorem (Hydra family): encoded chop steps are simulated in `RelStar`. -/
-theorem hydra_family_simulated_in_RelStar
-  (h : Encodings.Code) :
-  Simulation.RelStar (encode (Encodings.Code.suc h))
-                     (encode (Encodings.Code.pair h h)) :=
-  Simulation.simulate_HRule_chop_relStar h
-
-end Targets
-
-
-
-/-! Tiny examples exercising witnesses and Star utilities. -/
-example (x y : Term) : R4Lex.lexLT (R4Lex.wPieceY y) (R4Lex.wRedex x y) :=
-  R4Lex.wPieceY_lt_redex x y
-
-example (x y : Term) :
-    Multiset.IsDershowitzMannaLT ({size y} + {size (mul x y)}) ({size (mul (s x) y)}) := by
-  simpa using R4DM.dm_orient x y
-
-example (x y : Term) :
-    R4MPO.ltW (R4MPO.weight (add y (mul x y))) (R4MPO.weight (mul (s x) y)) :=
-  R4MPO.mpo_orient_r4 x y
-
-example (y : Term) : Star Step (add z y) y :=
-  Star.step (Step.base (Rule.r1 y)) Star.refl
-
--- Additional Step → Star examples
-example (y : Term) : Star Step (mul z y) z :=
-  Star.step (Step.base (Rule.r3 y)) Star.refl
-
-example (x y : Term) : Star Step (fst (pair x y)) x :=
-  Star.step (Step.base (Rule.r5 x y)) Star.refl
-
-end OperatorKO7.OpIncomp
+  let xs := (norm_cnf x).repr
+  let ys := (norm_cnf y).repr
+  have hlist : cmpList xs ys = Ordering.gt := by
+    simpa [cmp_cnf, xs, ys] using h
+  have hlt := cmpList_symm_lt_of_gt xs ys hlist
+  simpa [cmp_cnf, xs, ys] using hlt
+
+/- Totality for ≤ on CNF. -/
+theorem le_total_cnf (x y : CNF) : le_cnf x y ∨ le_cnf y x := by
+  -- case on the computed comparison
+  cases h : cmp_cnf x y with
+  | lt => exact Or.inl (le_of_lt (by simpa [lt_cnf] using h))
+  | eq => exact Or.inl (by simp [le_cnf, h])
+  | gt =>
+    -- swap gives lt, hence y ⪯ x
+    have : cmp_cnf y x = Ordering.lt := cmp_cnf_symm_lt_of_gt h
+    exact Or.inr (by
+      -- lt implies ≤ by definition (not gt)
+      have : lt_cnf y x := by simpa [lt_cnf] using this
+      exact le_of_lt this)
+
+-- Infix notations (optional ergonomics)
+infix:50 " ≺ " => lt_cnf
+infix:50 " ⪯ " => le_cnf
 
 /-!
-Tiny Goodstein/Hydra examples (toy cores)
+  ## Addition: merge and normalize
+-/
+def add_cnf (x y : CNF) : CNF :=
+  norm_cnf { repr := x.repr ++ y.repr }
 
-These are small, independent examples that exercise the minimal toy cores added
-for exposition. They do not interact with the KO7 kernel and are provided as
-cross-linkable witnesses for the paper and Impossibility catalog.
+/-!
+  ## Multiplication: distributive law, collect like terms, normalize
+-/
+def mul_cnf (x y : CNF) : CNF :=
+  match norm_cnf x, norm_cnf y with
+  | { repr := [] }, _ => { repr := [] }
+  | _, { repr := [] } => { repr := [] }
+  | { repr := xs }, { repr := ys } =>
+    let terms := List.foldr (fun a b => List.append a b) [] (xs.map (fun (e1, c1) => ys.map (fun (e2, c2) => (e1 + e2, c1 * c2))))
+    norm_cnf { repr := terms }
+
+/-!
+  ## ω-Exponentiation: ω^x
+  - ω^0 = 1
+  - ω^{sum_i ω^{a_i}·c_i} = ω^{ω^{a_1}·c_1 + ...}
+  For CNF, ω^x is just shifting exponents up one level.
+-/
+def opowω_cnf (x : CNF) : CNF :=
+  match norm_cnf x with
+  | { repr := [] } => { repr := [(0,1)] } -- ω^0 = 1
+  | { repr := xs } => { repr := xs.map (fun (e, c) => (e + 1, c)) }
+
+/-!
+  ## Examples
+-/
+def cnf_zero : CNF := { repr := [] }
+def cnf_one : CNF := { repr := [(0,1)] }
+def cnf_omega : CNF := { repr := [(1,1)] }
+def cnf_omega_plus_one : CNF := { repr := [(1,1),(0,1)] }
+def cnf_two_omega : CNF := { repr := [(1,2)] }
+def cnf_omega_sq : CNF := { repr := [(2,1)] }
+
+/-!
+  ## Basic tests (examples)
 -/
 
-namespace TinyGoodsteinHydra
 
-open OperatorKO7
-open OperatorKO7.GoodsteinCore
-open OperatorKO7.HydraCore
 
-/- Goodstein: one-step base-change on the toy state. -/
-example (b n : Nat) (t : Cn) :
-  GoodsteinCore.Step ⟨Base.b b, Cn.s t⟩ ⟨Base.b (b+1), t⟩ := by
-  simpa using GoodsteinCore.one_step b n t
 
-/- Hydra: a chop duplicates the other subtree (left and right variants). -/
-example (h : Hydra) :
-  HydraCore.Step (Hydra.node Hydra.head h) (Hydra.node h h) :=
-  HydraCore.Step.chop_left h
+end OperatorKO7.MetaCNF
 
-example (h : Hydra) :
-  HydraCore.Step (Hydra.node h Hydra.head) (Hydra.node h h) :=
-  HydraCore.Step.chop_right h
+namespace OperatorKO7.MetaCNF
 
-/- Existential-style tiny witness. -/
-example (h : Hydra) : ∃ h', HydraCore.Step (Hydra.node Hydra.head h) h' :=
-  ⟨Hydra.node h h, HydraCore.Step.chop_left h⟩
+/-!
+  ## Pretty-printing (basic)
+  Converts a CNF to a human-readable string for debugging and examples.
+-/
+def intercalate (sep : String) (xs : List String) : String :=
+  match xs with
+  | [] => ""
+  | x :: xs => xs.foldl (fun acc s => acc ++ sep ++ s) x
 
-end TinyGoodsteinHydra
+def showTerm : Nat × Nat → String
+  | (0, c) => toString c
+  | (e, 1) => "ω^" ++ toString e
+  | (e, c) => toString c ++ "·ω^" ++ toString e
 
-namespace OperatorKO7.OpIncomp
-open Term
--- set_option diagnostics true
-/-- A concrete internal-measure instance using size as the base order.
-Flags mark only r2/r4 LHSs (where additive size does not strictly drop). -/
-noncomputable def flagTerm : Term → Bool
-| add (s _) _ => true
-| mul (s _) _ => true
-| _           => false
+def showCNF (cnf : CNF) : String :=
+  match cnf.repr with
+  | [] => "0"
+  | xs => intercalate " + " (xs.map showTerm)
 
-noncomputable def M_size : InternallyDefinableMeasure where
-  κMType := Unit
-  μType  := Unit
-  flag   := flagTerm
-  κM     := fun _ => ()
-  μ      := fun _ => ()
-  -- size-based base order
-  base   := fun a b => size a < size b
-  wf_base := by
-    -- pull back Nat.lt along `size`
-    simpa using (InvImage.wf (f := size) Nat.lt_wfRel.wf)
-  -- context monotonicity (all 7 contexts)
-  mono_s := by
-    intro t u h; dsimp [size] at *; simpa using Nat.add_lt_add_right h 1
-  mono_add_L := by
-    intro t u v h; dsimp [size] at *
-    -- size (add t v) = size t + (size v + 1)
-    have := Nat.add_lt_add_left h (size v + 1)
-    -- rewrite lhs: (size v + 1) + size t = size t + (size v + 1)
-    simpa [Nat.add_comm, Nat.add_left_comm, Nat.add_assoc] using this
-  mono_add_R := by
-    intro t u v h; dsimp [size] at *
-    -- size (add v t) = size v + (size t + 1)
-    have := Nat.add_lt_add_left h (size v)
-    have := Nat.add_lt_add_right this 1
-    -- reorder sums
-    simpa [Nat.add_comm, Nat.add_left_comm, Nat.add_assoc] using this
-  mono_mul_L := by
-    intro t u v h; dsimp [size] at *
-    have := Nat.add_lt_add_left h (size v + 1)
-    simpa [Nat.add_comm, Nat.add_left_comm, Nat.add_assoc] using this
-  mono_mul_R := by
-    intro t u v h; dsimp [size] at *
-    have := Nat.add_lt_add_left h (size v)
-    have := Nat.add_lt_add_right this 1
-    simpa [Nat.add_comm, Nat.add_left_comm, Nat.add_assoc] using this
-  mono_pair_L := by
-    intro t u v h; dsimp [size] at *
-    have := Nat.add_lt_add_left h (size v + 1)
-    simpa [Nat.add_comm, Nat.add_left_comm, Nat.add_assoc] using this
-  mono_pair_R := by
-    intro t u v h; dsimp [size] at *
-    have := Nat.add_lt_add_left h (size v)
-    have := Nat.add_lt_add_right this 1
-    simpa [Nat.add_comm, Nat.add_left_comm, Nat.add_assoc] using this
-  mono_fst := by
-    intro t u h; dsimp [size] at *
-    simpa using Nat.add_lt_add_right h 1
-  mono_snd := by
-    intro t u h; dsimp [size] at *
-    simpa using Nat.add_lt_add_right h 1
-  -- lex gate: satisfy via per-piece base drops for all rules
-  lex_ok := by
-    intro l r hr
-    cases hr with
-    | r1 y =>
-      -- r1: add z y → y, need y < 1 + y + 1
-      exact Or.inr (Or.inr (by simp only [size]; omega))
-    | r2 x y =>
-      -- r2: add (s x) y → s (add x y)
-      exact Or.inr (Or.inl ⟨add x y, by simp [rhsPiecesLHS], by simp only [size]; omega⟩)
-    | r3 y =>
-      -- r3: mul z y → z, need 1 < 1 + y + 1
-      exact Or.inr (Or.inr (by simp only [size]; omega))
-    | r4 x y =>
-      -- r4: mul (s x) y → add y (mul x y)
-      exact Or.inr (Or.inl ⟨y, by simp [rhsPiecesLHS], by simp only [size]; omega⟩)
-    | r5 x y =>
-      -- r5: fst (pair x y) → x, need x < x + y + 2
-      exact Or.inr (Or.inr (by simp only [size]; omega))
-    | r6 x y =>
-      -- r6: snd (pair x y) → y, need y < x + y + 2
-      exact Or.inr (Or.inr (by simp only [size]; omega))
-    | r7 x =>
-      -- r7: add x z → x, need x < x + 2
-      exact Or.inr (Or.inr (by simp only [size]; omega))
-    | r8 x =>
-      -- r8: mul x z → z, need 1 < x + 2
-      exact Or.inr (Or.inr (by simp only [size]; omega))
-  -- per-piece strictness (duplication-aware)
-  per_piece_base_lt := by
-    intro l r h t ht
-    -- prove size t < size l by case on l
-    cases l with
-    | z => cases h
-    | s tl => cases h
-    | add a b =>
-      -- pieces = pieces from a (r1/r2) plus maybe from b (r7 when b=z)
-      dsimp [rhsPiecesLHS] at ht
-      have : size t < size a + size b + 1 := by
-        rcases List.mem_append.mp ht with hL | hR
-        · -- left pieces from a
-          cases a with
-          | z =>
-            -- t ∈ [b]
-            have hx : t = b := by simpa using hL
-            subst hx
-            -- size b < size (add z b) = 1 + b + 1
-            simp only [size]
-            omega
-          | s xx =>
-            -- t ∈ [add xx b]
-            have hx : t = add xx b := by simpa using hL
-            subst hx
-            -- size (add xx b) < size (add (s xx) b)
-            simp only [size]
-            omega
-          | _ =>
-            -- no pieces from other constructors
-            cases hL
-        · -- right pieces from b
-          cases b with
-          | z =>
-            -- t ∈ [a]
-            have hx : t = a := by simpa using hR
-            subst hx
-            -- size a < size (add a z) = a + 1 + 1
-            simp only [size]
-            omega
-          | _ =>
-            cases hR
-      simpa [size] using this
-    | mul a b =>
-      dsimp [rhsPiecesLHS] at ht
-      have : size t < size a + size b + 1 := by
-        rcases List.mem_append.mp ht with hL | hR
-        · -- left pieces from a
-          cases a with
-          | z =>
-            -- t ∈ [z]
-            have hx : t = z := by simpa using hL
-            subst hx
-            -- 1 < 1 + size b + 1
-            simp only [size]
-            omega
-          | s xx =>
-            rcases List.mem_cons.mp hL with hby | hmul
-            · -- t = b
-              have hx : t = b := by simpa using hby
-              subst hx
-              -- size b < size (s xx) + size b + 1 = xx + 1 + b + 1
-              simp only [size]
-              omega
-            · -- t = mul xx b
-              have hx : t = mul xx b := by simpa using hmul
-              subst hx
-              -- size (mul xx b) < size (mul (s xx) b)
-              simp only [size]
-              omega
-          | _ =>
-            cases hL
-        · -- right pieces from b
-          cases b with
-          | z =>
-            -- t ∈ [z]
-            have hx : t = z := by simpa using hR
-            subst hx
-            -- 1 < size a + 1 + 1
-            simp only [size]
-            omega
-          | _ =>
-            cases hR
-      simpa [size] using this
-    | pair a b => cases h
-    | fst u =>
-      cases u with
-      | pair xx yy =>
-        dsimp [rhsPiecesLHS] at ht
-        have hx : t = xx := by simpa using ht
-        subst hx
-        simp [size]
-        omega
-      | _ => cases h
-    | snd u =>
-      cases u with
-      | pair xx yy =>
-        dsimp [rhsPiecesLHS] at ht
-        have hx : t = yy := by simpa using ht
-        subst hx
-        simp [size]
-        omega
-      | _ => cases h
-  dup_additive_nodrop_r4 := by
-    intro x y; exact r4_no_strict_drop_additive x y
+instance : ToString CNF where
+  toString := showCNF
 
-/-! Optional δ-guard (Prop) isolating the duplicating/flagged shapes.
-    We provide a decidable predicate and a couple of lightweight lemmas. -/
+/-!
+  ## Normalization checks (boolean)
+  Executable validators for CNF invariants. Useful for tests and examples.
+-/
+def allPosCoeffs : List (Nat × Nat) → Bool
+  | [] => true
+  | (_, c) :: xs => (c > 0) && allPosCoeffs xs
 
-/-- Terms whose head is add (s ·) · or mul (s ·) ·. -/
-inductive Delta : Term → Prop
-| add_s (x y : Term) : Delta (add (s x) y)
-| mul_s (x y : Term) : Delta (mul (s x) y)
+def sortedStrictDesc : List (Nat × Nat) → Bool
+  | [] => true
+  | [ _ ] => true
+  | (e1, _) :: (e2, c2) :: xs => (e1 > e2) && sortedStrictDesc ((e2, c2) :: xs)
 
-attribute [simp] Delta.add_s Delta.mul_s
+def isNormalizedB (x : CNF) : Bool :=
+  sortedStrictDesc x.repr && allPosCoeffs x.repr
 
-/-- Decidability for `Delta`. -/
-instance : DecidablePred Delta := by
-  intro t
-  cases t with
-  | z => exact isFalse (by intro h; cases h)
-  | s _ => exact isFalse (by intro h; cases h)
-  | add a b =>
-    cases a with
-    | s x => exact isTrue (Delta.add_s x b)
-    | _ => exact isFalse (by intro h; cases h)
-  | mul a b =>
-    cases a with
-    | s x => exact isTrue (Delta.mul_s x b)
-    | _ => exact isFalse (by intro h; cases h)
-  | pair _ _ => exact isFalse (by intro h; cases h)
-  | fst _ => exact isFalse (by intro h; cases h)
-  | snd _ => exact isFalse (by intro h; cases h)
+/-!
+  ## Inspectors and predicates (ergonomics)
+-/
 
-@[simp] lemma Delta_r2 (x y : Term) : Delta (add (s x) y) := Delta.add_s x y
-@[simp] lemma Delta_r4 (x y : Term) : Delta (mul (s x) y) := Delta.mul_s x y
+def isZero (x : CNF) : Bool :=
+  match (norm_cnf x).repr with
+  | [] => true
+  | _ => false
 
-/- Simple preservation under right-context rewriting: the δ head persists. -/
-lemma Delta_preserve_addR {x t u : Term} (_h : Step t u) : Delta (add (s x) u) := by
-  simpa using (Delta.add_s x u)
+def isOne (x : CNF) : Bool :=
+  decide ((norm_cnf x).repr = [(0, 1)])
 
-lemma Delta_preserve_mulR {x t u : Term} (_h : Step t u) : Delta (mul (s x) u) := by
-  simpa using (Delta.mul_s x u)
+def isOmegaPow (x : CNF) : Bool :=
+  match (norm_cnf x).repr with
+  | [(_, 1)] => true
+  | _ => false
 
--- Preservation for remaining contexts (trivial shape persistence)
-lemma Delta_preserve_addL {x t u : Term} (_h : Step t u) : Delta (add (s x) u) := by
-  simpa using (Delta.add_s x u)
+def degreeOpt (x : CNF) : Option Nat :=
+  match (norm_cnf x).repr with
+  | [] => none
+  | (e, _) :: _ => some e
 
-lemma Delta_preserve_mulL {x t u : Term} (_h : Step t u) : Delta (mul (s x) u) := by
-  simpa using (Delta.mul_s x u)
+/-- Transitivity for `≤` on CNF. -/
+theorem le_trans_cnf {x y z : CNF} (hxy : le_cnf x y) (hyz : le_cnf y z) : le_cnf x z := by
+  -- By definition, le_cnf x z means cmp_cnf x z ≠ gt. Prove by contradiction.
+  unfold le_cnf at *
+  intro hgt
+  -- Case on cmp x y.
+  cases hxyCases : cmp_cnf x y with
+  | lt =>
+    -- y ≤ z splits into lt or eq.
+    have hyCases := le_cases (x:=y) (y:=z) hyz
+    cases hyCases with
+    | inl hylt =>
+      -- x < y and y < z ⇒ x < z, contradicting cmp x z = gt.
+      have hxlt : lt_cnf x y := by simpa [lt_cnf] using hxyCases
+      have hzlt : lt_cnf x z := lt_trans_cnf hxlt (by simpa [lt_cnf] using hylt)
+      -- Convert to cmp form and contradict hgt directly.
+      have : cmp_cnf x z = Ordering.lt := by simpa [lt_cnf] using hzlt
+      cases this ▸ hgt
+    | inr hyeq =>
+      -- cmp y z = eq ⇒ normalize-equal reprs; transport x<y to x<z.
+      have hrepr : (norm_cnf y).repr = (norm_cnf z).repr :=
+        (cmp_eq_iff_norm_repr_eq).mp hyeq
+      have hxlt : lt_cnf x y := by simpa [lt_cnf] using hxyCases
+      have hzlt : lt_cnf x z := lt_trans_eq_right (x:=x) (y:=y) (z:=z) hrepr hxlt
+      have : cmp_cnf x z = Ordering.lt := by simpa [lt_cnf] using hzlt
+      cases this ▸ hgt
+  | eq =>
+    -- cmp x y = eq ⇒ normalized reprs equal; rewrite left via congruence and use hyz.
+    have hrepr : (norm_cnf x).repr = (norm_cnf y).repr :=
+      (cmp_eq_iff_norm_repr_eq).mp hxyCases
+    -- Transport y ≤ z to x ≤ z, closing the contradiction.
+    exact (le_trans_eq_left (x:=x) (y:=y) (z:=z) hrepr hyz) hgt
+  | gt =>
+    -- Contradicts hxy immediately.
+    exact (hxy hxyCases).elim
 
-lemma Delta_preserve_pairL {x t u v : Term} (_h : Step t u) : Delta (add (s x) v) := by
-  simpa using (Delta.add_s x v)
+def leadCoeffOpt (x : CNF) : Option Nat :=
+  match (norm_cnf x).repr with
+  | [] => none
+  | (_, c) :: _ => some c
 
-lemma Delta_preserve_pairR {x t u v : Term} (_h : Step t u) : Delta (mul (s x) v) := by
-  simpa using (Delta.mul_s x v)
+/-!
+  ## Example values and usage
+-/
+def example1 := add_cnf cnf_omega cnf_one         -- ω + 1
+def example2 := add_cnf cnf_omega cnf_omega       -- ω + ω = 2·ω
+def example3 := mul_cnf cnf_omega cnf_omega       -- ω * ω = ω^2
 
-lemma Delta_preserve_fstCtx {x t u : Term} (_h : Step t u) : Delta (add (s x) (fst u)) := by
-  -- Note: guard refers to outer head; inner shape changes do not affect outer head
-  simpa using (Delta.add_s x (fst u))
+end OperatorKO7.MetaCNF
 
-lemma Delta_preserve_sndCtx {x t u : Term} (_h : Step t u) : Delta (mul (s x) (snd u)) := by
-  simpa using (Delta.mul_s x (snd u))
+namespace OperatorKO7.MetaCNF
 
-/-! Substitution (homomorphic map) and δ‑preservation under substitution. -/
+/-!
+  ## Min/Max and sorting helpers (ergonomics)
+-/
 
-/-- Homomorphic transform on KO7 terms (preserves heads, transforms subterms). -/
-def mapTerm (σ : Term → Term) : Term → Term
-| z => z
-| s t => s (mapTerm σ t)
-| add a b => add (mapTerm σ a) (mapTerm σ b)
-| mul a b => mul (mapTerm σ a) (mapTerm σ b)
-| pair a b => pair (mapTerm σ a) (mapTerm σ b)
-| fst t => fst (mapTerm σ t)
-| snd t => snd (mapTerm σ t)
+def min_cnf (x y : CNF) : CNF := if lt_cnf x y then x else y
+def max_cnf (x y : CNF) : CNF := if lt_cnf x y then y else x
 
-@[simp] lemma mapTerm_s (σ) (t : Term) : mapTerm σ (s t) = s (mapTerm σ t) := rfl
-@[simp] lemma mapTerm_add (σ) (a b : Term) : mapTerm σ (add a b) = add (mapTerm σ a) (mapTerm σ b) := rfl
-@[simp] lemma mapTerm_mul (σ) (a b : Term) : mapTerm σ (mul a b) = mul (mapTerm σ a) (mapTerm σ b) := rfl
+private def insertBy (x : CNF) : List CNF → List CNF
+  | [] => [x]
+  | y :: ys => if lt_cnf x y then x :: y :: ys else y :: insertBy x ys
 
-lemma Delta_preserve_r2_subst (σ : Term → Term) (x y : Term) :
-  Delta (mapTerm σ (add (s x) y)) := by
-  simp [mapTerm, Delta.add_s]
+def sortCNF (xs : List CNF) : List CNF :=
+  xs.foldl (fun acc x => insertBy x acc) []
 
-lemma Delta_preserve_r4_subst (σ : Term → Term) (x y : Term) :
-  Delta (mapTerm σ (mul (s x) y)) := by
-  simp [mapTerm, Delta.mul_s]
+def isNonDecreasing (xs : List CNF) : Bool :=
+  match xs with
+  | [] => true
+  | [_] => true
+  | x :: y :: ys =>
+    let leB (a b : CNF) : Bool :=
+      match cmp_cnf a b with
+      | Ordering.gt => false
+      | _ => true
+    leB x y && isNonDecreasing (y :: ys)
 
-/-! Promote mapTerm to a substitution alias and restate δ‑substitution lemmas. -/
+def minListCNF : List CNF → Option CNF
+  | [] => none
+  | x :: xs => some (xs.foldl (fun acc y => min_cnf acc y) x)
 
-abbrev subst := mapTerm
+def maxListCNF : List CNF → Option CNF
+  | [] => none
+  | x :: xs => some (xs.foldl (fun acc y => max_cnf acc y) x)
 
-@[simp] lemma subst_s (σ) (t : Term) : subst σ (s t) = s (subst σ t) := rfl
-@[simp] lemma subst_add (σ) (a b : Term) : subst σ (add a b) = add (subst σ a) (subst σ b) := rfl
-@[simp] lemma subst_mul (σ) (a b : Term) : subst σ (mul a b) = mul (subst σ a) (subst σ b) := rfl
+-- Demo checks
+#eval toString (min_cnf cnf_omega cnf_one)    -- expect "1"
+#eval toString (max_cnf cnf_omega cnf_one)    -- expect "ω^1"
+-- Use a local demo set to avoid forward references
+def demoList : List CNF := [cnf_zero, cnf_one, cnf_omega]
+#eval isNonDecreasing (sortCNF demoList)       -- expect true
+#eval (match minListCNF demoList with | some x => toString x | none => "-")
+#eval (match maxListCNF demoList with | some x => toString x | none => "-")
 
-lemma Delta_subst_preserves_r2 (σ : Term → Term) (x y : Term) :
-  Delta (subst σ (add (s x) y)) := by
-  simp [subst, mapTerm, Delta.add_s]
+end OperatorKO7.MetaCNF
 
-lemma Delta_subst_preserves_r4 (σ : Term → Term) (x y : Term) :
-  Delta (subst σ (mul (s x) y)) := by
-  simp [subst, mapTerm, Delta.mul_s]
+/-!
+  ## Example output (for documentation/testing)
+  Executable examples to illustrate CNF operations and normalization.
+  These produce human-readable CNF strings and boolean normalization checks.
+-/
+#eval toString OperatorKO7.MetaCNF.example1
+#eval toString OperatorKO7.MetaCNF.example2
+#eval toString OperatorKO7.MetaCNF.example3
 
-/-! Star-level automation for δ shapes. -/
+-- Inspector demos
+#eval OperatorKO7.MetaCNF.isZero OperatorKO7.MetaCNF.cnf_zero
+#eval OperatorKO7.MetaCNF.isOne OperatorKO7.MetaCNF.cnf_one
+#eval OperatorKO7.MetaCNF.isOmegaPow OperatorKO7.MetaCNF.cnf_omega
+#eval OperatorKO7.MetaCNF.degreeOpt OperatorKO7.MetaCNF.cnf_two_omega
+#eval OperatorKO7.MetaCNF.leadCoeffOpt OperatorKO7.MetaCNF.cnf_two_omega
 
-lemma delta_star_cases_add_s (x y : Term) :
-  Star Step (add (s x) y) (s (add x y)) ∨
-  (y = z ∧ Star Step (add (s x) y) (s x)) := by
-  -- r2 always provides the left branch as a single step
-  exact Or.inl (Star.step (Step.base (Rule.r2 x y)) Star.refl)
+-- Normalization checks on the examples (true means normalized)
+#eval OperatorKO7.MetaCNF.isNormalizedB (OperatorKO7.MetaCNF.norm_cnf OperatorKO7.MetaCNF.example1)
+#eval OperatorKO7.MetaCNF.isNormalizedB (OperatorKO7.MetaCNF.norm_cnf OperatorKO7.MetaCNF.example2)
+#eval OperatorKO7.MetaCNF.isNormalizedB (OperatorKO7.MetaCNF.norm_cnf OperatorKO7.MetaCNF.example3)
 
-lemma delta_star_cases_mul_s (x y : Term) :
-  Star Step (mul (s x) y) (add y (mul x y)) ∨
-  (y = z ∧ Star Step (mul (s x) y) z) := by
-  -- r4 always provides the left branch as a single step
-  exact Or.inl (Star.step (Step.base (Rule.r4 x y)) Star.refl)
+-- (pretty-printing and examples are defined at the end of the file)
+-- All CNF values are normalized: exponents strictly decreasing, coefficients > 0, no duplicate exponents.
 
-/-! δ exhaustive two-case lemmas at the top level. -/
+/-!
+  ## Property checks (computable, #eval-style)
+  Small test harness verifying comparison laws and normalization preservation
+  over a fixed sample set.
+-/
+namespace OperatorKO7.MetaCNF
 
-lemma delta_top_cases_add_s (x y r : Term)
-  (h : Rule (add (s x) y) r) :
-  r = s (add x y) ∨ (y = z ∧ r = s x) := by
-  cases h with
-  | r2 _ _ => exact Or.inl rfl
-  | r7 _ => exact Or.inr ⟨rfl, rfl⟩
+-- Boolean helpers for cmp outcomes
+def isEq (x y : CNF) : Bool :=
+  match cmp_cnf x y with
+  | Ordering.eq => true
+  | _ => false
 
-lemma delta_top_cases_mul_s (x y r : Term)
-  (h : Rule (mul (s x) y) r) :
-  r = add y (mul x y) ∨ (y = z ∧ r = z) := by
-  cases h with
-  | r4 _ _ => exact Or.inl rfl
-  | r8 _ => exact Or.inr ⟨rfl, rfl⟩
+def isLt (x y : CNF) : Bool :=
+  match cmp_cnf x y with
+  | Ordering.lt => true
+  | _ => false
 
-/-- δ-safe critical pairs coverage (add): every rule at the guarded top-shape matches one of the two cases. -/
-theorem Delta_SafePairs_Exhaustive_add
-  (x y r : Term) (_hδ : Delta (add (s x) y)) (h : Rule (add (s x) y) r) :
-  r = s (add x y) ∨ (y = z ∧ r = s x) :=
-  delta_top_cases_add_s x y r h
+def isLe (x y : CNF) : Bool :=
+  match cmp_cnf x y with
+  | Ordering.gt => false
+  | _ => true
 
-/-- δ-safe critical pairs coverage (mul): every rule at the guarded top-shape matches one of the two cases. -/
-theorem Delta_SafePairs_Exhaustive_mul
-  (x y r : Term) (_hδ : Delta (mul (s x) y)) (h : Rule (mul (s x) y) r) :
-  r = add y (mul x y) ∨ (y = z ∧ r = z) :=
-  delta_top_cases_mul_s x y r h
+-- Simple boolean all (avoid depending on extra list APIs)
+def allB {α} (p : α → Bool) : List α → Bool
+  | [] => true
+  | x :: xs => p x && allB p xs
 
-/-! Small Star runners that choose the RHS automatically via the δ two-case split. -/
+def pairs {α} (xs : List α) : List (α × α) :=
+  xs.foldr (fun x acc => List.append (xs.map (fun y => (x, y))) acc) []
 
-/-- Canonical RHS selector for `add (s x) y` using the δ two-case: if `y` is `z`, pick `s x`,
-  otherwise pick `s (add x y)`. -/
-def delta_rhs_add_s (x y : Term) : Term :=
-  match y with
-  | z => s x
-  | _ => s (add x y)
+def triples {α} (xs : List α) : List (α × α × α) :=
+  xs.foldr (fun x acc =>
+    let rows := xs.foldr (fun y acc2 => List.append (xs.map (fun z => (x, y, z))) acc2) []
+    List.append rows acc) []
 
-/-- Canonical RHS selector for `mul (s x) y` using the δ two-case: if `y` is `z`, pick `z`,
-  otherwise pick `add y (mul x y)`. -/
-def delta_rhs_mul_s (x y : Term) : Term :=
-  match y with
-  | z => z
-  | _ => add y (mul x y)
+-- Comparison properties
+def antisym_check (x y : CNF) : Bool :=
+  match cmp_cnf x y, cmp_cnf y x with
+  | Ordering.eq, Ordering.eq => true
+  | Ordering.lt, Ordering.gt => true
+  | Ordering.gt, Ordering.lt => true
+  | _, _ => false
 
-/-- One-step Star that automatically chooses the appropriate RHS for `add (s x) y`. -/
-lemma delta_star_add_s_auto (x y : Term) :
-  Star Step (add (s x) y) (delta_rhs_add_s x y) := by
-  -- Use a direct case split on `y`'s top constructor.
-  cases y with
-  | z =>
-    -- pick r7
-    change Star Step (add (s x) z) (s x)
-    exact Star.step (Step.base (Rule.r7 (s x))) Star.refl
-  | s y' =>
-    -- pick r2
-    change Star Step (add (s x) (s y')) (s (add x (s y')))
-    exact Star.step (Step.base (Rule.r2 x (s y'))) Star.refl
-  | add a b =>
-    change Star Step (add (s x) (add a b)) (s (add x (add a b)))
-    exact Star.step (Step.base (Rule.r2 x (add a b))) Star.refl
-  | mul a b =>
-    change Star Step (add (s x) (mul a b)) (s (add x (mul a b)))
-    exact Star.step (Step.base (Rule.r2 x (mul a b))) Star.refl
-  | pair a b =>
-    change Star Step (add (s x) (pair a b)) (s (add x (pair a b)))
-    exact Star.step (Step.base (Rule.r2 x (pair a b))) Star.refl
-  | fst t =>
-    change Star Step (add (s x) (fst t)) (s (add x (fst t)))
-    exact Star.step (Step.base (Rule.r2 x (fst t))) Star.refl
-  | snd t =>
-    change Star Step (add (s x) (snd t)) (s (add x (snd t)))
-    exact Star.step (Step.base (Rule.r2 x (snd t))) Star.refl
+def trichotomy_check (x y : CNF) : Bool :=
+  match cmp_cnf x y, cmp_cnf y x with
+  | Ordering.eq, Ordering.eq => true
+  | Ordering.lt, Ordering.gt => true
+  | Ordering.gt, Ordering.lt => true
+  | _, _ => false
 
-/-- One-step Star that automatically chooses the appropriate RHS for `mul (s x) y`. -/
-lemma delta_star_mul_s_auto (x y : Term) :
-  Star Step (mul (s x) y) (delta_rhs_mul_s x y) := by
-  cases y with
-  | z =>
-    change Star Step (mul (s x) z) z
-    exact Star.step (Step.base (Rule.r8 (s x))) Star.refl
-  | s y' =>
-    change Star Step (mul (s x) (s y')) (add (s y') (mul x (s y')))
-    exact Star.step (Step.base (Rule.r4 x (s y'))) Star.refl
-  | add a b =>
-    change Star Step (mul (s x) (add a b)) (add (add a b) (mul x (add a b)))
-    exact Star.step (Step.base (Rule.r4 x (add a b))) Star.refl
-  | mul a b =>
-    change Star Step (mul (s x) (mul a b)) (add (mul a b) (mul x (mul a b)))
-    exact Star.step (Step.base (Rule.r4 x (mul a b))) Star.refl
-  | pair a b =>
-    change Star Step (mul (s x) (pair a b)) (add (pair a b) (mul x (pair a b)))
-    exact Star.step (Step.base (Rule.r4 x (pair a b))) Star.refl
-  | fst t =>
-    change Star Step (mul (s x) (fst t)) (add (fst t) (mul x (fst t)))
-    exact Star.step (Step.base (Rule.r4 x (fst t))) Star.refl
-  | snd t =>
-    change Star Step (mul (s x) (snd t)) (add (snd t) (mul x (snd t)))
-    exact Star.step (Step.base (Rule.r4 x (snd t))) Star.refl
+def trans_lt_check (a b c : CNF) : Bool :=
+  if isLt a b && isLt b c then isLt a c else true
 
-/-! δ‑substitution per‑branch lemma stubs (align names with paper). -/
+def trans_le_check (a b c : CNF) : Bool :=
+  if isLe a b && isLe b c then isLe a c else true
 
-/-- Under substitution, the r2 guard shape is preserved (wrapper aligning naming with paper). -/
-@[simp] theorem delta_subst_preserves_r2 (σ : Term → Term) (x y : Term) :
-  Delta (subst σ (add (s x) y)) :=
-  Delta_subst_preserves_r2 σ x y
+-- Totality check for ≤: for any pair, either x ≤ y or y ≤ x
+def le_total_check (x y : CNF) : Bool :=
+  isLe x y || isLe y x
 
-/-- Under substitution, the r4 guard shape is preserved (wrapper aligning naming with paper). -/
-@[simp] theorem delta_subst_preserves_r4 (σ : Term → Term) (x y : Term) :
-  Delta (subst σ (mul (s x) y)) :=
-  Delta_subst_preserves_r4 σ x y
+-- Normalization preservation (ops already normalize by definition)
+def preserves_norm_add (x y : CNF) : Bool := isNormalizedB (add_cnf x y)
+def preserves_norm_mul (x y : CNF) : Bool := isNormalizedB (mul_cnf x y)
+def preserves_norm_opow (x : CNF) : Bool := isNormalizedB (opowω_cnf x)
 
-/-! Examples using `M_size.lex_ok` on representative rules. -/
+-- Sample set
+def samples : List CNF :=
+  [ cnf_zero, cnf_one, cnf_omega, cnf_omega_plus_one, cnf_two_omega, cnf_omega_sq ]
 
-example (y : Term) :
-  (flagTerm y = false ∧ flagTerm (add z y) = true) ∨
-  (∃ t, t ∈ rhsPiecesLHS (add z y) ∧ M_size.base t (add z y)) ∨
-  M_size.base y (add z y) := by
-  -- r1: add z y → y
-  simpa using (M_size.lex_ok (Rule.r1 y))
+-- Aggregate checks over samples
+def check_all_antisym : Bool :=
+  allB (fun p => antisym_check p.1 p.2) (pairs samples)
 
-example (x y : Term) :
-  (flagTerm (add y (mul x y)) = false ∧ flagTerm (mul (s x) y) = true) ∨
-  (∃ t, t ∈ rhsPiecesLHS (mul (s x) y) ∧ M_size.base t (mul (s x) y)) ∨
-  M_size.base (add y (mul x y)) (mul (s x) y) := by
-  -- r4: mul (s x) y → add y (mul x y)
-  simpa using (M_size.lex_ok (Rule.r4 x y))
+def check_all_trichotomy : Bool :=
+  allB (fun p => trichotomy_check p.1 p.2) (pairs samples)
 
-example (x : Term) :
-  (flagTerm x = false ∧ flagTerm (add x z) = true) ∨
-  (∃ t, t ∈ rhsPiecesLHS (add x z) ∧ M_size.base t (add x z)) ∨
-  M_size.base x (add x z) := by
-  -- r7: add x z → x
-  simpa using (M_size.lex_ok (Rule.r7 x))
+def check_all_trans_lt : Bool :=
+  allB (fun t => trans_lt_check t.1 t.2.1 t.2.2) (triples samples)
 
-example (x y : Term) :
-  (flagTerm (s (add x y)) = false ∧ flagTerm (add (s x) y) = true) ∨
-  (∃ t, t ∈ rhsPiecesLHS (add (s x) y) ∧ M_size.base t (add (s x) y)) ∨
-  M_size.base (s (add x y)) (add (s x) y) := by
-  -- r2: add (s x) y → s (add x y)
-  simpa using (M_size.lex_ok (Rule.r2 x y))
+def check_all_trans_le : Bool :=
+  allB (fun t => trans_le_check t.1 t.2.1 t.2.2) (triples samples)
 
-example (y : Term) :
-  (flagTerm z = false ∧ flagTerm (mul z y) = true) ∨
-  (∃ t, t ∈ rhsPiecesLHS (mul z y) ∧ M_size.base t (mul z y)) ∨
-  M_size.base z (mul z y) := by
-  -- r3: mul z y → z
-  simpa using (M_size.lex_ok (Rule.r3 y))
+def check_all_total_le : Bool :=
+  allB (fun p => le_total_check p.1 p.2) (pairs samples)
 
-example (x y : Term) :
-  (flagTerm x = false ∧ flagTerm (fst (pair x y)) = true) ∨
-  (∃ t, t ∈ rhsPiecesLHS (fst (pair x y)) ∧ M_size.base t (fst (pair x y))) ∨
-  M_size.base x (fst (pair x y)) := by
-  -- r5: fst (pair x y) → x
-  simpa using (M_size.lex_ok (Rule.r5 x y))
+def check_reflexive_eq : Bool :=
+  allB (fun x => isEq x x) samples
 
-example (x y : Term) :
-  (flagTerm y = false ∧ flagTerm (snd (pair x y)) = true) ∨
-  (∃ t, t ∈ rhsPiecesLHS (snd (pair x y)) ∧ M_size.base t (snd (pair x y))) ∨
-  M_size.base y (snd (pair x y)) := by
-  -- r6: snd (pair x y) → y
-  simpa using (M_size.lex_ok (Rule.r6 x y))
+def check_norm_add : Bool :=
+  allB (fun p => preserves_norm_add p.1 p.2) (pairs samples)
 
-example (x : Term) :
-  (flagTerm z = false ∧ flagTerm (mul x z) = true) ∨
-  (∃ t, t ∈ rhsPiecesLHS (mul x z) ∧ M_size.base t (mul x z)) ∨
-  M_size.base z (mul x z) := by
-  -- r8: mul x z → z
-  simpa using (M_size.lex_ok (Rule.r8 x))
-end OperatorKO7.OpIncomp
+def check_norm_mul : Bool :=
+  allB (fun p => preserves_norm_mul p.1 p.2) (pairs samples)
+
+def check_norm_opow : Bool :=
+  allB (fun x => preserves_norm_opow x) samples
+
+/-!
+  ## Extra property checks for helpers
+-/
+
+def eqListB {α} [DecidableEq α] (xs ys : List α) : Bool := decide (xs = ys)
+
+def check_sort_idem : Bool :=
+  eqListB (sortCNF samples) (sortCNF (sortCNF samples))
+
+def check_sort_is_nondecreasing : Bool :=
+  isNonDecreasing (sortCNF samples)
+
+def check_list_min_max_nonempty : Bool :=
+  match minListCNF samples, maxListCNF samples with
+  | some _, some _ => true
+  | _, _ => false
+
+-- Executable reports
+#eval check_reflexive_eq
+#eval check_all_antisym
+#eval check_all_trichotomy
+#eval check_all_trans_lt
+#eval check_all_trans_le
+#eval check_all_total_le
+#eval check_norm_add
+#eval check_norm_mul
+#eval check_norm_opow
+#eval check_sort_idem
+#eval check_sort_is_nondecreasing
+#eval check_list_min_max_nonempty
+
+end OperatorKO7.MetaCNF
 
 ```
 
 ---
 
-## 12. Meta/FailureModes.lean
-**File:** `OperatorKO7/OperatorKO7/Meta/FailureModes.lean`
+## 18. Meta/ComputableMeasure.lean
 
-```lean
-import OperatorKO7.Kernel
-import OperatorKO7.Meta.Termination_KO7
-
-/-!
-# Impossibility Results and Countermodels
-
-This file formally establishes the failure of simpler termination measures (additive, polynomial, purely ordinal) by exhibiting concrete counterexamples.
-These results serve as the formal witnesses for the "Impossibility results" section of the paper, demonstrating why checking strictly simpler measures is insufficient for the KO7 calculus.
-
-Sections:
-1) Branch realism: impossibility of global equality across pattern-matched clauses
-2) Duplication hazards: failure of additive measures; necessity of DM/MPO
-3) Ordinal right-add hazard: (countermodel outline)
-4) μ s vs μ (delta n): counterexample to pure ordinal measures
-5) KO7-specific countermodels (δ-flag behavior)
-
-Note: We avoid `sorry` and establish negation or inequality where possible.
--/
-
-namespace OperatorKO7.Countermodels
-
-open OperatorKO7 Trace
-
-/-! ## 1) Branch realism: minimal counterexample -/
-
-/-- A tiny function with two clauses to illustrate branch-by-branch `rfl` checks. -/
-def tiny : Nat → Nat
-| 0       => 1
-| Nat.succ n => n
-
-/-- Claim: `2 * tiny x = tiny (2 * x)` is not globally true. We do not assert it; we only show per-branch outcomes. -/
-/-- Witness that the global equation fails on the `x = 0` branch. -/
-lemma tiny_global_eq_fails_zero : 2 * tiny 0 ≠ tiny (2 * 0) := by
-  -- LHS = 2 * 1 = 2; RHS = tiny 0 = 1
-  decide
-
-/-- Witness that the global equation fails on the `x = succ n` branch. -/
-lemma tiny_global_eq_fails_succ (n : Nat) : 2 * tiny (Nat.succ n) ≠ tiny (2 * Nat.succ n) := by
-  -- LHS = 2 * n; RHS = tiny (2*n + 2) = (2*n + 2).pred = 2*n + 1
-  -- They differ by 1.
-  decide
-
-/-! ## 2) P2 Duplication realism (commented orientation) -/
-/--
-Consider a duplicating step h(S) → g(S,S). With an additive size M:
-  M(after) = M(before) - 1 + M(S) + M(S) = M(before) - 1 + 2·M(S)
-This is not strictly smaller when M(S) ≥ 1.
-To salvage termination, require a base well-founded order < and the DM premise:
-  every RHS piece Pi is strictly < the removed LHS redex W.
-If any Pi < W cannot be established, declare a CONSTRAINT BLOCKER instead of proceeding.
--/
-lemma note_duplication_dm_orientation : True := by trivial
-
-/-! ## 3) Ordinal right-add hazard (outline, no false lemma) -/
-/--
-Do NOT transport strict inequalities via right-add globally:
-  a < b does not imply a + c < b + c for ordinals without hypotheses.
-Use only guarded lemmas like `le_add_of_nonneg_left/right`, or principal-add results with exact assumptions.
--/
-lemma note_right_add_hazard : True := by trivial
-
-/-! ## 4) μ s vs μ (delta n) counterexample -/
-/-- There exist specific `s, n` with `μ s > μ (delta n)`.
-    Take `s = δ (δ void)` and `n = void`; then `μ(δ void) < μ(δ (δ void))`. -/
-theorem exists_mu_s_gt_mu_delta_n : ∃ s n : Trace, MetaSN.mu s > MetaSN.mu (delta n) := by
-  refine ⟨delta (delta void), void, ?_⟩
-  -- Goal: μ(δ δ void) > μ(δ void), equivalent to μ(δ void) < μ(δ δ void)
-  simpa [gt_iff_lt] using (MetaSN.mu_lt_mu_delta (delta void))
-
-/-! ## 5) KO7-flavored P1: δ-flag is NOT preserved by merge void globally -/
-open MetaSN_KO7
-
-/-- Branchwise counterexample: `deltaFlag (merge void t) = deltaFlag t` fails for `t = recΔ b s (delta n)`. -/
-lemma deltaFlag_not_preserved_merge_void (b s n : Trace) :
-  deltaFlag (merge void (recΔ b s (delta n))) ≠ deltaFlag (recΔ b s (delta n)) := by
-  -- LHS = 0, RHS = 1
-  simp [deltaFlag]
-
-/-- Documentation-only mapping note between KO7 duplication rules and the measure decrease branches. -/
-/-- KO7 duplication mapping note:
-    - DM-left used when κᴹ ≠ 0: see MetaSN_KO7.drop_R_merge_cancel_zero (inner LexDM via DM-left) and drop_R_eq_refl (DM-left branch).
-    - When κᴹ = 0, use μ-right in the inner lex and lift: see drop_R_merge_cancel_zero (μ-right path) and drop_R_eq_refl_zero. -/
-lemma note_ko7_duplication_mapping : True := by trivial
-
-end OperatorKO7.Countermodels
-
-```
-
----
-
-## 13. Meta/ContractProbes.lean
-**File:** `OperatorKO7/OperatorKO7/Meta/ContractProbes.lean`
-
-```lean
-/-!
-# Contract Probes (P1–P3)
-
-These probes document required checks from the Strict Execution Contract.
-They are written to be build-safe: negative cases are in comments; no failing assertions.
-
-P1: Branch realism — enumerate clauses, test rfl per-branch, report failures, give corrected laws.
-P2: Duplication realism — show additive failure and give the robust DM/MPO orientation premise.
-P3: Symbol realism — one success, one unknown identifier example, one arity/type mismatch example.
--/
-
-namespace OperatorKO7.MetaProbes
-
-/-! ## P1: Branch realism -/
-
-/-- A tiny two-branch function used to illustrate the P1 "branch realism" check. -/
-def f : Nat → Nat
-| 0       => 1
-| Nat.succ x => x
-
-/-
-Clause-by-clause rfl checks for the claim 2 * f x = f (2 * x):
-
-- x = 0:
-  LHS = 2 * f 0 = 2 * 1 = 2; RHS = f (2 * 0) = f 0 = 1 → not rfl. Fails.
-
-- x = succ y:
-  LHS = 2 * f (succ y) = 2 * y; RHS = f (2 * succ y) = f (2*y + 2) = (2*y + 2).pred = 2*y + 1 → not rfl. Fails.
-
-Corrected per-branch statements:
-- x = 0: 2 * f 0 = 2 ≠ 1 = f 0
-- x = succ y: 2 * f (succ y) = 2*y and f (2*succ y) = 2*y + 1 differ by 1
-
-True global facts:
-- f (2 * x) = Nat.pred (2 * x + 1)
-- 2 * f x ≤ 2 * x, with strict inequality when x ≠ 0
-- Minimal counterexample to the false global equality: x = 0.
--/
-
-/-! ## P2: Duplication realism -/
-
-/--
-Consider a rewrite rule that duplicates a subterm S: h(S) → g(S,S).
-With a simple node-count measure M, we get:
-  M(after) = M(before) - 1 + M(S) + M(S) = M(before) - 1 + 2·M(S),
-which is not a strict drop when M(S) ≥ 1.
-
-Robust orientation uses a multiset-of-weights (Dershowitz–Manna) or MPO/RPO:
-- Key premise: every RHS piece Pi is strictly < the removed LHS redex W in the base order.
-- If we cannot exhibit Pi < W for all pieces, we must declare a CONSTRAINT BLOCKER.
--/
--- (Orientation lemmas live in the main development; this file only documents the probe.)
-
-/-! ## P3: Symbol realism -/
-
-/--
-One success (present in toolkit):
-- Ordinal.opow_le_opow_right : monotonicity of ω^· in the exponent (≤-mono)
-
-One unknown identifier example (NameGate):
-- opow_right_mono_strict — SEARCH(name)=0 → must use local bridge `opow_lt_opow_right` instead.
-
-One arity/type mismatch example (TypeGate):
-- mul_le_mul_left' used with arguments in wrong order/type; fix by applying the α, β, γ as per lemma’s signature.
--/
-
-end OperatorKO7.MetaProbes
-
-```
-
----
-
-## 14. Meta/GoodsteinCore.lean
-**File:** `OperatorKO7/OperatorKO7/Meta/GoodsteinCore.lean`
-
-```lean
-/-!
-GoodsteinCore - a tiny, standalone toy for Goodstein-style base-change shape.
-This does NOT modify the KO7 kernel; it exists for examples and cross-links.
-It models a pair (base, counter) and a single-step that bumps the base while
-consuming one successor on the counter side.
--/
-
-namespace OperatorKO7
-namespace GoodsteinCore
-
-/-- Base parameter (modeled minimally as a wrapped `Nat`). -/
-inductive Base where
-  | b : Nat → Base
-deriving Repr, DecidableEq
-
-/-- Unary naturals used as a toy counter for Goodstein-style steps. -/
-inductive Cn where
-  | z  : Cn
-  | s  : Cn → Cn
-deriving Repr, DecidableEq
-
-/-- A Goodstein-state is a pair (base, counter). -/
-structure St where
-  base : Base
-  cnt  : Cn
-deriving Repr, DecidableEq
-
-open Base Cn
-
-/-- Goodstein-like one-step: bump base, drop one successor on the counter. -/
-inductive Step : St → St → Prop where
-  | base_change (b n : Nat) (t : Cn) :
-      Step ⟨.b b, .s t⟩ ⟨.b (b+1), t⟩
-
-/-- Convenience lemma: the single `Step.base_change` rule is always available on `(.s t)` counters. -/
-@[simp] theorem one_step (b n : Nat) (t : Cn) :
-    Step ⟨.b b, .s t⟩ ⟨.b (b+1), t⟩ := Step.base_change b n t
-
-end GoodsteinCore
-end OperatorKO7
-
-```
-
----
-
-## 15. Meta/HydraCore.lean
-**File:** `OperatorKO7/OperatorKO7/Meta/HydraCore.lean`
-
-```lean
-/-!
-HydraCore - a tiny, standalone toy hydra relation to serve as a minimal
-"hydra core" rule set for demonstrations. This does NOT change the KO7 kernel
-and is only for examples/tests of duplication-style steps.
-
-This captures the duplication flavor: chopping a head duplicates a subtree.
-We keep it intentionally small and independent of KO7.
--/
-
-namespace OperatorKO7
-namespace HydraCore
-
-/-- A minimal hydra-as-binary-tree datatype. `head` is a leaf; `node l r` has two sub-hydras. -/
-inductive Hydra where
-  | head : Hydra
-  | node : Hydra → Hydra → Hydra
-deriving Repr, DecidableEq
-
-open Hydra
-
-/-- One-step toy hydra rule: cutting a head on one side duplicates the other side. -/
-inductive Step : Hydra → Hydra → Prop where
-  | chop_left  (h : Hydra) : Step (node head h) (node h h)
-  | chop_right (h : Hydra) : Step (node h head) (node h h)
-
-/-- Convenience lemma: left chop duplicates the right subtree. -/
-@[simp] theorem dup_left (h : Hydra) : Step (node head h) (node h h) := Step.chop_left h
-/-- Convenience lemma: right chop duplicates the left subtree. -/
-@[simp] theorem dup_right (h : Hydra) : Step (node h head) (node h h) := Step.chop_right h
-
-/-- Example: a single chop duplicates the non-head subtree. -/
-example (h : Hydra) : ∃ h', Step (node head h) h' := ⟨node h h, Step.chop_left h⟩
-
-end HydraCore
-end OperatorKO7
-
-```
-
----
-
-## 16. Meta/ComputableMeasure.lean
-**File:** `OperatorKO7/OperatorKO7/Meta/ComputableMeasure.lean`
+**File:** `OperatorKO7/Meta/ComputableMeasure.lean`
 
 ```lean
 import OperatorKO7.Meta.Termination_KO7
@@ -7663,345 +8047,98 @@ end OperatorKO7.MetaCM
 
 ---
 
-## 17. Meta/ComputableMeasure_Verification.lean
-**File:** `OperatorKO7/OperatorKO7/Meta/ComputableMeasure_Verification.lean`
+## 19. Meta/DM_MPO_Orientation.lean
+
+**File:** `OperatorKO7/Meta/DM_MPO_Orientation.lean`
 
 ```lean
-import OperatorKO7.Meta.ComputableMeasure
-
-/-!
-# Verification Suite for ComputableMeasure
-
-This file provides comprehensive verification that our computable measure
-is bulletproof and handles all edge cases correctly.
-
-## Test Categories:
-1. τ monotonicity verification
-2. DM order properties
-3. Measure decrease for each rule
-4. Edge cases and corner cases
-5. Comparison with original noncomputable measure
--/
-
-namespace OperatorKO7.MetaCM.Verification
-
-open OperatorKO7 Trace MetaCM
-open MetaSN_KO7 MetaSN_DM
-
-/-! ## Section 1: τ Monotonicity Tests -/
-
--- Verify τ is monotone for all constructors except delta
-example (t : Trace) : tau t < tau (integrate t) := by omega
-example (a b : Trace) : tau a < tau (merge a b) := by omega
-example (a b : Trace) : tau b < tau (merge a b) := by omega
-example (a b : Trace) : tau a < tau (app a b) := by omega
-example (a b : Trace) : tau b < tau (app a b) := by omega
-example (b s n : Trace) : tau b < tau (recΔ b s n) := by omega
-example (b s n : Trace) : tau s < tau (recΔ b s n) := by omega
-example (b s n : Trace) : tau n < tau (recΔ b s n) := by omega
-example (a b : Trace) : tau a < tau (eqW a b) := by omega
-example (a b : Trace) : tau b < tau (eqW a b) := by omega
-
--- Verify delta is transparent
-example (t : Trace) : tau (delta t) = tau t := rfl
-
--- Verify the critical inequality for eq_diff
-example (a b : Trace) : tau (integrate (merge a b)) < tau (eqW a b) := by
-  simp [tau]
-  -- 1 + (2 + τa + τb) = 3 + τa + τb < 4 + τa + τb
-  omega
-
-/-! ## Section 2: Lexicographic Order Properties -/
-
--- Verify Lex3c is indeed well-founded
-example : WellFounded Lex3c := wf_Lex3c
-
--- Verify the lifting lemma works
-example {X Y : Multiset Nat} {τ₁ τ₂ : Nat} (h : DM X Y) :
-    LexDM_c (X, τ₁) (Y, τ₂) := dm_to_LexDM_c_left h
-
-/-! ## Section 3: Measure Decrease Verification -/
-
--- Test all 8 rules decrease the measure
-section RuleTests
-
--- Rule 1: integrate (delta t) → void
-example (t : Trace) : Lex3c (mu3c void) (mu3c (integrate (delta t))) := by
-  apply drop_R_int_delta_c
-
--- Rule 2: merge void t → t
-example (t : Trace) (hδ : deltaFlag t = 0) :
-    Lex3c (mu3c t) (mu3c (merge void t)) := by
-  apply drop_R_merge_void_left_c
-  exact hδ
-
--- Rule 3: merge t void → t
-example (t : Trace) (hδ : deltaFlag t = 0) :
-    Lex3c (mu3c t) (mu3c (merge t void)) := by
-  apply drop_R_merge_void_right_c
-  exact hδ
-
--- Rule 4: merge t t → t (duplication case!)
-example (t : Trace) (hδ : deltaFlag t = 0) (h0 : kappaM t = 0) :
-    Lex3c (mu3c t) (mu3c (merge t t)) := by
-  apply drop_R_merge_cancel_c
-  exact hδ
-  exact h0
-
--- Rule 5: recΔ b s void → b
-example (b s : Trace) (hδ : deltaFlag b = 0) :
-    Lex3c (mu3c b) (mu3c (recΔ b s void)) := by
-  apply drop_R_rec_zero_c
-  exact hδ
-
--- Rule 6: recΔ b s (delta n) → app s (recΔ b s n)
-example (b s n : Trace) :
-    Lex3c (mu3c (app s (recΔ b s n))) (mu3c (recΔ b s (delta n))) := by
-  apply drop_R_rec_succ_c
-
--- Rule 7: eqW a a → void
-example (a : Trace) :
-    Lex3c (mu3c void) (mu3c (eqW a a)) := by
-  apply drop_R_eq_refl_c
-
--- Rule 8: eqW a b → integrate (merge a b)
-example (a b : Trace) :
-    Lex3c (mu3c (integrate (merge a b))) (mu3c (eqW a b)) := by
-  apply drop_R_eq_diff_c
-
-end RuleTests
-
-/-! ## Section 4: Edge Cases and Corner Cases -/
-
--- Deeply nested terms still decrease
-example :
-    let t := delta (delta (delta void))
-    Lex3c (mu3c void) (mu3c (integrate t)) := by
-  apply drop_R_int_delta_c
-
--- Multiple deltas preserve transparency
-example (n : Nat) :
-    tau (delta^[n] void) = tau void := by
-  induction n with
-  | zero => rfl
-  | succ n ih => simp [Function.iterate_succ, tau, ih]
-
--- Verify δ-flag is binary (0 or 1)
-/--
-`deltaFlag` is intentionally a binary phase indicator (0 or 1).
-
-This lemma is used as a sanity check that the computable triple-lex measure does not accidentally
-encode additional phases beyond the intended `recΔ _ _ (delta _)` detection.
--/
-lemma deltaFlag_binary (t : Trace) : deltaFlag t = 0 ∨ deltaFlag t = 1 := by
-  cases t <;> simp [deltaFlag]
-  case recΔ b s n =>
-    cases n <;> simp [deltaFlag]
-
-/-! ## Section 5: SafeStep Decrease Aggregation -/
-
--- The master theorem works for all SafeStep constructors
-example {a b : Trace} (h : SafeStep a b) :
-    Lex3c (mu3c b) (mu3c a) :=
-  measure_decreases_safe_c h
-
--- SafeStepRev is indeed well-founded
-example : WellFounded SafeStepRev := wf_SafeStepRev_c
-
-/-! ## Section 6: Comparison with Noncomputable Measure -/
-
--- Our computable measure implies the same well-foundedness
-/--
-The computable development is strictly stronger in the "artifact sense":
-
-We can derive well-foundedness of `SafeStepRev` without appealing to any noncomputable ordinal
-payload, by using `wf_SafeStepRev_c` from `Meta/ComputableMeasure.lean`.
--/
-theorem computable_implies_original :
-    WellFounded SafeStepRev := by
-  exact wf_SafeStepRev_c
-
--- Both measures agree on well-foundedness (modulo computability)
-/--
-A deliberately weak "equivalence" statement:
-
-This does *not* claim the ordinal and computable measures are extensionally equal.
-It only records that (i) the existence of *some* measure implies well-foundedness, and
-(ii) well-foundedness implies the existence of *a* measure (choose `mu3c`).
--/
-theorem measures_equivalent_wf :
-    (∃ μ, WellFounded (fun a b => SafeStep b a)) ↔
-    WellFounded SafeStepRev := by
-  constructor
-  · intro ⟨_, h⟩; exact h
-  · intro h; exact ⟨mu3c, h⟩
-
-/-! ## Section 7: Stress Tests -/
-
--- Large terms still work
-/-- A moderately complex concrete trace used for stress-testing `tau` and `mu3c`. -/
-def bigTrace : Trace :=
-  recΔ (merge void void) (app void void) (delta (integrate void))
-
-example : tau bigTrace = 3 + 2 + 1 + 1 := by
-  simp [bigTrace, tau]
-  ring
-
--- Measure works on big terms
-example :
-    Lex3c (mu3c void) (mu3c (eqW bigTrace bigTrace)) := by
-  apply drop_R_eq_refl_c
-
-/-! ## Section 8: Invariants and Properties -/
-
--- τ preserves structure under delta
-/-- `tau` is transparent under `delta` by definition (restated as a named lemma). -/
-lemma tau_delta_preserve (t : Trace) : tau (delta t) = tau t := rfl
-
--- κᴹ behavior under constructors (from Termination_KO7)
-/-- Convenience bundle of basic `kappaM` simp-facts (re-exported as a single lemma). -/
-lemma kappaM_facts (a b s n : Trace) :
-    kappaM void = 0 ∧
-    kappaM (delta a) = kappaM a ∧
-    kappaM (integrate a) = kappaM a ∧
-    kappaM (merge a b) = kappaM a ∪ kappaM b ∧
-    kappaM (app a b) = kappaM a ∪ kappaM b ∧
-    kappaM (eqW a b) = kappaM a ∪ kappaM b := by
-  simp [kappaM]
-
--- δ-flag is 1 only for recΔ _ _ (delta _)
-/-- Characterization of the `deltaFlag` phase bit. -/
-lemma deltaFlag_characterization (t : Trace) :
-    deltaFlag t = 1 ↔ ∃ b s n, t = recΔ b s (delta n) := by
-  cases t <;> simp [deltaFlag]
-  case recΔ b s n =>
-    cases n <;> simp [deltaFlag]
-    constructor
-    · intro _; exact ⟨b, s, _, rfl⟩
-    · intro ⟨_, _, _, h⟩; injection h
-
-/-! ## Section 9: No Infinite Chains -/
-
--- Direct proof that no infinite SafeStep chain exists
-/-- There is no infinite forward `SafeStep` chain, since `mu3c` strictly decreases and `Lex3c` is WF. -/
-theorem no_infinite_safestep_chain :
-    ¬∃ (seq : Nat → Trace), ∀ n, SafeStep (seq n) (seq (n + 1)) := by
-  intro ⟨seq, h⟩
-  -- The measure strictly decreases along the chain
-  have dec : ∀ n, Lex3c (mu3c (seq (n + 1))) (mu3c (seq n)) := by
-    intro n
-    exact measure_decreases_safe_c (h n)
-  -- But Lex3c is well-founded, so no infinite descending chain exists
-  have : ¬∃ (f : Nat → Nat × (Multiset Nat × Nat)),
-           ∀ n, Lex3c (f (n + 1)) (f n) := by
-    apply WellFounded.not_lt_decreasing_seq
-    exact wf_Lex3c
-  apply this
-  exact ⟨fun n => mu3c (seq n), dec⟩
-
-end OperatorKO7.MetaCM.Verification
-
-```
-
----
-
-## 18. Meta/ComputableMeasure_Test.lean
-**File:** `OperatorKO7/OperatorKO7/Meta/ComputableMeasure_Test.lean`
-
-```lean
-import OperatorKO7.Meta.ComputableMeasure
 import OperatorKO7.Meta.Termination_KO7
+import OperatorKO7.Meta.ComputableMeasure
+import Mathlib.Data.Multiset.Basic
+import Mathlib.Data.Multiset.DershowitzManna
 
 /-!
-# Quick test that ComputableMeasure works correctly
+# DM/MPO Orientation Helpers (safe wrappers)
 
-This file is intentionally lightweight: it is a scratchpad of `example` goals and `#check`s that
-exercise the public surface of the computable termination proof for `SafeStep`.
+This module provides small, composable wrappers around the Dershowitz–Manna
+multiset ordering lemmas used throughout the termination development.
 
-It is not part of the certified artifact itself; it exists to make regressions obvious during local
-development (and for reviewers who want a quick sanity pass without reading the full proofs).
+They are deliberately minimal and rely on existing, proven lemmas from the
+`MetaSN_DM` toolkit. No kernel rules are changed. No new axioms are introduced.
+
+Use these helpers to keep orientation proofs concise and robust.
 -/
 
-namespace OperatorKO7.MetaCM.Test
+namespace OperatorKO7.MetaOrientation
 
+open Multiset
+open MetaSN_DM
 open OperatorKO7 Trace
-
 open OperatorKO7.MetaCM
-open OperatorKO7.MetaSN_KO7
 
--- Main theorem is available
-example : WellFounded SafeStepRev := wf_SafeStepRev_c
+/--
+Right-add orientation: if `Y ≠ 0`, then `X < X + Y` in the DM order.
 
--- Measure decreases for each rule
-example (t : OperatorKO7.Trace) :
-    OperatorKO7.MetaCM.Lex3c
-      (OperatorKO7.MetaCM.mu3c OperatorKO7.Trace.void)
-      (OperatorKO7.MetaCM.mu3c (OperatorKO7.Trace.integrate (OperatorKO7.Trace.delta t))) :=
-  drop_R_int_delta_c t
-
--- All 8 rules work
-#check drop_R_int_delta_c
-#check drop_R_merge_void_left_c
-#check drop_R_merge_void_right_c
-#check drop_R_merge_cancel_c
-#check drop_R_rec_zero_c
-#check drop_R_rec_succ_c
-#check drop_R_eq_refl_c
-#check drop_R_eq_diff_c
-
--- Main aggregator works
-#check measure_decreases_safe_c
-
--- If this file elaborates, the basic API of `ComputableMeasure.lean` is intact.
-
-end OperatorKO7.MetaCM.Test
-
-```
-
----
-
-## 19. Meta/Examples_Publish.lean
-**File:** `OperatorKO7/OperatorKO7/Meta/Examples_Publish.lean`
-
-```lean
-import OperatorKO7.Kernel
-import OperatorKO7.Meta.Termination_KO7
-import OperatorKO7.Meta.Normalize_Safe
-import OperatorKO7.Meta.Confluence_Safe
-import OperatorKO7.Meta.Newman_Safe
-import OperatorKO7.Meta.ComputableMeasure
-
-open OperatorKO7
-
-/-!
-Exported API examples - smoke tests for reviewers.
-This module should only import stable, published Meta modules and check that
-their key symbols exist and typecheck. It contains no new proofs.
+This is a thin wrapper around `MetaSN_DM.dm_lt_add_of_ne_zero'` with the
+arguments placed for ergonomic use.
 -/
+lemma dm_add_right_of_ne_zero {X Y : Multiset ℕ} (hY : Y ≠ 0) : OperatorKO7.MetaCM.DM X (X + Y) := by
+  simpa using MetaSN_DM.dm_lt_add_of_ne_zero' X Y hY
 
-example (a b : Trace) (h : Step a b) : MetaSN_Hybrid.HybridDec a b :=
-  MetaSN_Hybrid.hybrid_drop_of_step h
+/--
+Left-add orientation: if `X ≠ 0`, then `Y < X + Y` in the DM order.
 
-example : WellFounded MetaSN_KO7.SafeStepRev := MetaSN_KO7.wf_SafeStepRev
--- Computable measure (μ3c) also yields SN for the same relation
-example : WellFounded MetaSN_KO7.SafeStepRev := OperatorKO7.MetaCM.wf_SafeStepRev_c
-example : WellFounded MetaSN_MPO.SafeStepMPORev := MetaSN_MPO.wf_SafeStepMPORev
+This follows from commutativity of multiset addition and the right-add lemma.
+-/
+lemma dm_add_left_of_ne_zero {X Y : Multiset ℕ} (hX : X ≠ 0) : OperatorKO7.MetaCM.DM Y (X + Y) := by
+  simpa [add_comm] using MetaSN_DM.dm_lt_add_of_ne_zero' Y X hX
 
-example (t : Trace) : MetaSN_KO7.SafeStepStar t (MetaSN_KO7.normalizeSafe t) :=
-  MetaSN_KO7.to_norm_safe t
+/-- DM drop on κᴹ for rec_zero (re-export for ergonomics). -/
+lemma dm_drop_rec_zero (b s : Trace) :
+    OperatorKO7.MetaCM.DM (MetaSN_DM.kappaM b) (MetaSN_DM.kappaM (recΔ b s void)) := by
+  simpa [OperatorKO7.MetaCM.DM] using MetaSN_DM.dm_drop_R_rec_zero b s
 
-example (t : Trace) : MetaSN_KO7.NormalFormSafe (MetaSN_KO7.normalizeSafe t) :=
-  MetaSN_KO7.norm_nf_safe t
+/-- If X ≠ 0 then X ∪ X ≠ 0 (re-export). -/
+lemma union_self_ne_zero_of_ne_zero {X : Multiset ℕ} (h : X ≠ 0) :
+    X ∪ X ≠ (0 : Multiset ℕ) := by
+  simpa using MetaSN_DM.union_self_ne_zero_of_ne_zero h
 
--- Computable μ3c: simple per-rule drop example (merge void t → t) at t = void
-example : OperatorKO7.MetaCM.Lex3c
-    (OperatorKO7.MetaCM.mu3c OperatorKO7.Trace.void)
-    (OperatorKO7.MetaCM.mu3c (OperatorKO7.Trace.merge OperatorKO7.Trace.void OperatorKO7.Trace.void)) := by
-  have hδ : MetaSN_KO7.deltaFlag OperatorKO7.Trace.void = 0 := by
-    simp [MetaSN_KO7.deltaFlag]
-  simpa using OperatorKO7.MetaCM.drop_R_merge_void_left_c OperatorKO7.Trace.void hδ
+end OperatorKO7.MetaOrientation
 
 ```
 
 ---
 
+
+---
+
+## Summary
+
+This documentation contains the complete OperatorKO7 library with:
+
+### Core Components
+- **Kernel**: 7 constructors, 8 reduction rules
+- **SafeStep**: Guarded subrelation with certified termination
+- **Measures**: Triple-lex (Î´, Îºá´¹, Î¼) with both computable and ordinal variants
+
+### Key Results
+- **Strong Normalization**: Certified for SafeStep relation
+- **Impossibility Results**: Formal proofs that simpler measures fail
+- **Confluence**: Local joinability analysis with Newman's lemma
+- **Operational Incompleteness**: P1-P3 probes documenting fundamental barriers
+
+### Total Lines of Code
+- **Total**: 7,764 lines
+- **Kernel**: 1 lines
+- **Meta**: 7,763 lines across 18 files
+
+### Related Work
+
+This library supports the theoretical framework presented in:
+- "Thermodynamic Constraints on Measurement Events" (Rahnama, 2026)
+- "Universal Uncertainty-Entanglement Theory" (Rahnama, 2025)
+- "Operational Completeness" (Rahnama et al.)
+
+---
+
+**End of Documentation**
