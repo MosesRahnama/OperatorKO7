@@ -28,17 +28,19 @@ def tiny : Nat → Nat
 | 0       => 1
 | Nat.succ n => n
 
-/-- Claim: `2 * tiny x = tiny (2 * x)` is not globally true. We do not assert it; we only show per-branch outcomes. -/
-/-- Witness that the global equation fails on the `x = 0` branch. -/
+/-- Witness that the global equation fails on the `x = 0` branch.
+    (The global equation `2 * tiny x = tiny (2 * x)` is not true.) -/
 lemma tiny_global_eq_fails_zero : 2 * tiny 0 ≠ tiny (2 * 0) := by
   -- LHS = 2 * 1 = 2; RHS = tiny 0 = 1
   decide
 
 /-- Witness that the global equation fails on the `x = succ n` branch. -/
 lemma tiny_global_eq_fails_succ (n : Nat) : 2 * tiny (Nat.succ n) ≠ tiny (2 * Nat.succ n) := by
-  -- LHS = 2 * n; RHS = tiny (2*n + 2) = (2*n + 2).pred = 2*n + 1
+  -- LHS = 2 * n; RHS = tiny (2*n + 2) = (2*n + 1)
   -- They differ by 1.
-  decide
+  simp only [tiny]
+  -- Goal: 2 * n ≠ 2 * n + 1
+  exact Nat.ne_of_lt (Nat.lt_succ_self _)
 
 /-! ## 2) P2 Duplication realism (commented orientation) -/
 /--
@@ -76,7 +78,6 @@ lemma deltaFlag_not_preserved_merge_void (b s n : Trace) :
   -- LHS = 0, RHS = 1
   simp [deltaFlag]
 
-/-- Documentation-only mapping note between KO7 duplication rules and the measure decrease branches. -/
 /-- KO7 duplication mapping note:
     - DM-left used when κᴹ ≠ 0: see MetaSN_KO7.drop_R_merge_cancel_zero (inner LexDM via DM-left) and drop_R_eq_refl (DM-left branch).
     - When κᴹ = 0, use μ-right in the inner lex and lift: see drop_R_merge_cancel_zero (μ-right path) and drop_R_eq_refl_zero. -/
