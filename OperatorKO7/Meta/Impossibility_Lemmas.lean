@@ -44,7 +44,6 @@ namespace Impossibility
 end Impossibility
 end OperatorKO7
 
-
 namespace OperatorKO7
 namespace Impossibility
 
