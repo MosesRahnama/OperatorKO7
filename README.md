@@ -64,7 +64,7 @@ While the conjecture itself is not formally proved, this repository provides:
 - **Constructive proof** that a large safe fragment terminates (establishing partial progress)
 - **Machine-checked impossibility results** showing why simpler approaches fail
 - **Explicit counterexample** in `Confluence_Safe.lean` demonstrating the non-joinable peak at `eqW` that breaks full termination
-- **Operational incompleteness probes** (P1-P3) showing the boundary where internal methods break down
+- **Operational incompleteness probes** (P1–P3) showing the boundary where internal methods break down
 
 The gap between what is proved (`SafeStep` terminates) and what is conjectured (full `Step` does not provably terminate by internal methods) is **deliberate and explicit**. This work explores the **limits of self-reference in termination proving**.
 
@@ -81,19 +81,10 @@ This work is permanently archived with the following identifiers:
 - **Repository (live):** [github.com/MosesRahnama/OperatorKO7](https://github.com/MosesRahnama/OperatorKO7)
 - **Zenodo Archive:** [zenodo.org/records/18351560](https://zenodo.org/records/18351560)
 
-## Complete Artifact
-
-For reviewers: [**Complete source code documentation (all 19 files in one document)**](./OperatorKO7_Complete_Documentation.md)
-
-This single-file artifact contains the entire OperatorKO7 library with all Lean source code, proofs, and commentary.
-
----
-
 ### Build Verification
 
 This repository is continuously built and verified via [GitHub Actions CI](https://github.com/MosesRahnama/OperatorKO7/actions/workflows/build.yml). The build status badge above indicates the current verification state.
 
-**Build Note:** The repository uses Lean 4 v4.22.8-rc4 with dependency versions locked in `lake-manifest.json` and pinned in `lakefile.lean`. When you run `lake update`, it will respect these pinned versions to ensure compatibility. The dependency resolution warnings during build are expected and do not affect the correctness of the formal verification.
 ## Build Instructions
 
 ### Prerequisites
@@ -106,9 +97,6 @@ This repository is continuously built and verified via [GitHub Actions CI](https
 # Clone the repository
 git clone https://github.com/MosesRahnama/OperatorKO7.git
 cd OperatorKO7
-
-# CRITICAL: Force Lean to use the pinned version (do this BEFORE lake update)
-elan override set leanprover/lean4:v4.22.0-rc4
 
 # Update dependencies
 lake update
@@ -152,6 +140,14 @@ lake build
 
 All theorems referenced in the paper are present in the codebase and can be verified by Lake's build process.
 
+### Optional “bulletproof” audits
+
+For a stricter consistency check of the paper’s failure-catalog indexing (including the later-added Approach \#9/\#10 namespaces), build:
+
+```bash
+lake build OperatorKO7.Meta.PaperApproachIndex
+```
+
 ## Complete file-by-file guide (every file in this repo)
 
 Every file in this repository exists for one of: (i) the paper source/license, (ii) the Lean kernel, (iii) the certified safe fragment, or (iv) small verifier-facing smoke tests.
@@ -170,6 +166,8 @@ Every file in this repository exists for one of: (i) the paper source/license, (
 - **`README.md`**: this landing page (theory-first, then build instructions, then file map).
 - **`SAFE_AUDIT.md`**: reader-facing scope audit: a concise "what is proved vs. what is not" map, with pointers to the exact Lean files/lemmas establishing the SafeStep artifact and the explicit full-kernel caveat.
 - **`CITATION.cff`**: machine-readable citation metadata for this software artifact.
+- **`ARCHIVAL_STRATEGY.md`**: comprehensive documentation of archival and citation strategy.
+- **`RELEASE_GUIDE.md`**: step-by-step guide for creating releases and DOI archival.
 - **`LICENSE`**: Apache-2.0 license for the Lean code in this repository.
 - **`.gitignore`**: Git ignore patterns (excludes build artifacts).
 - **`lean-toolchain`**: pins the Lean toolchain version used to build the project.
@@ -204,7 +202,7 @@ Every file in this repository exists for one of: (i) the paper source/license, (
 **Impossibility results (why simpler measures fail):**
 
 - **`Impossibility_Lemmas.lean`**: impossibility lemmas supporting the conjecture narrative (failure witnesses for simpler measures).
-- **`Operational_Incompleteness.lean`**: the "P1-P3 probes" / operational incompleteness scaffolding (namespace `OperatorKO7.OpIncomp`).
+- **`Operational_Incompleteness.lean`**: the "P1–P3 probes" / operational incompleteness scaffolding (namespace `OperatorKO7.OpIncomp`).
 - **`ContractProbes.lean`**: small auxiliary probes referenced by the impossibility story.
 - **`FailureModes.lean`**: negative tests / counterexample sketches documenting why naive reasoning fails (kept in the main tree as part of the theory story).
 
@@ -281,4 +279,4 @@ Alternatively, use the "Cite this repository" feature in the GitHub sidebar, whi
 - **Lean code**: Apache-2.0 (see `LICENSE` at repo root).
 - **Paper text**: CC BY-NC-ND 4.0 (see `Paper/LICENSE`).
 
-For commercial permissions (paper or alternative terms), contact: `moses.rahnama@live.com`
+For commercial permissions (paper or alternative terms), contact: `moses@minaanalytics.com`
