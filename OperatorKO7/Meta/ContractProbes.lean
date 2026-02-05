@@ -4,9 +4,9 @@
 These probes document required checks from the Strict Execution Contract.
 They are written to be build-safe: negative cases are in comments; no failing assertions.
 
-P1: Branch realism — enumerate clauses, test rfl per-branch, report failures, give corrected laws.
-P2: Duplication realism — show additive failure and give the robust DM/MPO orientation premise.
-P3: Symbol realism — one success, one unknown identifier example, one arity/type mismatch example.
+P1: Branch realism - enumerate clauses, test rfl per-branch, report failures, give corrected laws.
+P2: Duplication realism - show additive failure and give the robust DM/MPO orientation premise.
+P3: Symbol realism - one success, one unknown identifier example, one arity/type mismatch example.
 -/
 
 namespace OperatorKO7.MetaProbes
@@ -65,3 +65,4 @@ One arity/type mismatch example (TypeGate):
 -/
 
 end OperatorKO7.MetaProbes
+
