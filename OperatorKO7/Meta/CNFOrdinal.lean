@@ -949,13 +949,20 @@ def maxListCNF : List CNF → Option CNF
   | x :: xs => some (xs.foldl (fun acc y => max_cnf acc y) x)
 
 -- Demo checks
-#eval toString (min_cnf cnf_omega cnf_one)    -- expect "1"
-#eval toString (max_cnf cnf_omega cnf_one)    -- expect "ω^1"
+example : toString (min_cnf cnf_omega cnf_one) = "1" := by
+  decide
+example : toString (max_cnf cnf_omega cnf_one) = "ω^1" := by
+  decide
 -- Use a local demo set to avoid forward references
 def demoList : List CNF := [cnf_zero, cnf_one, cnf_omega]
-#eval isNonDecreasing (sortCNF demoList)       -- expect true
-#eval (match minListCNF demoList with | some x => toString x | none => "-")
-#eval (match maxListCNF demoList with | some x => toString x | none => "-")
+example : isNonDecreasing (sortCNF demoList) = true := by
+  decide
+example :
+    (match minListCNF demoList with | some x => toString x | none => "-") = "0" := by
+  decide
+example :
+    (match maxListCNF demoList with | some x => toString x | none => "-") = "ω^1" := by
+  decide
 
 end OperatorKO7.MetaCNF
 
@@ -964,21 +971,38 @@ end OperatorKO7.MetaCNF
   Executable examples to illustrate CNF operations and normalization.
   These produce human-readable CNF strings and boolean normalization checks.
 -/
-#eval toString OperatorKO7.MetaCNF.example1
-#eval toString OperatorKO7.MetaCNF.example2
-#eval toString OperatorKO7.MetaCNF.example3
+example : toString OperatorKO7.MetaCNF.example1 = "ω^1 + 1" := by
+  decide
+example : toString OperatorKO7.MetaCNF.example2 = "2·ω^1" := by
+  decide
+example : toString OperatorKO7.MetaCNF.example3 = "ω^2" := by
+  decide
 
 -- Inspector demos
-#eval OperatorKO7.MetaCNF.isZero OperatorKO7.MetaCNF.cnf_zero
-#eval OperatorKO7.MetaCNF.isOne OperatorKO7.MetaCNF.cnf_one
-#eval OperatorKO7.MetaCNF.isOmegaPow OperatorKO7.MetaCNF.cnf_omega
-#eval OperatorKO7.MetaCNF.degreeOpt OperatorKO7.MetaCNF.cnf_two_omega
-#eval OperatorKO7.MetaCNF.leadCoeffOpt OperatorKO7.MetaCNF.cnf_two_omega
+example : OperatorKO7.MetaCNF.isZero OperatorKO7.MetaCNF.cnf_zero = true := by
+  decide
+example : OperatorKO7.MetaCNF.isOne OperatorKO7.MetaCNF.cnf_one = true := by
+  decide
+example : OperatorKO7.MetaCNF.isOmegaPow OperatorKO7.MetaCNF.cnf_omega = true := by
+  decide
+example : OperatorKO7.MetaCNF.degreeOpt OperatorKO7.MetaCNF.cnf_two_omega = some 1 := by
+  decide
+example : OperatorKO7.MetaCNF.leadCoeffOpt OperatorKO7.MetaCNF.cnf_two_omega = some 2 := by
+  decide
 
 -- Normalization checks on the examples (true means normalized)
-#eval OperatorKO7.MetaCNF.isNormalizedB (OperatorKO7.MetaCNF.norm_cnf OperatorKO7.MetaCNF.example1)
-#eval OperatorKO7.MetaCNF.isNormalizedB (OperatorKO7.MetaCNF.norm_cnf OperatorKO7.MetaCNF.example2)
-#eval OperatorKO7.MetaCNF.isNormalizedB (OperatorKO7.MetaCNF.norm_cnf OperatorKO7.MetaCNF.example3)
+example :
+    OperatorKO7.MetaCNF.isNormalizedB (OperatorKO7.MetaCNF.norm_cnf OperatorKO7.MetaCNF.example1) =
+      true := by
+  decide
+example :
+    OperatorKO7.MetaCNF.isNormalizedB (OperatorKO7.MetaCNF.norm_cnf OperatorKO7.MetaCNF.example2) =
+      true := by
+  decide
+example :
+    OperatorKO7.MetaCNF.isNormalizedB (OperatorKO7.MetaCNF.norm_cnf OperatorKO7.MetaCNF.example3) =
+      true := by
+  decide
 
 -- (pretty-printing and examples are defined at the end of the file)
 -- All CNF values are normalized: exponents strictly decreasing, coefficients > 0, no duplicate exponents.
@@ -1099,17 +1123,17 @@ def check_list_min_max_nonempty : Bool :=
   | _, _ => false
 
 -- Executable reports
-#eval check_reflexive_eq
-#eval check_all_antisym
-#eval check_all_trichotomy
-#eval check_all_trans_lt
-#eval check_all_trans_le
-#eval check_all_total_le
-#eval check_norm_add
-#eval check_norm_mul
-#eval check_norm_opow
-#eval check_sort_idem
-#eval check_sort_is_nondecreasing
-#eval check_list_min_max_nonempty
+example : check_reflexive_eq = true := by decide
+example : check_all_antisym = true := by decide
+example : check_all_trichotomy = true := by decide
+example : check_all_trans_lt = true := by decide
+example : check_all_trans_le = true := by decide
+example : check_all_total_le = true := by decide
+example : check_norm_add = true := by decide
+example : check_norm_mul = true := by decide
+example : check_norm_opow = true := by decide
+example : check_sort_idem = true := by decide
+example : check_sort_is_nondecreasing = true := by decide
+example : check_list_min_max_nonempty = true := by decide
 
 end OperatorKO7.MetaCNF
