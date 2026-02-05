@@ -11,7 +11,7 @@ P3: Symbol realism — one success, one unknown identifier example, one arity/ty
 
 namespace OperatorKO7.MetaProbes
 
-/-! ## P1: Branch realism -/
+/- ## P1: Branch realism -/
 
 /-- A tiny two-branch function used to illustrate the P1 "branch realism" check. -/
 def f : Nat → Nat
@@ -37,9 +37,9 @@ True global facts:
 - Minimal counterexample to the false global equality: x = 0.
 -/
 
-/-! ## P2: Duplication realism -/
+/- ## P2: Duplication realism -/
 
-/--
+/-
 Consider a rewrite rule that duplicates a subterm S: h(S) → g(S,S).
 With a simple node-count measure M, we get:
   M(after) = M(before) - 1 + M(S) + M(S) = M(before) - 1 + 2·M(S),
@@ -51,9 +51,9 @@ Robust orientation uses a multiset-of-weights (Dershowitz–Manna) or MPO/RPO:
 -/
 -- (Orientation lemmas live in the main development; this file only documents the probe.)
 
-/-! ## P3: Symbol realism -/
+/- ## P3: Symbol realism -/
 
-/--
+/-
 One success (present in toolkit):
 - Ordinal.opow_le_opow_right : monotonicity of ω^· in the exponent (≤-mono)
 
