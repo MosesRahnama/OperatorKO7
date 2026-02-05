@@ -10,9 +10,8 @@
 **MAIN RESULT:** A mechanically-verified certified normalizer for a guarded fragment (`SafeStep`) using a novel triple-lexicographic measure.
 
 **Paper (arXiv):** [https://arxiv.org/abs/2512.00081](https://arxiv.org/abs/2512.00081)  
-**Zenodo Record:** [https://doi.org/10.48550/arXiv.2512.00081](https://doi.org/10.48550/arXiv.2512.00081)  
 **Repository:** [https://github.com/MosesRahnama/OperatorKO7](https://github.com/MosesRahnama/OperatorKO7)  
-**Contact:** moses.rahnama@live.com
+**Contact:** moses.rahnama@gmail.com
 
 This repository contains the Lean 4 formalization accompanying the paper above.
 
