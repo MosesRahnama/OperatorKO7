@@ -3,7 +3,7 @@
 [![Build Status](https://github.com/MosesRahnama/OperatorKO7/actions/workflows/build.yml/badge.svg)](https://github.com/MosesRahnama/OperatorKO7/actions/workflows/build.yml)
 [![DOI](https://zenodo.org/badge/DOI/10.48550/arXiv.2512.00081.svg)](https://doi.org/10.48550/arXiv.2512.00081)
 [![arXiv](https://img.shields.io/badge/arXiv-2512.00081-b31b1b.svg)](https://arxiv.org/abs/2512.00081)
-[![License](https://img.shields.io/badge/License-Apache%202.0-blue.svg)](LICENSE)
+[![License](https://img.shields.io/badge/License-CC%20BY--NC--SA%204.0-lightgrey.svg)](LICENSE)
 
 **CONJECTURE:** No relational operator-only TRS can have its full-system termination proved by internally definable methods.
 
@@ -167,7 +167,7 @@ Every file in this repository exists for one of: (i) the paper source/license, (
 - **`CITATION.cff`**: machine-readable citation metadata for this software artifact.
 - **`ARCHIVAL_STRATEGY.md`**: comprehensive documentation of archival and citation strategy.
 - **`RELEASE_GUIDE.md`**: step-by-step guide for creating releases and DOI archival.
-- **`LICENSE`**: Apache-2.0 license for the Lean code in this repository.
+- **`LICENSE`**: CC BY-NC-SA 4.0 license for the Lean code in this repository (commercial use requires a paid license).
 - **`.gitignore`**: Git ignore patterns (excludes build artifacts).
 - **`lean-toolchain`**: pins the Lean toolchain version used to build the project.
 - **`lakefile.lean`**: Lake package config (declares package/library `OperatorKO7`, depends on mathlib).
@@ -275,7 +275,8 @@ Alternatively, use the "Cite this repository" feature in the GitHub sidebar, whi
 
 ## Licensing
 
-- **Lean code**: Apache-2.0 (see `LICENSE` at repo root).
+- **Lean code**: Creative Commons Attribution-NonCommercial-ShareAlike 4.0 International (CC BY-NC-SA 4.0) (see `LICENSE` at repo root).
 - **Paper text**: CC BY-NC-ND 4.0 (see `Paper/LICENSE`).
 
-For commercial permissions (paper or alternative terms), contact: `moses@minaanalytics.com`
+**Commercial use:** commercial use of this software requires a paid license from the copyright holder.
+For commercial licensing inquiries, contact: `moses@minaanalytics.com`
