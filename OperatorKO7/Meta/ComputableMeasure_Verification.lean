@@ -22,25 +22,33 @@ open MetaSN_KO7 MetaSN_DM
 /-! ## Section 1: τ Monotonicity Tests -/
 
 -- Verify τ is monotone for all constructors except delta
-example (t : Trace) : tau t < tau (integrate t) := by omega
-example (a b : Trace) : tau a < tau (merge a b) := by omega
-example (a b : Trace) : tau b < tau (merge a b) := by omega
-example (a b : Trace) : tau a < tau (app a b) := by omega
-example (a b : Trace) : tau b < tau (app a b) := by omega
-example (b s n : Trace) : tau b < tau (recΔ b s n) := by omega
-example (b s n : Trace) : tau s < tau (recΔ b s n) := by omega
-example (b s n : Trace) : tau n < tau (recΔ b s n) := by omega
-example (a b : Trace) : tau a < tau (eqW a b) := by omega
-example (a b : Trace) : tau b < tau (eqW a b) := by omega
+example (t : Trace) : tau t < tau (integrate t) := by
+  simp [tau]
+example (a b : Trace) : tau a < tau (merge a b) := by
+  simp [tau]; omega
+example (a b : Trace) : tau b < tau (merge a b) := by
+  simp [tau]
+example (a b : Trace) : tau a < tau (app a b) := by
+  simp [tau]; omega
+example (a b : Trace) : tau b < tau (app a b) := by
+  simp [tau]
+example (b s n : Trace) : tau b < tau (recΔ b s n) := by
+  simp [tau]; omega
+example (b s n : Trace) : tau s < tau (recΔ b s n) := by
+  simp [tau]; omega
+example (b s n : Trace) : tau n < tau (recΔ b s n) := by
+  simp [tau]
+example (a b : Trace) : tau a < tau (eqW a b) := by
+  simp [tau]; omega
+example (a b : Trace) : tau b < tau (eqW a b) := by
+  simp [tau]
 
 -- Verify delta is transparent
 example (t : Trace) : tau (delta t) = tau t := rfl
 
 -- Verify the critical inequality for eq_diff
 example (a b : Trace) : tau (integrate (merge a b)) < tau (eqW a b) := by
-  simp [tau]
-  -- 1 + (2 + τa + τb) = 3 + τa + τb < 4 + τa + τb
-  omega
+  simp [tau]; omega
 
 /-! ## Section 2: Lexicographic Order Properties -/
 
@@ -111,11 +119,16 @@ example :
   apply drop_R_int_delta_c
 
 -- Multiple deltas preserve transparency
-example (n : Nat) :
-    tau (delta^[n] void) = tau void := by
-  induction n with
-  | zero => rfl
-  | succ n ih => simp [Function.iterate_succ, tau, ih]
+lemma tau_delta_iterate (n : Nat) (t : Trace) : tau (delta^[n] t) = tau t := by
+  induction n generalizing t with
+  | zero =>
+    rfl
+  | succ n ih =>
+    -- `f^[n+1] t = f^[n] (f t)` and `tau (delta t) = tau t` by definition.
+    simpa [Function.iterate_succ, tau] using ih (t := delta t)
+
+example (n : Nat) : tau (delta^[n] void) = tau void := by
+  simpa using tau_delta_iterate n void
 
 -- Verify δ-flag is binary (0 or 1)
 /--
@@ -125,9 +138,9 @@ This lemma is used as a sanity check that the computable triple-lex measure does
 encode additional phases beyond the intended `recΔ _ _ (delta _)` detection.
 -/
 lemma deltaFlag_binary (t : Trace) : deltaFlag t = 0 ∨ deltaFlag t = 1 := by
-  cases t <;> simp [deltaFlag]
+  cases t <;> simp
   case recΔ b s n =>
-    cases n <;> simp [deltaFlag]
+    cases n <;> simp
 
 /-! ## Section 5: SafeStep Decrease Aggregation -/
 
@@ -137,7 +150,7 @@ example {a b : Trace} (h : SafeStep a b) :
   measure_decreases_safe_c h
 
 -- SafeStepRev is indeed well-founded
-example : WellFounded SafeStepRev := wf_SafeStepRev_c
+example : WellFounded MetaSN_KO7.SafeStepRev := wf_SafeStepRev_c
 
 /-! ## Section 6: Comparison with Noncomputable Measure -/
 
@@ -149,7 +162,7 @@ We can derive well-foundedness of `SafeStepRev` without appealing to any noncomp
 payload, by using `wf_SafeStepRev_c` from `Meta/ComputableMeasure.lean`.
 -/
 theorem computable_implies_original :
-    WellFounded SafeStepRev := by
+    WellFounded MetaSN_KO7.SafeStepRev := by
   exact wf_SafeStepRev_c
 
 -- Both measures agree on well-foundedness (modulo computability)
@@ -161,11 +174,13 @@ It only records that (i) the existence of *some* measure implies well-foundednes
 (ii) well-foundedness implies the existence of *a* measure (choose `mu3c`).
 -/
 theorem measures_equivalent_wf :
-    (∃ μ, WellFounded (fun a b => SafeStep b a)) ↔
-    WellFounded SafeStepRev := by
+    (∃ (_μ : Trace → Nat × (Multiset Nat × Nat)), WellFounded MetaSN_KO7.SafeStepRev) ↔
+      WellFounded MetaSN_KO7.SafeStepRev := by
   constructor
-  · intro ⟨_, h⟩; exact h
-  · intro h; exact ⟨mu3c, h⟩
+  · intro ⟨_, h⟩
+    exact h
+  · intro h
+    exact ⟨mu3c, h⟩
 
 /-! ## Section 7: Stress Tests -/
 
@@ -176,7 +191,6 @@ def bigTrace : Trace :=
 
 example : tau bigTrace = 3 + 2 + 1 + 1 := by
   simp [bigTrace, tau]
-  ring
 
 -- Measure works on big terms
 example :
@@ -191,7 +205,7 @@ lemma tau_delta_preserve (t : Trace) : tau (delta t) = tau t := rfl
 
 -- κᴹ behavior under constructors (from Termination_KO7)
 /-- Convenience bundle of basic `kappaM` simp-facts (re-exported as a single lemma). -/
-lemma kappaM_facts (a b s n : Trace) :
+lemma kappaM_facts (a b : Trace) :
     kappaM void = 0 ∧
     kappaM (delta a) = kappaM a ∧
     kappaM (integrate a) = kappaM a ∧
@@ -206,10 +220,7 @@ lemma deltaFlag_characterization (t : Trace) :
     deltaFlag t = 1 ↔ ∃ b s n, t = recΔ b s (delta n) := by
   cases t <;> simp [deltaFlag]
   case recΔ b s n =>
-    cases n <;> simp [deltaFlag]
-    constructor
-    · intro _; exact ⟨b, s, _, rfl⟩
-    · intro ⟨_, _, _, h⟩; injection h
+    cases n <;> simp
 
 /-! ## Section 9: No Infinite Chains -/
 
@@ -222,12 +233,9 @@ theorem no_infinite_safestep_chain :
   have dec : ∀ n, Lex3c (mu3c (seq (n + 1))) (mu3c (seq n)) := by
     intro n
     exact measure_decreases_safe_c (h n)
-  -- But Lex3c is well-founded, so no infinite descending chain exists
-  have : ¬∃ (f : Nat → Nat × (Multiset Nat × Nat)),
-           ∀ n, Lex3c (f (n + 1)) (f n) := by
-    apply WellFounded.not_lt_decreasing_seq
-    exact wf_Lex3c
-  apply this
-  exact ⟨fun n => mu3c (seq n), dec⟩
+  -- But Lex3c is well-founded, so no infinite descending chain exists.
+  exact
+    (WellFounded.wellFounded_iff_no_descending_seq.1 wf_Lex3c).elim
+      ⟨fun n => mu3c (seq n), dec⟩
 
 end OperatorKO7.MetaCM.Verification
