@@ -173,11 +173,11 @@ We reuse the toy calculus from `OpIncomp`:
 namespace DuplicationRefs
 open OpIncomp
 
--- Pointers (names checked):
-#check OpIncomp.r4_size_after_eq_before_plus_piece  -- additive identity (dup_additive_failure)
-#check OpIncomp.r4_no_strict_drop_additive          -- no strict drop (not_strict_drop)
-#check OpIncomp.R4DM.dm_orient                      -- DM orientation (dm_orient_dup)
-#check OpIncomp.R4MPO.mpo_orient_r4                 -- MPO orientation (mpo_orient_dup)
+-- Pointers (elaboration-checked, editor-quiet):
+example (x y : Term) := OpIncomp.r4_size_after_eq_before_plus_piece x y  -- additive identity
+example (x y : Term) := OpIncomp.r4_no_strict_drop_additive x y          -- no strict drop
+example (x y : Term) := OpIncomp.R4DM.dm_orient x y                      -- DM orientation
+example (x y : Term) := OpIncomp.R4MPO.mpo_orient_r4 x y                 -- MPO orientation
 
 end DuplicationRefs
 
