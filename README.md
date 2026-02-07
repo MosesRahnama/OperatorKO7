@@ -139,7 +139,7 @@ lake build
 
 All theorems referenced in the paper are present in the codebase and can be verified by Lake's build process.
 
-### Optional “bulletproof” audits
+### Optional audits
 
 For a stricter consistency check of the paper’s failure-catalog indexing (including the later-added Approach \#9/\#10 namespaces), build:
 
