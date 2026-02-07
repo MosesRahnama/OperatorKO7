@@ -163,10 +163,7 @@ Every file in this repository exists for one of: (i) the paper source/license, (
 ### Repo root (Configuration & Documentation)
 
 - **`README.md`**: this landing page (theory-first, then build instructions, then file map).
-- **`SAFE_AUDIT.md`**: reader-facing scope audit: a concise "what is proved vs. what is not" map, with pointers to the exact Lean files/lemmas establishing the SafeStep artifact and the explicit full-kernel caveat.
 - **`CITATION.cff`**: machine-readable citation metadata for this software artifact.
-- **`ARCHIVAL_STRATEGY.md`**: comprehensive documentation of archival and citation strategy.
-- **`RELEASE_GUIDE.md`**: step-by-step guide for creating releases and DOI archival.
 - **`LICENSE`**: CC BY-NC-SA 4.0 license for the Lean code in this repository (commercial use requires a paid license).
 - **`.gitignore`**: Git ignore patterns (excludes build artifacts).
 - **`lean-toolchain`**: pins the Lean toolchain version used to build the project.
