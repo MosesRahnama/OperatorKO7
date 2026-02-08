@@ -15,7 +15,7 @@
 
 This repository contains the Lean 4 formalization accompanying the paper above.
 
-## Overview (what is proved vs what is conjectured)
+## Overview: what is proved vs what is conjectured
 
 ### The System: KO7
 
@@ -42,7 +42,7 @@ This repository **formally verifies** in Lean 4:
    - Single-bit flags fail
    - Any measure based on additive invariants fails
 
-### What This Repository Does NOT Prove (The Conjecture)
+### Conjecture
 
 This repository **does not** claim a proof of termination for the **full kernel `Step` relation**. The full system includes an additional rule (`eqW`) that redistributes step arguments across recursive calls in a way that defeats all known termination measures.
 
