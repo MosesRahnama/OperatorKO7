@@ -19,7 +19,7 @@ This repository contains the Lean 4 formalization accompanying the paper above.
 
 ### The System: KO7
 
-KO7 is a minimal rewrite calculus with **7 constructors** and **8 reduction rules**. It is deliberately designed as a minimal "relational operator-only" term rewriting system—meaning it can encode ordered computation (comparisons, iteration, sequential counting) using only structural rewrite rules without primitive recursion or arithmetic operators.
+KO7 is a minimal rewrite calculus with **7 constructors** and **8 reduction rules**. It is deliberately designed as a minimal "relational operator-only" term rewriting system-meaning it can encode ordered computation (comparisons, iteration, sequential counting) using only structural rewrite rules without primitive recursion or arithmetic operators.
 
 **Core definition:** [`OperatorKO7/Kernel.lean`](OperatorKO7/Kernel.lean)
 
@@ -55,7 +55,7 @@ This repository **does not** claim a proof of termination for the **full kernel 
 - This redistribution **defeats additive measures** (the resource can grow locally even as it shrinks globally)
 - The conjecture suggests a **fundamental limitation**: systems expressive enough to encode ordered data cannot prove their own termination using measures they can internally define
 
-**Analogy**: This is similar to Gödel's incompleteness—systems of sufficient expressive power cannot prove all true statements about themselves. Here, we conjecture that rewrite systems expressive enough for relational reasoning cannot prove their own termination using internally definable orderings.
+**Analogy**: This is similar to Gödel's incompleteness-systems of sufficient expressive power cannot prove all true statements about themselves. Here, we conjecture that rewrite systems expressive enough for relational reasoning cannot prove their own termination using internally definable orderings.
 
 ### Evidence for the Conjecture
 
