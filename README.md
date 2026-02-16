@@ -133,5 +133,5 @@ Building without cache may take 30-60 minutes (mathlib compiled from source).
 
 ## Licensing
 
-- **Lean code**: Apache-2.0 (see [`LICENSE`](LICENSE))
+- **Lean code**: CC BY-NC-ND 4.0 (see [`LICENSE`](LICENSE))
 - **Paper text**: CC BY-NC-ND 4.0 (see [`Paper/LICENSE`](Paper/LICENSE))
