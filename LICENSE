@@ -1,37 +1,56 @@
-Creative Commons Attribution-NonCommercial-ShareAlike 4.0 International License (CC BY-NC-SA 4.0)
+OperatorKO7 - Dual License
 
-Copyright (c) 2025 Moses Rahnama
+Copyright (c) 2024-2026 Moses Rahnama / Mina Analytics
+All rights reserved.
 
-This work is licensed under the Creative Commons Attribution-NonCommercial-ShareAlike 4.0 International License.
+This software is licensed under a dual-license model:
 
-You are free to:
+================================================================================
+1. ACADEMIC AND NON-COMMERCIAL USE (free)
+================================================================================
 
-  Share — copy and redistribute the material in any medium or format
-  Adapt — remix, transform, and build upon the material
+Permission is hereby granted, free of charge, to any person or organization
+obtaining a copy of this software and associated documentation files (the
+"Software"), to use, copy, and distribute the Software for non-commercial
+purposes, subject to the following conditions:
 
-Under the following terms:
+  (a) The above copyright notice and this license shall be included in all
+      copies or substantial portions of the Software.
 
-  Attribution — You must give appropriate credit, provide a link to the license, and indicate if changes were made. You may do so in any reasonable manner, but not in any way that suggests the licensor endorses you or your use.
+  (b) "Non-commercial purposes" includes academic research, education,
+      peer review, artifact evaluation, personal study, and use by
+      non-profit organizations.
 
-  NonCommercial — You may not use the material for commercial purposes without obtaining a paid commercial license from the copyright holder.
+  (c) Any publication or presentation that uses this Software must cite the
+      accompanying paper: arXiv:2512.00081.
 
-  ShareAlike — If you remix, transform, or build upon the material, you must distribute your contributions under the same license as the original.
+  (d) Modifications may be made for personal or academic use, but modified
+      versions may not be distributed without written permission from the
+      copyright holder.
 
-  No additional restrictions — You may not apply legal terms or technological measures that legally restrict others from doing anything the license permits.
+================================================================================
+2. COMMERCIAL USE (paid license required)
+================================================================================
 
-COMMERCIAL USE:
+Any use of this Software for commercial purposes requires a separate
+commercial license agreement with the copyright holder.
 
-Commercial use of this software requires a paid license. For commercial licensing inquiries, please contact the copyright holder.
+"Commercial purposes" includes, but is not limited to:
+  - Integration into commercial products or services
+  - Use in revenue-generating activities
+  - Use by for-profit organizations in production systems
+  - Offering the Software or derivatives as a service
 
-Commercial use includes, but is not limited to:
-  - Using the software in a commercial product or service
-  - Using the software to generate revenue
-  - Using the software in a business environment for profit-generating activities
+For commercial licensing inquiries, contact: moses.rahnama@live.com
 
-NOTICES:
+================================================================================
+3. DISCLAIMER
+================================================================================
 
-You do not have to comply with the license for elements of the material in the public domain or where your use is permitted by an applicable exception or limitation.
-
-No warranties are given. The license may not give you all of the permissions necessary for your intended use. For example, other rights such as publicity, privacy, or moral rights may limit how you use the material.
-
-Full license text available at: https://creativecommons.org/licenses/by-nc-sa/4.0/legalcode
+THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
+SOFTWARE.
