@@ -7,7 +7,7 @@
 
 Lean 4 formalization accompanying: [arXiv:2512.00081](https://arxiv.org/abs/2512.00081)
 
-**Contact:** moses.rahnama@live.com
+**Contact:** moses.rahnama@gmail.com
 
 ## What this repository contains
 
