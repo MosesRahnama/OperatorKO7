@@ -3,7 +3,7 @@
 [![Build Status](https://github.com/MosesRahnama/OperatorKO7/actions/workflows/build.yml/badge.svg)](https://github.com/MosesRahnama/OperatorKO7/actions/workflows/build.yml)
 [![DOI](https://zenodo.org/badge/DOI/10.48550/arXiv.2512.00081.svg)](https://doi.org/10.48550/arXiv.2512.00081)
 [![arXiv](https://img.shields.io/badge/arXiv-2512.00081-b31b1b.svg)](https://arxiv.org/abs/2512.00081)
-[![License](https://img.shields.io/badge/License-Apache%202.0-blue.svg)](LICENSE)
+[![License](https://img.shields.io/badge/License-Dual%20(Academic%20Free%20%7C%20Commercial%20Paid)-green.svg)](LICENSE)
 
 Lean 4 formalization accompanying: [arXiv:2512.00081](https://arxiv.org/abs/2512.00081)
 
@@ -105,11 +105,8 @@ Building without cache may take 30-60 minutes (mathlib compiled from source).
 
 | File | Contents |
 |------|----------|
-| `Paper/Rahnama_KO7_Submission.pdf` | Paper |
-| `Paper/LICENSE` | CC BY-NC-ND 4.0 (paper text) |
-| `SAFE_AUDIT.md` | Scope audit |
 | `CITATION.cff` | Citation metadata |
-| `LICENSE` | Apache-2.0 (Lean code) |
+| `LICENSE` | Dual license (academic free / commercial paid) |
 | `lean-toolchain` | Lean version pin |
 | `lakefile.lean` | Lake package config |
 | `lake-manifest.json` | Dependency lockfile |
@@ -133,5 +130,7 @@ Building without cache may take 30-60 minutes (mathlib compiled from source).
 
 ## Licensing
 
-- **Lean code**: CC BY-NC-ND 4.0 (see [`LICENSE`](LICENSE))
+- **Lean code**: Dual license (see [`LICENSE`](LICENSE))
+  - **Academic / non-commercial use**: Free. Requires citation of arXiv:2512.00081.
+  - **Commercial use**: Requires a paid license. Contact moses.rahnama@live.com.
 - **Paper text**: CC BY-NC-ND 4.0 (see [`Paper/LICENSE`](Paper/LICENSE))
