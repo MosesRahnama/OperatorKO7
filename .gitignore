@@ -14,3 +14,8 @@ Thumbs.db
 *~
 *.swp
 *.bak
+.tmp_claimsmap_refs.txt
+.gitignore
+.tmp_decls.csv
+.tmp_decls_fq.csv
+.tmp_missing_decls.csv
