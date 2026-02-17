@@ -19,7 +19,7 @@ A mechanically verified Lean 4 development for the KO7 term rewriting system (7 
 |--------|------|--------|
 | Strong normalization (`SafeStep`) | [`Termination_KO7.lean`](OperatorKO7/Meta/Termination_KO7.lean) | Proved |
 | Certified normalizer (total + sound) | [`Normalize_Safe.lean`](OperatorKO7/Meta/Normalize_Safe.lean) | Proved |
-| Newman confluence engine (`SafeStep`) | [`Newman_Safe.lean`](OperatorKO7/Meta/Newman_Safe.lean) | Proved (parameterized by `locAll`) |
+| Newman confluence engine (`SafeStep`) | [`Newman_Safe.lean`](OperatorKO7/Meta/Newman_Safe.lean) | Proved (parameterized theorem + discharged `locAll_safe` + unconditional `confluentSafe`) |
 | Non-local-join witness (`eqW void void`) | [`Confluence_Safe.lean`](OperatorKO7/Meta/Confluence_Safe.lean) | Proved |
 | Impossibility lemmas (additive/polynomial) | [`Impossibility_Lemmas.lean`](OperatorKO7/Meta/Impossibility_Lemmas.lean) | Proved |
 | Conjecture boundary barriers (full-Step no-go families) | [`Conjecture_Boundary.lean`](OperatorKO7/Meta/Conjecture_Boundary.lean) | Proved |
@@ -28,7 +28,7 @@ A mechanically verified Lean 4 development for the KO7 term rewriting system (7 
 ### Scope
 
 - All SN and normalizer results are for the guarded `SafeStep` fragment, not the full `Step` relation.
-- The Newman theorem is parameterized by a global local-join hypothesis (`locAll : forall a, LocalJoinAt a`). Confluence follows when that hypothesis is supplied.
+- The Newman core theorem is parameterized by a global local-join hypothesis (`locAll : forall a, LocalJoinAt a`), and this hypothesis is discharged in-repo (`locAll_safe`), yielding unconditional confluence for `SafeStep` (`confluentSafe`).
 - Full-system termination and full-system confluence are **not claimed**.
 - The full termination conjecture is supported by 7 machine-checked no-go barriers (in `Conjecture_Boundary.lean`) and a proof-theoretic argument connecting nested `recΔ` to the ε₀ ordinal boundary (in `Epsilon0_Boundary.md`).
 
@@ -84,7 +84,7 @@ Building without cache may take 30-60 minutes (mathlib compiled from source).
 | `Termination_KO7.lean` | `SafeStep` definition + SN proof (triple-lex measure) |
 | `ComputableMeasure.lean` | Computable termination certificate |
 | `Normalize_Safe.lean` | Certified normalizer (total + sound) |
-| `Newman_Safe.lean` | Newman engine (parameterized by `locAll`) |
+| `Newman_Safe.lean` | Newman engine + global hypothesis discharge (`locAll_safe`) + unconditional `SafeStep` confluence |
 | `Confluence_Safe.lean` | Local-join lemmas + full-step non-join witness |
 | `Conjecture_Boundary.lean` | Theorem-level no-go boundaries for internal/full-Step orientation classes |
 | `Epsilon0_Boundary.md` | Proof-theoretic analysis: ε₀ boundary, Gentzen connection, SafeStep/full-Step ordinal gap |
