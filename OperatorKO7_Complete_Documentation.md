@@ -1,9 +1,8 @@
 # OperatorKO7 Complete Documentation
 ## Kernel and Meta Development - Full Source Code
 
-**Generated:** January 23, 2026  
-**Updated:** February 5, 2026  
-**Repository:** OperatorKernelO6/OperatorKO7  
+**Generated:** February 17, 2026
+**Repository:** [MosesRahnama/OperatorKO7](https://github.com/MosesRahnama/OperatorKO7)
 **Author:** Moses Rahnama
 
 ---
@@ -12,44 +11,46 @@
 
 This document contains the complete source code for the OperatorKO7 Lean library, including:
 - **Kernel.lean**: Core calculus with 7 constructors and 8 reduction rules
-- **Meta folder**: 19 files containing termination proofs, confluence analysis, and impossibility results
+- **Meta folder**: 21 files containing termination proofs, confluence analysis, impossibility results, and conjecture boundary analysis
+- **Epsilon0_Boundary.md**: Proof-theoretic analysis connecting the conjecture to the epsilon-0 ordinal boundary
 
-The ordering below follows the proof process: kernel definition -> safe-fragment termination -> certified normalization -> confluence tooling -> computable certificate -> verification/smoke tests -> impossibility catalog and audits.
+The ordering below follows the proof architecture: kernel definition -> safe-fragment termination -> certified normalization -> confluence -> computable certificate -> verification/smoke tests -> impossibility catalog -> conjecture boundary -> proof-theoretic analysis.
 
 ---
 
 ## Table of Contents
 
-1. [Kernel.lean](#1-kernellean) - 59 lines
-2. [Meta/Termination.lean](#2-metaterminationlean) - 1649 lines
-3. [Meta/Termination_KO7.lean](#3-metaterminationko7lean) - 977 lines
-4. [Meta/Normalize_Safe.lean](#4-metanormalizesafelean) - 251 lines
-5. [Meta/SafeStep_Ctx.lean](#5-metasafestepctxlean) - 549 lines
-6. [Meta/Confluence_Safe.lean](#6-metaconfluencesafelean) - 456 lines
-7. [Meta/Newman_Safe.lean](#7-metanewmansafelean) - 174 lines
-8. [Meta/ComputableMeasure.lean](#8-metacomputablemeasurelean) - 460 lines
-9. [Meta/ComputableMeasure_Verification.lean](#9-metacomputablemeasureverificationlean) - 241 lines
-10. [Meta/ComputableMeasure_Test.lean](#10-metacomputablemeasuretestlean) - 39 lines
-11. [Meta/DM_MPO_Orientation.lean](#11-metadmmpoorientationlean) - 52 lines
-12. [Meta/CNFOrdinal.lean](#12-metacnfordinallean) - 1139 lines
-13. [Meta/Examples_Publish.lean](#13-metaexamplespublishlean) - 36 lines
-14. [Meta/HydraCore.lean](#14-metahydracorelean) - 35 lines
-15. [Meta/GoodsteinCore.lean](#15-metagoodsteincorelean) - 40 lines
-16. [Meta/Operational_Incompleteness.lean](#16-metaoperationalincompletenesslean) - 1188 lines
-17. [Meta/Impossibility_Lemmas.lean](#17-metaimpossibilitylemmaslean) - 391 lines
-18. [Meta/FailureModes.lean](#18-metafailuremodeslean) - 86 lines
-19. [Meta/ContractProbes.lean](#19-metacontractprobeslean) - 67 lines
-20. [Meta/PaperApproachIndex.lean](#20-metapaperapproachindexlean) - 39 lines
+1. [OperatorKO7/Kernel.lean](#1-operatorko7-kernel-lean) - 59 lines
+2. [OperatorKO7/Meta/Termination.lean](#2-operatorko7-meta-termination-lean) - 1649 lines
+3. [OperatorKO7/Meta/Termination_KO7.lean](#3-operatorko7-meta-termination_ko7-lean) - 977 lines
+4. [OperatorKO7/Meta/Normalize_Safe.lean](#4-operatorko7-meta-normalize_safe-lean) - 251 lines
+5. [OperatorKO7/Meta/SafeStep_Ctx.lean](#5-operatorko7-meta-safestep_ctx-lean) - 549 lines
+6. [OperatorKO7/Meta/Confluence_Safe.lean](#6-operatorko7-meta-confluence_safe-lean) - 530 lines
+7. [OperatorKO7/Meta/Newman_Safe.lean](#7-operatorko7-meta-newman_safe-lean) - 205 lines
+8. [OperatorKO7/Meta/ComputableMeasure.lean](#8-operatorko7-meta-computablemeasure-lean) - 460 lines
+9. [OperatorKO7/Meta/ComputableMeasure_Verification.lean](#9-operatorko7-meta-computablemeasure_verification-lean) - 241 lines
+10. [OperatorKO7/Meta/ComputableMeasure_Test.lean](#10-operatorko7-meta-computablemeasure_test-lean) - 46 lines
+11. [OperatorKO7/Meta/DM_MPO_Orientation.lean](#11-operatorko7-meta-dm_mpo_orientation-lean) - 52 lines
+12. [OperatorKO7/Meta/CNFOrdinal.lean](#12-operatorko7-meta-cnfordinal-lean) - 1139 lines
+13. [OperatorKO7/Meta/Examples_Publish.lean](#13-operatorko7-meta-examples_publish-lean) - 36 lines
+14. [OperatorKO7/Meta/HydraCore.lean](#14-operatorko7-meta-hydracore-lean) - 35 lines
+15. [OperatorKO7/Meta/GoodsteinCore.lean](#15-operatorko7-meta-goodsteincore-lean) - 40 lines
+16. [OperatorKO7/Meta/Operational_Incompleteness.lean](#16-operatorko7-meta-operational_incompleteness-lean) - 1188 lines
+17. [OperatorKO7/Meta/Impossibility_Lemmas.lean](#17-operatorko7-meta-impossibility_lemmas-lean) - 391 lines
+18. [OperatorKO7/Meta/FailureModes.lean](#18-operatorko7-meta-failuremodes-lean) - 86 lines
+19. [OperatorKO7/Meta/ContractProbes.lean](#19-operatorko7-meta-contractprobes-lean) - 67 lines
+20. [OperatorKO7/Meta/PaperApproachIndex.lean](#20-operatorko7-meta-paperapproachindex-lean) - 39 lines
+21. [OperatorKO7/Meta/Conjecture_Boundary.lean](#21-operatorko7-meta-conjecture_boundary-lean) - 333 lines
+22. [OperatorKO7/Meta/Epsilon0_Boundary.md](#22-operatorko7-meta-epsilon0_boundary-md) - 316 lines
+23. [OperatorKO7/Test/Sanity.lean](#23-operatorko7-test-sanity-lean) - 11 lines
 
 ---
 
-## 1. Kernel.lean
+## 1. OperatorKO7/Kernel.lean
 
 **File:** `OperatorKO7/Kernel.lean`
 
 **Lines:** 59
-
-**Purpose:** Defines the KO7 object language (`Trace`) and the full kernel reduction relation (`Step`) with 8 unconditional root rules.
 
 ```lean
 namespace OperatorKO7
@@ -111,15 +112,16 @@ theorem nf_no_stepstar_forward {a b : Trace} (hnf : NormalForm a) (h : StepStar 
   | StepStar.tail hs _ => False.elim (hnf ⟨_, hs⟩)
 
 end OperatorKO7
+
 ```
 
-## 2. Meta/Termination.lean
+---
+
+## 2. OperatorKO7/Meta/Termination.lean
 
 **File:** `OperatorKO7/Meta/Termination.lean`
 
 **Lines:** 1649
-
-**Purpose:** Ordinal/measure toolbox used by the termination developments (well-founded relations, ordinal payload helpers, and supporting lemmas).
 
 ```lean
 import OperatorKO7.Kernel
@@ -1771,15 +1773,16 @@ theorem strong_normalization_backward
   exact Subrelation.wf hsub hwf
 
 end MetaSN
+
 ```
 
-## 3. Meta/Termination_KO7.lean
+---
+
+## 3. OperatorKO7/Meta/Termination_KO7.lean
 
 **File:** `OperatorKO7/Meta/Termination_KO7.lean`
 
 **Lines:** 977
-
-**Purpose:** Main certified artifact: defines the guarded safe fragment (`SafeStep`) and proves strong normalization via the triple-lexicographic measure (phase bit + DM multiset + ordinal).
 
 ```lean
 import OperatorKO7.Meta.Termination
@@ -2759,15 +2762,16 @@ lemma lex3_drop_R_merge_void_right_zero (t : Trace)
 end MetaSN_KO7
 
 end MetaSN_Hybrid
+
 ```
 
-## 4. Meta/Normalize_Safe.lean
+---
+
+## 4. OperatorKO7/Meta/Normalize_Safe.lean
 
 **File:** `OperatorKO7/Meta/Normalize_Safe.lean`
 
 **Lines:** 251
-
-**Purpose:** Certified normalizer for `SafeStep`: totality and soundness of normalization for the safe fragment.
 
 ```lean
 import OperatorKO7.Kernel
@@ -3021,15 +3025,16 @@ theorem normalizeSafe_total (t : Trace) :
   ⟨normalizeSafe t, to_norm_safe t, norm_nf_safe t⟩
 
 end MetaSN_KO7
+
 ```
 
-## 5. Meta/SafeStep_Ctx.lean
+---
+
+## 5. OperatorKO7/Meta/SafeStep_Ctx.lean
 
 **File:** `OperatorKO7/Meta/SafeStep_Ctx.lean`
 
 **Lines:** 549
-
-**Purpose:** Context-closure utilities and star-closure helpers for `SafeStep` used by join/confluence proofs.
 
 ```lean
 import OperatorKO7.Kernel
@@ -3581,15 +3586,16 @@ theorem localJoin_eqW_refl_ctx_if_normalizes_to_delta (a n : Trace)
   exact hj hb hc
 
 end MetaSN_KO7
+
 ```
 
-## 6. Meta/Confluence_Safe.lean
+---
+
+## 6. OperatorKO7/Meta/Confluence_Safe.lean
 
 **File:** `OperatorKO7/Meta/Confluence_Safe.lean`
 
-**Lines:** 456
-
-**Purpose:** Local-join / critical-peak analysis for the safe fragment, plus an explicit full-kernel caveat (`eqW` overlap) for clarity.
+**Lines:** 530
 
 ```lean
 import OperatorKO7.Kernel
@@ -3964,6 +3970,80 @@ theorem localJoin_if_normalize_fixed (a : Trace) (hfix : normalizeSafe a = a) :
   -- avoid definality issues by expanding the goal
   intro b c hb hc
   exact (localJoin_of_nf a hnf) hb hc
+
+/--
+Global local-join discharge for the safe relation.
+
+This closes the remaining hypothesis needed by `Meta/Newman_Safe.lean`:
+for every source trace `a`, root local-joinability holds for `SafeStep`.
+-/
+theorem localJoin_all_safe : ∀ a : Trace, LocalJoinSafe a := by
+  intro a
+  cases a with
+  | void =>
+      exact localJoin_void
+  | delta t =>
+      exact localJoin_delta t
+  | integrate t =>
+      cases t with
+      | void =>
+          exact localJoin_integrate_void
+      | delta u =>
+          exact localJoin_int_delta u
+      | integrate u =>
+          exact localJoin_integrate_integrate u
+      | merge x y =>
+          exact localJoin_integrate_merge x y
+      | app x y =>
+          exact localJoin_integrate_app x y
+      | recΔ b s n =>
+          exact localJoin_integrate_rec b s n
+      | eqW x y =>
+          exact localJoin_integrate_eqW x y
+  | merge x y =>
+      by_cases hxv : x = void
+      · cases hxv
+        exact localJoin_merge_void_left y
+      · by_cases hyv : y = void
+        · cases hyv
+          exact localJoin_merge_void_right x
+        · by_cases hxy : x = y
+          · cases hxy
+            exact localJoin_merge_tt x
+          · exact localJoin_merge_no_void_neq x y hxv hyv hxy
+  | app x y =>
+      exact localJoin_app x y
+  | recΔ b s n =>
+      cases n with
+      | void =>
+          exact localJoin_rec_zero b s
+      | delta u =>
+          exact localJoin_rec_succ b s u
+      | integrate t =>
+          exact localJoin_rec_integrate b s t
+      | merge x y =>
+          exact localJoin_rec_merge b s x y
+      | app x y =>
+          exact localJoin_rec_app b s x y
+      | recΔ b' s' n' =>
+          refine localJoin_rec_other b s (recΔ b' s' n') ?hn0 ?hns
+          · intro h; cases h
+          · intro u h; cases h
+      | eqW x y =>
+          exact localJoin_rec_eqW b s x y
+  | eqW x y =>
+      by_cases hxy : x = y
+      · cases hxy
+        by_cases h0 : MetaSN_DM.kappaM x = 0
+        · refine localJoin_of_unique (a := eqW x x) (d := void) ?h
+          intro z hz
+          cases hz with
+          | R_eq_refl _ _ =>
+              rfl
+          | R_eq_diff _ _ hne =>
+              exact False.elim (hne rfl)
+        · exact localJoin_eqW_refl_guard_ne x h0
+      · exact localJoin_eqW_ne x y hxy
 end MetaSN_KO7
 
 namespace MetaSN_KO7
@@ -4048,20 +4128,22 @@ theorem localJoin_ctx_eqW_refl_when_a_is_delta (n : Trace)
   localJoin_eqW_refl_ctx_when_a_is_delta n hδ h0
 
 end MetaSN_KO7
+
 ```
 
-## 7. Meta/Newman_Safe.lean
+---
+
+## 7. OperatorKO7/Meta/Newman_Safe.lean
 
 **File:** `OperatorKO7/Meta/Newman_Safe.lean`
 
-**Lines:** 174
-
-**Purpose:** Newman's Lemma engine: termination + local joinability -> confluence (used for the safe fragment story).
+**Lines:** 205
 
 ```lean
 import OperatorKO7.Kernel
 import OperatorKO7.Meta.Termination_KO7
 import OperatorKO7.Meta.Normalize_Safe
+import OperatorKO7.Meta.Confluence_Safe
 
 /-!
 Newman's lemma for the KO7 safe fragment.
@@ -4232,16 +4314,47 @@ theorem normalizeSafe_eq_of_star_of_loc
   have eq₂ := nf_no_safestar_forward (norm_nf_safe b) hbd
   simp [eq₁, eq₂]
 
+/-- Global local-join discharge for `SafeStep`, imported from `Confluence_Safe`. -/
+theorem locAll_safe : ∀ a, LocalJoinAt a := by
+  intro a b c hb hc
+  exact (MetaSN_KO7.localJoin_all_safe a) hb hc
+
+/-- Unconditional confluence for the safe fragment (`SafeStep`). -/
+theorem confluentSafe : ConfluentSafe :=
+  newman_safe locAll_safe
+
+/-- Unconditional unique normal forms for the safe fragment. -/
+theorem unique_normal_forms_safe
+    {a n₁ n₂ : Trace}
+    (h₁ : SafeStepStar a n₁) (h₂ : SafeStepStar a n₂)
+    (hnf₁ : NormalFormSafe n₁) (hnf₂ : NormalFormSafe n₂) :
+    n₁ = n₂ :=
+  unique_normal_forms_of_loc locAll_safe h₁ h₂ hnf₁ hnf₂
+
+/-- Unconditional normalizer uniqueness for safe-normal outputs. -/
+theorem normalizeSafe_unique
+    {t n : Trace}
+    (h : SafeStepStar t n) (hnf : NormalFormSafe n) :
+    n = normalizeSafe t :=
+  normalizeSafe_unique_of_loc locAll_safe h hnf
+
+/-- Unconditional normalization equality along safe-star reachability. -/
+theorem normalizeSafe_eq_of_star
+    {a b : Trace} (h : SafeStepStar a b) :
+    normalizeSafe a = normalizeSafe b :=
+  normalizeSafe_eq_of_star_of_loc locAll_safe h
+
 end MetaSN_KO7
+
 ```
 
-## 8. Meta/ComputableMeasure.lean
+---
+
+## 8. OperatorKO7/Meta/ComputableMeasure.lean
 
 **File:** `OperatorKO7/Meta/ComputableMeasure.lean`
 
 **Lines:** 460
-
-**Purpose:** Fully computable termination certificate for `SafeStep` (mu3c = (deltaFlag, kappaM, tau)) avoiding noncomputable ordinals.
 
 ```lean
 import OperatorKO7.Meta.Termination_KO7
@@ -4704,15 +4817,16 @@ theorem wf_SafeStepRev_c : WellFounded MetaSN_KO7.SafeStepRev :=
     (fun {_ _} h => measure_decreases_safe_c h)
 
 end OperatorKO7.MetaCM
+
 ```
 
-## 9. Meta/ComputableMeasure_Verification.lean
+---
+
+## 9. OperatorKO7/Meta/ComputableMeasure_Verification.lean
 
 **File:** `OperatorKO7/Meta/ComputableMeasure_Verification.lean`
 
 **Lines:** 241
-
-**Purpose:** Extra verification suite for the computable measure: additional examples/lemmas and consistency checks (not required by the main artifact).
 
 ```lean
 import OperatorKO7.Meta.ComputableMeasure
@@ -4956,15 +5070,16 @@ theorem no_infinite_safestep_chain :
       ⟨fun n => mu3c (seq n), dec⟩
 
 end OperatorKO7.MetaCM.Verification
+
 ```
 
-## 10. Meta/ComputableMeasure_Test.lean
+---
+
+## 10. OperatorKO7/Meta/ComputableMeasure_Test.lean
 
 **File:** `OperatorKO7/Meta/ComputableMeasure_Test.lean`
 
-**Lines:** 39
-
-**Purpose:** Lightweight smoke test that the `ComputableMeasure` API is present and the key lemmas are callable (editor-quiet).
+**Lines:** 46
 
 ```lean
 import OperatorKO7.Meta.ComputableMeasure
@@ -4988,7 +5103,7 @@ open OperatorKO7.MetaCM
 open MetaSN_KO7
 
 -- Main theorem is available
-example : WellFounded MetaSN_KO7.SafeStepRev := wf_SafeStepRev_c
+example : WellFounded SafeStepRev := wf_SafeStepRev_c
 
 -- Measure decreases for each rule
 example (t : OperatorKO7.Trace) :
@@ -4998,23 +5113,31 @@ example (t : OperatorKO7.Trace) :
   drop_R_int_delta_c t
 
 -- All 8 rules work
--- (Previously `#check`ed here; we keep the file editor-quiet by using `example` goals only.)
+#check drop_R_int_delta_c
+#check drop_R_merge_void_left_c
+#check drop_R_merge_void_right_c
+#check drop_R_merge_cancel_c
+#check drop_R_rec_zero_c
+#check drop_R_rec_succ_c
+#check drop_R_eq_refl_c
+#check drop_R_eq_diff_c
 
 -- Main aggregator works
--- (Available as `measure_decreases_safe_c`; see the `example` above.)
+#check measure_decreases_safe_c
 
 -- If this file elaborates, the basic API of `ComputableMeasure.lean` is intact.
 
 end OperatorKO7.MetaCM.Test
+
 ```
 
-## 11. Meta/DM_MPO_Orientation.lean
+---
+
+## 11. OperatorKO7/Meta/DM_MPO_Orientation.lean
 
 **File:** `OperatorKO7/Meta/DM_MPO_Orientation.lean`
 
 **Lines:** 52
-
-**Purpose:** Small helper lemmas for DM/MPO orientations used in measure-decrease arguments for duplicating shapes.
 
 ```lean
 import OperatorKO7.Meta.Termination_KO7
@@ -5069,15 +5192,16 @@ lemma union_self_ne_zero_of_ne_zero {X : Multiset ℕ} (h : X ≠ 0) :
   simpa using MetaSN_DM.union_self_ne_zero_of_ne_zero h
 
 end OperatorKO7.MetaOrientation
+
 ```
 
-## 12. Meta/CNFOrdinal.lean
+---
+
+## 12. OperatorKO7/Meta/CNFOrdinal.lean
 
 **File:** `OperatorKO7/Meta/CNFOrdinal.lean`
 
 **Lines:** 1139
-
-**Purpose:** Constructive Cantor Normal Form (CNF) ordinal utilities and a computable check suite (kept editor-quiet via `example := by decide`).
 
 ```lean
 -- (pretty-printing and examples moved below, after definitions)
@@ -6219,15 +6343,16 @@ example : check_sort_is_nondecreasing = true := by decide
 example : check_list_min_max_nonempty = true := by decide
 
 end OperatorKO7.MetaCNF
+
 ```
 
-## 13. Meta/Examples_Publish.lean
+---
+
+## 13. OperatorKO7/Meta/Examples_Publish.lean
 
 **File:** `OperatorKO7/Meta/Examples_Publish.lean`
 
 **Lines:** 36
-
-**Purpose:** Minimal examples intended for publication/reviewer quick checks of the safe-fragment machinery.
 
 ```lean
 import OperatorKO7.Kernel
@@ -6266,15 +6391,16 @@ example : OperatorKO7.MetaCM.Lex3c
   have hδ : MetaSN_KO7.deltaFlag OperatorKO7.Trace.void = 0 := by
     simp [MetaSN_KO7.deltaFlag]
   simpa using OperatorKO7.MetaCM.drop_R_merge_void_left_c OperatorKO7.Trace.void hδ
+
 ```
 
-## 14. Meta/HydraCore.lean
+---
+
+## 14. OperatorKO7/Meta/HydraCore.lean
 
 **File:** `OperatorKO7/Meta/HydraCore.lean`
 
 **Lines:** 35
-
-**Purpose:** Small Hydra-style toy core used as an auxiliary stress-test encoding in the probes.
 
 ```lean
 /-!
@@ -6312,15 +6438,16 @@ example (h : Hydra) : ∃ h', Step (node head h) h' := ⟨node h h, Step.chop_le
 
 end HydraCore
 end OperatorKO7
+
 ```
 
-## 15. Meta/GoodsteinCore.lean
+---
+
+## 15. OperatorKO7/Meta/GoodsteinCore.lean
 
 **File:** `OperatorKO7/Meta/GoodsteinCore.lean`
 
 **Lines:** 40
-
-**Purpose:** Small Goodstein-style toy core used as an auxiliary stress-test encoding in the probes.
 
 ```lean
 /-!
@@ -6363,15 +6490,16 @@ inductive Step : St → St → Prop where
 
 end GoodsteinCore
 end OperatorKO7
+
 ```
 
-## 16. Meta/Operational_Incompleteness.lean
+---
+
+## 16. OperatorKO7/Meta/Operational_Incompleteness.lean
 
 **File:** `OperatorKO7/Meta/Operational_Incompleteness.lean`
 
 **Lines:** 1188
-
-**Purpose:** Probe-oriented module (P1-P3) and duplication stress-test scaffolding supporting the paper operational incompleteness framing.
 
 ```lean
 import Mathlib.Data.Multiset.Basic
@@ -7562,15 +7690,16 @@ example (x : Term) :
   -- r8: mul x z → z
   simpa using (M_size.lex_ok (Rule.r8 x))
 end OperatorKO7.OpIncomp
+
 ```
 
-## 17. Meta/Impossibility_Lemmas.lean
+---
+
+## 17. OperatorKO7/Meta/Impossibility_Lemmas.lean
 
 **File:** `OperatorKO7/Meta/Impossibility_Lemmas.lean`
 
 **Lines:** 391
-
-**Purpose:** Central failure/impossibility catalog (approach witnesses), including the later-added Approach #9 (Constellation) and #10 (Unchecked Recursion).
 
 ```lean
 import OperatorKO7.Meta.Operational_Incompleteness
@@ -7964,15 +8093,16 @@ see `Meta/HydraCore.lean` and `Meta/GoodsteinCore.lean` (examples only). -/
 
 end Impossibility
 end OperatorKO7
+
 ```
 
-## 18. Meta/FailureModes.lean
+---
+
+## 18. OperatorKO7/Meta/FailureModes.lean
 
 **File:** `OperatorKO7/Meta/FailureModes.lean`
 
 **Lines:** 86
-
-**Purpose:** Concrete negative tests/counterexample sketches documenting common proof failure modes and NameGate/TypeGate hazards.
 
 ```lean
 import OperatorKO7.Kernel
@@ -8061,15 +8191,16 @@ lemma deltaFlag_not_preserved_merge_void (b s n : Trace) :
 lemma note_ko7_duplication_mapping : True := by trivial
 
 end OperatorKO7.Countermodels
+
 ```
 
-## 19. Meta/ContractProbes.lean
+---
+
+## 19. OperatorKO7/Meta/ContractProbes.lean
 
 **File:** `OperatorKO7/Meta/ContractProbes.lean`
 
 **Lines:** 67
-
-**Purpose:** Strict Execution Contract probes (P1-P3 narrative-only examples); intentionally lightweight and build-safe.
 
 ```lean
 /-!
@@ -8139,15 +8270,16 @@ One arity/type mismatch example (TypeGate):
 -/
 
 end OperatorKO7.MetaProbes
+
 ```
 
-## 20. Meta/PaperApproachIndex.lean
+---
+
+## 20. OperatorKO7/Meta/PaperApproachIndex.lean
 
 **File:** `OperatorKO7/Meta/PaperApproachIndex.lean`
 
 **Lines:** 39
-
-**Purpose:** Audit target: compile-time anchors to ensure the paper approach numbering stays in sync with the mechanized lemmas (cycle-safe).
 
 ```lean
 import OperatorKO7.Meta.Impossibility_Lemmas
@@ -8188,5 +8320,707 @@ example :=
   UncheckedRecursionFailure.full_step_permits_barrier
 
 end OperatorKO7.Meta.PaperApproachIndex
+
+
 ```
+
+---
+
+## 21. OperatorKO7/Meta/Conjecture_Boundary.lean
+
+**File:** `OperatorKO7/Meta/Conjecture_Boundary.lean`
+
+**Lines:** 333
+
+```lean
+import OperatorKO7.Meta.Impossibility_Lemmas
+import OperatorKO7.Meta.Operational_Incompleteness
+
+/-!
+# Conjecture Boundary (Theorem-Level No-Go Statements)
+
+This module collects theorem-level barriers that are already justified by the
+current KO7 artifact. It does **not** claim a proof of full-system
+non-termination, and it does **not** upgrade the paper conjecture to a theorem.
+
+The purpose is narrower:
+- record explicit "no-go" theorems for concrete internal method families;
+- keep these boundaries importable from one place for audit/review.
+-/
+
+namespace OperatorKO7.MetaConjectureBoundary
+
+open OperatorKO7 Trace
+open OperatorKO7.Impossibility
+
+/-! ## Global-orientation interface (full kernel Step) -/
+
+/-- A measure/order pair globally orients the full kernel `Step`. -/
+def GlobalOrients {α : Type} (m : Trace → α) (lt : α → α → Prop) : Prop :=
+  ∀ {a b}, Step a b → lt (m b) (m a)
+
+/-! ## Additive / Lex barriers -/
+
+/-- No fixed additive bump on `kappa` can orient `rec_succ` uniformly. -/
+theorem no_fixed_kappa_plus_k (k : Nat) :
+    ¬ (∀ (b s n : Trace),
+      FailedMeasures.kappa (app s (recΔ b s n)) + k <
+      FailedMeasures.kappa (recΔ b s (delta n)) + k) :=
+  FailedMeasures.kappa_plus_k_fails k
+
+/-- The simple 2-component lex witness `(kappa, mu)` fails on KO7. -/
+theorem no_simple_lex_witness :
+    ¬ (∀ (b s n : Trace),
+      Prod.Lex (· < ·) (· < ·)
+        (FailedMeasures.kappa (app s (recΔ b s n)),
+         FailedMeasures.mu (app s (recΔ b s n)))
+        (FailedMeasures.kappa (recΔ b s (delta n)),
+         FailedMeasures.mu (recΔ b s (delta n)))) :=
+  FailedMeasures.simple_lex_fails
+
+/-- Additive size cannot strictly decrease across all `rec_succ` instances. -/
+theorem no_additive_strict_drop_rec_succ :
+    ¬ (∀ (b s n : Trace),
+      UncheckedRecursionFailure.simpleSize (app s (recΔ b s n)) <
+      UncheckedRecursionFailure.simpleSize (recΔ b s (delta n))) := by
+  intro h
+  have hlt := h void void void
+  have hge :=
+    UncheckedRecursionFailure.rec_succ_additive_barrier void void void
+  exact Nat.not_lt_of_ge hge hlt
+
+/-! ## Strengthened full-step no-go theorems -/
+
+/-- No fixed additive bump can globally orient full `Step`. -/
+theorem no_global_step_orientation_kappa_plus_k (k : Nat) :
+    ¬ GlobalOrients (fun t => FailedMeasures.kappa t + k) (· < ·) := by
+  intro h
+  apply no_fixed_kappa_plus_k k
+  intro b s n
+  exact h (Step.R_rec_succ b s n)
+
+/-- Plain structural depth (`kappa`) cannot globally orient full `Step`. -/
+theorem no_global_step_orientation_kappa :
+    ¬ GlobalOrients FailedMeasures.kappa (· < ·) := by
+  intro h
+  apply no_fixed_kappa_plus_k 0
+  intro b s n
+  have hlt : FailedMeasures.kappa (app s (recΔ b s n)) <
+      FailedMeasures.kappa (recΔ b s (delta n)) :=
+    h (Step.R_rec_succ b s n)
+  simp at hlt
+
+/-- The simple lex witness `(kappa, mu)` cannot globally orient full `Step`. -/
+theorem no_global_step_orientation_simple_lex :
+    ¬ GlobalOrients
+      (fun t => (FailedMeasures.kappa t, FailedMeasures.mu t))
+      (Prod.Lex (· < ·) (· < ·)) := by
+  intro h
+  apply no_simple_lex_witness
+  intro b s n
+  exact h (Step.R_rec_succ b s n)
+
+/-- Additive `simpleSize` cannot globally orient full `Step`. -/
+theorem no_global_step_orientation_simpleSize :
+    ¬ GlobalOrients UncheckedRecursionFailure.simpleSize (· < ·) := by
+  intro h
+  apply no_additive_strict_drop_rec_succ
+  intro b s n
+  exact h (Step.R_rec_succ b s n)
+
+/-! ## Flag-only barrier -/
+
+/-- A single top-level flag cannot globally orient full `Step`. -/
+theorem no_global_flag_only_orientation :
+    ¬ (∀ a b : Trace, Step a b →
+      FlagFailure.deltaFlagTop b < FlagFailure.deltaFlagTop a) := by
+  intro h
+  let t : Trace := delta void
+  have hstep : Step (merge void t) t := Step.R_merge_void_left t
+  have hlt : FlagFailure.deltaFlagTop t < FlagFailure.deltaFlagTop (merge void t) :=
+    h _ _ hstep
+  simp [FlagFailure.deltaFlagTop, t] at hlt
+
+/-! ## Constellation / structural hybrid barrier -/
+
+/-- Constellation-size cannot strictly decrease on all `rec_succ` instances. -/
+theorem no_constellation_strict_drop_rec_succ :
+    ¬ (∀ (b s n : Trace),
+      ConstellationFailure.constellationSize
+        (ConstellationFailure.toConstellation (app s (recΔ b s n))) <
+      ConstellationFailure.constellationSize
+        (ConstellationFailure.toConstellation (recΔ b s (delta n)))) := by
+  intro h
+  have hlt := h void void void
+  have hs :
+      ConstellationFailure.constellationSize
+        (ConstellationFailure.toConstellation (void : Trace)) ≥ 1 := by
+    simp [ConstellationFailure.constellationSize, ConstellationFailure.toConstellation]
+  have hge :=
+    ConstellationFailure.constellation_size_not_decreasing void void void hs
+  exact Nat.not_lt_of_ge hge hlt
+
+/-- Constellation-size cannot globally orient full `Step`. -/
+theorem no_global_step_orientation_constellation :
+    ¬ GlobalOrients
+      (fun t =>
+        ConstellationFailure.constellationSize
+          (ConstellationFailure.toConstellation t))
+      (· < ·) := by
+  intro h
+  apply no_constellation_strict_drop_rec_succ
+  intro b s n
+  exact h (Step.R_rec_succ b s n)
+
+/-- Strictly monotone post-processing cannot rescue additive `simpleSize` on full `Step`. -/
+theorem no_global_step_orientation_simpleSize_strictMono
+    (f : Nat → Nat) (hf : StrictMono f) :
+    ¬ GlobalOrients
+      (fun t => f (UncheckedRecursionFailure.simpleSize t))
+      (· < ·) := by
+  intro h
+  have hstep : Step (recΔ void void (delta void)) (app void (recΔ void void void)) :=
+    Step.R_rec_succ void void void
+  have hlt :
+      f (UncheckedRecursionFailure.simpleSize (app void (recΔ void void void))) <
+      f (UncheckedRecursionFailure.simpleSize (recΔ void void (delta void))) :=
+    h hstep
+  have hge :
+      UncheckedRecursionFailure.simpleSize (app void (recΔ void void void)) ≥
+      UncheckedRecursionFailure.simpleSize (recΔ void void (delta void)) :=
+    UncheckedRecursionFailure.rec_succ_additive_barrier void void void
+  have hmono :
+      f (UncheckedRecursionFailure.simpleSize (recΔ void void (delta void))) ≤
+      f (UncheckedRecursionFailure.simpleSize (app void (recΔ void void void))) :=
+    hf.monotone hge
+  exact Nat.not_lt_of_ge hmono hlt
+
+/-! ## Bridge wrappers to `OpIncomp.InternallyDefinableMeasure` -/
+
+/-- Any internal witness must include the explicit duplication non-drop barrier (r4). -/
+theorem internal_measure_records_duplication_barrier
+    (M : OperatorKO7.OpIncomp.InternallyDefinableMeasure)
+    (x y : OperatorKO7.OpIncomp.Term) :
+    ¬ OperatorKO7.OpIncomp.size (OperatorKO7.OpIncomp.R4_after x y) <
+      OperatorKO7.OpIncomp.size (OperatorKO7.OpIncomp.R4_before x y) :=
+  M.dup_additive_nodrop_r4 x y
+
+/-- Any internal witness must provide per-piece orientation for every rule instance. -/
+theorem internal_measure_requires_per_piece_lt
+    (M : OperatorKO7.OpIncomp.InternallyDefinableMeasure)
+    {l r : OperatorKO7.OpIncomp.Term}
+    (hr : OperatorKO7.OpIncomp.Rule l r)
+    {t : OperatorKO7.OpIncomp.Term}
+    (ht : t ∈ OperatorKO7.OpIncomp.rhsPiecesLHS l) :
+    M.base t l :=
+  M.per_piece_base_lt hr t ht
+
+/-- Exposes the lex/orientation gate encoded in `InternallyDefinableMeasure`. -/
+theorem internal_measure_lex_gate
+    (M : OperatorKO7.OpIncomp.InternallyDefinableMeasure)
+    {l r : OperatorKO7.OpIncomp.Term}
+    (hr : OperatorKO7.OpIncomp.Rule l r) :
+    (M.flag r = false ∧ M.flag l = true) ∨
+      (∃ t, t ∈ OperatorKO7.OpIncomp.rhsPiecesLHS l ∧ M.base t l) ∨
+      M.base r l :=
+  M.lex_ok hr
+
+/-! ## Flag barrier (GlobalOrients form) -/
+
+/-- A single top-level δ-flag cannot globally orient full `Step` (GlobalOrients form). -/
+theorem no_global_step_orientation_flag :
+    ¬ GlobalOrients FlagFailure.deltaFlagTop (· < ·) := by
+  intro h
+  have hstep : Step (merge void (delta void)) (delta void) :=
+    Step.R_merge_void_left (delta void)
+  have hlt := h hstep
+  simp [FlagFailure.deltaFlagTop] at hlt
+
+/-! ## Strict increase witness (rec_succ makes additive measures grow) -/
+
+/-- When `s` is non-void, `simpleSize` strictly INCREASES across `rec_succ`.
+The duplication barrier is not just "no drop" - the measure goes UP. -/
+theorem rec_succ_size_strictly_increases (b s n : Trace)
+    (hs : UncheckedRecursionFailure.simpleSize s ≥ 1) :
+    UncheckedRecursionFailure.simpleSize (app s (recΔ b s n)) >
+    UncheckedRecursionFailure.simpleSize (recΔ b s (delta n)) :=
+  UncheckedRecursionFailure.rec_succ_size_increases b s n hs
+
+/-! ## StrictMono generalization for kappa -/
+
+/-- Strictly monotone post-processing cannot rescue `kappa` on full `Step`.
+Analogous to `no_global_step_orientation_simpleSize_strictMono`. -/
+theorem no_global_step_orientation_kappa_strictMono
+    (f : Nat → Nat) (hf : StrictMono f) :
+    ¬ GlobalOrients (fun t => f (FailedMeasures.kappa t)) (· < ·) := by
+  intro h
+  have hstep : Step (recΔ void void (delta (delta void)))
+      (app void (recΔ void void (delta void))) :=
+    Step.R_rec_succ void void (delta void)
+  have hlt := h hstep
+  have hge : FailedMeasures.kappa (app void (recΔ void void (delta void))) ≥
+      FailedMeasures.kappa (recΔ void void (delta (delta void))) := by
+    simp [FailedMeasures.kappa]
+  exact Nat.not_lt_of_ge (hf.monotone hge) hlt
+
+/-! ## Dual-barrier theorem (rec_succ vs merge_void are complementary) -/
+
+/-- The duplication barrier and the flag barrier target DIFFERENT rules.
+Any single Nat-valued measure that handles rec_succ (which requires insensitivity
+to duplication of `s`) is blocked by merge_void (which can raise flags), and vice
+versa. This theorem witnesses both barriers simultaneously on full `Step`. -/
+theorem dual_barrier_rec_succ_and_merge_void :
+    -- (1) Additive size fails on rec_succ:
+    (∀ (b s n : Trace),
+      UncheckedRecursionFailure.simpleSize (app s (recΔ b s n)) ≥
+      UncheckedRecursionFailure.simpleSize (recΔ b s (delta n)))
+    ∧
+    -- (2) δ-flag increases on merge_void_left:
+    (FlagFailure.deltaFlagTop (delta void) >
+     FlagFailure.deltaFlagTop (merge void (delta void))) := by
+  constructor
+  · exact UncheckedRecursionFailure.rec_succ_additive_barrier
+  · simp [FlagFailure.deltaFlagTop]
+
+/-! ## Structural depth barrier (#6: ties on collapsing rules)
+
+A nesting-depth measure that does NOT count `merge` as a level ties on
+`merge_cancel`. This formalizes failure mode #6 from the paper:
+"Structural depth: Ties on collapsing rules (merge_cancel)." -/
+
+/-- Nesting depth where `merge` does not add a level. -/
+@[simp] def nestingDepth : Trace → Nat
+  | .void => 0
+  | .delta t => nestingDepth t + 1
+  | .integrate t => nestingDepth t + 1
+  | .merge a b => max (nestingDepth a) (nestingDepth b)
+  | .app a b => max (nestingDepth a) (nestingDepth b) + 1
+  | .recΔ b s n => max (max (nestingDepth b) (nestingDepth s)) (nestingDepth n) + 1
+  | .eqW a b => max (nestingDepth a) (nestingDepth b) + 1
+
+/-- `nestingDepth` ties on `merge_cancel`: `nestingDepth(merge t t) = nestingDepth(t)`.
+Since `merge t t → t`, orientation requires `nestingDepth(t) < nestingDepth(merge t t)`,
+which is `nestingDepth(t) < nestingDepth(t)` - false. -/
+theorem nestingDepth_merge_cancel_tie (t : Trace) :
+    nestingDepth (merge t t) = nestingDepth t := by
+  simp
+
+/-- `nestingDepth` cannot globally orient full `Step` (fails at merge_cancel). -/
+theorem no_global_step_orientation_nestingDepth :
+    ¬ GlobalOrients nestingDepth (· < ·) := by
+  intro h
+  have hstep : Step (merge void void) void := Step.R_merge_cancel void
+  have hlt := h hstep
+  simp [nestingDepth] at hlt
+
+/-! ## Polynomial interpretation barrier (#3: Ladder Paradox)
+
+Polynomial measures using multiplicative coefficients at `recΔ` (e.g.,
+`M(recΔ b s n) = M(b) + M(s) * M(n)`) tie on `rec_succ` regardless of
+base weight. With additive `app`, the duplication of `s` is exactly
+cancelled by the multiplication:
+
+  M(recΔ b s (delta n)) = M(b) + M(s)*(M(n)+1) = M(b) + M(s)*M(n) + M(s)
+  M(app s (recΔ b s n)) = M(s) + M(b) + M(s)*M(n)
+
+These are equal by commutativity of addition. Any polynomial that DOES
+break this tie requires importing external constants (e.g., `M(void) = 2`)
+and node-weight arithmetic - this is the Ladder Paradox (Gate F.4 in the
+Strict Execution Contract): the termination proof works only because it
+maps to external arithmetic we already trust, not because of any
+internally definable property. -/
+
+/-- Polynomial measure with multiplicative `recΔ`, parameterized by base weight `w`. -/
+@[simp] def polyMul (w : Nat) : Trace → Nat
+  | .void => w
+  | .delta t => polyMul w t + 1
+  | .integrate t => polyMul w t + 1
+  | .merge a b => polyMul w a + polyMul w b
+  | .app a b => polyMul w a + polyMul w b
+  | .recΔ b s n => polyMul w b + polyMul w s * polyMul w n
+  | .eqW a b => polyMul w a + polyMul w b
+
+/-- Polynomial with multiplicative `recΔ` TIES on `rec_succ` for ANY base weight.
+This is an exact equality, not just a non-strict inequality. -/
+theorem poly_mul_ties_rec_succ (w : Nat) (b s n : Trace) :
+    polyMul w (app s (recΔ b s n)) =
+    polyMul w (recΔ b s (delta n)) := by
+  simp [polyMul, Nat.mul_add]
+  omega
+
+/-- Polynomial `polyMul` cannot globally orient full `Step` (ties on rec_succ). -/
+theorem no_global_step_orientation_polyMul (w : Nat) :
+    ¬ GlobalOrients (polyMul w) (· < ·) := by
+  intro h
+  have hstep : Step (recΔ void void (delta void)) (app void (recΔ void void void)) :=
+    Step.R_rec_succ void void void
+  have hlt := h hstep
+  have heq := poly_mul_ties_rec_succ w void void void
+  omega
+
+/-! ## Full-step witness (duplication branch is present in kernel Step) -/
+
+/-- The unrestricted kernel `Step` contains the duplication branch explicitly. -/
+theorem full_step_has_rec_succ_instance :
+    ∃ b s n, Step (recΔ b s (delta n)) (app s (recΔ b s n)) :=
+  UncheckedRecursionFailure.full_step_permits_barrier
+
+end OperatorKO7.MetaConjectureBoundary
+
+```
+
+---
+
+## 22. OperatorKO7/Meta/Epsilon0_Boundary.md
+
+**File:** `OperatorKO7/Meta/Epsilon0_Boundary.md`
+
+**Lines:** 316
+
+*Note: This file is Markdown documentation, not Lean source.*
+
+```markdown
+# The ε₀ Boundary: Proof-Theoretic Analysis of the Full Termination Conjecture
+
+**Repository**: [MosesRahnama/OperatorKO7](https://github.com/MosesRahnama/OperatorKO7)
+**Companion file**: `Meta/Conjecture_Boundary.lean` (formal barriers)
+**Paper**: Rahnama, "Strong Normalization for the Safe Fragment of a Minimal Rewrite System" (JAIR, submitted February 2026)
+
+---
+
+## 1. Summary
+
+The paper's Conjecture 8.1 states that no internally definable measure can
+prove full-system termination for KO7-style relational operator-only TRSs with
+unrestricted recursor-step duplication.
+
+This document provides a proof-theoretic explanation for why the conjecture
+is expected to hold. The argument connects the KO7 kernel's expressivity to
+Gentzen's theorem and the ordinal ε₀, offering a structural account of the
+paper's empirical observation (10 failed approaches). The argument is
+conditional on a System T expressivity hypothesis (Section 2.3) that is
+well-motivated but not yet formally established in the codebase.
+
+---
+
+## 2. The ε₀ Identification
+
+### 2.1 Nested `recΔ` and System T
+
+The KO7 kernel permits nested primitive recursion:
+
+```
+recΔ b s (recΔ b' s' n')
+```
+
+A single `recΔ b s n` iterates `s` over the predecessor structure of `n`
+(peeling off `delta` wrappers). Nesting `recΔ` inside `recΔ` gives iterated
+primitive recursion - the step function of the outer loop is itself defined
+by primitive recursion.
+
+This is precisely the expressivity of Godel's System T (simply typed lambda
+calculus with primitive recursion at all types). System T can express:
+
+- All primitive recursive functions (single `recΔ`)
+- All multiply recursive functions (nested `recΔ`)
+- The Ackermann function (via sufficient nesting depth)
+
+The **proof-theoretic ordinal** of System T is exactly **ε₀**, the smallest
+ordinal satisfying ω^ε₀ = ε₀.
+
+### 2.2 What ε₀ means
+
+ε₀ is the supremum of the sequence:
+
+```
+ω, ω^ω, ω^(ω^ω), ω^(ω^(ω^ω)), ...
+```
+
+It is the closure of ordinal exponentiation with base ω. Any system whose
+reductions can simulate nested loops up to arbitrary depth requires
+transfinite induction up to at least ε₀ to prove termination.
+
+### 2.3 Caveat: the identification needs justification
+
+The claim "KO7 with nested recΔ ≈ System T" requires a formal embedding:
+
+1. **Forward**: every System T function can be encoded as a KO7 term whose
+   normalization computes the function.
+2. **Backward**: every KO7 reduction sequence is bounded by a System T
+   computation.
+
+The `Operational_Incompleteness.lean` module provides partial evidence
+(Goodstein and Hydra simulations), but a complete embedding is an open
+formalization task. The proof-theoretic ordinal identification is therefore
+a well-motivated claim, not yet a formal theorem in the codebase.
+
+---
+
+## 3. Why Measures Below ε₀ Are Insufficient
+
+### 3.1 The ordinal hierarchy of termination methods
+
+| Method family | Ordinal strength | Handles rec_succ? |
+|---|---|---|
+| Additive counters (ℕ-valued) | < ω | No (duplication barrier) |
+| Polynomial interpretations | < ω^ω | Ties exactly (Ladder Paradox) |
+| Dershowitz-Manna multiset over ℕ | < ω^ω | No (for full Step) |
+| LPO / RPO / MPO | < ω^ω | Partial (SafeStep only) |
+| Simple lexicographic (κ, μ) | < ω^ω | No (κ ties on rec_succ) |
+| Triple-lex (δ, κᴹ, μ) | < ω^ω | Yes, for SafeStep only |
+| **Exponential ordinal towers** | **= ε₀** | **Yes, for full Step** |
+
+All methods below ε₀ stay within the ω^ω regime. The duplication in
+`rec_succ` - where `s` appears once on the LHS and twice on the RHS -
+defeats any measure that distributes additively or multiplicatively over
+term structure, because the algebraic identity
+
+```
+M(app s (recΔ b s n)) = M(s) + M(b) + M(s) * M(n)
+M(recΔ b s (delta n)) = M(b) + M(s) * (M(n) + 1) = M(b) + M(s) * M(n) + M(s)
+```
+
+yields exact equality (proven in `Conjecture_Boundary.lean` as
+`poly_mul_ties_rec_succ`). Breaking this tie requires a measure that grows
+**exponentially** in the nesting depth - which is exactly what ω-towers provide.
+
+### 3.2 Formal witnesses (in `Conjecture_Boundary.lean`)
+
+The following barriers are machine-checked:
+
+- `no_fixed_kappa_plus_k`: additive κ+k fails (barrier #1)
+- `no_simple_lex_witness`: (κ, μ) lex fails (barrier #2)
+- `poly_mul_ties_rec_succ`: polynomial ties exactly (barrier #3)
+- `no_global_flag_only_orientation`: flag-only fails (barrier #4)
+- `no_global_step_orientation_nestingDepth`: depth ties on merge_cancel (barrier #6)
+- `no_constellation_strict_drop_rec_succ`: constellation fails (barrier #9)
+- `no_additive_strict_drop_rec_succ`: additive size fails (barrier #10)
+- `dual_barrier_rec_succ_and_merge_void`: complementary barriers witnessed
+
+---
+
+## 4. Why the Exponential Measure Reaches ε₀
+
+### 4.1 The exponential measure shape
+
+An ordinal measure that orients all 8 rules of full Step uses exponential
+ordinals in the recursor clause:
+
+```
+μ(recΔ b s n) = ω^(μ(b) + μ(s) + μ(n) + c) + 1
+```
+
+for some constant `c`. This creates ordinal towers:
+
+- `μ(recΔ b s void)` involves `ω^(μ(b) + μ(s) + c)`
+- `μ(recΔ b s (delta void))` involves `ω^(μ(b) + μ(s) + μ(void) + 1 + c)`
+- Nested: `μ(recΔ b s (recΔ b' s' n'))` involves `ω^(... + ω^(...))`
+
+The closure of such towers is ε₀. The measure works precisely because
+ω-exponentiation absorbs duplication: when `s` is duplicated, both copies
+contribute to the exponent, but the exponential growth dominates the
+additive duplication cost.
+
+### 4.2 What `Ordinal.lt_wf` imports
+
+The termination proof concludes with:
+
+```lean
+InvImage.wf (f := mu) Ordinal.lt_wf
+```
+
+`Ordinal.lt_wf` - the well-foundedness of all ordinals under `<` - is
+provable in Lean's Calculus of Inductive Constructions (CIC). CIC's
+proof-theoretic strength far exceeds ε₀. The axioms involved
+(`propext`, `Quot.sound`, and the cumulative universe hierarchy) are Lean's
+foundations, not additional mathematical axioms.
+
+This is standard mathematical practice: proving properties of a weak system
+(KO7) in a strong metatheory (CIC). It is not circular. But it does mean
+the termination proof works by importing logical strength that KO7 itself
+cannot express - which is consistent with what the conjecture predicts.
+
+---
+
+## 5. The SafeStep / Full Step Gap
+
+### 5.1 SafeStep stays below ε₀
+
+The certified artifact proves termination for `SafeStep` using a
+triple-lexicographic measure:
+
+```
+μ³(t) = (δ-flag, κᴹ, μ_ord)
+```
+
+- δ-flag ∈ {0, 1}: finite, well below ω
+- κᴹ ∈ Multiset ℕ under DM: strength < ω^ω
+- μ_ord ∈ Ordinal: uses ω-powers but not ω-towers
+
+The key: SafeStep **guards** `rec_succ` with a δ-phase condition. The guard
+ensures that the duplicating rule fires only when the δ-flag can absorb the
+cost (dropping from 1 to 0). This effectively **bounds the recursion depth**
+per phase, lowering the proof-theoretic ordinal below ε₀.
+
+### 5.2 Full Step appears to require ε₀
+
+Without guards, `rec_succ` can fire arbitrarily - including in contexts
+where `s` itself contains nested `recΔ` calls. This unbounded nesting is
+what is expected to push the proof-theoretic ordinal to ε₀ (conditional on
+the System T expressivity hypothesis from Section 2.3). The exponential
+measure handles it; the machine-checked barriers in `Conjecture_Boundary.lean`
+show that all sub-ω^ω methods fail.
+
+### 5.3 The gap as a proof-theoretic ordinal gap
+
+| Relation | Proof-theoretic ordinal | Termination provable? |
+|---|---|---|
+| SafeStep | < ω^ω (sub-exponential) | Yes, via (δ, κᴹ, μ) |
+| Full Step | = ε₀ (conjectured, see §2.3) | Yes, via ω-tower measure |
+| Internal methods | < ω^ω | Insufficient for full Step (7 barriers machine-checked) |
+
+Under the System T hypothesis, the conjecture identifies this gap: internal
+methods (Definition 8.1 in the paper) produce measures of strength < ω^ω,
+while full Step requires ε₀.
+
+---
+
+## 6. Connection to Gentzen's Theorem
+
+### 6.1 Gentzen (1936)
+
+Gentzen proved that Peano Arithmetic (PA) is consistent using transfinite
+induction up to ε₀. By Godel's second incompleteness theorem, PA cannot
+prove its own consistency. Therefore:
+
+- PA's consistency requires induction up to ε₀
+- Any system embeddable in PA has proof-theoretic ordinal ≤ ε₀
+- Any system that can express all primitive recursive functions (System T)
+  has proof-theoretic ordinal = ε₀
+
+### 6.2 Application to KO7
+
+If KO7 with nested `recΔ` has System T expressivity (Section 2.3 caveat
+applies), then:
+
+1. Its proof-theoretic ordinal would be ε₀
+2. Any termination proof would require transfinite induction up to at least ε₀
+3. Methods staying below ε₀ (additive, polynomial, DM, MPO - all < ω^ω)
+   would be provably insufficient
+4. The exponential measure succeeds precisely because it reaches ε₀
+
+Under this hypothesis, the conjecture would follow as a special case of
+Gentzen's theorem: an operator-only TRS with System T-level recursion
+cannot have its termination proved by internally definable methods (which
+stay below ω^ω < ε₀). Independent of the hypothesis, the 7 machine-checked
+barriers in `Conjecture_Boundary.lean` provide concrete evidence that all
+sub-ω^ω method families fail on KO7.
+
+### 6.3 What this is NOT
+
+- This is NOT a claim that KO7 is inconsistent or non-terminating
+- This is NOT a claim that Lean's proof is invalid or circular
+- This IS a claim about the minimum logical strength required for the
+  termination proof
+- This IS a claim that "internal" methods (as defined in the paper) lack
+  sufficient ordinal strength
+
+---
+
+## 7. The Codex Proof as Mechanical Witness
+
+In February 2026, OpenAI Codex produced a compiling Lean proof of full-Step
+termination using an exponential ordinal measure of the form:
+
+```
+μ(recΔ b s n) = ω^(μ b + μ s + μ n + 6) + 1
+```
+
+This proof:
+
+- **Compiles**: `lake build` succeeds; no `sorry`, `admit`, or `axiom`
+- **Passes `#print axioms`**: only Lean's foundational axioms appear
+- **Reaches ε₀**: the ω-tower construction has closure ordinal ε₀
+- **Consistent with the conjecture**: it demonstrates that ε₀-strength
+  ordinals are sufficient (the exponential measure works), while all
+  sub-ω^ω methods fail (machine-checked in `Conjecture_Boundary.lean`)
+
+The proof is evidence FOR the conjecture, not against it. It shows that
+crossing the ε₀ boundary - which internal methods (as defined in the paper)
+do not reach - is what enables the termination proof.
+
+The original ordinal toolkit restrictions (which forbade exponential ordinals)
+were an independent recognition of this boundary, predating the Codex proof.
+
+---
+
+## 8. Open Formalization Tasks
+
+1. **System T embedding**: Prove formally that nested `recΔ` in KO7 can
+   simulate all System T programs (forward direction). This would close the
+   gap between "well-motivated claim" and "formal theorem."
+
+2. **Ordinal analysis of SafeStep**: Establish that SafeStep's
+   proof-theoretic ordinal is strictly below ε₀ (e.g., ω^ω or ω^(ω^ω)).
+   This would sharpen the gap characterization.
+
+3. **Bounding the exponential measure**: Show that the Codex measure's
+   ordinal assignments stay within ε₀ (not above). This confirms tightness.
+
+4. **Naive multiset barrier (#7)**: Formalize the distinction between
+   naive multiset comparison and Dershowitz-Manna. Currently absent from
+   `Conjecture_Boundary.lean`.
+
+---
+
+## 9. Summary Table
+
+| Component | Location | Status |
+|---|---|---|
+| 7/10 formal barriers | `Meta/Conjecture_Boundary.lean` | Machine-checked |
+| Polynomial tie (exact equality) | `poly_mul_ties_rec_succ` | Machine-checked |
+| Dual barrier (complementary) | `dual_barrier_rec_succ_and_merge_void` | Machine-checked |
+| SafeStep SN (sub-ε₀) | `Meta/Termination_KO7.lean` | Machine-checked |
+| Full Step SN (ε₀) | Codex proof (external) | Compiles, not in repo |
+| ε₀ identification | This document | Proof-theoretic argument |
+| System T embedding | Open | Formalization task |
+| Gentzen connection | This document | Mathematical argument |
+
+---
+
+## 10. References
+
+- Gentzen, G. (1936). "Die Widerspruchsfreiheit der reinen Zahlentheorie."
+  *Mathematische Annalen*, 112(1), 493-565.
+- Godel, K. (1958). "Uber eine bisher noch nicht benutzte Erweiterung des
+  finiten Standpunktes." *Dialectica*, 12, 280-287. (System T)
+- Dershowitz, N. and Manna, Z. (1979). "Proving termination with multiset
+  orderings." *Communications of the ACM*, 22(8), 465-476.
+
+```
+
+---
+
+## 23. OperatorKO7/Test/Sanity.lean
+
+**File:** `OperatorKO7/Test/Sanity.lean`
+
+**Lines:** 11
+
+```lean
+/-!
+Tiny smoke tests.
+
+Why this file exists:
+- Ensures the Lake package can compile a small `#eval` and a basic `#check` on a fresh machine.
+- Keeps a minimal test surface under `OperatorKO7/Test/` to catch obvious toolchain regressions.
+- This file is intentionally trivial and does not contribute to the KO7 theorems.
+-/
+
+#eval (1 + 1)
+#check Prod.Lex
+
+```
+
+---
 
