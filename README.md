@@ -22,6 +22,7 @@ A mechanically verified Lean 4 development for the KO7 term rewriting system (7 
 | Newman confluence engine (`SafeStep`) | [`Newman_Safe.lean`](OperatorKO7/Meta/Newman_Safe.lean) | Proved (parameterized by `locAll`) |
 | Non-local-join witness (`eqW void void`) | [`Confluence_Safe.lean`](OperatorKO7/Meta/Confluence_Safe.lean) | Proved |
 | Impossibility lemmas (additive/polynomial) | [`Impossibility_Lemmas.lean`](OperatorKO7/Meta/Impossibility_Lemmas.lean) | Proved |
+| Conjecture boundary barriers (full-Step no-go families) | [`Conjecture_Boundary.lean`](OperatorKO7/Meta/Conjecture_Boundary.lean) | Proved |
 
 ### Scope
 
@@ -83,6 +84,7 @@ Building without cache may take 30-60 minutes (mathlib compiled from source).
 | `Normalize_Safe.lean` | Certified normalizer (total + sound) |
 | `Newman_Safe.lean` | Newman engine (parameterized by `locAll`) |
 | `Confluence_Safe.lean` | Local-join lemmas + full-step non-join witness |
+| `Conjecture_Boundary.lean` | Theorem-level no-go boundaries for internal/full-Step orientation classes |
 | `SafeStep_Ctx.lean` | Context-closure utilities |
 | `Impossibility_Lemmas.lean` | Failure witnesses for additive/polynomial measures |
 | `Operational_Incompleteness.lean` | Operational incompleteness probes (P1-P3) |
