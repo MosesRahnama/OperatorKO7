@@ -1,6 +1,7 @@
 import OperatorKO7.Kernel
 import OperatorKO7.Meta.Termination_KO7
 import OperatorKO7.Meta.Normalize_Safe
+import OperatorKO7.Meta.Confluence_Safe
 
 /-!
 Newman's lemma for the KO7 safe fragment.
@@ -170,5 +171,35 @@ theorem normalizeSafe_eq_of_star_of_loc
   have eq₁ := nf_no_safestar_forward (norm_nf_safe a) had
   have eq₂ := nf_no_safestar_forward (norm_nf_safe b) hbd
   simp [eq₁, eq₂]
+
+/-- Global local-join discharge for `SafeStep`, imported from `Confluence_Safe`. -/
+theorem locAll_safe : ∀ a, LocalJoinAt a := by
+  intro a b c hb hc
+  exact (MetaSN_KO7.localJoin_all_safe a) hb hc
+
+/-- Unconditional confluence for the safe fragment (`SafeStep`). -/
+theorem confluentSafe : ConfluentSafe :=
+  newman_safe locAll_safe
+
+/-- Unconditional unique normal forms for the safe fragment. -/
+theorem unique_normal_forms_safe
+    {a n₁ n₂ : Trace}
+    (h₁ : SafeStepStar a n₁) (h₂ : SafeStepStar a n₂)
+    (hnf₁ : NormalFormSafe n₁) (hnf₂ : NormalFormSafe n₂) :
+    n₁ = n₂ :=
+  unique_normal_forms_of_loc locAll_safe h₁ h₂ hnf₁ hnf₂
+
+/-- Unconditional normalizer uniqueness for safe-normal outputs. -/
+theorem normalizeSafe_unique
+    {t n : Trace}
+    (h : SafeStepStar t n) (hnf : NormalFormSafe n) :
+    n = normalizeSafe t :=
+  normalizeSafe_unique_of_loc locAll_safe h hnf
+
+/-- Unconditional normalization equality along safe-star reachability. -/
+theorem normalizeSafe_eq_of_star
+    {a b : Trace} (h : SafeStepStar a b) :
+    normalizeSafe a = normalizeSafe b :=
+  normalizeSafe_eq_of_star_of_loc locAll_safe h
 
 end MetaSN_KO7

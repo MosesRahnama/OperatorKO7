@@ -370,6 +370,80 @@ theorem localJoin_if_normalize_fixed (a : Trace) (hfix : normalizeSafe a = a) :
   -- avoid definality issues by expanding the goal
   intro b c hb hc
   exact (localJoin_of_nf a hnf) hb hc
+
+/--
+Global local-join discharge for the safe relation.
+
+This closes the remaining hypothesis needed by `Meta/Newman_Safe.lean`:
+for every source trace `a`, root local-joinability holds for `SafeStep`.
+-/
+theorem localJoin_all_safe : ∀ a : Trace, LocalJoinSafe a := by
+  intro a
+  cases a with
+  | void =>
+      exact localJoin_void
+  | delta t =>
+      exact localJoin_delta t
+  | integrate t =>
+      cases t with
+      | void =>
+          exact localJoin_integrate_void
+      | delta u =>
+          exact localJoin_int_delta u
+      | integrate u =>
+          exact localJoin_integrate_integrate u
+      | merge x y =>
+          exact localJoin_integrate_merge x y
+      | app x y =>
+          exact localJoin_integrate_app x y
+      | recΔ b s n =>
+          exact localJoin_integrate_rec b s n
+      | eqW x y =>
+          exact localJoin_integrate_eqW x y
+  | merge x y =>
+      by_cases hxv : x = void
+      · cases hxv
+        exact localJoin_merge_void_left y
+      · by_cases hyv : y = void
+        · cases hyv
+          exact localJoin_merge_void_right x
+        · by_cases hxy : x = y
+          · cases hxy
+            exact localJoin_merge_tt x
+          · exact localJoin_merge_no_void_neq x y hxv hyv hxy
+  | app x y =>
+      exact localJoin_app x y
+  | recΔ b s n =>
+      cases n with
+      | void =>
+          exact localJoin_rec_zero b s
+      | delta u =>
+          exact localJoin_rec_succ b s u
+      | integrate t =>
+          exact localJoin_rec_integrate b s t
+      | merge x y =>
+          exact localJoin_rec_merge b s x y
+      | app x y =>
+          exact localJoin_rec_app b s x y
+      | recΔ b' s' n' =>
+          refine localJoin_rec_other b s (recΔ b' s' n') ?hn0 ?hns
+          · intro h; cases h
+          · intro u h; cases h
+      | eqW x y =>
+          exact localJoin_rec_eqW b s x y
+  | eqW x y =>
+      by_cases hxy : x = y
+      · cases hxy
+        by_cases h0 : MetaSN_DM.kappaM x = 0
+        · refine localJoin_of_unique (a := eqW x x) (d := void) ?h
+          intro z hz
+          cases hz with
+          | R_eq_refl _ _ =>
+              rfl
+          | R_eq_diff _ _ hne =>
+              exact False.elim (hne rfl)
+        · exact localJoin_eqW_refl_guard_ne x h0
+      · exact localJoin_eqW_ne x y hxy
 end MetaSN_KO7
 
 namespace MetaSN_KO7

@@ -204,7 +204,7 @@ theorem no_global_step_orientation_flag :
 /-! ## Strict increase witness (rec_succ makes additive measures grow) -/
 
 /-- When `s` is non-void, `simpleSize` strictly INCREASES across `rec_succ`.
-The duplication barrier is not just "no drop" — the measure goes UP. -/
+The duplication barrier is not just "no drop" - the measure goes UP. -/
 theorem rec_succ_size_strictly_increases (b s n : Trace)
     (hs : UncheckedRecursionFailure.simpleSize s ≥ 1) :
     UncheckedRecursionFailure.simpleSize (app s (recΔ b s n)) >
@@ -265,7 +265,7 @@ A nesting-depth measure that does NOT count `merge` as a level ties on
 
 /-- `nestingDepth` ties on `merge_cancel`: `nestingDepth(merge t t) = nestingDepth(t)`.
 Since `merge t t → t`, orientation requires `nestingDepth(t) < nestingDepth(merge t t)`,
-which is `nestingDepth(t) < nestingDepth(t)` — false. -/
+which is `nestingDepth(t) < nestingDepth(t)` - false. -/
 theorem nestingDepth_merge_cancel_tie (t : Trace) :
     nestingDepth (merge t t) = nestingDepth t := by
   simp
@@ -290,7 +290,7 @@ cancelled by the multiplication:
 
 These are equal by commutativity of addition. Any polynomial that DOES
 break this tie requires importing external constants (e.g., `M(void) = 2`)
-and node-weight arithmetic — this is the Ladder Paradox (Gate F.4 in the
+and node-weight arithmetic - this is the Ladder Paradox (Gate F.4 in the
 Strict Execution Contract): the termination proof works only because it
 maps to external arithmetic we already trust, not because of any
 internally definable property. -/

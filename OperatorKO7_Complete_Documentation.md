@@ -7873,7 +7873,7 @@ def toConstellation : Trace → Constellation
   | .eqW a b => .eqNode (toConstellation a) (toConstellation b)
 
 /-- The δ-duplication step produces structurally different constellations.
-    The RHS has `appNode` at the root while LHS has `recNode` — no simple ordering works. -/
+    The RHS has `appNode` at the root while LHS has `recNode` - no simple ordering works. -/
 theorem constellation_shapes_differ (b s n : Trace) :
     toConstellation (app s (recΔ b s n)) ≠ toConstellation (recΔ b s (delta n)) := by
   simp only [toConstellation]
@@ -8078,9 +8078,9 @@ end OperatorKO7.Countermodels
 These probes document required checks from the Strict Execution Contract.
 They are written to be build-safe: negative cases are in comments; no failing assertions.
 
-P1: Branch realism — enumerate clauses, test rfl per-branch, report failures, give corrected laws.
-P2: Duplication realism — show additive failure and give the robust DM/MPO orientation premise.
-P3: Symbol realism — one success, one unknown identifier example, one arity/type mismatch example.
+P1: Branch realism - enumerate clauses, test rfl per-branch, report failures, give corrected laws.
+P2: Duplication realism - show additive failure and give the robust DM/MPO orientation premise.
+P3: Symbol realism - one success, one unknown identifier example, one arity/type mismatch example.
 -/
 
 namespace OperatorKO7.MetaProbes
@@ -8132,7 +8132,7 @@ One success (present in toolkit):
 - Ordinal.opow_le_opow_right : monotonicity of ω^· in the exponent (≤-mono)
 
 One unknown identifier example (NameGate):
-- opow_right_mono_strict — SEARCH(name)=0 → must use local bridge `opow_lt_opow_right` instead.
+- opow_right_mono_strict - SEARCH(name)=0 → must use local bridge `opow_lt_opow_right` instead.
 
 One arity/type mismatch example (TypeGate):
 - mul_le_mul_left' used with arguments in wrong order/type; fix by applying the α, β, γ as per lemma’s signature.

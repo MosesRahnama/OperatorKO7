@@ -16,7 +16,7 @@ namespace OperatorKO7.MetaCM.Test
 open OperatorKO7 Trace
 
 open OperatorKO7.MetaCM
-open OperatorKO7.MetaSN_KO7
+open MetaSN_KO7
 
 -- Main theorem is available
 example : WellFounded SafeStepRev := wf_SafeStepRev_c
