@@ -323,6 +323,54 @@ theorem no_global_step_orientation_polyMul (w : Nat) :
   have heq := poly_mul_ties_rec_succ w void void void
   omega
 
+/-! ## Naive multiset barrier (#7: duplication inflates element count)
+
+A naive multiset measure collects subterm weights into a bag and compares
+by sum (or cardinality). Unlike the Dershowitz-Manna ordering — which
+permits replacing one large element with multiple SMALLER elements —
+naive comparison has no mechanism to absorb duplication. When `rec_succ`
+duplicates `s`, the bag gains an extra copy of `s`'s weight, and the
+sum/cardinality strictly increases.
+
+This formalizes failure mode #7 from the paper:
+"Naive multiset orderings: Fail without DM-specific properties." -/
+
+/-- Node count: number of constructor applications in the term.
+This represents a naive multiset measure where every node has weight 1
+and the multiset is compared by cardinality (= sum of weights). -/
+@[simp] def nodeCount : Trace → Nat
+  | .void => 1
+  | .delta t => nodeCount t + 1
+  | .integrate t => nodeCount t + 1
+  | .merge a b => nodeCount a + nodeCount b + 1
+  | .app a b => nodeCount a + nodeCount b + 1
+  | .recΔ b s n => nodeCount b + nodeCount s + nodeCount n + 1
+  | .eqW a b => nodeCount a + nodeCount b + 1
+
+/-- Naive multiset (node count) does not strictly decrease on `rec_succ`.
+The duplication of `s` adds `nodeCount s` to the RHS, yielding ≥. -/
+theorem nodeCount_rec_succ_barrier (b s n : Trace) :
+    nodeCount (app s (recΔ b s n)) ≥ nodeCount (recΔ b s (delta n)) := by
+  simp [nodeCount]
+  omega
+
+/-- With non-trivial `s`, node count strictly INCREASES on `rec_succ`. -/
+theorem nodeCount_rec_succ_increases (b s n : Trace)
+    (hs : nodeCount s ≥ 2) :
+    nodeCount (app s (recΔ b s n)) > nodeCount (recΔ b s (delta n)) := by
+  simp [nodeCount]
+  omega
+
+/-- Node count cannot globally orient full `Step` (fails at rec_succ). -/
+theorem no_global_step_orientation_nodeCount :
+    ¬ GlobalOrients nodeCount (· < ·) := by
+  intro h
+  have hstep : Step (recΔ void void (delta void)) (app void (recΔ void void void)) :=
+    Step.R_rec_succ void void void
+  have hlt := h hstep
+  have hge := nodeCount_rec_succ_barrier void void void
+  omega
+
 /-! ## Full-step witness (duplication branch is present in kernel Step) -/
 
 /-- The unrestricted kernel `Step` contains the duplication branch explicitly. -/
