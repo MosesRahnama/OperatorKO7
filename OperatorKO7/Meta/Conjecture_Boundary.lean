@@ -190,6 +190,139 @@ theorem internal_measure_lex_gate
       M.base r l :=
   M.lex_ok hr
 
+/-! ## Flag barrier (GlobalOrients form) -/
+
+/-- A single top-level δ-flag cannot globally orient full `Step` (GlobalOrients form). -/
+theorem no_global_step_orientation_flag :
+    ¬ GlobalOrients FlagFailure.deltaFlagTop (· < ·) := by
+  intro h
+  have hstep : Step (merge void (delta void)) (delta void) :=
+    Step.R_merge_void_left (delta void)
+  have hlt := h hstep
+  simp [FlagFailure.deltaFlagTop] at hlt
+
+/-! ## Strict increase witness (rec_succ makes additive measures grow) -/
+
+/-- When `s` is non-void, `simpleSize` strictly INCREASES across `rec_succ`.
+The duplication barrier is not just "no drop" — the measure goes UP. -/
+theorem rec_succ_size_strictly_increases (b s n : Trace)
+    (hs : UncheckedRecursionFailure.simpleSize s ≥ 1) :
+    UncheckedRecursionFailure.simpleSize (app s (recΔ b s n)) >
+    UncheckedRecursionFailure.simpleSize (recΔ b s (delta n)) :=
+  UncheckedRecursionFailure.rec_succ_size_increases b s n hs
+
+/-! ## StrictMono generalization for kappa -/
+
+/-- Strictly monotone post-processing cannot rescue `kappa` on full `Step`.
+Analogous to `no_global_step_orientation_simpleSize_strictMono`. -/
+theorem no_global_step_orientation_kappa_strictMono
+    (f : Nat → Nat) (hf : StrictMono f) :
+    ¬ GlobalOrients (fun t => f (FailedMeasures.kappa t)) (· < ·) := by
+  intro h
+  have hstep : Step (recΔ void void (delta (delta void)))
+      (app void (recΔ void void (delta void))) :=
+    Step.R_rec_succ void void (delta void)
+  have hlt := h hstep
+  have hge : FailedMeasures.kappa (app void (recΔ void void (delta void))) ≥
+      FailedMeasures.kappa (recΔ void void (delta (delta void))) := by
+    simp [FailedMeasures.kappa]
+  exact Nat.not_lt_of_ge (hf.monotone hge) hlt
+
+/-! ## Dual-barrier theorem (rec_succ vs merge_void are complementary) -/
+
+/-- The duplication barrier and the flag barrier target DIFFERENT rules.
+Any single Nat-valued measure that handles rec_succ (which requires insensitivity
+to duplication of `s`) is blocked by merge_void (which can raise flags), and vice
+versa. This theorem witnesses both barriers simultaneously on full `Step`. -/
+theorem dual_barrier_rec_succ_and_merge_void :
+    -- (1) Additive size fails on rec_succ:
+    (∀ (b s n : Trace),
+      UncheckedRecursionFailure.simpleSize (app s (recΔ b s n)) ≥
+      UncheckedRecursionFailure.simpleSize (recΔ b s (delta n)))
+    ∧
+    -- (2) δ-flag increases on merge_void_left:
+    (FlagFailure.deltaFlagTop (delta void) >
+     FlagFailure.deltaFlagTop (merge void (delta void))) := by
+  constructor
+  · exact UncheckedRecursionFailure.rec_succ_additive_barrier
+  · simp [FlagFailure.deltaFlagTop]
+
+/-! ## Structural depth barrier (#6: ties on collapsing rules)
+
+A nesting-depth measure that does NOT count `merge` as a level ties on
+`merge_cancel`. This formalizes failure mode #6 from the paper:
+"Structural depth: Ties on collapsing rules (merge_cancel)." -/
+
+/-- Nesting depth where `merge` does not add a level. -/
+@[simp] def nestingDepth : Trace → Nat
+  | .void => 0
+  | .delta t => nestingDepth t + 1
+  | .integrate t => nestingDepth t + 1
+  | .merge a b => max (nestingDepth a) (nestingDepth b)
+  | .app a b => max (nestingDepth a) (nestingDepth b) + 1
+  | .recΔ b s n => max (max (nestingDepth b) (nestingDepth s)) (nestingDepth n) + 1
+  | .eqW a b => max (nestingDepth a) (nestingDepth b) + 1
+
+/-- `nestingDepth` ties on `merge_cancel`: `nestingDepth(merge t t) = nestingDepth(t)`.
+Since `merge t t → t`, orientation requires `nestingDepth(t) < nestingDepth(merge t t)`,
+which is `nestingDepth(t) < nestingDepth(t)` — false. -/
+theorem nestingDepth_merge_cancel_tie (t : Trace) :
+    nestingDepth (merge t t) = nestingDepth t := by
+  simp
+
+/-- `nestingDepth` cannot globally orient full `Step` (fails at merge_cancel). -/
+theorem no_global_step_orientation_nestingDepth :
+    ¬ GlobalOrients nestingDepth (· < ·) := by
+  intro h
+  have hstep : Step (merge void void) void := Step.R_merge_cancel void
+  have hlt := h hstep
+  simp [nestingDepth] at hlt
+
+/-! ## Polynomial interpretation barrier (#3: Ladder Paradox)
+
+Polynomial measures using multiplicative coefficients at `recΔ` (e.g.,
+`M(recΔ b s n) = M(b) + M(s) * M(n)`) tie on `rec_succ` regardless of
+base weight. With additive `app`, the duplication of `s` is exactly
+cancelled by the multiplication:
+
+  M(recΔ b s (delta n)) = M(b) + M(s)*(M(n)+1) = M(b) + M(s)*M(n) + M(s)
+  M(app s (recΔ b s n)) = M(s) + M(b) + M(s)*M(n)
+
+These are equal by commutativity of addition. Any polynomial that DOES
+break this tie requires importing external constants (e.g., `M(void) = 2`)
+and node-weight arithmetic — this is the Ladder Paradox (Gate F.4 in the
+Strict Execution Contract): the termination proof works only because it
+maps to external arithmetic we already trust, not because of any
+internally definable property. -/
+
+/-- Polynomial measure with multiplicative `recΔ`, parameterized by base weight `w`. -/
+@[simp] def polyMul (w : Nat) : Trace → Nat
+  | .void => w
+  | .delta t => polyMul w t + 1
+  | .integrate t => polyMul w t + 1
+  | .merge a b => polyMul w a + polyMul w b
+  | .app a b => polyMul w a + polyMul w b
+  | .recΔ b s n => polyMul w b + polyMul w s * polyMul w n
+  | .eqW a b => polyMul w a + polyMul w b
+
+/-- Polynomial with multiplicative `recΔ` TIES on `rec_succ` for ANY base weight.
+This is an exact equality, not just a non-strict inequality. -/
+theorem poly_mul_ties_rec_succ (w : Nat) (b s n : Trace) :
+    polyMul w (app s (recΔ b s n)) =
+    polyMul w (recΔ b s (delta n)) := by
+  simp [polyMul, Nat.mul_add]
+  omega
+
+/-- Polynomial `polyMul` cannot globally orient full `Step` (ties on rec_succ). -/
+theorem no_global_step_orientation_polyMul (w : Nat) :
+    ¬ GlobalOrients (polyMul w) (· < ·) := by
+  intro h
+  have hstep : Step (recΔ void void (delta void)) (app void (recΔ void void void)) :=
+    Step.R_rec_succ void void void
+  have hlt := h hstep
+  have heq := poly_mul_ties_rec_succ w void void void
+  omega
+
 /-! ## Full-step witness (duplication branch is present in kernel Step) -/
 
 /-- The unrestricted kernel `Step` contains the duplication branch explicitly. -/
