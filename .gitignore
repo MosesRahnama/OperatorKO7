@@ -1,3 +1,6 @@
+# Paper folder (local only)
+Paper/
+
 # Lake build artifacts
 .lake/
 lake-packages/
