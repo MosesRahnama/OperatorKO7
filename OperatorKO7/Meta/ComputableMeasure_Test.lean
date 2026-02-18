@@ -1,5 +1,4 @@
 import OperatorKO7.Meta.ComputableMeasure
-import OperatorKO7.Meta.Termination_KO7
 
 /-!
 # Quick test that ComputableMeasure works correctly

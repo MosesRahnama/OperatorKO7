@@ -1,5 +1,5 @@
 import OperatorKO7.Kernel
-import OperatorKO7.Meta.Termination_KO7
+import OperatorKO7.Meta.ComputableMeasure
 import OperatorKO7.Meta.Normalize_Safe
 import OperatorKO7.Meta.Confluence_Safe
 
@@ -12,7 +12,7 @@ Purpose:
 
 Scope boundary:
 - This file is parameterized by a local-join hypothesis `locAll : ∀ a, LocalJoinAt a`.
-- Termination for `SafeStep` is supplied by `wf_SafeStepRev` (from `Meta/Termination_KO7.lean`).
+- Termination for `SafeStep` is supplied by `wf_SafeStepRev_c` (from `Meta/ComputableMeasure.lean`).
 - Nothing here claims confluence/termination for the full kernel `Step`.
 
 Main exports:

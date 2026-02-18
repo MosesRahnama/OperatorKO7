@@ -1,5 +1,5 @@
 import OperatorKO7.Kernel
-import OperatorKO7.Meta.Termination_KO7
+import OperatorKO7.Meta.ComputableMeasure
 import Mathlib.Logic.Function.Basic
 
 /-!
@@ -24,6 +24,7 @@ set_option diagnostics.threshold 100000
 set_option linter.unnecessarySimpa false
 open Classical
 open OperatorKO7 Trace
+open OperatorKO7.MetaCM
 
 
 namespace MetaSN_KO7
@@ -102,16 +103,16 @@ theorem safestar_snoc {a b c : Trace}
 
 /-! ### Strong normalization (rev) - convenience -/
 
-/-- Accessibility for `SafeStepRev` as a derived corollary of `wf_SafeStepRev`. -/
+/-- Accessibility for `SafeStepRev` as a derived corollary of `wf_SafeStepRev_c`. -/
 theorem acc_SafeStepRev (t : Trace) : Acc SafeStepRev t :=
-  wf_SafeStepRev.apply t
+  wf_SafeStepRev_c.apply t
 
-/-- A well-founded pullback of the KO7 Lex3 order along μ3. -/
-def Rμ3 (x y : Trace) : Prop := Lex3 (μ3 x) (μ3 y)
+/-- A well-founded pullback of the computable KO7 Lex3c order along μ3c. -/
+def Rμ3 (x y : Trace) : Prop := Lex3c (mu3c x) (mu3c y)
 
-/-- Well-foundedness of `Rμ3`, inherited from `wf_Lex3` via `InvImage`. -/
+/-- Well-foundedness of `Rμ3`, inherited from `wf_Lex3c` via `InvImage`. -/
 lemma wf_Rμ3 : WellFounded Rμ3 :=
-  InvImage.wf (f := μ3) wf_Lex3
+  InvImage.wf (f := mu3c) wf_Lex3c
 
 set_option diagnostics true
 
@@ -126,7 +127,7 @@ noncomputable def normalizeSafePack (t : Trace) : Σ' n : Trace, SafeStepStar t 
           -- Take one step and recurse
           let u := Classical.choose h
           have hu : SafeStep t u := Classical.choose_spec h
-          have hdrop : Rμ3 u t := measure_decreases_safe hu
+          have hdrop : Rμ3 u t := measure_decreases_safe_c hu
           match rec u hdrop with
           | ⟨n, hstar, hnf⟩ => ⟨n, And.intro (SafeStepStar.tail hu hstar) hnf⟩
         else
@@ -188,7 +189,7 @@ theorem exists_drop_if_not_fixed (t : Trace) (h : normalizeSafe t ≠ t) :
   ∃ u, SafeStep t u ∧ Rμ3 u t := by
   classical
   rcases exists_step_of_not_fixed t h with ⟨u, hs⟩
-  exact ⟨u, hs, measure_decreases_safe hs⟩
+  exact ⟨u, hs, measure_decreases_safe_c hs⟩
 
 /-- If there is a safe step from `t`, then normalization cannot be fixed at `t`. -/
 theorem not_fixed_of_exists_step (t : Trace) (hex : ∃ u, SafeStep t u) :

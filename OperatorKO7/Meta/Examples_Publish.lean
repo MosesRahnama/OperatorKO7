@@ -1,5 +1,4 @@
 import OperatorKO7.Kernel
-import OperatorKO7.Meta.Termination_KO7
 import OperatorKO7.Meta.Normalize_Safe
 import OperatorKO7.Meta.Confluence_Safe
 import OperatorKO7.Meta.Newman_Safe
@@ -16,8 +15,6 @@ their key symbols exist and typecheck. It contains no new proofs.
 example (a b : Trace) (h : Step a b) : MetaSN_Hybrid.HybridDec a b :=
   MetaSN_Hybrid.hybrid_drop_of_step h
 
-example : WellFounded MetaSN_KO7.SafeStepRev := MetaSN_KO7.wf_SafeStepRev
--- Computable measure (μ3c) also yields SN for the same relation
 example : WellFounded MetaSN_KO7.SafeStepRev := OperatorKO7.MetaCM.wf_SafeStepRev_c
 example : WellFounded MetaSN_MPO.SafeStepMPORev := MetaSN_MPO.wf_SafeStepMPORev
 

@@ -1,5 +1,4 @@
 import OperatorKO7.Kernel
-import OperatorKO7.Meta.Termination_KO7
 import OperatorKO7.Meta.Normalize_Safe
 import OperatorKO7.Meta.SafeStep_Ctx
 
