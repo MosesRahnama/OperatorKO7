@@ -7,7 +7,7 @@ Why this file exists:
 - Defines the core syntax (`Trace`) and the full rewrite relation (`Step`) for the KO7 kernel.
 - `Step` is the *full* kernel relation (8 unconditional rules).
 - The certified artifact is proved for a guarded subrelation `SafeStep` defined in
-  `OperatorKO7/Meta/Termination_KO7.lean`.
+  `OperatorKO7/Meta/SafeStep_Core.lean`.
 -/
 
 /-- The KO7 term language (7 constructors). -/

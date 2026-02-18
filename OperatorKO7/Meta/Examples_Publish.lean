@@ -12,11 +12,7 @@ This module should only import stable, published Meta modules and check that
 their key symbols exist and typecheck. It contains no new proofs.
 -/
 
-example (a b : Trace) (h : Step a b) : MetaSN_Hybrid.HybridDec a b :=
-  MetaSN_Hybrid.hybrid_drop_of_step h
-
 example : WellFounded MetaSN_KO7.SafeStepRev := OperatorKO7.MetaCM.wf_SafeStepRev_c
-example : WellFounded MetaSN_MPO.SafeStepMPORev := MetaSN_MPO.wf_SafeStepMPORev
 
 example (t : Trace) : MetaSN_KO7.SafeStepStar t (MetaSN_KO7.normalizeSafe t) :=
   MetaSN_KO7.to_norm_safe t

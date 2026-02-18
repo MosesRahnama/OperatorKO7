@@ -1,4 +1,4 @@
-import OperatorKO7.Meta.Termination_KO7
+import OperatorKO7.Meta.SafeStep_Core
 import Mathlib.Data.Multiset.Basic
 import Mathlib.Data.Multiset.DershowitzManna
 
@@ -307,10 +307,9 @@ lemma drop_R_eq_refl_c (a : Trace) :
     have hin0 : LexDM_c ((0 : Multiset Nat), tau void)
         ((0 : Multiset Nat), tau (eqW a a)) := by
       refine Prod.Lex.right (0 : Multiset Nat) ?tauDrop
-      -- 0 < 4 + (τ a + τ a) via succ_pos
-      have : 0 < Nat.succ (3 + (tau a + tau a)) := Nat.succ_pos _
-      have h' : 0 < 4 + (tau a + tau a) := by
-        simpa [Nat.succ_eq_add_one, Nat.add_comm, Nat.add_left_comm, Nat.add_assoc] using this
+      -- 0 < 4 + (τ a + τ a)
+      have h4 : 0 < 4 := by decide
+      have h' : 0 < 4 + (tau a + tau a) := lt_of_lt_of_le h4 (Nat.le_add_right 4 (tau a + tau a))
       simpa [tau, Nat.add_comm, Nat.add_left_comm, Nat.add_assoc] using h'
     simpa [MetaSN_DM.kappaM_eq_refl, h0] using hin0
   · -- κ ≠ 0 → DM-left: 0 <ₘ κ∪κ

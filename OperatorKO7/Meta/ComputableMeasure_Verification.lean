@@ -27,21 +27,21 @@ example (t : Trace) : tau t < tau (integrate t) := by
 example (a b : Trace) : tau a < tau (merge a b) := by
   simp [tau]; omega
 example (a b : Trace) : tau b < tau (merge a b) := by
-  simp [tau]
+  simp [tau]; omega
 example (a b : Trace) : tau a < tau (app a b) := by
   simp [tau]; omega
 example (a b : Trace) : tau b < tau (app a b) := by
-  simp [tau]
+  simp [tau]; omega
 example (b s n : Trace) : tau b < tau (recΔ b s n) := by
   simp [tau]; omega
 example (b s n : Trace) : tau s < tau (recΔ b s n) := by
   simp [tau]; omega
 example (b s n : Trace) : tau n < tau (recΔ b s n) := by
-  simp [tau]
+  simp [tau]; omega
 example (a b : Trace) : tau a < tau (eqW a b) := by
   simp [tau]; omega
 example (a b : Trace) : tau b < tau (eqW a b) := by
-  simp [tau]
+  simp [tau]; omega
 
 -- Verify delta is transparent
 example (t : Trace) : tau (delta t) = tau t := rfl
@@ -203,7 +203,7 @@ example :
 /-- `tau` is transparent under `delta` by definition (restated as a named lemma). -/
 lemma tau_delta_preserve (t : Trace) : tau (delta t) = tau t := rfl
 
--- κᴹ behavior under constructors (from Termination_KO7)
+-- κᴹ behavior under constructors (from SafeStep core)
 /-- Convenience bundle of basic `kappaM` simp-facts (re-exported as a single lemma). -/
 lemma kappaM_facts (a b : Trace) :
     kappaM void = 0 ∧

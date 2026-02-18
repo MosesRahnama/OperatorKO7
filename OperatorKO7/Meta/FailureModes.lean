@@ -1,5 +1,5 @@
 import OperatorKO7.Kernel
-import OperatorKO7.Meta.Termination_KO7
+import OperatorKO7.Meta.SafeStep_Core
 
 /-!
 # Impossibility Results and Countermodels
@@ -61,13 +61,21 @@ Use only guarded lemmas like `le_add_of_nonneg_left/right`, or principal-add res
 -/
 lemma note_right_add_hazard : True := by trivial
 
-/-! ## 4) μ s vs μ (delta n) counterexample -/
-/-- There exist specific `s, n` with `μ s > μ (delta n)`.
-    Take `s = δ (δ void)` and `n = void`; then `μ(δ void) < μ(δ (δ void))`. -/
-theorem exists_mu_s_gt_mu_delta_n : ∃ s n : Trace, MetaSN.mu s > MetaSN.mu (delta n) := by
+/-! ## 4) Size-vs-delta counterexample (purely internal) -/
+/-- Simple additive size used as an internal witness for failure cases. -/
+@[simp] def simpleSize : Trace → Nat
+| .void => 0
+| .delta t => simpleSize t + 1
+| .integrate t => simpleSize t + 1
+| .merge a b => simpleSize a + simpleSize b + 1
+| .app a b => simpleSize a + simpleSize b + 1
+| .recΔ b s n => simpleSize b + simpleSize s + simpleSize n + 1
+| .eqW a b => simpleSize a + simpleSize b + 1
+
+/-- There exist `s, n` with `simpleSize s > simpleSize (delta n)`. -/
+theorem exists_size_s_gt_size_delta_n : ∃ s n : Trace, simpleSize s > simpleSize (delta n) := by
   refine ⟨delta (delta void), void, ?_⟩
-  -- Goal: μ(δ δ void) > μ(δ void), equivalent to μ(δ void) < μ(δ δ void)
-  simpa [gt_iff_lt] using (MetaSN.mu_lt_mu_delta (delta void))
+  simp [simpleSize]
 
 /-! ## 5) KO7-flavored P1: δ-flag is NOT preserved by merge void globally -/
 open MetaSN_KO7
@@ -79,8 +87,8 @@ lemma deltaFlag_not_preserved_merge_void (b s n : Trace) :
   simp [deltaFlag]
 
 /-- KO7 duplication mapping note:
-    - DM-left used when κᴹ ≠ 0: see MetaSN_KO7.drop_R_merge_cancel_zero (inner LexDM via DM-left) and drop_R_eq_refl (DM-left branch).
-    - When κᴹ = 0, use μ-right in the inner lex and lift: see drop_R_merge_cancel_zero (μ-right path) and drop_R_eq_refl_zero. -/
+    - DM-left used when κᴹ ≠ 0: see `OperatorKO7.MetaCM.drop_R_merge_cancel_c` and `OperatorKO7.MetaCM.drop_R_eq_refl_c`.
+    - The full certified decrease aggregator is `OperatorKO7.MetaCM.measure_decreases_safe_c`. -/
 lemma note_ko7_duplication_mapping : True := by trivial
 
 end OperatorKO7.Countermodels

@@ -1,4 +1,3 @@
-import OperatorKO7.Meta.Termination_KO7
 import OperatorKO7.Meta.ComputableMeasure
 import Mathlib.Data.Multiset.Basic
 import Mathlib.Data.Multiset.DershowitzManna

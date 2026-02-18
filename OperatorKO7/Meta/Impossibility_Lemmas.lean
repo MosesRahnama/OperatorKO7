@@ -2,7 +2,7 @@ import OperatorKO7.Meta.Operational_Incompleteness
 import OperatorKO7.Kernel
 import Mathlib.Order.Basic
 import Mathlib.Tactic.Linarith
-import OperatorKO7.Meta.Termination_KO7
+import OperatorKO7.Meta.ComputableMeasure
 -- Impossibility Lemmas - documentation mirror (see Confluence_Safe for helpers)
 
 /-!
@@ -209,59 +209,54 @@ end RflGate
 /-! ## Anchors to the green path (consolidation §J)
 
 The fixes live under KO7’s safe layer:
-- `Meta/Termination_KO7.lean`: `drop_R_rec_succ` (outer δ‑flag drop),
-  `measure_decreases_safe`, `wf_SafeStepRev`, plus MPO variants.
+- `Meta/ComputableMeasure.lean`: `drop_R_rec_succ_c` (outer δ-flag drop),
+  `measure_decreases_safe_c`, `wf_SafeStepRev_c`.
 These aren’t re‑proved here; this file focuses on the impossibility side. -/
 
--- See also: HybridDec one-liners just below (`Hybrid_FixPathExamples`),
--- which use `MetaSN_Hybrid.hybrid_drop_of_step` to witness per-step decreases.
-
-/-! ## KO7 safe Lex3 - tiny cross-link examples (the “fix path”) -/
+/-! ## KO7 safe Lex3c - tiny cross-link examples (the fix path) -/
 
 namespace KO7_FixPathExamples
 
--- δ-substitution (rec_succ) strictly drops by KO7’s outer flag component.
+open OperatorKO7.MetaCM
+
+-- delta-substitution (rec_succ) strictly drops by KO7's outer flag component.
 lemma rec_succ_drops (b s n : Trace) :
-   MetaSN_KO7.Lex3 (MetaSN_KO7.μ3 (app s (recΔ b s n)))
-                   (MetaSN_KO7.μ3 (recΔ b s (delta n))) := by
-   simpa using MetaSN_KO7.drop_R_rec_succ b s n
+   Lex3c (mu3c (app s (recΔ b s n)))
+         (mu3c (recΔ b s (delta n))) := by
+   simpa using drop_R_rec_succ_c b s n
 
 -- The guarded aggregator yields a decrease certificate per safe step.
 lemma safe_decrease_rec_succ (b s n : Trace) :
-   MetaSN_KO7.Lex3 (MetaSN_KO7.μ3 (app s (recΔ b s n)))
-                   (MetaSN_KO7.μ3 (recΔ b s (delta n))) := by
+   Lex3c (mu3c (app s (recΔ b s n)))
+         (mu3c (recΔ b s (delta n))) := by
    simpa using
-     (MetaSN_KO7.measure_decreases_safe
-       (MetaSN_KO7.SafeStep.R_rec_succ b s n))
+     (measure_decreases_safe_c
+        (MetaSN_KO7.SafeStep.R_rec_succ b s n))
 
 -- Well-foundedness of the reverse safe relation (no infinite safe reductions).
-theorem wf_safe : WellFounded MetaSN_KO7.SafeStepRev := MetaSN_KO7.wf_SafeStepRev
+theorem wf_safe : WellFounded MetaSN_KO7.SafeStepRev := wf_SafeStepRev_c
 
 end KO7_FixPathExamples
 
-/-! ## HybridDec - one-liners via `hybrid_drop_of_step` (cross-link) -/
+/-! ## Additional computable drop one-liners (cross-link) -/
 
-namespace Hybrid_FixPathExamples
+namespace Computable_FixPathExamples
 
-lemma hybrid_rec_succ (b s n : Trace) :
-  MetaSN_Hybrid.HybridDec (recΔ b s (delta n)) (app s (recΔ b s n)) := by
-  simpa using
-    MetaSN_Hybrid.hybrid_drop_of_step
-      (OperatorKO7.Step.R_rec_succ b s n)
+open OperatorKO7.MetaCM
 
-lemma hybrid_merge_void_left (t : Trace) :
-  MetaSN_Hybrid.HybridDec (merge void t) t := by
-  simpa using
-    MetaSN_Hybrid.hybrid_drop_of_step
-      (OperatorKO7.Step.R_merge_void_left t)
+lemma drop_rec_succ (b s n : Trace) :
+  Lex3c (mu3c (app s (recΔ b s n))) (mu3c (recΔ b s (delta n))) := by
+  simpa using drop_R_rec_succ_c b s n
 
-lemma hybrid_eq_diff (a b : Trace) :
-  MetaSN_Hybrid.HybridDec (eqW a b) (integrate (merge a b)) := by
-  simpa using
-    MetaSN_Hybrid.hybrid_drop_of_step
-      (OperatorKO7.Step.R_eq_diff a b)
+lemma drop_merge_void_left (t : Trace) (hδ : MetaSN_KO7.deltaFlag t = 0) :
+  Lex3c (mu3c t) (mu3c (merge void t)) := by
+  simpa using drop_R_merge_void_left_c t hδ
 
-end Hybrid_FixPathExamples
+lemma drop_eq_diff (a b : Trace) :
+  Lex3c (mu3c (integrate (merge a b))) (mu3c (eqW a b)) := by
+  simpa using drop_R_eq_diff_c a b
+
+end Computable_FixPathExamples
 
 /-! ## Approach #9: Complex Hybrid/Constellation Measures (Paper Section 7, line 250)
 
@@ -377,8 +372,8 @@ theorem full_step_permits_barrier :
   exact ⟨void, void, void, Step.R_rec_succ void void void⟩
 
 /-- Reference: The SafeStep guard is what makes termination provable.
-    See `MetaSN_KO7.wf_SafeStepRev` for the working proof. -/
-example : WellFounded MetaSN_KO7.SafeStepRev := MetaSN_KO7.wf_SafeStepRev
+    See `OperatorKO7.MetaCM.wf_SafeStepRev_c` for the working proof. -/
+example : WellFounded MetaSN_KO7.SafeStepRev := OperatorKO7.MetaCM.wf_SafeStepRev_c
 
 end UncheckedRecursionFailure
 
