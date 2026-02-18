@@ -17,7 +17,7 @@ A mechanically verified Lean 4 development for the KO7 term rewriting system (7 
 
 | Result | File | Status |
 |--------|------|--------|
-| Strong normalization (`SafeStep`) | [`Termination_KO7.lean`](OperatorKO7/Meta/Termination_KO7.lean) | Proved |
+| Strong normalization (`SafeStep`) | [`ComputableMeasure.lean`](OperatorKO7/Meta/ComputableMeasure.lean) + [`SafeStep_Core.lean`](OperatorKO7/Meta/SafeStep_Core.lean) | Proved |
 | Certified normalizer (total + sound) | [`Normalize_Safe.lean`](OperatorKO7/Meta/Normalize_Safe.lean) | Proved |
 | Newman confluence engine (`SafeStep`) | [`Newman_Safe.lean`](OperatorKO7/Meta/Newman_Safe.lean) | Proved (parameterized theorem + discharged `locAll_safe` + unconditional `confluentSafe`) |
 | Non-local-join witness (`eqW void void`) | [`Confluence_Safe.lean`](OperatorKO7/Meta/Confluence_Safe.lean) | Proved |
@@ -31,8 +31,6 @@ A mechanically verified Lean 4 development for the KO7 term rewriting system (7 
 - The Newman core theorem is parameterized by a global local-join hypothesis (`locAll : forall a, LocalJoinAt a`), and this hypothesis is discharged in-repo (`locAll_safe`), yielding unconditional confluence for `SafeStep` (`confluentSafe`).
 - Full-system termination and full-system confluence are **not claimed**.
 - The full termination conjecture is supported by 7 machine-checked no-go barriers (in `Conjecture_Boundary.lean`) and a proof-theoretic argument connecting nested `recΔ` to the ε₀ ordinal boundary (in `Epsilon0_Boundary.md`).
-
-For a detailed scope audit, see [`SAFE_AUDIT.md`](SAFE_AUDIT.md).
 
 ## Kernel definition
 
@@ -80,8 +78,7 @@ Building without cache may take 30-60 minutes (mathlib compiled from source).
 
 | File | Contents |
 |------|----------|
-| `Termination.lean` | Ordinal measure toolkit |
-| `Termination_KO7.lean` | `SafeStep` definition + SN proof (triple-lex measure) |
+| `SafeStep_Core.lean` | Canonical `SafeStep` core relation + DM utilities (`MetaSN_KO7`, `MetaSN_DM`) |
 | `ComputableMeasure.lean` | Computable termination certificate |
 | `Normalize_Safe.lean` | Certified normalizer (total + sound) |
 | `Newman_Safe.lean` | Newman engine + global hypothesis discharge (`locAll_safe`) + unconditional `SafeStep` confluence |

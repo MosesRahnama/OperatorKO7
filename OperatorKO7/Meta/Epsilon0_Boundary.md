@@ -298,7 +298,7 @@ were an independent recognition of this boundary, predating the Codex proof.
 | 7/10 formal barriers | `Meta/Conjecture_Boundary.lean` | Machine-checked |
 | Polynomial tie (exact equality) | `poly_mul_ties_rec_succ` | Machine-checked |
 | Dual barrier (complementary) | `dual_barrier_rec_succ_and_merge_void` | Machine-checked |
-| SafeStep SN (sub-ε₀) | `Meta/Termination_KO7.lean` | Machine-checked |
+| SafeStep SN (sub-ε₀) | `Meta/ComputableMeasure.lean` (+ core relation in `Meta/SafeStep_Core.lean`) | Machine-checked |
 | Full Step SN (ε₀) | Codex proof (external) | Compiles, not in repo |
 | ε₀ identification | This document | Proof-theoretic argument |
 | System T embedding | Open | Formalization task |

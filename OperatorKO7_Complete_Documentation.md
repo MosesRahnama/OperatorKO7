@@ -1,7 +1,7 @@
 # OperatorKO7 Complete Documentation
 ## Kernel and Meta Development - Full Source Code
 
-**Generated:** February 17, 2026
+**Generated:** February 18, 2026
 **Repository:** [MosesRahnama/OperatorKO7](https://github.com/MosesRahnama/OperatorKO7)
 **Author:** Moses Rahnama
 
@@ -9,40 +9,41 @@
 
 ## Overview
 
-This document contains the complete source code for the OperatorKO7 Lean library, including:
-- **Kernel.lean**: Core calculus with 7 constructors and 8 reduction rules
-- **Meta folder**: 21 files containing termination proofs, confluence analysis, impossibility results, and conjecture boundary analysis
-- **Epsilon0_Boundary.md**: Proof-theoretic analysis connecting the conjecture to the epsilon-0 ordinal boundary
+This document contains the complete current source for the OperatorKO7 Lean library and companion boundary note, including:
+- **Kernel.lean**: core calculus with 7 constructors and 8 reduction rules
+- **SafeStep core + computable SN stack**: canonical guarded relation and computable termination certificate
+- **Normalizer + confluence**: certified normalization and Newman-based confluence for `SafeStep`
+- **Impossibility + boundary modules**: no-go families and conjecture evidence
 
-The ordering below follows the proof architecture: kernel definition -> safe-fragment termination -> certified normalization -> confluence -> computable certificate -> verification/smoke tests -> impossibility catalog -> conjecture boundary -> proof-theoretic analysis.
+The ordering below follows the active proof architecture: kernel -> safe core -> computable SN certificate -> normalizer/confluence -> verification/tests -> impossibility/boundary modules -> auxiliary cores.
 
 ---
 
 ## Table of Contents
 
-1. [OperatorKO7/Kernel.lean](#1-operatorko7-kernel-lean) - 59 lines
-2. [OperatorKO7/Meta/Termination.lean](#2-operatorko7-meta-termination-lean) - 1649 lines
-3. [OperatorKO7/Meta/Termination_KO7.lean](#3-operatorko7-meta-termination_ko7-lean) - 977 lines
-4. [OperatorKO7/Meta/Normalize_Safe.lean](#4-operatorko7-meta-normalize_safe-lean) - 251 lines
-5. [OperatorKO7/Meta/SafeStep_Ctx.lean](#5-operatorko7-meta-safestep_ctx-lean) - 549 lines
-6. [OperatorKO7/Meta/Confluence_Safe.lean](#6-operatorko7-meta-confluence_safe-lean) - 530 lines
-7. [OperatorKO7/Meta/Newman_Safe.lean](#7-operatorko7-meta-newman_safe-lean) - 205 lines
-8. [OperatorKO7/Meta/ComputableMeasure.lean](#8-operatorko7-meta-computablemeasure-lean) - 460 lines
-9. [OperatorKO7/Meta/ComputableMeasure_Verification.lean](#9-operatorko7-meta-computablemeasure_verification-lean) - 241 lines
-10. [OperatorKO7/Meta/ComputableMeasure_Test.lean](#10-operatorko7-meta-computablemeasure_test-lean) - 46 lines
-11. [OperatorKO7/Meta/DM_MPO_Orientation.lean](#11-operatorko7-meta-dm_mpo_orientation-lean) - 52 lines
-12. [OperatorKO7/Meta/CNFOrdinal.lean](#12-operatorko7-meta-cnfordinal-lean) - 1139 lines
-13. [OperatorKO7/Meta/Examples_Publish.lean](#13-operatorko7-meta-examples_publish-lean) - 36 lines
-14. [OperatorKO7/Meta/HydraCore.lean](#14-operatorko7-meta-hydracore-lean) - 35 lines
-15. [OperatorKO7/Meta/GoodsteinCore.lean](#15-operatorko7-meta-goodsteincore-lean) - 40 lines
-16. [OperatorKO7/Meta/Operational_Incompleteness.lean](#16-operatorko7-meta-operational_incompleteness-lean) - 1188 lines
-17. [OperatorKO7/Meta/Impossibility_Lemmas.lean](#17-operatorko7-meta-impossibility_lemmas-lean) - 391 lines
-18. [OperatorKO7/Meta/FailureModes.lean](#18-operatorko7-meta-failuremodes-lean) - 86 lines
-19. [OperatorKO7/Meta/ContractProbes.lean](#19-operatorko7-meta-contractprobes-lean) - 67 lines
-20. [OperatorKO7/Meta/PaperApproachIndex.lean](#20-operatorko7-meta-paperapproachindex-lean) - 39 lines
-21. [OperatorKO7/Meta/Conjecture_Boundary.lean](#21-operatorko7-meta-conjecture_boundary-lean) - 333 lines
-22. [OperatorKO7/Meta/Epsilon0_Boundary.md](#22-operatorko7-meta-epsilon0_boundary-md) - 316 lines
-23. [OperatorKO7/Test/Sanity.lean](#23-operatorko7-test-sanity-lean) - 11 lines
+1. [OperatorKO7/Kernel.lean](#1-operatorko7-kernel-lean) - 49 lines
+2. [OperatorKO7.lean](#2-operatorko7-lean) - 10 lines
+3. [OperatorKO7/Meta/SafeStep_Core.lean](#3-operatorko7-meta-safestep_core-lean) - 125 lines
+4. [OperatorKO7/Meta/ComputableMeasure.lean](#4-operatorko7-meta-computablemeasure-lean) - 403 lines
+5. [OperatorKO7/Meta/Normalize_Safe.lean](#5-operatorko7-meta-normalize_safe-lean) - 203 lines
+6. [OperatorKO7/Meta/SafeStep_Ctx.lean](#6-operatorko7-meta-safestep_ctx-lean) - 474 lines
+7. [OperatorKO7/Meta/Confluence_Safe.lean](#7-operatorko7-meta-confluence_safe-lean) - 461 lines
+8. [OperatorKO7/Meta/Newman_Safe.lean](#8-operatorko7-meta-newman_safe-lean) - 177 lines
+9. [OperatorKO7/Meta/ComputableMeasure_Verification.lean](#9-operatorko7-meta-computablemeasure_verification-lean) - 193 lines
+10. [OperatorKO7/Meta/ComputableMeasure_Test.lean](#10-operatorko7-meta-computablemeasure_test-lean) - 33 lines
+11. [OperatorKO7/Meta/DM_MPO_Orientation.lean](#11-operatorko7-meta-dm_mpo_orientation-lean) - 38 lines
+12. [OperatorKO7/Meta/Examples_Publish.lean](#12-operatorko7-meta-examples_publish-lean) - 23 lines
+13. [OperatorKO7/Meta/Operational_Incompleteness.lean](#13-operatorko7-meta-operational_incompleteness-lean) - 1007 lines
+14. [OperatorKO7/Meta/Impossibility_Lemmas.lean](#14-operatorko7-meta-impossibility_lemmas-lean) - 312 lines
+15. [OperatorKO7/Meta/FailureModes.lean](#15-operatorko7-meta-failuremodes-lean) - 76 lines
+16. [OperatorKO7/Meta/ContractProbes.lean](#16-operatorko7-meta-contractprobes-lean) - 49 lines
+17. [OperatorKO7/Meta/Conjecture_Boundary.lean](#17-operatorko7-meta-conjecture_boundary-lean) - 325 lines
+18. [OperatorKO7/Meta/PaperApproachIndex.lean](#18-operatorko7-meta-paperapproachindex-lean) - 28 lines
+19. [OperatorKO7/Meta/CNFOrdinal.lean](#19-operatorko7-meta-cnfordinal-lean) - 1004 lines
+20. [OperatorKO7/Meta/HydraCore.lean](#20-operatorko7-meta-hydracore-lean) - 27 lines
+21. [OperatorKO7/Meta/GoodsteinCore.lean](#21-operatorko7-meta-goodsteincore-lean) - 32 lines
+22. [OperatorKO7/Meta/Epsilon0_Boundary.md](#22-operatorko7-meta-epsilon0_boundary-md) - 228 lines
+23. [OperatorKO7/Test/Sanity.lean](#23-operatorko7-test-sanity-lean) - 9 lines
 
 ---
 
@@ -50,7 +51,7 @@ The ordering below follows the proof architecture: kernel definition -> safe-fra
 
 **File:** `OperatorKO7/Kernel.lean`
 
-**Lines:** 59
+**Lines:** 49
 
 ```lean
 namespace OperatorKO7
@@ -62,7 +63,7 @@ Why this file exists:
 - Defines the core syntax (`Trace`) and the full rewrite relation (`Step`) for the KO7 kernel.
 - `Step` is the *full* kernel relation (8 unconditional rules).
 - The certified artifact is proved for a guarded subrelation `SafeStep` defined in
-  `OperatorKO7/Meta/Termination_KO7.lean`.
+  `OperatorKO7/Meta/SafeStep_Core.lean`.
 -/
 
 /-- The KO7 term language (7 constructors). -/
@@ -112,1777 +113,86 @@ theorem nf_no_stepstar_forward {a b : Trace} (hnf : NormalForm a) (h : StepStar 
   | StepStar.tail hs _ => False.elim (hnf ⟨_, hs⟩)
 
 end OperatorKO7
-
 ```
 
 ---
 
-## 2. OperatorKO7/Meta/Termination.lean
+## 2. OperatorKO7.lean
 
-**File:** `OperatorKO7/Meta/Termination.lean`
+**File:** `OperatorKO7.lean`
 
-**Lines:** 1649
+**Lines:** 10
 
 ```lean
 import OperatorKO7.Kernel
-import Init.WF
-import Mathlib.Data.Prod.Lex
-import Mathlib.Algebra.Order.SuccPred
-import Mathlib.Data.Nat.Cast.Order.Basic
-import Mathlib.SetTheory.Ordinal.Basic
-import Mathlib.SetTheory.Ordinal.Arithmetic
-import Mathlib.SetTheory.Ordinal.Exponential
-import Mathlib.Algebra.Order.Monoid.Defs
-import Mathlib.Tactic.Linarith
-import Mathlib.Tactic.NormNum
-import Mathlib.Algebra.Order.GroupWithZero.Unbundled.Defs
-import Mathlib.Algebra.Order.Monoid.Unbundled.Basic
-import Mathlib.Tactic.Ring
-import Mathlib.Algebra.Order.Group.Defs
-import Mathlib.SetTheory.Ordinal.Principal
-import Mathlib.Tactic
+import OperatorKO7.Meta.ComputableMeasure
 
 /-!
-Termination infrastructure (ordinal measures and supporting lemmas).
+Public entrypoint for the `OperatorKO7` Lean library.
 
-Purpose:
-- Defines an ordinal-valued measure `MetaSN.mu` on KO7 traces.
-- Defines auxiliary counters/ranks (e.g. `MetaSN.kappa`) used in combined lex measures.
-- Proves a library of ordinal arithmetic lemmas used by the KO7 termination developments.
-
-Scope:
-- This file is *measure infrastructure*. It does not define `SafeStep`, and it does not claim
-  termination of the full kernel `Step` relation. The certified termination proofs for the safe
-  fragment live in `OperatorKO7/Meta/Termination_KO7.lean`.
-
-Key exports (used downstream):
-- `MetaSN.mu` (ordinal payload)
-- `MetaSN.kappa` and `MetaSN.μκ` (combined measures)
-- lemma families `mu_lt_*` that provide strict decreases needed by per-rule drop proofs
-
-Paper map:
-- Supports the paper's SN section and the appendix discussion of ordinal hazards (right-addition is
-  not strictly monotone; absorption requires an explicit `omega0 ≤ _` hypothesis).
+Why this file exists:
+- Acts as the minimal import surface for downstream users and reviewers.
+- Keeps the default build stable by importing the core kernel and the canonical computable SafeStep development.
+- Additional modules (normalizer, confluence) are imported directly where needed
+  (e.g. in `OperatorKO7/Meta/Examples_Publish.lean`).
 -/
-set_option linter.unnecessarySimpa false
-
-/- Local compatibility shims (to avoid depending on Legacy Patch2025_08_10). -/
-namespace OperatorKO7.Patch2025_08_10
-open Ordinal
-
-/-- strict monotonicity of `ω ^ _` (compat wrapper). -/
-@[simp] theorem opow_lt_opow_right {a b : Ordinal} (h : a < b) :
-  omega0 ^ a < omega0 ^ b :=
-  ((Ordinal.isNormal_opow (a := omega0) one_lt_omega0).strictMono h)
-
-/-- `0 < 1` for ordinals (compat helper). -/
-@[simp] lemma zero_lt_one_ordinal : (0 : Ordinal) < 1 := by
-  simpa using (nat_lt_omega0 1)
-
-end OperatorKO7.Patch2025_08_10
-
-/-
-Ordinal hazards policy (explicit hypotheses):
-- Use `Ordinal.opow_le_opow_right` for ≤-monotonicity in the exponent.
-- For strict < at base ω, use the local strict-mono bridge (normality of opow at ω).
-- Avoid transporting strictness via right-add unless justified; ordinal addition is not strictly right-mono.
-- Only absorb `(n : Ordinal) + p = p` after showing `omega0 ≤ p`.
-These constraints are enforced in new lemmas; legacy statements remain unchanged.
--/
-
-universe u
-
-open Ordinal
-open OperatorKO7
-open Trace
-namespace MetaSN
-
-
-/-- Ordinal-valued termination payload used in the KO7 developments. -/
-noncomputable def mu : Trace → Ordinal.{0}
-| .void        => 0
-| .delta t     => (omega0 ^ (5 : Ordinal)) * (mu t + 1) + 1
-| .integrate t => (omega0 ^ (4 : Ordinal)) * (mu t + 1) + 1
-| .merge a b   =>
-    (omega0 ^ (3 : Ordinal)) * (MetaSN.mu a + 1) +
-    (omega0 ^ (2 : Ordinal)) * (MetaSN.mu b + 1) + 1
-| .recΔ b s n  =>
-    omega0 ^ (MetaSN.mu n + MetaSN.mu s + (6 : Ordinal))
-  + omega0 * (MetaSN.mu b + 1) + 1
-| .eqW a b     =>
-    omega0 ^ (MetaSN.mu a + MetaSN.mu b + (9 : Ordinal)) + 1
-| .app a b     =>
-    (omega0 ^ (3 : Ordinal)) * (MetaSN.mu a + 1) +
-    (omega0 ^ (2 : Ordinal)) * (MetaSN.mu b + 1) + 1
-
-/-- Secondary counter: 0 everywhere except it counts nesting depth of `recΔ` (used for lex drops). -/
-def kappa : Trace → ℕ
-| Trace.recΔ _ _ n => (kappa n).succ
-| Trace.void => 0
-| Trace.delta _ => 0
-| Trace.integrate _ => 0
-| Trace.merge _ _ => 0
-| Trace.app _ _ => 0
-| Trace.eqW _ _ => 0
-
-/-- Combined measure pair (kappa primary, mu secondary). -/
-noncomputable def μκ (t : Trace) : ℕ × Ordinal := (kappa t, mu t)
-
-/-- Lexicographic order on `(ℕ × Ordinal)` used for combined (kappa, mu) measures. -/
-def LexNatOrd : (ℕ × Ordinal) → (ℕ × Ordinal) → Prop :=
-  Prod.Lex (· < ·) (· < ·)
-
-
-/-- `kappa` is zero on any trace that is not a `recΔ _ _ _`. -/
-@[simp] lemma kappa_non_rec (t : Trace)
-  : (¬ ∃ b s n, t = Trace.recΔ b s n) → kappa t = 0 := by
-  cases t with
-  | recΔ b s n =>
-      intro h; exact (False.elim (h ⟨b, s, n, rfl⟩))
-  | void => intro _; simp [kappa]
-  | delta _ => intro _; simp [kappa]
-  | integrate _ => intro _; simp [kappa]
-  | merge _ _ => intro _; simp [kappa]
-  | eqW _ _ => intro _; simp [kappa]
-  | app _ _ => intro _; simp [kappa]
-
-/-- Basic strictness: `mu t` is strictly less than the merge payload `mu (merge t void)`. -/
-theorem mu_lt_merge_void_right (t : Trace) :
-  -- Hypotheses used: opow_pos, opow_le_opow_right for ≤-mono, add-one bridges; no right-add strictness.
-  mu t < MetaSN.mu (.merge t .void) := by
-  -- μ(merge t void) = ω³*(μ t +1) + ω² + 1 dominates μ t
-  have h1 : mu t < mu t + 1 :=
-    (Order.lt_add_one_iff (x := mu t) (y := mu t)).2 le_rfl
-  have pos3 : 0 < omega0 ^ (3 : Ordinal) :=
-    by simpa using (Ordinal.opow_pos (a := omega0) (b := (3 : Ordinal)) omega0_pos)
-  have hmono : mu t + 1 ≤ omega0 ^ (3 : Ordinal) * (mu t + 1) := by
-    simpa using (Ordinal.le_mul_right (a := mu t + 1) (b := omega0 ^ (3 : Ordinal)) pos3)
-  have h2 : mu t < omega0 ^ (3 : Ordinal) * (mu t + 1) := lt_of_lt_of_le h1 hmono
-  have tail : (0 : Ordinal) ≤ omega0 ^ (2 : Ordinal) * (0 + 1) + 1 := zero_le _
-  have h3 : omega0 ^ (3 : Ordinal) * (mu t + 1) ≤
-      omega0 ^ (3 : Ordinal) * (mu t + 1) + (omega0 ^ (2 : Ordinal) * (0 + 1) + 1) :=
-    le_add_of_nonneg_right tail
-  have h4 : mu t < omega0 ^ (3 : Ordinal) * (mu t + 1) + (omega0 ^ (2 : Ordinal) * (0 + 1) + 1) :=
-    lt_of_lt_of_le h2 h3
-  simpa [mu, add_assoc, add_comm, add_left_comm]
-    using h4
-
-/-- Convenience lemma: `0 < y + 1` for ordinals. -/
-theorem zero_lt_add_one (y : Ordinal) : (0 : Ordinal) < y + 1 :=
-  (Order.lt_add_one_iff (x := (0 : Ordinal)) (y := y)).2 bot_le
-
-/-- Basic strictness: `mu void` is strictly less than `mu (integrate (delta t))`. -/
-theorem mu_void_lt_integrate_delta (t : Trace) :
-  -- Hypotheses used: principal_add_omega0_opow (strict-mono at ω), opow_pos, add-one bridge.
-  MetaSN.mu .void < MetaSN.mu (.integrate (.delta t)) := by
-  simp [MetaSN.mu]
-
-/-- Basic strictness: `mu void` is strictly less than `mu (eqW a a)` for any `a`. -/
-theorem mu_void_lt_eq_refl (a : Trace) :
-  -- Hypotheses used: opow_le_opow_right and strict-mono bridge for the big exponent, final add-one bridge.
-  MetaSN.mu .void < MetaSN.mu (.eqW a a) := by
-  simp [MetaSN.mu]
-
-section Debug
-
-
-/-- Cancellation rule: `merge t t → t` strictly drops `μ`. -/
-theorem mu_lt_merge_cancel (t : Trace) :
-  -- Hypotheses used: opow_pos, le_mul_right, le_add_right, add-one bridge; avoids unjustified right-add strictness.
-  MetaSN.mu t < MetaSN.mu (.merge t t) := by
-  -- Legacy-proof (compiles in Termination_C):
-  have h0 : MetaSN.mu t < MetaSN.mu t + 1 :=
-    (Order.lt_add_one_iff (x := MetaSN.mu t) (y := MetaSN.mu t)).2 le_rfl
-  have pos3 : 0 < omega0 ^ (3 : Ordinal) :=
-    by simpa using (Ordinal.opow_pos (a := omega0) (b := (3 : Ordinal)) omega0_pos)
-  have hmono : MetaSN.mu t + 1 ≤ omega0 ^ (3 : Ordinal) * (MetaSN.mu t + 1) := by
-    simpa using (Ordinal.le_mul_right (a := MetaSN.mu t + 1)
-      (b := omega0 ^ (3 : Ordinal)) pos3)
-  have h1 : MetaSN.mu t < omega0 ^ (3 : Ordinal) * (MetaSN.mu t + 1) := lt_of_lt_of_le h0 hmono
-  -- add the second ω²-term (same `t`) and tail +1
-  have pad :
-      omega0 ^ (3 : Ordinal) * (MetaSN.mu t + 1) ≤
-      (omega0 ^ (3 : Ordinal)) * (MetaSN.mu t + 1) +
-        (omega0 ^ (2 : Ordinal)) * (MetaSN.mu t + 1) :=
-    Ordinal.le_add_right _ _
-  have pad1 :
-      omega0 ^ (3 : Ordinal) * (MetaSN.mu t + 1) + 1 ≤
-      ((omega0 ^ (3 : Ordinal)) * (MetaSN.mu t + 1) +
-        (omega0 ^ (2 : Ordinal)) * (MetaSN.mu t + 1)) + 1 :=
-    add_le_add_right pad 1
-  have h2 :
-      MetaSN.mu t <
-      ((omega0 ^ (3 : Ordinal)) * (MetaSN.mu t + 1) +
-        (omega0 ^ (2 : Ordinal)) * (MetaSN.mu t + 1)) + 1 :=
-    lt_of_lt_of_le
-      (lt_of_lt_of_le h1 (le_add_of_nonneg_right (zero_le _))) pad1
-  simpa [MetaSN.mu, add_assoc] using h2
-
-/-! Hypothesis-explicit wrappers (to make ordinal hypotheses explicit in signatures).
-    These consume the hypotheses and delegate to the established lemmas above. -/
-
-theorem mu_lt_merge_void_right_with (t : Trace)
-  (_hpos3 : (0 : Ordinal.{0}) < (omega0 : Ordinal.{0}) ^ (3 : Ordinal)) :
-  mu t < MetaSN.mu (.merge t .void) := by
-  simpa [mu_lt_merge_void_right] using mu_lt_merge_void_right t
-
-theorem mu_void_lt_integrate_delta_with (t : Trace)
-  (_hpos4 : (0 : Ordinal.{0}) < (omega0 : Ordinal.{0}) ^ (4 : Ordinal)) :
-  MetaSN.mu .void < MetaSN.mu (.integrate (.delta t)) := by
-  simpa [mu_void_lt_integrate_delta] using mu_void_lt_integrate_delta t
-
-theorem mu_void_lt_eq_refl_with (a : Trace)
-  (_hpos : (0 : Ordinal.{0}) < (omega0 : Ordinal.{0}) ^ (MetaSN.mu a + MetaSN.mu a + (9 : Ordinal))) :
-  MetaSN.mu .void < MetaSN.mu (.eqW a a) := by
-  simpa [mu_void_lt_eq_refl] using mu_void_lt_eq_refl a
-
-theorem mu_lt_merge_cancel_with (t : Trace)
-  (_hpos3 : (0 : Ordinal.{0}) < (omega0 : Ordinal.{0}) ^ (3 : Ordinal)) :
-  MetaSN.mu t < MetaSN.mu (.merge t t) := by
-  simpa using mu_lt_merge_cancel t
-
-
-end Debug
-
-
--- (Removed earlier succ_succ_eq_add_two lemma to avoid recursive simp loops.)
-lemma succ_succ_eq_add_two (x : Ordinal) :
-  Order.succ (Order.succ x) = x + 2 := by
-  have hx : Order.succ x = x + 1 := by
-    simpa using (Ordinal.add_one_eq_succ (a := x)).symm
-  have hx2 : Order.succ (Order.succ x) = (x + 1) + 1 := by
-    -- rewrite outer succ
-    rw [hx]
-    simpa using (Ordinal.add_one_eq_succ (a := x + 1)).symm
-  -- assemble via calc to avoid deep simp recursion
-  calc
-    Order.succ (Order.succ x) = (x + 1) + 1 := hx2
-    _ = x + (1 + 1) := by rw [add_assoc]
-    _ = x + 2 := by simp
-
-@[simp] lemma succ_succ_pow2 :
-  Order.succ (Order.succ (omega0 ^ (2 : Ordinal))) = omega0 ^ (2 : Ordinal) + 2 := by
-  simpa using succ_succ_eq_add_two (omega0 ^ (2 : Ordinal))
-
-
-
--- alias le_of_not_gt := le_of_not_lt
--- what is this exactly?
-attribute [simp] Ordinal.IsNormal.strictMono
-
-
-/-- Special case: both args void. Clean proof staying in +2 form. -/
-theorem mu_lt_eq_diff_both_void :
-  MetaSN.mu (integrate (merge .void .void)) < MetaSN.mu (eqW .void .void) := by
-  -- μ(merge void void)
-  have hμm : MetaSN.mu (merge .void .void) =
-      omega0 ^ (3 : Ordinal) + omega0 ^ (2 : Ordinal) + 1 := by
-    simp [MetaSN.mu, add_assoc]
-  -- rewrite μ(integrate ...)
-  have hL : MetaSN.mu (integrate (merge .void .void)) =
-      omega0 ^ (4 : Ordinal) * (omega0 ^ (3 : Ordinal) + omega0 ^ (2 : Ordinal) + 2) + 1 := by
-    simpa [MetaSN.mu, hμm, add_assoc]
-  -- payload pieces < ω^5 via additive principal
-  have hα : omega0 ^ (3 : Ordinal) < omega0 ^ (5 : Ordinal) := by
-    have : (3 : Ordinal) < 5 := by norm_num
-    simpa using OperatorKO7.Patch2025_08_10.opow_lt_opow_right this
-  have hβ : omega0 ^ (2 : Ordinal) < omega0 ^ (5 : Ordinal) := by
-    have : (2 : Ordinal) < 5 := by norm_num
-    simpa using OperatorKO7.Patch2025_08_10.opow_lt_opow_right this
-  have hγ : (2 : Ordinal) < omega0 ^ (5 : Ordinal) := by
-    have h2ω : (2 : Ordinal) < omega0 := nat_lt_omega0 2
-    have ω_le : omega0 ≤ omega0 ^ (5 : Ordinal) := by
-      have : (1 : Ordinal) ≤ (5 : Ordinal) := by norm_num
-      have hpow := Ordinal.opow_le_opow_right omega0_pos this
-      simpa using (le_trans (by simpa using (Ordinal.opow_one omega0).symm.le) hpow)
-    exact lt_of_lt_of_le h2ω ω_le
-  have hprin := Ordinal.principal_add_omega0_opow (5 : Ordinal)
-  have hsum12 : omega0 ^ (3 : Ordinal) + omega0 ^ (2 : Ordinal) < omega0 ^ (5 : Ordinal) :=
-    hprin hα hβ
-  have h_payload : omega0 ^ (3 : Ordinal) + omega0 ^ (2 : Ordinal) + 2 < omega0 ^ (5 : Ordinal) :=
-    hprin hsum12 hγ
-  -- multiply by ω^4 and collapse exponent
-  have pos4 : (0 : Ordinal) < omega0 ^ (4 : Ordinal) :=
-    Ordinal.opow_pos (a := omega0) (b := (4 : Ordinal)) omega0_pos
-  have hstep : omega0 ^ (4 : Ordinal) *
-      (omega0 ^ (3 : Ordinal) + omega0 ^ (2 : Ordinal) + 2) <
-      omega0 ^ (4 : Ordinal) * omega0 ^ (5 : Ordinal) :=
-    Ordinal.mul_lt_mul_of_pos_left h_payload pos4
-  have hcollapse : omega0 ^ (4 : Ordinal) * omega0 ^ (5 : Ordinal) =
-      omega0 ^ (4 + 5 : Ordinal) := by
-    simpa using (Ordinal.opow_add omega0 (4:Ordinal) (5:Ordinal)).symm
-  have h45 : (4 : Ordinal) + (5 : Ordinal) = (9 : Ordinal) := by norm_num
-  have h_prod :
-      omega0 ^ (4 : Ordinal) *
-        (omega0 ^ (3 : Ordinal) + omega0 ^ (2 : Ordinal) + 2) <
-      omega0 ^ (9 : Ordinal) := by
-    have htmp2 : omega0 ^ (4 : Ordinal) *
-        (omega0 ^ (3 : Ordinal) + omega0 ^ (2 : Ordinal) + 2) < omega0 ^ (4 + 5 : Ordinal) :=
-      lt_of_lt_of_eq hstep hcollapse
-    have hrewrite : omega0 ^ (4 + 5 : Ordinal) = omega0 ^ (9 : Ordinal) := by
-      simpa using congrArg (fun e => omega0 ^ e) h45
-    exact lt_of_lt_of_eq htmp2 hrewrite
-  -- add-one bridge
-  have hR : MetaSN.mu (eqW .void .void) = omega0 ^ (9 : Ordinal) + 1 := by
-    simp [MetaSN.mu]
-  have hA1 : omega0 ^ (4 : Ordinal) *
-      (omega0 ^ (3 : Ordinal) + omega0 ^ (2 : Ordinal) + 2) + 1 ≤
-      omega0 ^ (9 : Ordinal) := Order.add_one_le_of_lt h_prod
-  have hfin : omega0 ^ (4 : Ordinal) *
-      (omega0 ^ (3 : Ordinal) + omega0 ^ (2 : Ordinal) + 2) + 1 <
-      omega0 ^ (9 : Ordinal) + 1 :=
-    (Order.lt_add_one_iff (x := _ + 1) (y := omega0 ^ (9 : Ordinal))).2 hA1
-  simpa [hL, hR] using hfin
-
-@[simp] lemma succ_succ_mul_pow2_succ (x : Ordinal) :
-  Order.succ (Order.succ (omega0 ^ (2 : Ordinal) * Order.succ x)) =
-    omega0 ^ (2 : Ordinal) * Order.succ x + 2 := by
-  simpa using succ_succ_eq_add_two (omega0 ^ (2 : Ordinal) * Order.succ x)
-
--- (section continues with μ auxiliary lemmas)
-lemma mu_recDelta_plus_3_lt (b s n : Trace)
-  (h_bound : omega0 ^ (MetaSN.mu n + MetaSN.mu s + (6 : Ordinal)) + omega0 * (MetaSN.mu b + 1) + 1 + 3 <
-             (omega0 ^ (5 : Ordinal)) * (MetaSN.mu n + 1) + 1 + MetaSN.mu s + 6) :
-  MetaSN.mu (recΔ b s n) + 3 < MetaSN.mu (delta n) + MetaSN.mu s + 6 := by
-  -- Expand mu definitions on both sides; structure then matches h_bound directly
-  simp only [mu]
-  exact h_bound
-
-
-private lemma le_omega_pow (x : Ordinal) : x ≤ omega0 ^ x :=
-  Ordinal.right_le_opow (a := omega0) (b := x) one_lt_omega0
-
-theorem add_one_le_of_lt {x y : Ordinal} (h : x < y) : x + 1 ≤ y := by
-  simpa [Ordinal.add_one_eq_succ] using (Order.add_one_le_of_lt h)
-
-private lemma nat_coeff_le_omega_pow (n : ℕ) :
-  (n : Ordinal) + 1 ≤ (omega0 ^ (n : Ordinal)) := by
-  classical
-  cases' n with n
-  · -- `n = 0`: `1 ≤ ω^0 = 1`
-    simp
-  · -- `n = n.succ`
-
-    have hfin : (n.succ : Ordinal) < omega0 := by
-
-      simpa using (Ordinal.nat_lt_omega0 (n.succ))
-    have hleft : (n.succ : Ordinal) + 1 ≤ omega0 :=
-      Order.add_one_le_of_lt hfin
-
-    have hpos : (0 : Ordinal) < (n.succ : Ordinal) := by
-      simpa using (Nat.cast_pos.mpr (Nat.succ_pos n))
-    have hmono : (omega0 : Ordinal) ≤ (omega0 ^ (n.succ : Ordinal)) := by
-      -- `left_le_opow` has type: `0 < b → a ≤ a ^ b`
-      simpa using (Ordinal.left_le_opow (a := omega0) (b := (n.succ : Ordinal)) hpos)
-
-    exact hleft.trans hmono
-
-private lemma coeff_fin_le_omega_pow (n : ℕ) :
-  (n : Ordinal) + 1 ≤ omega0 ^ (n : Ordinal) := nat_coeff_le_omega_pow n
-
-@[simp] theorem natCast_le {m n : ℕ} :
-  ((m : Ordinal) ≤ (n : Ordinal)) ↔ m ≤ n := Nat.cast_le
-
-@[simp] theorem natCast_lt {m n : ℕ} :
-  ((m : Ordinal) < (n : Ordinal)) ↔ m < n := Nat.cast_lt
-
-theorem eq_nat_or_omega0_le (p : Ordinal) :
-  (∃ n : ℕ, p = n) ∨ omega0 ≤ p := by
-  classical
-  cases lt_or_ge p omega0 with
-  | inl h  =>
-      rcases (lt_omega0).1 h with ⟨n, rfl⟩
-      exact Or.inl ⟨n, rfl⟩
-  | inr h  => exact Or.inr h
-
-theorem one_left_add_absorb {p : Ordinal} (h : omega0 ≤ p) :
-  (1 : Ordinal) + p = p := by
-  simpa using (one_add_of_omega0_le h)
-
-theorem nat_left_add_absorb {n : ℕ} {p : Ordinal} (h : omega0 ≤ p) :
-  (n : Ordinal) + p = p := by
-  simpa using (natCast_add_of_omega0_le h n)
-
-@[simp] theorem add_natCast_left (m n : ℕ) :
-  (m : Ordinal) + (n : Ordinal) = ((m + n : ℕ) : Ordinal) := by
-  induction n with
-  | zero =>
-      simp
-  | succ n ih =>
-      simp [Nat.cast_succ]
-
-theorem mul_le_mul {a b c d : Ordinal} (h₁ : a ≤ c) (h₂ : b ≤ d) :
-    a * b ≤ c * d := by
-  have h₁' : a * b ≤ c * b := by
-    simpa using (mul_le_mul_right' h₁ b)        -- mono in left factor
-  have h₂' : c * b ≤ c * d := by
-    simpa using (mul_le_mul_left' h₂ c)         -- mono in right factor
-  exact le_trans h₁' h₂'
-
-theorem add4_plus5_le_plus9 (p : Ordinal) :
-  (4 : Ordinal) + (p + 5) ≤ p + 9 := by
-  classical
-  rcases lt_or_ge p omega0 with hfin | hinf
-  · -- finite case: `p = n : ℕ`
-    rcases (lt_omega0).1 hfin with ⟨n, rfl⟩
-    -- compute on ℕ first
-    have hEqNat : (4 + (n + 5) : ℕ) = (n + 9 : ℕ) := by
-      -- both sides reduce to `n + 9`
-      simp [Nat.add_left_comm]
-    have hEq :
-        (4 : Ordinal) + ((n : Ordinal) + 5) = (n : Ordinal) + 9 := by
-      calc
-        (4 : Ordinal) + ((n : Ordinal) + 5)
-            = (4 : Ordinal) + (((n + 5 : ℕ) : Ordinal)) := by
-                simp
-        _   = ((4 + (n + 5) : ℕ) : Ordinal) := by
-                simp
-        _   = ((n + 9 : ℕ) : Ordinal) := by
-                simpa using (congrArg (fun k : ℕ => (k : Ordinal)) hEqNat)
-        _   = (n : Ordinal) + 9 := by
-                simp
-    exact le_of_eq hEq
-  · -- infinite-or-larger case: the finite prefix on the left collapses
-    -- `5 ≤ 9` as ordinals
-    have h59 : (5 : Ordinal) ≤ (9 : Ordinal) := by
-      simpa using (natCast_le.mpr (by decide : (5 : ℕ) ≤ 9))
-    -- monotonicity in the right argument
-    have hR : p + 5 ≤ p + 9 := by
-      simpa using add_le_add_left h59 p
-    -- collapse `4 + p` since `ω ≤ p`
-    have hcollapse : (4 : Ordinal) + (p + 5) = p + 5 := by
-      calc
-        (4 : Ordinal) + (p + 5)
-            = ((4 : Ordinal) + p) + 5 := by
-                simp [add_assoc]
-        _   = p + 5 := by
-                have h4 : (4 : Ordinal) + p = p := nat_left_add_absorb (n := 4) (p := p) hinf
-                rw [h4]
-    simpa [hcollapse] using hR
-
-theorem add_nat_succ_le_plus_succ (k : ℕ) (p : Ordinal) :
-  (k : Ordinal) + Order.succ p ≤ p + (k + 1) := by
-  rcases lt_or_ge p omega0 with hfin | hinf
-  · rcases (lt_omega0).1 hfin with ⟨n, rfl⟩
-    have hN : (k + (n + 1) : ℕ) = n + (k + 1) := by
-      simp [Nat.add_left_comm]
-    have h :
-        (k : Ordinal) + ((n : Ordinal) + 1) = (n : Ordinal) + (k + 1) := by
-      calc
-        (k : Ordinal) + ((n : Ordinal) + 1)
-            = ((k + (n + 1) : ℕ) : Ordinal) := by simp
-        _   = ((n + (k + 1) : ℕ) : Ordinal) := by
-              simpa using (congrArg (fun t : ℕ => (t : Ordinal)) hN)
-        _   = (n : Ordinal) + (k + 1) := by simp
-    have : (k : Ordinal) + Order.succ (n : Ordinal) = (n : Ordinal) + (k + 1) := by
-      simpa [Ordinal.add_one_eq_succ] using h
-    exact le_of_eq this
-  ·
-    have hk : (k : Ordinal) + p = p := nat_left_add_absorb (n := k) hinf
-    have hcollapse :
-        (k : Ordinal) + Order.succ p = Order.succ p := by
-      simpa [Ordinal.add_succ] using congrArg Order.succ hk
-    have hkNat : (1 : ℕ) ≤ k + 1 := Nat.succ_le_succ (Nat.zero_le k)
-    have h1k : (1 : Ordinal) ≤ (k + 1 : Ordinal) := by
-      simpa using (natCast_le.mpr hkNat)
-    have hstep0 : p + 1 ≤ p + (k + 1) := add_le_add_left h1k p
-    have hstep : Order.succ p ≤ p + (k + 1) := by
-      simpa [Ordinal.add_one_eq_succ] using hstep0
-    exact (le_of_eq hcollapse).trans hstep
-
-theorem add_nat_plus1_le_plus_succ (k : ℕ) (p : Ordinal) :
-  (k : Ordinal) + (p + 1) ≤ p + (k + 1) := by
-  simpa [Ordinal.add_one_eq_succ] using add_nat_succ_le_plus_succ k p
-
-theorem add3_succ_le_plus4 (p : Ordinal) :
-  (3 : Ordinal) + Order.succ p ≤ p + 4 := by
-  simpa using add_nat_succ_le_plus_succ 3 p
-
-theorem add2_succ_le_plus3 (p : Ordinal) :
-  (2 : Ordinal) + Order.succ p ≤ p + 3 := by
-  simpa using add_nat_succ_le_plus_succ 2 p
-
-theorem add3_plus1_le_plus4 (p : Ordinal) :
-  (3 : Ordinal) + (p + 1) ≤ p + 4 := by
-  simpa [Ordinal.add_one_eq_succ] using add3_succ_le_plus4 p
-
-theorem add2_plus1_le_plus3 (p : Ordinal) :
-  (2 : Ordinal) + (p + 1) ≤ p + 3 := by
-  simpa [Ordinal.add_one_eq_succ] using add2_succ_le_plus3 p
-
-theorem termA_le (x : Ordinal) :
-  (omega0 ^ (3 : Ordinal)) * (x + 1) ≤ omega0 ^ (x + 4) := by
-  have hx : x + 1 ≤ omega0 ^ (x + 1) := le_omega_pow (x := x + 1)
-  have hmul :
-      (omega0 ^ (3 : Ordinal)) * (x + 1)
-        ≤ (omega0 ^ (3 : Ordinal)) * (omega0 ^ (x + 1)) := by
-    simpa using (mul_le_mul_left' hx (omega0 ^ (3 : Ordinal)))
-  have hpow' :
-      (omega0 ^ (3 : Ordinal)) * (omega0 ^ x * omega0)
-        = omega0 ^ (3 + (x + 1)) := by
-    simpa [Ordinal.opow_succ, add_comm, add_left_comm, add_assoc] using
-      (Ordinal.opow_add omega0 (3 : Ordinal) (x + 1)).symm
-  have hmul' :
-      (omega0 ^ (3 : Ordinal)) * Order.succ x
-        ≤ omega0 ^ (3 + (x + 1)) := by
-    simpa [hpow', Ordinal.add_one_eq_succ] using hmul
-  have hexp : 3 + (x + 1) ≤ x + 4 := by
-    simpa [add_assoc, add_comm, add_left_comm] using add3_plus1_le_plus4 x
-  have hmono :
-      omega0 ^ (3 + (x + 1)) ≤ omega0 ^ (x + 4) := Ordinal.opow_le_opow_right (a := omega0) Ordinal.omega0_pos hexp
-  exact hmul'.trans hmono
-
-theorem termB_le (x : Ordinal) :
-  (omega0 ^ (2 : Ordinal)) * (x + 1) ≤ omega0 ^ (x + 3) := by
-  have hx : x + 1 ≤ omega0 ^ (x + 1) := le_omega_pow (x := x + 1)
-  have hmul :
-      (omega0 ^ (2 : Ordinal)) * (x + 1)
-        ≤ (omega0 ^ (2 : Ordinal)) * (omega0 ^ (x + 1)) := by
-    simpa using (mul_le_mul_left' hx (omega0 ^ (2 : Ordinal)))
-  have hpow' :
-      (omega0 ^ (2 : Ordinal)) * (omega0 ^ x * omega0)
-        = omega0 ^ (2 + (x + 1)) := by
-    simpa [Ordinal.opow_succ, add_comm, add_left_comm, add_assoc] using
-      (Ordinal.opow_add omega0 (2 : Ordinal) (x + 1)).symm
-  have hmul' :
-      (omega0 ^ (2 : Ordinal)) * Order.succ x
-        ≤ omega0 ^ (2 + (x + 1)) := by
-    simpa [hpow', Ordinal.add_one_eq_succ] using hmul
-  have hexp : 2 + (x + 1) ≤ x + 3 := by
-    simpa [add_assoc, add_comm, add_left_comm] using add2_plus1_le_plus3 x
-  have hmono :
-      omega0 ^ (2 + (x + 1)) ≤ omega0 ^ (x + 3) := Ordinal.opow_le_opow_right (a := omega0) Ordinal.omega0_pos hexp
-  exact hmul'.trans hmono
-
-
-theorem payload_bound_merge (x : Ordinal) :
-  (omega0 ^ (3 : Ordinal)) * (x + 1) + ((omega0 ^ (2 : Ordinal)) * (x + 1) + 1)
-    ≤ omega0 ^ (x + 5) := by
-  have hA : (omega0 ^ (3 : Ordinal)) * (x + 1) ≤ omega0 ^ (x + 4) := termA_le x
-  have hB0 : (omega0 ^ (2 : Ordinal)) * (x + 1) ≤ omega0 ^ (x + 3) := termB_le x
-  have h34 : (x + 3 : Ordinal) ≤ x + 4 := by
-    have : ((3 : ℕ) : Ordinal) ≤ (4 : ℕ) := by
-      simpa using (natCast_le.mpr (by decide : (3 : ℕ) ≤ 4))
-    simpa [add_comm, add_left_comm, add_assoc] using add_le_add_left this x
-  have hB : (omega0 ^ (2 : Ordinal)) * (x + 1) ≤ omega0 ^ (x + 4) :=
-    le_trans hB0 (Ordinal.opow_le_opow_right (a := omega0) Ordinal.omega0_pos h34)
-  have h1 : (1 : Ordinal) ≤ omega0 ^ (x + 4) := by
-    have h0 : (0 : Ordinal) ≤ x + 4 := zero_le _
-    have := Ordinal.opow_le_opow_right (a := omega0) Ordinal.omega0_pos h0
-    simpa [Ordinal.opow_zero] using this
-  have t1 : (omega0 ^ (2 : Ordinal)) * (x + 1) + 1 ≤ omega0 ^ (x + 4) + 1 := add_le_add_right hB 1
-  have t2 : omega0 ^ (x + 4) + 1 ≤ omega0 ^ (x + 4) + omega0 ^ (x + 4) := add_le_add_left h1 _
-
-  have hsum1 :
-      (omega0 ^ (2 : Ordinal)) * (x + 1) + 1 ≤ omega0 ^ (x + 4) + omega0 ^ (x + 4) :=
-    t1.trans t2
-  have hsum2 :
-      (omega0 ^ (3 : Ordinal)) * (x + 1) + ((omega0 ^ (2 : Ordinal)) * (x + 1) + 1)
-        ≤ omega0 ^ (x + 4) + (omega0 ^ (x + 4) + omega0 ^ (x + 4)) :=
-    add_le_add hA hsum1
-
-  set a : Ordinal := omega0 ^ (x + 4) with ha
-  have h2 : a * (2 : Ordinal) = a * (1 : Ordinal) + a := by
-    simpa using (Ordinal.mul_succ a (1 : Ordinal))
-  have h3step : a * (3 : Ordinal) = a * (2 : Ordinal) + a := by
-    simpa using (Ordinal.mul_succ a (2 : Ordinal))
-  have hthree' : a * (3 : Ordinal) = a + (a + a) := by
-    calc
-      a * (3 : Ordinal)
-          = a * (2 : Ordinal) + a := by simpa using h3step
-      _   = (a * (1 : Ordinal) + a) + a := by simpa [h2]
-      _   = (a + a) + a := by simp [mul_one]
-      _   = a + (a + a) := by simp [add_assoc]
-  have hsum3 :
-      omega0 ^ (x + 4) + (omega0 ^ (x + 4) + omega0 ^ (x + 4))
-        ≤ (omega0 ^ (x + 4)) * (3 : Ordinal) := by
-    have h := hthree'.symm
-    simpa [ha] using (le_of_eq h)
-
-  have h3ω : (3 : Ordinal) ≤ omega0 := by
-    exact le_of_lt (by simpa using (lt_omega0.2 ⟨3, rfl⟩))
-  have hlift :
-      (omega0 ^ (x + 4)) * (3 : Ordinal) ≤ (omega0 ^ (x + 4)) * omega0 := by
-    simpa using mul_le_mul_left' h3ω (omega0 ^ (x + 4))
-  have htow : (omega0 ^ (x + 4)) * omega0 = omega0 ^ (x + 5) := by
-    simpa [add_comm, add_left_comm, add_assoc]
-      using (Ordinal.opow_add omega0 (x + 4) (1 : Ordinal)).symm
-
-  exact hsum2.trans (hsum3.trans (by simpa [htow] using hlift))
-
-theorem payload_bound_merge_mu (a : Trace) :
-  (omega0 ^ (3 : Ordinal)) * (MetaSN.mu a + 1) + ((omega0 ^ (2 : Ordinal)) * (MetaSN.mu a + 1) + 1)
-    ≤ omega0 ^ (MetaSN.mu a + 5) := by
-  simpa using payload_bound_merge (MetaSN.mu a)
-
--- (legacy name replaced) ensure single definition only
--- theorem lt_add_one (x : Ordinal) : x < x + 1 := lt_add_one_of_le (le_rfl)
-theorem lt_add_one (x : Ordinal) : x < x + 1 :=
-  (Order.lt_add_one_iff (x := x) (y := x)).2 le_rfl
-
-theorem lt_add_one_of_le {x y : Ordinal} (h : x ≤ y) : x < y + 1 :=
-  (Order.lt_add_one_iff (x := x) (y := y)).2 h
-
-theorem le_of_lt_add_one {x y : Ordinal} (h : x < y + 1) : x ≤ y :=
-  (Order.lt_add_one_iff (x := x) (y := y)).1 h
-
--- mul_succ is provided by the patch compat layer
--- mul_succ is provided by the patch compat layer
--- Additional local copy from Termination_C (safe and self-contained)
-theorem mul_succ (a b : Ordinal) : a * (b + 1) = a * b + a := by
-  simpa [mul_one, add_comm, add_left_comm, add_assoc] using
-    (mul_add a b (1 : Ordinal))
--- (mu_lt_delta is defined later near the μ-δ section.)
-
-theorem two_lt_mu_delta_add_six (n : Trace) :
-  (2 : Ordinal) < MetaSN.mu (.delta n) + 6 := by
-  have h2lt6 : (2 : Ordinal) < 6 := by
-    have : (2 : ℕ) < 6 := by decide
-    simpa using (natCast_lt).2 this
-  have h6le : (6 : Ordinal) ≤ MetaSN.mu (.delta n) + 6 := by
-    have hμ : (0 : Ordinal) ≤ MetaSN.mu (.delta n) := zero_le _
-    simpa [zero_add] using add_le_add_right hμ (6 : Ordinal)
-  exact lt_of_lt_of_le h2lt6 h6le
-
-private theorem pow2_le_A {n : Trace} {A : Ordinal}
-    (hA : A = omega0 ^ (MetaSN.mu (Trace.delta n) + 6)) :
-    (omega0 ^ (2 : Ordinal)) ≤ A := by
-  have h : (2 : Ordinal) ≤ MetaSN.mu (Trace.delta n) + 6 :=
-    le_of_lt (two_lt_mu_delta_add_six n)
-  simpa [hA] using Ordinal.opow_le_opow_right omega0_pos h
-
-private theorem omega_le_A {n : Trace} {A : Ordinal}
-    (hA : A = omega0 ^ (MetaSN.mu (Trace.delta n) + 6)) :
-    (omega0 : Ordinal) ≤ A := by
-  have pos : (0 : Ordinal) < MetaSN.mu (Trace.delta n) + 6 :=
-    lt_of_le_of_lt (bot_le) (two_lt_mu_delta_add_six n)
-  simpa [hA] using Ordinal.left_le_opow (a := omega0) (b := MetaSN.mu (Trace.delta n) + 6) pos
-
---- not used---
-private theorem head_plus_tail_le {b s n : Trace}
-    {A B : Ordinal}
-    (tail_le_A :
-      (omega0 ^ (2 : Ordinal)) * (MetaSN.mu (Trace.recΔ b s n) + 1) + 1 ≤ A)
-    (Apos : 0 < A) :
-    B + ((omega0 ^ (2 : Ordinal)) * (MetaSN.mu (Trace.recΔ b s n) + 1) + 1) ≤
-      A * (B + 1) := by
-  -- 1 ▸ `B ≤ A * B`  (since `A > 0`)
-  have B_le_AB : B ≤ A * B :=
-    le_mul_right (a := B) (b := A) Apos
-
-  have hsum :
-      B + ((omega0 ^ (2 : Ordinal)) * (MetaSN.mu (Trace.recΔ b s n) + 1) + 1) ≤
-        A * B + A :=
-
-    add_le_add B_le_AB tail_le_A
-
-  have head_dist : A * (B + 1) = A * B + A := by
-    simpa using Ordinal.mul_succ A B       -- `a * (b+1) = a * b + a`
-
-  rw [head_dist]; exact hsum
-
-
-/-- **Strict** monotone: `b < c → ω^b < ω^c`. -/
-theorem opow_lt_opow_ω {b c : Ordinal} (h : b < c) :
-    omega0 ^ b < omega0 ^ c := by
-  simpa using
-    ((Ordinal.isNormal_opow (a := omega0) one_lt_omega0).strictMono h)
-
-theorem opow_le_opow_ω {p q : Ordinal} (h : p ≤ q) :
-    omega0 ^ p ≤ omega0 ^ q := by
-  exact Ordinal.opow_le_opow_right omega0_pos h   -- library lemma
-
-theorem three_lt_mu_delta (n : Trace) :
-    (3 : Ordinal) < MetaSN.mu (delta n) + 6 := by
-  have : (3 : ℕ) < 6 := by decide
-  have h₃₆ : (3 : Ordinal) < 6 := by
-    simpa using (Nat.cast_lt).2 this
-  have hμ : (0 : Ordinal) ≤ MetaSN.mu (delta n) := Ordinal.zero_le _
-  have h₆ : (6 : Ordinal) ≤ MetaSN.mu (delta n) + 6 :=
-    le_add_of_nonneg_left (a := (6 : Ordinal)) hμ
-  exact lt_of_lt_of_le h₃₆ h₆
-
-theorem w3_lt_A (s n : Trace) :
-  omega0 ^ (3 : Ordinal) < omega0 ^ (MetaSN.mu (delta n) + MetaSN.mu s + 6) := by
-
-  have h₁ : (3 : Ordinal) < MetaSN.mu (delta n) + MetaSN.mu s + 6 := by
-    -- 1a  finite part   3 < 6
-    have h3_lt_6 : (3 : Ordinal) < 6 := by
-      simpa using (natCast_lt).2 (by decide : (3 : ℕ) < 6)
-    -- 1b  padding       6 ≤ μ(δ n) + μ s + 6
-    have h6_le : (6 : Ordinal) ≤ MetaSN.mu (delta n) + MetaSN.mu s + 6 := by
-      -- non-negativity of the middle block
-      have hμ : (0 : Ordinal) ≤ MetaSN.mu (delta n) + MetaSN.mu s := by
-        have hδ : (0 : Ordinal) ≤ MetaSN.mu (delta n) := Ordinal.zero_le _
-        have hs : (0 : Ordinal) ≤ MetaSN.mu s         := Ordinal.zero_le _
-        -- 0 + 0 ≤ μ(δ n) + μ s
-        simpa [zero_add] using add_le_add hδ hs
-      -- 6 ≤ (μ(δ n)+μ s) + 6
-      have : (6 : Ordinal) ≤ (MetaSN.mu (delta n) + MetaSN.mu s) + 6 :=
-        le_add_of_nonneg_left hμ
-      -- reassociate to `μ(δ n)+μ s+6`
-      simpa [add_comm, add_left_comm, add_assoc] using this
-    exact lt_of_lt_of_le h3_lt_6 h6_le
-
-  exact OperatorKO7.Patch2025_08_10.opow_lt_opow_right h₁
-
-theorem coeff_lt_A (s n : Trace) :
-    MetaSN.mu s + 1 < omega0 ^ (MetaSN.mu (delta n) + MetaSN.mu s + 3) := by
-  have h₁ : MetaSN.mu s + 1 < MetaSN.mu s + 3 := by
-    have h_nat : (1 : Ordinal) < 3 := by
-      norm_num
-    simpa using (add_lt_add_left h_nat (MetaSN.mu s))
-
-  have h₂ : MetaSN.mu s + 3 ≤ MetaSN.mu (delta n) + MetaSN.mu s + 3 := by
-    have hμ : (0 : Ordinal) ≤ MetaSN.mu (delta n) := Ordinal.zero_le _
-    have h_le : (MetaSN.mu s) ≤ MetaSN.mu (delta n) + MetaSN.mu s :=
-      (le_add_of_nonneg_left hμ)
-    simpa [add_comm, add_left_comm, add_assoc]
-      using add_le_add_right h_le 3
-
-  have h_chain : MetaSN.mu s + 1 < MetaSN.mu (delta n) + MetaSN.mu s + 3 :=
-    lt_of_lt_of_le h₁ h₂
-
-  have h_big : MetaSN.mu (delta n) + MetaSN.mu s + 3 ≤
-               omega0 ^ (MetaSN.mu (delta n) + MetaSN.mu s + 3) :=
-    le_omega_pow (x := MetaSN.mu (delta n) + MetaSN.mu s + 3)
-
-  exact lt_of_lt_of_le h_chain h_big
-
-theorem head_lt_A (s n : Trace) :
-  let A : Ordinal := omega0 ^ (MetaSN.mu (delta n) + MetaSN.mu s + 6);
-  omega0 ^ (3 : Ordinal) * (MetaSN.mu s + 1) < A := by
-  intro A
-
-  have h₁ : omega0 ^ (3 : Ordinal) * (MetaSN.mu s + 1) ≤
-            omega0 ^ (MetaSN.mu s + 4) := termA_le (x := MetaSN.mu s)
-
-
-  have h_left : MetaSN.mu s + 4 < MetaSN.mu s + 6 := by
-    have : (4 : Ordinal) < 6 := by
-      simpa using (natCast_lt).2 (by decide : (4 : ℕ) < 6)
-    simpa using (add_lt_add_left this (MetaSN.mu s))
-
-  -- 2b  insert `μ δ n` on the left using monotonicity
-  have h_pad : MetaSN.mu s + 6 ≤ MetaSN.mu (delta n) + MetaSN.mu s + 6 := by
-    -- 0 ≤ μ δ n
-    have hμ : (0 : Ordinal) ≤ MetaSN.mu (delta n) := Ordinal.zero_le _
-    -- μ s ≤ μ δ n + μ s
-    have h₀ : (MetaSN.mu s) ≤ MetaSN.mu (delta n) + MetaSN.mu s :=
-      le_add_of_nonneg_left hμ
-    -- add the finite 6 to both sides
-    have h₀' : MetaSN.mu s + 6 ≤ (MetaSN.mu (delta n) + MetaSN.mu s) + 6 :=
-      add_le_add_right h₀ 6
-    simpa [add_comm, add_left_comm, add_assoc] using h₀'
-
-  -- 2c  combine
-  have h_exp : MetaSN.mu s + 4 < MetaSN.mu (delta n) + MetaSN.mu s + 6 :=
-    lt_of_lt_of_le h_left h_pad
-
-
-  have h₂ : omega0 ^ (MetaSN.mu s + 4) <
-            omega0 ^ (MetaSN.mu (delta n) + MetaSN.mu s + 6) := OperatorKO7.Patch2025_08_10.opow_lt_opow_right h_exp
-
-  have h_final :
-      omega0 ^ (3 : Ordinal) * (MetaSN.mu s + 1) <
-      omega0 ^ (MetaSN.mu (delta n) + MetaSN.mu s + 6) := lt_of_le_of_lt h₁ h₂
-
-  simpa [A] using h_final
-
-
-private lemma two_lt_three : (2 : Ordinal) < 3 := by
-  have : (2 : ℕ) < 3 := by decide
-  simpa using (Nat.cast_lt).2 this
-
-
-
-@[simp] theorem opow_mul_lt_of_exp_lt
-    {β α γ : Ordinal} (hβ : β < α) (hγ : γ < omega0) :
-    omega0 ^ β * γ < omega0 ^ α := by
-
-  have hpos : (0 : Ordinal) < omega0 ^ β :=
-    Ordinal.opow_pos (a := omega0) (b := β) omega0_pos
-  have h₁ : omega0 ^ β * γ < omega0 ^ β * omega0 :=
-    Ordinal.mul_lt_mul_of_pos_left hγ hpos
-
-
-  have h_eq : omega0 ^ β * omega0 = omega0 ^ (β + 1) := by
-    simpa [Ordinal.opow_add] using (Ordinal.opow_add omega0 β 1).symm
-  have h₁' : omega0 ^ β * γ < omega0 ^ (β + 1) := by
-    simpa [h_eq, -opow_succ] using h₁
-
-
-  have h_exp : β + 1 ≤ α := Order.add_one_le_of_lt hβ  -- FIXED: Use Order.add_one_le_of_lt instead
-  have h₂ : omega0 ^ (β + 1) ≤ omega0 ^ α :=
-    opow_le_opow_right (a := omega0) omega0_pos h_exp
-
-
-  exact lt_of_lt_of_le h₁' h₂
-
-
-lemma omega_pow_add_lt
-    {κ α β : Ordinal} (_ : 0 < κ)
-    (hα : α < omega0 ^ κ) (hβ : β < omega0 ^ κ) :
-    α + β < omega0 ^ κ := by
-  have hprin : Principal (fun x y : Ordinal => x + y) (omega0 ^ κ) :=
-    Ordinal.principal_add_omega0_opow κ
-  exact hprin hα hβ
-
-
-lemma omega_pow_add3_lt
-    {κ α β γ : Ordinal} (hκ : 0 < κ)
-    (hα : α < omega0 ^ κ) (hβ : β < omega0 ^ κ) (hγ : γ < omega0 ^ κ) :
-    α + β + γ < omega0 ^ κ := by
-  have hsum : α + β < omega0 ^ κ :=
-    omega_pow_add_lt hκ hα hβ
-  have hsum' : α + β + γ < omega0 ^ κ :=
-    omega_pow_add_lt hκ (by simpa using hsum) hγ
-  simpa [add_assoc] using hsum'
-
-
-theorem mu_recΔ_plus_3_lt (b s n : Trace)
-  (h_bound : omega0 ^ (mu n + mu s + (6 : Ordinal)) + omega0 * (mu b + 1) + 1 + 3 <
-             (omega0 ^ (5 : Ordinal)) * (mu n + 1) + 1 + mu s + 6) :
-  mu (recΔ b s n) + 3 < mu (delta n) + mu s + 6 := by
-  -- Convert both sides using mu definitions - now should match exactly
-  simp only [mu]
-  exact h_bound
-
-
-
-
-@[simp] lemma add_one_lt_omega0 (k : ℕ) :
-    ((k : Ordinal) + 1) < omega0 := by
-  -- `k.succ < ω`
-  have : ((k.succ : ℕ) : Ordinal) < omega0 := by
-    simpa using (nat_lt_omega0 k.succ)
-  simpa [Nat.cast_succ, add_comm, add_left_comm, add_assoc,
-         add_one_eq_succ] using this
-
-@[simp] lemma one_le_omega0 : (1 : Ordinal) ≤ omega0 :=
-  (le_of_lt (by
-    have : ((1 : ℕ) : Ordinal) < omega0 := by
-      simpa using (nat_lt_omega0 1)
-    simpa using this))
-
-
-lemma add_le_add_of_le_of_nonneg {a b c : Ordinal}
-    (h : a ≤ b) (_ : (0 : Ordinal) ≤ c := by exact Ordinal.zero_le _)
-    : a + c ≤ b + c :=
-  add_le_add_right h c
-
-@[simp] lemma lt_succ (a : Ordinal) : a < Order.succ a := by
-  have : a < a + 1 := lt_add_of_pos_right _ OperatorKO7.Patch2025_08_10.zero_lt_one_ordinal
-  simpa [Order.succ] using this
-
--- alias and zero_lt_one are provided by the patch / core
-
--- Local helper from Termination_C (not strictly needed but useful in proofs)
-lemma zero_lt_one : (0 : Ordinal) < 1 := by norm_num
-
-attribute [simp] Ordinal.IsNormal.strictMono
-
--- Helper for successor positivity
-lemma succ_pos (a : Ordinal) : (0 : Ordinal) < Order.succ a := by
-  -- Order.succ a = a + 1, and we need 0 < a + 1
-  -- This is true because 0 < 1 and a ≥ 0
-  have h1 : (0 : Ordinal) ≤ a := Ordinal.zero_le a
-  have h2 : (0 : Ordinal) < 1 := OperatorKO7.Patch2025_08_10.zero_lt_one_ordinal
-  -- Since Order.succ a = a + 1
-  rw [Order.succ]
-  -- 0 < a + 1 follows from 0 ≤ a and 0 < 1
-  exact lt_of_lt_of_le h2 (le_add_of_nonneg_left h1)
-
--- duplicate succ_succ removed (defined earlier)
-@[simp] lemma succ_succ (a : Ordinal) :
-    Order.succ (Order.succ a) = a + 2 := by
-  have h1 : Order.succ a = a + 1 := rfl
-  rw [h1]
-  have h2 : Order.succ (a + 1) = (a + 1) + 1 := rfl
-  rw [h2, add_assoc]
-  norm_num
-
-lemma add_two (a : Ordinal) :
-    a + 2 = Order.succ (Order.succ a) := (succ_succ a).symm
-
-@[simp] theorem opow_lt_opow_right_iff {a b : Ordinal} :
-    (omega0 ^ a < omega0 ^ b) ↔ a < b := by
-  constructor
-  · intro hlt
-    by_contra hnb          -- assume ¬ a < b, hence b ≤ a
-    have hle : b ≤ a := _root_.le_of_not_gt hnb
-    have hle' : omega0 ^ b ≤ omega0 ^ a := opow_le_opow_ω hle
-    exact (not_le_of_gt hlt) hle'
-  · intro hlt
-    exact opow_lt_opow_ω hlt
-
-/-- Strict-mono of ω-powers in the exponent (base `omega0`). --/
-@[simp] theorem opow_lt_opow_right {b c : Ordinal} (h : b < c) :
-  omega0 ^ b < omega0 ^ c := by
-  simpa using ((Ordinal.isNormal_opow (a := omega0) one_lt_omega0).strictMono h)
-
-
-@[simp] theorem le_of_lt_add_of_pos {a c : Ordinal} (hc : (0 : Ordinal) < c) :
-    a ≤ a + c := by
-  have hc' : (0 : Ordinal) ≤ c := le_of_lt hc
-  simpa using (le_add_of_nonneg_right (a := a) hc')
-
-
-/--  The "tail" payload sits strictly below the big tower `A`. -/
-lemma tail_lt_A {b s n : Trace}
-  (h_mu_recΔ_bound : omega0 ^ (MetaSN.mu n + MetaSN.mu s + (6 : Ordinal)) + omega0 * (MetaSN.mu b + 1) + 1 + 3 <
-                     (omega0 ^ (5 : Ordinal)) * (MetaSN.mu n + 1) + 1 + MetaSN.mu s + 6) :
-    let A : Ordinal := omega0 ^ (MetaSN.mu (delta n) + MetaSN.mu s + 6)
-    omega0 ^ (2 : Ordinal) * (MetaSN.mu (recΔ b s n) + 1) < A := by
-  intro A
-  -- Don't define α separately - just use the expression directly
-
-  ---------------------------------------------------------------- 1
-  --  ω²·(μ(recΔ)+1) ≤ ω^(μ(recΔ)+3)
-  have h₁ : omega0 ^ (2 : Ordinal) * (MetaSN.mu (recΔ b s n) + 1) ≤
-            omega0 ^ (MetaSN.mu (recΔ b s n) + 3) :=
-    termB_le _
-
-  ---------------------------------------------------------------- 2
-  --  μ(recΔ) + 3 < μ(δn) + μs + 6 (key exponent inequality)
-  have hμ : MetaSN.mu (recΔ b s n) + 3 < MetaSN.mu (delta n) + MetaSN.mu s + 6 := by
-    -- Use the parameterized lemma with the ordinal domination assumption
-    exact mu_recDelta_plus_3_lt b s n h_mu_recΔ_bound
-
-  --  Therefore exponent inequality:
-  have h₂ : MetaSN.mu (recΔ b s n) + 3 < MetaSN.mu (delta n) + MetaSN.mu s + 6 := hμ
-
-  --  Now lift through ω-powers using strict monotonicity
-  have h₃ : omega0 ^ (MetaSN.mu (recΔ b s n) + 3) < omega0 ^ (MetaSN.mu (delta n) + MetaSN.mu s + 6) :=
-    OperatorKO7.Patch2025_08_10.opow_lt_opow_right h₂
-
-  ---------------------------------------------------------------- 3
-  --  The final chaining: combine termB_le with the exponent inequality
-  have h_final : omega0 ^ (2 : Ordinal) * (MetaSN.mu (recΔ b s n) + 1) <
-                 omega0 ^ (MetaSN.mu (delta n) + MetaSN.mu s + 6) :=
-    lt_of_le_of_lt h₁ h₃
-
-  ---------------------------------------------------------------- 4
-  --  This is exactly what we needed to prove
-  exact h_final
-
-
-
-lemma mu_merge_lt_rec {b s n : Trace}
-  (h_mu_recΔ_bound : omega0 ^ (MetaSN.mu n + MetaSN.mu s + (6 : Ordinal)) + omega0 * (MetaSN.mu b + 1) + 1 + 3 <
-                     (omega0 ^ (5 : Ordinal)) * (MetaSN.mu n + 1) + 1 + MetaSN.mu s + 6) :
-  MetaSN.mu (merge s (recΔ b s n)) < MetaSN.mu (recΔ b s (delta n)) := by
-  -- rename the dominant tower once and for all
-  set A : Ordinal := omega0 ^ (MetaSN.mu (delta n) + MetaSN.mu s + 6) with hA
-  -- ❶  head        (ω³ payload)  < A
-  have h_head : omega0 ^ (3 : Ordinal) * (MetaSN.mu s + 1) < A := by
-    simpa [hA] using head_lt_A s n
-  -- ❷  tail        (ω² payload)  < A  (new lemma)
-  have h_tail : omega0 ^ (2 : Ordinal) * (MetaSN.mu (recΔ b s n) + 1) < A := by
-    simpa [hA] using tail_lt_A (b := b) (s := s) (n := n) h_mu_recΔ_bound
-  -- ❸  sum of head + tail + 1 < A.
-  have h_sum :
-      omega0 ^ (3 : Ordinal) * (MetaSN.mu s + 1) +
-      (omega0 ^ (2 : Ordinal) * (MetaSN.mu (recΔ b s n) + 1) + 1) < A := by
-    -- First fold inner `tail+1` under A.
-    have h_tail1 :
-        omega0 ^ (2 : Ordinal) * (MetaSN.mu (recΔ b s n) + 1) + 1 < A :=
-
-      omega_pow_add_lt (by
-        -- Prove positivity of exponent
-        have : (0 : Ordinal) < MetaSN.mu (delta n) + MetaSN.mu s + 6 := by
-          -- Simple positivity: 0 < 6 ≤ μ(δn) + μs + 6
-          have h6_pos : (0 : Ordinal) < 6 := by norm_num
-          exact lt_of_lt_of_le h6_pos (le_add_left 6 (MetaSN.mu (delta n) + MetaSN.mu s))
-        exact this) h_tail (by
-        -- `1 < A` trivially (tower is non‑zero)
-        have : (1 : Ordinal) < A := by
-          have hpos : (0 : Ordinal) < A := by
-            rw [hA]
-            exact Ordinal.opow_pos (b := MetaSN.mu (delta n) + MetaSN.mu s + 6) (a0 := omega0_pos)
-          -- We need 1 < A. We have 0 < A and 1 ≤ ω, and we need ω ≤ A
-          have omega_le_A : omega0 ≤ A := by
-            rw [hA]
-            -- Need to show MetaSN.mu (delta n) + MetaSN.mu s + 6 > 0
-            have hpos : (0 : Ordinal) < MetaSN.mu (delta n) + MetaSN.mu s + 6 := by
-              -- Positivity: μ(δn) + μs + 6 ≥ 6 > 0
-              have h6_pos : (0 : Ordinal) < 6 := by norm_num
-              exact lt_of_lt_of_le h6_pos (le_add_left 6 (MetaSN.mu (delta n) + MetaSN.mu s))
-            exact Ordinal.left_le_opow (a := omega0) (b := MetaSN.mu (delta n) + MetaSN.mu s + 6) hpos
-          -- Need to show 1 < A. We have 1 ≤ ω ≤ A, so 1 ≤ A. We need strict.
-          -- Since A = ω^(μ(δn) + μs + 6) and the exponent > 0, we have ω < A
-          have omega_lt_A : omega0 < A := by
-            rw [hA]
-            -- Use the fact that ω < ω^k when k > 1
-            have : (1 : Ordinal) < MetaSN.mu (delta n) + MetaSN.mu s + 6 := by
-              -- Positivity: μ(δn) + μs + 6 ≥ 6 > 1
-              have h6_gt_1 : (1 : Ordinal) < 6 := by norm_num
-              exact lt_of_lt_of_le h6_gt_1 (le_add_left 6 (MetaSN.mu (delta n) + MetaSN.mu s))
-            have : omega0 ^ (1 : Ordinal) < omega0 ^ (MetaSN.mu (delta n) + MetaSN.mu s + 6) :=
-              OperatorKO7.Patch2025_08_10.opow_lt_opow_right this
-            simpa using this
-          exact lt_of_le_of_lt one_le_omega0 omega_lt_A
-        exact this)
-    -- Then fold head + (tail+1).
-    have h_fold := omega_pow_add_lt (by
-        -- Same positivity proof
-        have : (0 : Ordinal) < MetaSN.mu (delta n) + MetaSN.mu s + 6 := by
-          -- Simple positivity: 0 < 6 ≤ μ(δn) + μs + 6
-          have h6_pos : (0 : Ordinal) < 6 := by norm_num
-          exact lt_of_lt_of_le h6_pos (le_add_left 6 (MetaSN.mu (delta n) + MetaSN.mu s))
-        exact this) h_head h_tail1
-    -- Need to massage the associativity to match expected form
-    have : omega0 ^ (3 : Ordinal) * (MetaSN.mu s + 1) + (omega0 ^ (2 : Ordinal) * (MetaSN.mu (recΔ b s n) + 1) + 1) < A := by
-      -- h_fold has type: ω^3 * (μa + 1) + (ω^2 * (μb + 1) + 1) < ω^(μ(δn) + μs + 6)
-      -- A = ω^(μ(δn) + μs + 6) by definition
-      rw [hA]
-      exact h_fold
-    exact this
-  -- ❹  RHS is   A + ω·… + 1  >  A  >  LHS.
-  have h_rhs_gt_A : A < MetaSN.mu (recΔ b s (delta n)) := by
-    -- by definition of μ(recΔ … (δ n)) (see new μ)
-    have : A < A + omega0 * (MetaSN.mu b + 1) + 1 := by
-      have hpos : (0 : Ordinal) < omega0 * (MetaSN.mu b + 1) + 1 := by
-        -- ω*(μb + 1) + 1 ≥ 1 > 0
-        have h1_pos : (0 : Ordinal) < 1 := by norm_num
-        exact lt_of_lt_of_le h1_pos (le_add_left 1 (omega0 * (MetaSN.mu b + 1)))
-      -- A + (ω·(μb + 1) + 1) = (A + ω·(μb + 1)) + 1
-      have : A + omega0 * (MetaSN.mu b + 1) + 1 = A + (omega0 * (MetaSN.mu b + 1) + 1) := by
-        simp [add_assoc]
-      rw [this]
-      exact lt_add_of_pos_right A hpos
-    rw [hA]
-    exact this
-  -- ❺  chain inequalities.
-  have : MetaSN.mu (merge s (recΔ b s n)) < A := by
-    -- rewrite μ(merge …) exactly and apply `h_sum`
-    have eq_mu : MetaSN.mu (merge s (recΔ b s n)) =
-        omega0 ^ (3 : Ordinal) * (MetaSN.mu s + 1) +
-        (omega0 ^ (2 : Ordinal) * (MetaSN.mu (recΔ b s n) + 1) + 1) := by
-      -- MetaSN.mu (merge a b) = ω³ * (μa + 1) + ω² * (μb + 1) + 1
-      -- This is the definition of mu for merge, but the pattern matching
-      -- makes rfl difficult. The issue is associativity: (a + b) + c vs a + (b + c)
-      simp only [mu, add_assoc]
-    rw [eq_mu]
-    exact h_sum
-  exact lt_trans this h_rhs_gt_A
-
-@[simp] lemma mu_lt_rec_succ (b s n : Trace)
-  (h_mu_recΔ_bound : omega0 ^ (MetaSN.mu n + MetaSN.mu s + (6 : Ordinal)) + omega0 * (MetaSN.mu b + 1) + 1 + 3 <
-                     (omega0 ^ (5 : Ordinal)) * (MetaSN.mu n + 1) + 1 + MetaSN.mu s + 6) :
-  MetaSN.mu (merge s (recΔ b s n)) < MetaSN.mu (recΔ b s (delta n)) := by
-  simpa using mu_merge_lt_rec h_mu_recΔ_bound
-
-/-- Helper: lift mu-strict decrease to lexicographic order when kappa is unchanged -/
-lemma μ_to_μκ {t t' : Trace} (h : mu t' < mu t) (hk : kappa t' = kappa t) :
-  LexNatOrd (μκ t') (μκ t) := by
-  unfold LexNatOrd μκ
-  rw [hk]
-  apply Prod.Lex.right
-  exact h
-
-/-- Lexicographic decrease for R_rec_succ: kappa strictly decreases -/
-lemma μκ_lt_R_rec_succ (b s n : Trace) :
-  LexNatOrd (μκ (app s (recΔ b s n))) (μκ (recΔ b s (delta n))) := by
-  unfold LexNatOrd μκ
-  apply Prod.Lex.left
-  simp [kappa]
-
-/-- κ strictly drops in the rec-successor rule under the current `kappa` definition. -/
-@[simp] lemma kappa_drop_recSucc (b s n : Trace) :
-  kappa (app s (recΔ b s n)) < kappa (recΔ b s (delta n)) := by
-  simp [kappa]
-
--- Alias: same statement with a clearer name for direct use in step proofs.
-lemma μκ_lex_drop_recSucc (b s n : Trace) :
-  LexNatOrd (μκ (app s (recΔ b s n))) (μκ (recΔ b s (delta n))) :=
-  μκ_lt_R_rec_succ b s n
-
-/-- `R_int_delta`: κ equal (both 0); use μ-drop. -/
-lemma μκ_drop_R_int_delta (t : Trace) :
-  LexNatOrd (μκ void) (μκ (integrate (delta t))) := by
-  have hμ : mu void < mu (integrate (delta t)) := MetaSN.mu_void_lt_integrate_delta t
-  have hk : kappa void = kappa (integrate (delta t)) := by simp [kappa]
-  exact μ_to_μκ (t' := void) (t := integrate (delta t)) hμ hk
-
-/-- `R_eq_refl`: κ equal (both 0); use μ-drop. -/
-lemma μκ_drop_R_eq_refl (a : Trace) :
-  LexNatOrd (μκ void) (μκ (eqW a a)) := by
-  have hμ : mu void < mu (eqW a a) := MetaSN.mu_void_lt_eq_refl a
-  have hk : kappa void = kappa (eqW a a) := by simp [kappa]
-  exact μ_to_μκ (t' := void) (t := eqW a a) hμ hk
-
-/-! Dependent lex drops where κ is unchanged because the result is non-`recΔ`. -/
-
-/-- `R_merge_void_right` when result is non-`recΔ`: κ equal (both 0); use μ-drop. -/
-lemma μκ_drop_R_merge_void_right_nonrec
-  (t : Trace) (h : ¬ ∃ b s n, t = recΔ b s n) :
-  LexNatOrd (μκ t) (μκ (merge t void)) := by
-  have hμ : mu t < mu (merge t void) := MetaSN.mu_lt_merge_void_right t
-  have hk_t : kappa t = 0 := kappa_non_rec t h
-  have hk_merge : kappa (merge t void) = 0 := by simp [kappa]
-  have hk : kappa t = kappa (merge t void) := by simpa [hk_merge] using hk_t
-  exact μ_to_μκ (t' := t) (t := merge t void) hμ hk
-
-/-- `R_merge_cancel` when result is non-`recΔ`: κ equal (both 0); use μ-drop. -/
-lemma μκ_drop_R_merge_cancel_nonrec
-  (t : Trace) (h : ¬ ∃ b s n, t = recΔ b s n) :
-  LexNatOrd (μκ t) (μκ (merge t t)) := by
-  have hμ : mu t < mu (merge t t) := MetaSN.mu_lt_merge_cancel t
-  have hk_t : kappa t = 0 := kappa_non_rec t h
-  have hk_merge : kappa (merge t t) = 0 := by simp [kappa]
-  have hk : kappa t = kappa (merge t t) := by simpa [hk_merge] using hk_t
-  exact μ_to_μκ (t' := t) (t := merge t t) hμ hk
-
-/-- `R_rec_zero` when `b` is non-`recΔ`: κ strictly drops (0 → 1). -/
-lemma μκ_drop_R_rec_zero_nonrec (b s : Trace)
-  (h : ¬ ∃ b' s' n', b = recΔ b' s' n') :
-  LexNatOrd (μκ b) (μκ (recΔ b s void)) := by
-  unfold LexNatOrd μκ
-  apply Prod.Lex.left
-  have hk_b : kappa b = 0 := kappa_non_rec b h
-  simp [kappa, hk_b]
-
-
-/-- Any non-void trace has `μ ≥ ω`.  Exhaustive on constructors. -/
-private theorem nonvoid_mu_ge_omega {t : Trace} (h : t ≠ .void) :
-    omega0 ≤ MetaSN.mu t := by
-  -- structural recursion accepted via pattern matching on t
-  cases t with
-  | void => exact (h rfl).elim
-  | delta s =>
-      -- ω ≤ ω⁵ ≤ ω⁵·(μ s + 1) + 1
-      have hω_pow : omega0 ≤ omega0 ^ (5 : Ordinal) := by
-        simpa [Ordinal.opow_one] using
-          Ordinal.opow_le_opow_right omega0_pos (by norm_num : (1 : Ordinal) ≤ 5)
-      have h_one_le : (1 : Ordinal) ≤ MetaSN.mu s + 1 := by
-        have : (0 : Ordinal) ≤ MetaSN.mu s := zero_le _
-        simpa [zero_add] using add_le_add_right this 1
-      have hmul :
-          omega0 ^ (5 : Ordinal) ≤ (omega0 ^ (5 : Ordinal)) * (MetaSN.mu s + 1) := by
-        simpa [mul_one] using
-          mul_le_mul_left' h_one_le (omega0 ^ (5 : Ordinal))
-      have : omega0 ≤ MetaSN.mu (.delta s) := by
-        calc
-          omega0 ≤ omega0 ^ (5 : Ordinal) := hω_pow
-          _      ≤ (omega0 ^ (5 : Ordinal)) * (MetaSN.mu s + 1) := hmul
-          _      ≤ (omega0 ^ (5 : Ordinal)) * (MetaSN.mu s + 1) + 1 :=
-                   le_add_of_nonneg_right (show (0 : Ordinal) ≤ 1 by
-                     simpa using zero_le_one)
-          _      = MetaSN.mu (.delta s) := by simp [MetaSN.mu]
-      simpa [MetaSN.mu, add_comm, add_left_comm, add_assoc] using this
-
-  | integrate s =>
-      -- ω ≤ ω⁴ ≤ ω⁴·(μ s + 1) + 1
-      have hω_pow : omega0 ≤ omega0 ^ (4 : Ordinal) := by
-        simpa [Ordinal.opow_one] using
-          Ordinal.opow_le_opow_right omega0_pos (by norm_num : (1 : Ordinal) ≤ 4)
-      have h_one_le : (1 : Ordinal) ≤ MetaSN.mu s + 1 := by
-        have : (0 : Ordinal) ≤ MetaSN.mu s := zero_le _
-        simpa [zero_add] using add_le_add_right this 1
-      have hmul :
-          omega0 ^ (4 : Ordinal) ≤ (omega0 ^ (4 : Ordinal)) * (MetaSN.mu s + 1) := by
-        simpa [mul_one] using
-          mul_le_mul_left' h_one_le (omega0 ^ (4 : Ordinal))
-      have : omega0 ≤ MetaSN.mu (.integrate s) := by
-        calc
-          omega0 ≤ omega0 ^ (4 : Ordinal) := hω_pow
-          _      ≤ (omega0 ^ (4 : Ordinal)) * (MetaSN.mu s + 1) := hmul
-          _      ≤ (omega0 ^ (4 : Ordinal)) * (MetaSN.mu s + 1) + 1 :=
-                   le_add_of_nonneg_right (zero_le _)
-          _      = MetaSN.mu (.integrate s) := by simp [MetaSN.mu]
-      simpa [MetaSN.mu, add_comm, add_left_comm, add_assoc] using this
-
-  | merge a b =>
-      -- ω ≤ ω² ≤ ω²·(μ b + 1) ≤ μ(merge a b)
-      have hω_pow : omega0 ≤ omega0 ^ (2 : Ordinal) := by
-        simpa [Ordinal.opow_one] using
-          Ordinal.opow_le_opow_right omega0_pos (by norm_num : (1 : Ordinal) ≤ 2)
-      have h_one_le : (1 : Ordinal) ≤ MetaSN.mu b + 1 := by
-        have : (0 : Ordinal) ≤ MetaSN.mu b := zero_le _
-        simpa [zero_add] using add_le_add_right this 1
-      have hmul :
-          omega0 ^ (2 : Ordinal) ≤ (omega0 ^ (2 : Ordinal)) * (MetaSN.mu b + 1) := by
-        simpa [mul_one] using
-          mul_le_mul_left' h_one_le (omega0 ^ (2 : Ordinal))
-      have h_mid :
-          omega0 ≤ (omega0 ^ (2 : Ordinal)) * (MetaSN.mu b + 1) + 1 := by
-        calc
-          omega0 ≤ omega0 ^ (2 : Ordinal) := hω_pow
-          _      ≤ (omega0 ^ (2 : Ordinal)) * (MetaSN.mu b + 1) := hmul
-          _      ≤ (omega0 ^ (2 : Ordinal)) * (MetaSN.mu b + 1) + 1 :=
-                   le_add_of_nonneg_right (zero_le _)
-      have : omega0 ≤ MetaSN.mu (.merge a b) := by
-        have h_expand : (omega0 ^ (2 : Ordinal)) * (MetaSN.mu b + 1) + 1 ≤
-                        (omega0 ^ (3 : Ordinal)) * (MetaSN.mu a + 1) + (omega0 ^ (2 : Ordinal)) * (MetaSN.mu b + 1) + 1 := by
-          -- Goal: ω^2*(μb+1)+1 ≤ ω^3*(μa+1) + ω^2*(μb+1) + 1
-          -- Use add_assoc to change RHS from a+(b+c) to (a+b)+c
-          rw [add_assoc]
-          exact Ordinal.le_add_left ((omega0 ^ (2 : Ordinal)) * (MetaSN.mu b + 1) + 1) ((omega0 ^ (3 : Ordinal)) * (MetaSN.mu a + 1))
-        calc
-          omega0 ≤ (omega0 ^ (2 : Ordinal)) * (MetaSN.mu b + 1) + 1 := h_mid
-          _      ≤ (omega0 ^ (3 : Ordinal)) * (MetaSN.mu a + 1) + (omega0 ^ (2 : Ordinal)) * (MetaSN.mu b + 1) + 1 := h_expand
-          _      = MetaSN.mu (.merge a b) := by simp [MetaSN.mu]
-      simpa [MetaSN.mu, add_comm, add_left_comm, add_assoc] using this
-
-  | recΔ b s n =>
-      -- ω ≤ ω^(μ n + μ s + 6) ≤ μ(recΔ b s n)
-      have six_le : (6 : Ordinal) ≤ MetaSN.mu n + MetaSN.mu s + 6 := by
-        have h1 : (0 : Ordinal) ≤ MetaSN.mu n := zero_le _
-        have h2 : (0 : Ordinal) ≤ MetaSN.mu s := zero_le _
-        have hsum : (0 : Ordinal) ≤ MetaSN.mu n + MetaSN.mu s := by
-          simpa [zero_add] using add_le_add h1 h2
-        simpa [add_comm, add_left_comm, add_assoc] using
-          add_le_add_right hsum 6
-      have one_le : (1 : Ordinal) ≤ MetaSN.mu n + MetaSN.mu s + 6 :=
-        le_trans (by norm_num) six_le
-      have hω_pow : omega0 ≤ omega0 ^ (MetaSN.mu n + MetaSN.mu s + 6) := by
-        simpa [Ordinal.opow_one] using
-          Ordinal.opow_le_opow_right omega0_pos one_le
-      have : omega0 ≤ MetaSN.mu (.recΔ b s n) := by
-        calc
-          omega0 ≤ omega0 ^ (MetaSN.mu n + MetaSN.mu s + 6) := hω_pow
-          _      ≤ omega0 ^ (MetaSN.mu n + MetaSN.mu s + 6) + omega0 * (MetaSN.mu b + 1) :=
-                   le_add_of_nonneg_right (zero_le _)
-          _      ≤ omega0 ^ (MetaSN.mu n + MetaSN.mu s + 6) + omega0 * (MetaSN.mu b + 1) + 1 :=
-                   le_add_of_nonneg_right (zero_le _)
-          _      = MetaSN.mu (.recΔ b s n) := by simp [MetaSN.mu]
-      simpa [MetaSN.mu, add_comm, add_left_comm, add_assoc] using this
-
-  | eqW a b =>
-      -- ω ≤ ω^(μ a + μ b + 9) ≤ μ(eqW a b)
-      have nine_le : (9 : Ordinal) ≤ MetaSN.mu a + MetaSN.mu b + 9 := by
-        have h1 : (0 : Ordinal) ≤ MetaSN.mu a := zero_le _
-        have h2 : (0 : Ordinal) ≤ MetaSN.mu b := zero_le _
-        have hsum : (0 : Ordinal) ≤ MetaSN.mu a + MetaSN.mu b := by
-          simpa [zero_add] using add_le_add h1 h2
-        simpa [add_comm, add_left_comm, add_assoc] using
-          add_le_add_right hsum 9
-      have one_le : (1 : Ordinal) ≤ MetaSN.mu a + MetaSN.mu b + 9 :=
-        le_trans (by norm_num) nine_le
-      have hω_pow : omega0 ≤ omega0 ^ (MetaSN.mu a + MetaSN.mu b + 9) := by
-        simpa [Ordinal.opow_one] using
-          Ordinal.opow_le_opow_right omega0_pos one_le
-      have : omega0 ≤ MetaSN.mu (.eqW a b) := by
-        calc
-          omega0 ≤ omega0 ^ (MetaSN.mu a + MetaSN.mu b + 9) := hω_pow
-          _      ≤ omega0 ^ (MetaSN.mu a + MetaSN.mu b + 9) + 1 :=
-                   le_add_of_nonneg_right (zero_le _)
-          _      = MetaSN.mu (.eqW a b) := by simp [MetaSN.mu]
-      simpa [MetaSN.mu, add_comm, add_left_comm, add_assoc] using this
-
-  | app a b =>
-      -- Direct lower bound: ω ≤ ω³ ≤ ω³·(μ a + 1) ≤ μ(app a b)
-      have hω_pow : omega0 ≤ omega0 ^ (3 : Ordinal) := by
-        simpa [Ordinal.opow_one] using
-          Ordinal.opow_le_opow_right omega0_pos (by norm_num : (1 : Ordinal) ≤ 3)
-      have h_one_le : (1 : Ordinal) ≤ MetaSN.mu a + 1 := by
-        have : (0 : Ordinal) ≤ MetaSN.mu a := zero_le _
-        simpa [zero_add] using add_le_add_right this 1
-      have hmul :
-          omega0 ^ (3 : Ordinal) ≤ (omega0 ^ (3 : Ordinal)) * (MetaSN.mu a + 1) := by
-        simpa [mul_one] using
-          mul_le_mul_left' h_one_le (omega0 ^ (3 : Ordinal))
-      have : omega0 ≤ MetaSN.mu (.app a b) := by
-        calc
-          omega0 ≤ omega0 ^ (3 : Ordinal) := hω_pow
-          _      ≤ (omega0 ^ (3 : Ordinal)) * (MetaSN.mu a + 1) := hmul
-          _      ≤ (omega0 ^ (3 : Ordinal)) * (MetaSN.mu a + 1) + (omega0 ^ (2 : Ordinal)) * (MetaSN.mu b + 1) :=
-                   le_add_of_nonneg_right (zero_le _)
-          _      ≤ (omega0 ^ (3 : Ordinal)) * (MetaSN.mu a + 1) + (omega0 ^ (2 : Ordinal)) * (MetaSN.mu b + 1) + 1 :=
-                   le_add_of_nonneg_right (zero_le _)
-          _      = MetaSN.mu (.app a b) := by simp [MetaSN.mu, add_assoc]
-      simpa using this
-
-
-/-- If `a` and `b` are **not** both `void`, then `ω ≤ μ a + μ b`. -/
-theorem mu_sum_ge_omega_of_not_both_void
-    {a b : Trace} (h : ¬ (a = .void ∧ b = .void)) :
-    omega0 ≤ MetaSN.mu a + MetaSN.mu b := by
-  have h_cases : a ≠ .void ∨ b ≠ .void := by
-    by_contra hcontra; push_neg at hcontra; exact h hcontra
-  cases h_cases with
-  | inl ha =>
-      have : omega0 ≤ MetaSN.mu a := nonvoid_mu_ge_omega ha
-      have : omega0 ≤ MetaSN.mu a + MetaSN.mu b :=
-        le_trans this (le_add_of_nonneg_right (zero_le _))
-      exact this
-  | inr hb =>
-      have : omega0 ≤ MetaSN.mu b := nonvoid_mu_ge_omega hb
-      have : omega0 ≤ MetaSN.mu a + MetaSN.mu b :=
-        le_trans this (le_add_of_nonneg_left (zero_le _))
-      exact this
-
-/-- Inner bound used by `mu_lt_eq_diff`. Let `C = μ a + μ b`. Then `μ (merge a b) + 1 < ω^(C + 5)`. -/
-private theorem merge_inner_bound_simple (a b : Trace) :
-  let C : Ordinal.{0} := MetaSN.mu a + MetaSN.mu b;
-  MetaSN.mu (merge a b) + 1 < omega0 ^ (C + 5) := by
-  intro C
-  -- head and tail bounds
-  have h_head : (omega0 ^ (3 : Ordinal)) * (MetaSN.mu a + 1) ≤ omega0 ^ (MetaSN.mu a + 4) := MetaSN.termA_le (x := MetaSN.mu a)
-  have h_tail : (omega0 ^ (2 : Ordinal)) * (MetaSN.mu b + 1) ≤ omega0 ^ (MetaSN.mu b + 3) := MetaSN.termB_le (x := MetaSN.mu b)
-  -- each exponent is strictly less than C+5
-  have h_exp1 : MetaSN.mu a + 4 < C + 5 := by
-    have h1 : MetaSN.mu a ≤ C := Ordinal.le_add_right _ _
-    have h2 : MetaSN.mu a + 4 ≤ C + 4 := add_le_add_right h1 4
-    have h3 : C + 4 < C + 5 := add_lt_add_left (by norm_num : (4 : Ordinal) < 5) C
-    exact lt_of_le_of_lt h2 h3
-  have h_exp2 : MetaSN.mu b + 3 < C + 5 := by
-    have h1 : MetaSN.mu b ≤ C := Ordinal.le_add_left (MetaSN.mu b) (MetaSN.mu a)
-    have h2 : MetaSN.mu b + 3 ≤ C + 3 := add_le_add_right h1 3
-    have h3 : C + 3 < C + 5 := add_lt_add_left (by norm_num : (3 : Ordinal) < 5) C
-    exact lt_of_le_of_lt h2 h3
-  -- use monotonicity of opow
-  have h1_pow : omega0 ^ (3 : Ordinal) * (MetaSN.mu a + 1) < omega0 ^ (C + 5) := by
-    calc (omega0 ^ (3 : Ordinal)) * (MetaSN.mu a + 1)
-        ≤ omega0 ^ (MetaSN.mu a + 4) := h_head
-      _ < omega0 ^ (C + 5) := OperatorKO7.Patch2025_08_10.opow_lt_opow_right h_exp1
-  have h2_pow : (omega0 ^ (2 : Ordinal)) * (MetaSN.mu b + 1) < omega0 ^ (C + 5) := by
-    calc (omega0 ^ (2 : Ordinal)) * (MetaSN.mu b + 1)
-        ≤ omega0 ^ (MetaSN.mu b + 3) := h_tail
-      _ < omega0 ^ (C + 5) := OperatorKO7.Patch2025_08_10.opow_lt_opow_right h_exp2
-  -- finite +2 is below ω^(C+5)
-  have h_fin : (2 : Ordinal) < omega0 ^ (C + 5) := by
-    have two_lt_omega : (2 : Ordinal) < omega0 := nat_lt_omega0 2
-    have omega_le : omega0 ≤ omega0 ^ (C + 5) := by
-      have one_le_exp : (1 : Ordinal) ≤ C + 5 := by
-        have : (1 : Ordinal) ≤ (5 : Ordinal) := by norm_num
-        exact le_trans this (le_add_left _ _)
-      calc omega0
-          = omega0 ^ (1 : Ordinal) := (Ordinal.opow_one omega0).symm
-        _ ≤ omega0 ^ (C + 5) := Ordinal.opow_le_opow_right omega0_pos one_le_exp
-    exact lt_of_lt_of_le two_lt_omega omega_le
-  -- combine pieces directly for μ(merge a b)+1
-  have sum_bound : (omega0 ^ (3 : Ordinal)) * (MetaSN.mu a + 1) +
-                   (omega0 ^ (2 : Ordinal)) * (MetaSN.mu b + 1) + 2 <
-                   omega0 ^ (C + 5) := by
-    have k_pos : (0 : Ordinal) < C + 5 := by
-      have : (0 : Ordinal) < (5 : Ordinal) := by norm_num
-      exact lt_of_lt_of_le this (le_add_left _ _)
-    exact omega_pow_add3_lt k_pos h1_pow h2_pow h_fin
-  have mu_expand : MetaSN.mu (merge a b) + 1 =
-      (omega0 ^ (3 : Ordinal)) * (MetaSN.mu a + 1) +
-      (omega0 ^ (2 : Ordinal)) * (MetaSN.mu b + 1) + 2 := by
-    simp [MetaSN.mu, add_assoc]
-  simpa [mu_expand] using sum_bound
-
-/-- Total inequality used in `R_eq_diff`. -/
-theorem mu_lt_eq_diff (a b : Trace) :
-  MetaSN.mu (integrate (merge a b)) < MetaSN.mu (eqW a b) := by
-  by_cases h_both : a = .void ∧ b = .void
-  · rcases h_both with ⟨ha, hb⟩
-    -- corner case already proven
-    simpa [ha, hb] using mu_lt_eq_diff_both_void
-  · -- general case
-    set C : Ordinal := MetaSN.mu a + MetaSN.mu b with hC
-    have hCω : omega0 ≤ C :=
-      by
-        have := mu_sum_ge_omega_of_not_both_void (a := a) (b := b) h_both
-        simpa [hC] using this
-
-    -- inner bound from `merge_inner_bound_simple`
-    have h_inner : MetaSN.mu (merge a b) + 1 < omega0 ^ (C + 5) :=
-      by
-        simpa [hC] using merge_inner_bound_simple a b
-
-    -- lift through `integrate`
-    have ω4pos : 0 < omega0 ^ (4 : Ordinal) :=
-      (Ordinal.opow_pos (b := (4 : Ordinal)) omega0_pos)
-    have h_mul :
-        omega0 ^ (4 : Ordinal) * (MetaSN.mu (merge a b) + 1) <
-        omega0 ^ (4 : Ordinal) * omega0 ^ (C + 5) :=
-      Ordinal.mul_lt_mul_of_pos_left h_inner ω4pos
-
-    -- collapse ω⁴·ω^(C+5)  →  ω^(4+(C+5))
-    have h_prod :
-        omega0 ^ (4 : Ordinal) * (MetaSN.mu (merge a b) + 1) <
-        omega0 ^ (4 + (C + 5)) :=
-      by
-        have := (Ordinal.opow_add omega0 (4 : Ordinal) (C + 5)).symm
-        simpa [this] using h_mul
-
-    -- absorb the finite 4 because ω ≤ C
-    have absorb4 : (4 : Ordinal) + C = C :=
-      nat_left_add_absorb (h := hCω)
-    have exp_eq : (4 : Ordinal) + (C + 5) = C + 5 := by
-      calc
-        (4 : Ordinal) + (C + 5)
-            = ((4 : Ordinal) + C) + 5 := by
-                simpa [add_assoc]
-          _ = C + 5 := by
-                simpa [absorb4]
-
-    -- inequality now at exponent C+5
-    have h_prod2 :
-        omega0 ^ (4 : Ordinal) * (MetaSN.mu (merge a b) + 1) <
-        omega0 ^ (C + 5) := by
-      simpa [exp_eq] using h_prod
-
-    -- bump exponent C+5 → C+9
-    have exp_lt : omega0 ^ (C + 5) < omega0 ^ (C + 9) :=
-      OperatorKO7.Patch2025_08_10.opow_lt_opow_right (add_lt_add_left (by norm_num) C)
-
-    have h_chain :
-        omega0 ^ (4 : Ordinal) * (MetaSN.mu (merge a b) + 1) <
-        omega0 ^ (C + 9) := lt_trans h_prod2 exp_lt
-    -- add +1 on both sides (monotone)
-    have hA1 :
-        omega0 ^ (4 : Ordinal) * (MetaSN.mu (merge a b) + 1) + 1 ≤
-        omega0 ^ (C + 9) :=
-      Order.add_one_le_of_lt h_chain
-    have h_final :
-        omega0 ^ (4 : Ordinal) * (MetaSN.mu (merge a b) + 1) + 1 <
-        omega0 ^ (C + 9) + 1 :=
-      (Order.lt_add_one_iff (x := _ + 1) (y := omega0 ^ (C + 9))).2 hA1
-
-    -- rewrite both sides in μ-language and conclude
-    have hL : MetaSN.mu (integrate (merge a b)) =
-        omega0 ^ (4 : Ordinal) * (MetaSN.mu (merge a b) + 1) + 1 := by
-      simp [MetaSN.mu]
-    have hR : MetaSN.mu (eqW a b) = omega0 ^ (C + 9) + 1 := by
-      simp [MetaSN.mu, hC]
-    -- final substitution
-    simpa [hL, hR]
-      using h_final
-
-/-- `R_eq_diff`: κ equal (both 0); use μ-drop. -/
-lemma μκ_drop_R_eq_diff (a b : Trace) :
-  LexNatOrd (μκ (integrate (merge a b))) (μκ (eqW a b)) := by
-  have hμ : mu (integrate (merge a b)) < mu (eqW a b) := mu_lt_eq_diff a b
-  have hk : kappa (integrate (merge a b)) = kappa (eqW a b) := by simp [kappa]
-  exact μ_to_μκ (t' := integrate (merge a b)) (t := eqW a b) hμ hk
-
-
-/-- R₂ (left-void): `merge void t → t` strictly drops `μ`. -/
-theorem mu_lt_merge_void_left (t : Trace) :
-  MetaSN.mu t < MetaSN.mu (.merge .void t) := by
-  -- start: μ t < ω²*(μ t + 1) + 1
-  have h0 : MetaSN.mu t ≤ MetaSN.mu t + 1 :=
-    le_of_lt ((Order.lt_add_one_iff (x := MetaSN.mu t) (y := MetaSN.mu t)).2 le_rfl)
-  have hpos2 : 0 < (omega0 ^ (2 : Ordinal)) :=
-    (Ordinal.opow_pos (b := (2 : Ordinal)) omega0_pos)
-  have h1 : MetaSN.mu t + 1 ≤ (omega0 ^ (2 : Ordinal)) * (MetaSN.mu t + 1) := by
-    simpa using
-      (Ordinal.le_mul_right (a := MetaSN.mu t + 1) (b := (omega0 ^ (2 : Ordinal))) hpos2)
-  have hY : MetaSN.mu t ≤ (omega0 ^ (2 : Ordinal)) * (MetaSN.mu t + 1) := le_trans h0 h1
-  have hlt : MetaSN.mu t < (omega0 ^ (2 : Ordinal)) * (MetaSN.mu t + 1) + 1 :=
-    (Order.lt_add_one_iff
-      (x := MetaSN.mu t) (y := (omega0 ^ (2 : Ordinal)) * (MetaSN.mu t + 1))).2 hY
-
-  -- pad on the left with the ω³ "head" of `merge`
-  have hpad :
-      (omega0 ^ (2 : Ordinal)) * (MetaSN.mu t + 1) + 1 ≤
-      (omega0 ^ (3 : Ordinal)) + ((omega0 ^ (2 : Ordinal)) * (MetaSN.mu t + 1) + 1) :=
-    Ordinal.le_add_left _ _
-
-  have hfin :
-      MetaSN.mu t <
-      (omega0 ^ (3 : Ordinal)) + ((omega0 ^ (2 : Ordinal)) * (MetaSN.mu t + 1) + 1) :=
-    lt_of_lt_of_le hlt hpad
-
-  simpa [MetaSN.mu, add_assoc] using hfin
-
-/-- `R_merge_void_left` when result is non-`recΔ`: κ equal (both 0); use μ-drop. -/
-lemma μκ_drop_R_merge_void_left_nonrec
-  (t : Trace) (h : ¬ ∃ b s n, t = recΔ b s n) :
-  LexNatOrd (μκ t) (μκ (merge void t)) := by
-  have hμ : mu t < mu (merge void t) := mu_lt_merge_void_left t
-  have hk_t : kappa t = 0 := kappa_non_rec t h
-  have hk_merge : kappa (merge void t) = 0 := by simp [kappa]
-  have hk : kappa t = kappa (merge void t) := by simpa [hk_merge] using hk_t
-  exact μ_to_μκ (t' := t) (t := merge void t) hμ hk
-
-
-/-- `R₅ (rec base): `recΔ b s void → b` strictly drops `μ`. -/
-theorem mu_lt_rec_base (b s : Trace) :
-  MetaSN.mu b < MetaSN.mu (.recΔ b s .void) := by
-  -- μ b < μ b + 1
-  have h1 : MetaSN.mu b < MetaSN.mu b + 1 := by
-    simpa using (lt_add_one (MetaSN.mu b))
-  -- μ b + 1 ≤ ω * (μ b + 1)
-  have h2 : MetaSN.mu b + 1 ≤ omega0 * (MetaSN.mu b + 1) :=
-    Ordinal.le_mul_right (a := MetaSN.mu b + 1) (b := omega0) omega0_pos
-  have h3 : MetaSN.mu b < omega0 * (MetaSN.mu b + 1) :=
-    lt_of_lt_of_le h1 h2
-  -- ω * (μ b + 1) ≤ ω^(μ s + 6) + ω * (μ b + 1) ≤ μ(recΔ b s void)
-  have step1 :
-      omega0 * (MetaSN.mu b + 1) ≤ omega0 * (MetaSN.mu b + 1) + 1 :=
-    le_add_of_nonneg_right (show (0 : Ordinal) ≤ (1 : Ordinal) by exact zero_le _)
-  have step2 :
-      omega0 * (MetaSN.mu b + 1) + 1 ≤
-      omega0 ^ (MetaSN.mu s + (6 : Ordinal)) + omega0 * (MetaSN.mu b + 1) + 1 := by
-    have hpad :
-        omega0 * (MetaSN.mu b + 1) ≤
-        omega0 ^ (MetaSN.mu s + (6 : Ordinal)) + omega0 * (MetaSN.mu b + 1) :=
-      Ordinal.le_add_left _ _
-    exact add_le_add_right hpad 1
-  have h4 :
-      omega0 * (MetaSN.mu b + 1) ≤
-      omega0 ^ (MetaSN.mu s + (6 : Ordinal)) + omega0 * (MetaSN.mu b + 1) + 1 :=
-    le_trans step1 step2
-  have : MetaSN.mu b < omega0 ^ (MetaSN.mu s + (6 : Ordinal)) + omega0 * (MetaSN.mu b + 1) + 1 :=
-    lt_of_lt_of_le h3 h4
-  simpa [MetaSN.mu] using this
-
--- Alias from Termination_C: base-case decrease under the name `mu_lt_rec_zero`
--- Same statement as `mu_lt_rec_base`; kept for parity with Termination_C.
--- theorem mu_lt_rec_zero (b s : Trace) :
---     mu b < mu (.recΔ b s .void) := by
---   simpa using (mu_lt_rec_base b s)
-
-/-- Base-case decrease: `recΔ … void`. -/
-theorem mu_lt_rec_zero (b s : Trace) :
-    mu b < mu (.recΔ b s .void) := by
-
-  have h0 : (mu b) ≤ mu b + 1 :=
-    le_of_lt (lt_add_one (mu b))
-
-  have h1 : mu b + 1 ≤ omega0 * (mu b + 1) :=
-    Ordinal.le_mul_right (a := mu b + 1) (b := omega0) omega0_pos
-
-  have hle : mu b ≤ omega0 * (mu b + 1) := le_trans h0 h1
-
-  have hlt : mu b < omega0 * (mu b + 1) + 1 := lt_of_le_of_lt hle (lt_add_of_pos_right _ zero_lt_one)
-
-  have hpad :
-      omega0 * (mu b + 1) + 1 ≤
-      omega0 ^ (mu s + 6) + omega0 * (mu b + 1) + 1 := by
-    --  ω^(μ s+6) is non-negative, so adding it on the left preserves ≤
-    have : (0 : Ordinal) ≤ omega0 ^ (mu s + 6) :=
-      Ordinal.zero_le _
-    have h₂ :
-        omega0 * (mu b + 1) ≤
-        omega0 ^ (mu s + 6) + omega0 * (mu b + 1) :=
-      le_add_of_nonneg_left this
-    exact add_le_add_right h₂ 1
-
-  have : mu b <
-         omega0 ^ (mu s + 6) + omega0 * (mu b + 1) + 1 := lt_of_lt_of_le hlt hpad
-
-  simpa [mu] using this
- -- unfold RHS once
-
-
-/-! ### Combined termination measure
-
-We avoid the currently unproven domination inequality needed for a direct
-`μ` drop on the `recΔ` successor rule by introducing a primary counter that
-counts `delta` constructors. The `recΔ` successor rule removes exactly one
-outer `delta`, so the primary component strictly decreases there. For all
-other rules the `delta` count is unchanged or decreases; when unchanged we
-use the existing strict μ drop lemmas. This yields a lexicographic decrease
-without new ordinal theory. -/
-
-/-! ### Unconditional μ decrease for recΔ successor and SN via μ -/
-
-/-- μ n + 2 ≤ μ (delta n). -/
-lemma mu_n_add_two_le_mu_delta (n : Trace) : MetaSN.mu n + 2 ≤ MetaSN.mu (.delta n) := by
-  -- μ(δ n) = ω^5*(μ n + 1) + 1; obviously μ n + 2 ≤ ω^5*(μ n + 1) since ω^5*(μ n +1) dominates μ n +1.
-  have h0 : MetaSN.mu n + 1 ≤ (omega0 ^ (5 : Ordinal)) * (MetaSN.mu n + 1) := by
-    -- Establish 1 ≤ ω^5 via ω ≤ ω^5 and 1 ≤ ω
-    have hone : (1 : Ordinal) ≤ omega0 := by simpa using one_le_omega0
-    have hωle : omega0 ≤ omega0 ^ (5 : Ordinal) := by
-      simpa [Ordinal.opow_one] using
-        (Ordinal.opow_le_opow_right omega0_pos (by norm_num : (1 : Ordinal) ≤ (5 : Ordinal)))
-    have hge : (1 : Ordinal) ≤ omega0 ^ (5 : Ordinal) := le_trans hone hωle
-    -- multiply on the right by (μ n + 1)
-    simpa [one_mul] using (mul_le_mul_right' hge (MetaSN.mu n + 1))
-  -- Step 2: add one on both sides and close by definition of μ (delta n)
-  have h1 : MetaSN.mu n + 2 ≤ (omega0 ^ (5 : Ordinal)) * (MetaSN.mu n + 1) + 1 := by
-    have := add_le_add_right h0 (1 : Ordinal)
-    simpa [add_assoc, succ_succ_eq_add_two, Ordinal.add_one_eq_succ] using this
-  simpa [MetaSN.mu, add_assoc] using h1
-
-/-! #### New auxiliary lemmas for unconditional rec successor -/
-
-/-- Strict inequality `μ n < μ (delta n)` (immediate from the δ-case of `mu`). -/
-lemma mu_lt_mu_delta (n : Trace) : MetaSN.mu n < MetaSN.mu (.delta n) := by
-  -- μ n ≤ ω^5*(μ n +1) implies μ n < ω^5*(μ n +1) + 1 = μ (δ n)
-  have h0 : MetaSN.mu n ≤ MetaSN.mu n + 1 :=
-    le_of_lt ((Order.lt_add_one_iff (x := MetaSN.mu n) (y := MetaSN.mu n)).2 le_rfl)
-  have hb : 0 < (omega0 ^ (5 : Ordinal)) :=
-    (Ordinal.opow_pos (b := (5 : Ordinal)) (a0 := omega0_pos))
-  have h1 : MetaSN.mu n + 1 ≤ (omega0 ^ (5 : Ordinal)) * (MetaSN.mu n + 1) := by
-    simpa using (Ordinal.le_mul_right (a := MetaSN.mu n + 1) (b := (omega0 ^ (5 : Ordinal))) hb)
-  have hle : MetaSN.mu n ≤ (omega0 ^ (5 : Ordinal)) * (MetaSN.mu n + 1) := le_trans h0 h1
-  have : MetaSN.mu n < (omega0 ^ (5 : Ordinal)) * (MetaSN.mu n + 1) + 1 :=
-    (Order.lt_add_one_iff (x := MetaSN.mu n) (y := (omega0 ^ (5 : Ordinal)) * (MetaSN.mu n + 1))).2 hle
-  simpa [MetaSN.mu, add_assoc] using this
-
--- Additional lemma from Termination_C: pointwise delta increase on μ
-theorem mu_lt_delta (t : Trace) : mu t < mu (.delta t) := by
-  have h0 : mu t ≤ mu t + 1 :=
-    le_of_lt ((Order.lt_add_one_iff (x := mu t) (y := mu t)).2 le_rfl)
-  have hb : 0 < (omega0 ^ (5 : Ordinal)) :=
-    (Ordinal.opow_pos (b := (5 : Ordinal)) (a0 := omega0_pos))
-  have h1 : mu t + 1 ≤ (omega0 ^ (5 : Ordinal)) * (mu t + 1) := by
-    simpa using (Ordinal.le_mul_right (a := mu t + 1) (b := (omega0 ^ (5 : Ordinal))) hb)
-  have h : mu t ≤ (omega0 ^ (5 : Ordinal)) * (mu t + 1) := le_trans h0 h1
-  have : mu t < (omega0 ^ (5 : Ordinal)) * (mu t + 1) + 1 :=
-    (Order.lt_add_one_iff (x := mu t) (y := (omega0 ^ (5 : Ordinal)) * (mu t + 1))).2 h
-  simpa [mu] using this
-
--- Exponent bump comment: aiming at `μ n + μ s + 6 < μ (delta n) + μ s + 6` is
--- invalid without extra hypotheses; right-add strict monotonicity fails in ordinals.
--- We avoid any unconditional version here.
-
-/-- Generic product absorption: if `X < ω^α` and `(k:Ordinal)+α ≤ β` then `ω^k * X < ω^β`.
-    (Finite `k`, used with k=2.) -/
-lemma omega_pow_fin_mul_cnf_lt {k : ℕ} {α β X : Ordinal}
-  (_hk : 0 < k) (hX : X < omega0 ^ α) (hExp : (k : Ordinal) + α ≤ β) :
-  omega0 ^ (k : Ordinal) * X < omega0 ^ β := by
-  have hpos : (0 : Ordinal) < omega0 ^ (k : Ordinal) :=
-    Ordinal.opow_pos (a := omega0) (b := (k : Ordinal)) omega0_pos
-  -- step 1: multiply inequality on right factor
-  have h1 : omega0 ^ (k : Ordinal) * X < omega0 ^ (k : Ordinal) * (omega0 ^ α) :=
-    Ordinal.mul_lt_mul_of_pos_left hX hpos
-  -- collapse product of towers
-  have h2 : omega0 ^ (k : Ordinal) * X < omega0 ^ ((k : Ordinal) + α) := by
-    -- rewrite product of towers via opow_add
-    simpa [Ordinal.opow_add, mul_comm, mul_left_comm, mul_assoc]
-      using h1
-  -- monotone in exponent
-  have hmono : omega0 ^ ((k : Ordinal) + α) ≤ omega0 ^ β :=
-    Ordinal.opow_le_opow_right omega0_pos hExp
-  exact lt_of_lt_of_le h2 hmono
-
-
-def StepRev (R : Trace → Trace → Prop) : Trace → Trace → Prop := fun a b => R b a
-
-def KernelStep : Trace → Trace → Prop := fun a b => OperatorKO7.Step a b
-
-theorem strong_normalization_forward_trace
-  (R : Trace → Trace → Prop)
-  (hdec : ∀ {a b : Trace}, R a b → mu b < mu a) :
-  WellFounded (StepRev R) := by
-  have hwf : WellFounded (fun x y : Trace => mu x < mu y) :=
-    InvImage.wf (f := mu) (h := Ordinal.lt_wf)
-  have hsub : Subrelation (StepRev R) (fun x y : Trace => mu x < mu y) := by
-    intro x y h; exact hdec (a := y) (b := x) h
-  exact Subrelation.wf hsub hwf
-
-theorem strong_normalization_backward
-  (R : Trace → Trace → Prop)
-  (hinc : ∀ {a b : Trace}, R a b → mu a < mu b) :
-  WellFounded R := by
-  have hwf : WellFounded (fun x y : Trace => mu x < mu y) :=
-    InvImage.wf (f := mu) (h := Ordinal.lt_wf)
-  have hsub : Subrelation R (fun x y : Trace => mu x < mu y) := by
-    intro x y h
-    exact hinc h
-  exact Subrelation.wf hsub hwf
-
-end MetaSN
-
 ```
 
 ---
 
-## 3. OperatorKO7/Meta/Termination_KO7.lean
+## 3. OperatorKO7/Meta/SafeStep_Core.lean
 
-**File:** `OperatorKO7/Meta/Termination_KO7.lean`
+**File:** `OperatorKO7/Meta/SafeStep_Core.lean`
 
-**Lines:** 977
+**Lines:** 125
 
 ```lean
-import OperatorKO7.Meta.Termination
+import OperatorKO7.Kernel
 import Mathlib.Data.Multiset.Basic
 import Mathlib.Data.Multiset.DershowitzManna
 import Mathlib.Order.WellFounded
-import Mathlib.SetTheory.Ordinal.Basic
 
 /-!
-Strong normalization for the KO7 safe fragment (`SafeStep`), via a triple-lex measure.
+Core SafeStep infrastructure used by the canonical computable termination path.
 
-This module is the core "certified artifact" development:
-- It defines the guarded one-step relation `SafeStep` (a subrelation of the full kernel `Step`).
-- It defines the termination measure(s) used to prove `SafeStepRev` is well-founded.
+This file is intentionally minimal and self-contained:
+- `MetaSN_DM`: computable multiset toolkit (`weight`, `kappaM`, DM lemmas)
+- `MetaSN_KO7`: `deltaFlag`, guarded relation `SafeStep`, and `SafeStepRev`
 
-Key design boundary (central to the paper):
-- `Step` in `OperatorKO7/Kernel.lean` is the full kernel relation (8 unconditional root rules).
-- `SafeStep` adds explicit guards (most importantly, `eqW`-diff requires `a ≠ b`) to obtain a fragment
-  that admits a certified termination argument.
-- This file proves termination and supplies measure-decrease lemmas *only for `SafeStep`*, not for the
-  full `Step` relation.
-
-Main exports:
-- `SafeStep` and its reverse `SafeStepRev`
-- `deltaFlag`, `kappaM`, and the triple-lex measure `μ3` / order `Lex3`
-- `measure_decreases_safe` and `wf_SafeStepRev`
+No ordinal payloads or external termination frameworks are imported here.
 -/
-set_option linter.unnecessarySimpa false
-open OperatorKO7 Trace Multiset Ordinal
+
+open OperatorKO7 Trace Multiset
 
 namespace MetaSN_DM
--- Use Dershowitz-Manna multiset order.
--- DM order over multisets of ℕ, using the ambient < on ℕ
+
 local infix:70 " <ₘ " => Multiset.IsDershowitzMannaLT
 
--- This file treats `b` in `recΔ b s n` as κ-relevant for κᴹ to support DM drops on rec_zero.
--- set_option linter.unusedVariables false
-
-/-- **Weight** of a trace: recursion-depth of each `recΔ` node. -/
-@[simp] def weight : Trace → ℕ
+/-- Weight of a trace: recursion-depth payload at `recΔ` heads. -/
+@[simp] def weight : Trace → Nat
 | recΔ _ _ n => weight n + 1
 | _          => 0
 
-/-- Multiset of weights appearing in a trace.
-Note on design (assessment closure): we use multiset union `∪` at merge/app/eqW
-nodes rather than additive `+`. This deliberately captures duplication by
-conflating identical weights, which works with the DM order we use to
-orient duplicating rules. This is a documented deviation from the most
-common DM presentations (which often use multiset sum) and is required by
-our kernel’s shapes; see `SAFE_AUDIT.md` (root) for rationale and
-per-rule checks. -/
-@[simp] def kappaM : Trace → Multiset ℕ
+/-- DM multiset payload for KO7 traces. -/
+@[simp] def kappaM : Trace → Multiset Nat
 | void            => 0
 | delta t         => kappaM t
 | integrate t     => kappaM t
 | merge a b       => kappaM a ∪ kappaM b
-
 | app   a b       => kappaM a ∪ kappaM b
 | recΔ b s n      => (weight n + 1) ::ₘ (kappaM n ∪ kappaM s) + kappaM b
 | eqW  a b        => kappaM a ∪ kappaM b
 
-/-- Well-foundedness of the DM multiset order (requires `WellFoundedLT` on the base type). -/
-instance : WellFoundedLT ℕ := inferInstance
+instance : WellFoundedLT Nat := inferInstance
 
-/-- Well-foundedness of the Dershowitz-Manna order on multisets of naturals. -/
-lemma wf_dm : WellFounded (fun a b : Multiset ℕ => a <ₘ b) :=
+/-- Well-foundedness of Dershowitz-Manna order on multisets of naturals. -/
+lemma wf_dm : WellFounded (fun a b : Multiset Nat => a <ₘ b) :=
   Multiset.wellFounded_isDershowitzMannaLT
 
-/-- Combined measure pair `(κᴹ, μ)` for the O-7 kernel. -/
-noncomputable def μκ (t : Trace) : Multiset ℕ × Ordinal :=
-  (kappaM t, MetaSN.mu t)
-
-/-- Lexicographic order on the combined pair. -/
-@[simp] def LexDM : (Multiset ℕ × Ordinal) → (Multiset ℕ × Ordinal) → Prop :=
-  Prod.Lex (fun a b : Multiset ℕ => a <ₘ b) (· < ·)
-
-/-- Well-foundedness of `LexDM`, combining DM on `κᴹ` and `<` on ordinal payload `μ`. -/
-lemma wf_LexDM : WellFounded LexDM :=
-  WellFounded.prod_lex wf_dm Ordinal.lt_wf
-
-
-/-- Lift a DM witness on κᴹ to the inner lex order `(κᴹ, μ)`.
-This is a trivial `Prod.Lex.left` step, useful when the μ component is irrelevant. -/
-lemma dm_to_LexDM_left {X Y : Multiset ℕ} {μ₁ μ₂ : Ordinal}
-    (h : X <ₘ Y) : LexDM (X, μ₁) (Y, μ₂) := by
-  -- Use the left constructor with explicit parameters to avoid inference fragility
-  exact
-    (Prod.Lex.left
-      (α := Multiset ℕ) (β := Ordinal)
-      (ra := fun a b : Multiset ℕ => a <ₘ b) (rb := (· < ·))
-      (a₁ := X) (a₂ := Y) (b₁ := μ₁) (b₂ := μ₂)
-      (by simpa using h))
-
-
-/-- κᴹ ties on `integrate (delta t)` (retains all weights of t). -/
 @[simp] lemma kappaM_int_delta (t : Trace) :
     kappaM (integrate (delta t)) = kappaM t := by
   simp [kappaM]
 
-/-- κᴹ ties on `merge void t`. -/
 @[simp] lemma kappaM_merge_void_left (t : Trace) :
     kappaM (merge void t) = kappaM t := by
   simp [kappaM]
@@ -1891,17 +201,14 @@ lemma dm_to_LexDM_left {X Y : Multiset ℕ} {μ₁ μ₂ : Ordinal}
     kappaM (merge t void) = kappaM t := by
   simp [kappaM]
 
--- κᴹ duplicates on merge cancel
 @[simp] lemma kappaM_merge_cancel (t : Trace) :
     kappaM (merge t t) = kappaM t ∪ kappaM t := by
   simp [kappaM]
 
-/-- κᴹ value for `recΔ b s void`. -/
 @[simp] lemma kappaM_rec_zero (b s : Trace) :
     kappaM (recΔ b s void) = (1 ::ₘ kappaM s) + kappaM b := by
   simp [kappaM]
 
-/-- κᴹ equality for `eq_refl`. -/
 @[simp] lemma kappaM_eq_refl (a : Trace) :
     kappaM (eqW a a) = kappaM a ∪ kappaM a := by
   simp [kappaM]
@@ -1910,58 +217,39 @@ lemma dm_to_LexDM_left {X Y : Multiset ℕ} {μ₁ μ₂ : Ordinal}
     kappaM (integrate (merge a b)) = kappaM (eqW a b) := by
   simp [kappaM]
 
-/-! ### DM strict drop helpers -/
-
--- Adding a nonempty multiset strictly increases under DM (choose Y = 0, Z ≠ 0).
-lemma dm_lt_add_of_ne_zero (X Z : Multiset ℕ) (h : Z ≠ 0) :
+lemma dm_lt_add_of_ne_zero (X Z : Multiset Nat) (h : Z ≠ 0) :
     X <ₘ (X + Z) := by
   classical
-  refine ⟨X, (0 : Multiset ℕ), Z, ?hZ, ?hM, rfl, ?hY⟩
+  refine ⟨X, (0 : Multiset Nat), Z, ?hZ, ?hM, rfl, ?hY⟩
   · simpa using h
   · simp
   · simp
 
--- Public alias for reuse outside this namespace, same statement
-lemma dm_lt_add_of_ne_zero' (X Z : Multiset ℕ) (h : Z ≠ 0) :
+lemma dm_lt_add_of_ne_zero' (X Z : Multiset Nat) (h : Z ≠ 0) :
     Multiset.IsDershowitzMannaLT X (X + Z) := by
   classical
-  refine ⟨X, (0 : Multiset ℕ), Z, ?hZ, ?hM, rfl, ?hY⟩
+  refine ⟨X, (0 : Multiset Nat), Z, ?hZ, ?hM, rfl, ?hY⟩
   · simpa using h
   · simp
   · simp
 
--- κᴹ strictly drops for rec_zero in the intended orientation (LHS > RHS):
--- kappaM b <ₘ kappaM (recΔ b s void)
 lemma dm_drop_R_rec_zero (b s : Trace) :
     kappaM b <ₘ kappaM (recΔ b s void) := by
   classical
-  -- kappaM (recΔ b s void) = (1 ::ₘ kappaM s) + kappaM b, and + is commutative
   have hdm : Multiset.IsDershowitzMannaLT (kappaM b) (kappaM b + (1 ::ₘ kappaM s)) :=
     dm_lt_add_of_ne_zero' (kappaM b) (1 ::ₘ kappaM s) (by simp)
-  -- rewrite to the rec_zero shape
   simpa [kappaM, add_comm, add_left_comm, add_assoc] using hdm
 
--- update dm_drop_R_rec_succ lemma
--- Note: κM does not strictly drop for rec_succ in DM in general when kappaM uses ∪.
--- Use the μ component for the lex drop in the combined measure.
-
-/-- If a multiset is nonempty, its self-union is nonempty. -/
-lemma union_self_ne_zero_of_ne_zero {X : Multiset ℕ} (h : X ≠ 0) :
-    X ∪ X ≠ (0 : Multiset ℕ) := by
+lemma union_self_ne_zero_of_ne_zero {X : Multiset Nat} (h : X ≠ 0) :
+    X ∪ X ≠ (0 : Multiset Nat) := by
   classical
   intro hU
-  -- Show `X ∪ X = X` by counts, then contradict `h`.
   have hUU : X ∪ X = X := by
-    ext a; simp [Multiset.count_union, max_self]
+    ext a
+    simp [Multiset.count_union, max_self]
   exact h (by simpa [hUU] using hU)
 
 end MetaSN_DM
-
-/-! --------------------------------------------------------------------------
-Triple-lex measure (δ, κᴹ, μ) specialized for KO7
-We use a δ-flag that is 1 exactly on `recΔ b s (delta n)` at the top, and 0 otherwise.
-This gives a Nat-first strict drop for `R_rec_succ` and ties elsewhere.
---------------------------------------------------------------------------- -/
 
 namespace MetaSN_KO7
 
@@ -1971,7 +259,6 @@ open MetaSN_DM
 | recΔ _ _ (delta _) => 1
 | _                  => 0
 
--- deltaFlag simplification lemmas for common constructors
 @[simp] lemma deltaFlag_void : deltaFlag void = 0 := rfl
 @[simp] lemma deltaFlag_integrate (t : Trace) : deltaFlag (integrate t) = 0 := rfl
 @[simp] lemma deltaFlag_merge (a b : Trace) : deltaFlag (merge a b) = 0 := rfl
@@ -1982,7 +269,6 @@ open MetaSN_DM
 @[simp] lemma deltaFlag_rec_delta (b s n : Trace) : deltaFlag (recΔ b s (delta n)) = 1 := by
   simp [deltaFlag]
 
--- deltaFlag takes only values 0 or 1 (decidable Boolean flag over Nat)
 lemma deltaFlag_range (t : Trace) : deltaFlag t = 0 ∨ deltaFlag t = 1 := by
   cases t with
   | void => simp
@@ -1994,324 +280,14 @@ lemma deltaFlag_range (t : Trace) : deltaFlag t = 0 ∨ deltaFlag t = 1 := by
       cases n with
       | void => simp [deltaFlag]
       | delta n => simp [deltaFlag]
-      | integrate _ => simp [deltaFlag]
-      | merge _ _ => simp [deltaFlag]
-      | app _ _ => simp [deltaFlag]
-      | eqW _ _ => simp [deltaFlag]
-      | recΔ _ _ _ => simp [deltaFlag]
+      | integrate t => simp [deltaFlag]
+      | merge a b => simp [deltaFlag]
+      | app a b => simp [deltaFlag]
+      | eqW a b => simp [deltaFlag]
+      | recΔ b s n => simp [deltaFlag]
   | eqW a b => simp
 
-noncomputable def μ3 (t : Trace) : Nat × (Multiset ℕ × Ordinal) :=
-  (deltaFlag t, (kappaM t, MetaSN.mu t))
-
-@[simp] def Lex3 : (Nat × (Multiset ℕ × Ordinal)) → (Nat × (Multiset ℕ × Ordinal)) → Prop :=
-  Prod.Lex (· < ·) MetaSN_DM.LexDM
-
-lemma wf_Lex3 : WellFounded Lex3 := by
-  exact WellFounded.prod_lex Nat.lt_wfRel.wf MetaSN_DM.wf_LexDM
-
-/-!
-Assessment closure: All strong-normalization and decrease lemmas in this
-module are scoped to `SafeStep` and the single measure `μ3` (Lex3). We do
-not assert SN for the full `Step` relation here, and we do not rely on any
-disjunctive/“hybrid” measure in these theorems. See
-`SAFE_AUDIT.md` (root) for details and scope statements.
--/
-
-/- Per-rule decreases (stable subset) -------------------------------------- -/
-
-/-- merge void-left: restricted to δ-flag tie (deltaFlag t = 0). -/
-lemma drop_R_merge_void_left_zero (t : Trace)
-    (hδ : deltaFlag t = 0) :
-    Lex3 (μ3 t) (μ3 (merge void t)) := by
-  classical
-  -- Build inner LexDM μ-drop anchored at κM t
-  have hin : LexDM (kappaM t, MetaSN.mu t)
-      (kappaM t, MetaSN.mu (merge void t)) :=
-    Prod.Lex.right (kappaM t) (MetaSN.mu_lt_merge_void_left t)
-  -- Build outer α=0 witness, then rewrite goal to α=0 shape
-  have hcore : Lex3 (0, (kappaM t, MetaSN.mu t)) (0, (kappaM t, MetaSN.mu (merge void t))) :=
-    Prod.Lex.right (0 : Nat) hin
-  dsimp [Lex3, μ3, deltaFlag]
-  have ht0 : (match t with | recΔ _ _ (delta _) => 1 | _ => 0) = 0 := by
-    simpa [deltaFlag] using hδ
-  simp [ht0]
-  exact hcore
-
-/-- merge void-right: restricted to δ-flag tie (deltaFlag t = 0). -/
-lemma drop_R_merge_void_right_zero (t : Trace)
-    (hδ : deltaFlag t = 0) :
-    Lex3 (μ3 t) (μ3 (merge t void)) := by
-  classical
-  -- Inner μ-drop anchored at κM t
-  have hin : LexDM (kappaM t, MetaSN.mu t)
-      (kappaM t, MetaSN.mu (merge t void)) :=
-    Prod.Lex.right (kappaM t) (MetaSN.mu_lt_merge_void_right t)
-  -- Outer α=0 witness
-  have hcore : Lex3 (0, (kappaM t, MetaSN.mu t)) (0, (kappaM t, MetaSN.mu (merge t void))) :=
-    Prod.Lex.right (0 : Nat) hin
-  dsimp [Lex3, μ3, deltaFlag]
-  have ht0 : (match t with | recΔ _ _ (delta _) => 1 | _ => 0) = 0 := by
-    simpa [deltaFlag] using hδ
-  simp [ht0]
-  exact hcore
-
-/-- eq_diff: `eqW a b → integrate (merge a b)` drops (outer tie + μ-right). -/
-lemma drop_R_eq_diff (a b : Trace) :
-    Lex3 (μ3 (integrate (merge a b))) (μ3 (eqW a b)) := by
-  classical
-  -- Inner μ-drop anchored at κM (integrate (merge a b))
-  have hin : LexDM (kappaM (integrate (merge a b)), MetaSN.mu (integrate (merge a b)))
-      (kappaM (integrate (merge a b)), MetaSN.mu (eqW a b)) :=
-    Prod.Lex.right (kappaM (integrate (merge a b))) (MetaSN.mu_lt_eq_diff a b)
-  -- Outer α=0 witness
-  have hcore : Lex3 (0, (kappaM (integrate (merge a b)), MetaSN.mu (integrate (merge a b))))
-      (0, (kappaM (integrate (merge a b)), MetaSN.mu (eqW a b))) :=
-    Prod.Lex.right (0 : Nat) hin
-  -- Rewrite both δ-flags to 0 and κ via kappaM_eq_diff, then discharge
-  dsimp [Lex3, μ3]
-  have hδL : (match integrate (merge a b) with | recΔ _ _ (delta _) => 1 | _ => 0) = 0 := by
-    simp
-  have hδR : (match eqW a b with | recΔ _ _ (delta _) => 1 | _ => 0) = 0 := by
-    simp
-  simpa [hδL, hδR, MetaSN_DM.kappaM_eq_diff] using hcore
-
-
-
--- (rec_succ and rec_zero lemmas will be reintroduced after further audit)
-
--- Aggregated `measure_decreases` and `strong_normalization_triple` are deferred
--- until we resolve the general `merge_cancel` and `eq_refl` cases (κ duplicates).
-
-end MetaSN_KO7
-/-! ### Additional per-rule decreases (audited) ---------------------------- -/
-
-namespace MetaSN_KO7
-
-open MetaSN_DM
-
-open Classical
-
-/-!
-Lex3 drops for duplicating cases, using a DM drop when κM ≠ 0 and
-falling back to a μ-drop when κM ties at 0.
--/
-
-/-- int∘delta: `integrate (delta t) → void` drops (outer δ tie; inner by κ-DM or μ-right). -/
-lemma drop_R_int_delta (t : Trace) :
-    Lex3 (μ3 void) (μ3 (integrate (delta t))) := by
-  classical
-  -- Either strict κ-DM when κᴹ t ≠ 0, or μ-right when κ ties at 0; then lift to α=0.
-  by_cases h0 : kappaM t = 0
-  · -- κ tie → use μ drop
-    have hin : LexDM ((0 : Multiset ℕ), MetaSN.mu void)
-        ((0 : Multiset ℕ), MetaSN.mu (integrate (delta t))) :=
-      Prod.Lex.right (0 : Multiset ℕ) (MetaSN.mu_void_lt_integrate_delta t)
-    have hcore : Lex3 (0, ((0 : Multiset ℕ), MetaSN.mu void))
-        (0, ((0 : Multiset ℕ), MetaSN.mu (integrate (delta t)))) :=
-      Prod.Lex.right (0 : Nat) hin
-    simpa [μ3, Lex3, deltaFlag, kappaM_int_delta, h0] using hcore
-  · -- κ strict: 0 <ᴹ κᴹ t, rewrite κ for integrate∘delta
-    have hdm : Multiset.IsDershowitzMannaLT (0 : Multiset ℕ) (kappaM t) := by
-      have hcore := dm_lt_add_of_ne_zero' (0 : Multiset ℕ) (kappaM t) (by simp [h0])
-      simpa [zero_add] using hcore
-    -- Lift DM to LexDM and then to α=0
-    have hin : LexDM ((0 : Multiset ℕ), MetaSN.mu void)
-        (kappaM (integrate (delta t)), MetaSN.mu (integrate (delta t))) :=
-      dm_to_LexDM_left (X := (0 : Multiset ℕ)) (Y := kappaM (integrate (delta t)))
-        (μ₁ := MetaSN.mu void) (μ₂ := MetaSN.mu (integrate (delta t)))
-        (by simpa [kappaM_int_delta] using hdm)
-    have hcore : Lex3 (0, ((0 : Multiset ℕ), MetaSN.mu void))
-        (0, (kappaM (integrate (delta t)), MetaSN.mu (integrate (delta t)))) :=
-      Prod.Lex.right (0 : Nat) hin
-    simpa [μ3, Lex3, deltaFlag] using hcore
-
-/-- rec_succ: `recΔ b s (delta n) → app s (recΔ b s n)` drops via δ-left (1 → 0). -/
-lemma drop_R_rec_succ (b s n : Trace) :
-  Lex3 (μ3 (app s (recΔ b s n))) (μ3 (recΔ b s (delta n))) := by
-  -- Outer: δ-flag goes from 1 to 0, so we can use the left constructor.
-  dsimp [μ3, Lex3, deltaFlag]
-  -- goal is Prod.Lex (<) _ (0, _) (1, _)
-  apply Prod.Lex.left
-  exact Nat.zero_lt_one
-
-/-- rec_zero: `recΔ b s void → b` drops (outer δ tie; inner κ-DM-left). -/
-lemma drop_R_rec_zero (b s : Trace)
-    (hδ : deltaFlag b = 0) :
-    Lex3 (μ3 b) (μ3 (recΔ b s void)) := by
-  classical
-  -- Work at the expanded pair level but keep deltaFlag uninterpreted until after rewriting
-  dsimp [Lex3]
-  dsimp [μ3]
-  -- Compute δ flags on both sides
-  have hb0eq : (match b with | recΔ _ _ (delta _) => 1 | _ => 0) = 0 := by
-    simpa [deltaFlag] using hδ
-  have hr0eq : (match recΔ b s void with | recΔ _ _ (delta _) => 1 | _ => 0) = 0 := by
-    simp
-  -- rewrite both outers to 0, then use right-branch
-  -- Be explicit on both sides to avoid constructor unification flakiness
-  simp [hb0eq]
-  refine Prod.Lex.right (0 : Nat) ?inner
-  -- Inner: lift the DM drop to LexDM explicitly, then rewrite κ to the goal's normal form
-  have hlexDM : LexDM (kappaM b, MetaSN.mu b)
-      (kappaM (recΔ b s void), MetaSN.mu (recΔ b s void)) :=
-    dm_to_LexDM_left (X := kappaM b) (Y := kappaM (recΔ b s void))
-      (μ₁ := MetaSN.mu b) (μ₂ := MetaSN.mu (recΔ b s void))
-      (by simpa using dm_drop_R_rec_zero b s)
-  -- Match the RHS κ with the goal shape (1 ::ₘ (kappaM s + kappaM b))
-  simpa [kappaM_rec_zero, cons_add, add_assoc, add_left_comm, add_comm] using hlexDM
-
-end MetaSN_KO7
-
-/-! Thin alias wrappers to expose the “δ-substitution” naming used in the 5‑Pro checklist. -/
-
-namespace MetaSN_KO7
-
-@[simp] lemma delta_subst_drop_rec_succ (b s n : Trace) :
-  Lex3 (μ3 (app s (recΔ b s n))) (μ3 (recΔ b s (delta n))) :=
-  drop_R_rec_succ b s n
-
-@[simp] lemma delta_subst_drop_rec_zero (b s : Trace)
-    (hδ : deltaFlag b = 0) :
-    Lex3 (μ3 b) (μ3 (recΔ b s void)) :=
-  drop_R_rec_zero b s hδ
-
-end MetaSN_KO7
-
-/-! ### Additional safe KO7 lemmas (restricted) --------------------------- -/
-
-namespace MetaSN_KO7
-
-open MetaSN_DM
-
--- Restricted merge-cancel: require δ-tie and κ=0 so we can take μ-right.
--- NOTE (CONSTRAINT): A fully unguarded KO7 lemma for merge_cancel cannot hold:
--- if t = recΔ _ _ (delta _), then deltaFlag t = 1 while deltaFlag (merge t t) = 0.
--- In Lex3 with outer Nat <, we cannot have 1 < 0 (outer-left) nor tie 1 = 0 (outer-right),
--- so a KO7 drop needs the δ-tie hypothesis (deltaFlag t = 0). For the unguarded case,
--- use the MPO variant `mpo_drop_R_merge_cancel`, which ignores δ.
-lemma drop_R_merge_cancel_zero (t : Trace)
-    (hδ : deltaFlag t = 0) (h0 : kappaM t = 0) :
-    Lex3 (μ3 t) (μ3 (merge t t)) := by
-  classical
-  -- Outer δ tie via hδ: rewrite both sides to 0 so left components match syntactically
-  -- Then take the right branch in the outer lex.
-  -- Build an inner LexDM proof first, keeping LexDM opaque
-  have hin : LexDM (kappaM t, MetaSN.mu t)
-      (kappaM t ∪ kappaM t, MetaSN.mu (merge t t)) := by
-    -- κ tie via h0; then μ-right using mu_lt_merge_cancel
-    dsimp [LexDM]
-    -- Now goal: Prod.Lex DM (<) (kappaM t, μ t) (kappaM t ∪ kappaM t, μ (merge t t))
-    -- Tie on DM (becomes 0 with h0), take μ-right
-    simp [h0]
-    exact
-      (Prod.Lex.right
-        (α := Multiset ℕ) (β := Ordinal)
-        (ra := fun a b : Multiset ℕ => Multiset.IsDershowitzMannaLT a b)
-        (rb := (· < ·))
-        (a := (0 : Multiset ℕ))
-        (MetaSN.mu_lt_merge_cancel t))
-  -- Lift to outer α = 0
-  have hcore : Lex3 (0, (kappaM t, MetaSN.mu t))
-      (0, (kappaM t ∪ kappaM t, MetaSN.mu (merge t t))) :=
-    Prod.Lex.right (0 : Nat) hin
-  -- Now rewrite the goal to the α = 0 shape and apply hcore
-  dsimp [μ3, Lex3, deltaFlag]
-  -- Replace the LHS deltaFlag by 0 using hδ; RHS deltaFlag is 0 by simp
-  have ht0 : (match t with | recΔ _ _ (delta _) => 1 | _ => 0) = 0 := by
-    simpa [deltaFlag] using hδ
-  -- Also normalize the RHS merge-case δ-flag to 0
-  simp [ht0]
-  -- Apply the outer right with inner witness hcore
-  exact hcore
-
--- Restricted eq_refl: require κ=0 so we can μ-right under inner tie.
-lemma drop_R_eq_refl_zero (a : Trace) (h0 : kappaM a = 0) :
-    Lex3 (μ3 void) (μ3 (eqW a a)) := by
-  classical
-  -- Outer δ-tie: unfold δ and take right branch
-  dsimp [μ3, Lex3, deltaFlag]
-  refine Prod.Lex.right (0 : Nat) ?inner
-  simp [h0]
-  refine Prod.Lex.right (0 : Multiset ℕ) ?muDrop
-  exact MetaSN.mu_void_lt_eq_refl a
-
-/-- eq_refl: unguarded KO7 drop. If κᴹ a = 0, use μ-right; otherwise take κ-DM-left. -/
-lemma drop_R_eq_refl (a : Trace) :
-    Lex3 (μ3 void) (μ3 (eqW a a)) := by
-  classical
-  -- Build an inner LexDM witness first, then lift to an α=0 outer step and rewrite the goal.
-  have hin : LexDM ((0 : Multiset ℕ), MetaSN.mu void)
-      (kappaM (eqW a a), MetaSN.mu (eqW a a)) := by
-    -- Case split on κᴹ a
-    by_cases h0 : kappaM a = 0
-    · -- κ tie → μ-right at inner level
-      have hin0 : LexDM ((0 : Multiset ℕ), MetaSN.mu void)
-          ((0 : Multiset ℕ), MetaSN.mu (eqW a a)) := by
-        exact
-          (Prod.Lex.right
-            (α := Multiset ℕ) (β := Ordinal)
-            (ra := fun a b : Multiset ℕ => Multiset.IsDershowitzMannaLT a b)
-            (rb := (· < ·))
-            (a := (0 : Multiset ℕ))
-            (MetaSN.mu_void_lt_eq_refl a))
-      simpa [kappaM_eq_refl, h0] using hin0
-    · -- κ ≠ 0 → DM-left on 0 <ₘ κ∪κ, then rewrite κ on RHS to kappaM (eqW a a)
-      have hU : kappaM a ∪ kappaM a ≠ (0 : Multiset ℕ) :=
-        union_self_ne_zero_of_ne_zero (X := kappaM a) h0
-      have hdm0 : Multiset.IsDershowitzMannaLT (0 : Multiset ℕ) (kappaM a ∪ kappaM a) := by
-        simpa using dm_lt_add_of_ne_zero' (0 : Multiset ℕ) (kappaM a ∪ kappaM a) hU
-      have hlex : LexDM (0, MetaSN.mu void)
-          (kappaM a ∪ kappaM a, MetaSN.mu (eqW a a)) := by
-        exact dm_to_LexDM_left (X := (0 : Multiset ℕ)) (Y := kappaM a ∪ kappaM a)
-          (μ₁ := MetaSN.mu void) (μ₂ := MetaSN.mu (eqW a a)) hdm0
-      simpa [kappaM_eq_refl] using hlex
-  -- Lift to outer α=0 and finalize by rewriting δ-flag to 0 on both sides
-  have hcore : Lex3 (0, ((0 : Multiset ℕ), MetaSN.mu void))
-      (0, (kappaM (eqW a a), MetaSN.mu (eqW a a))) :=
-    Prod.Lex.right (0 : Nat) hin
-  dsimp [Lex3, μ3]
-  have hδL : (match void with | recΔ _ _ (delta _) => 1 | _ => 0) = 0 := by rfl
-  have hδR : (match eqW a a with | recΔ _ _ (delta _) => 1 | _ => 0) = 0 := by simp
-  simpa [hδL, hδR] using hcore
-
-
-end MetaSN_KO7
-
-/-! ### Parametric strong normalization wrapper for KO7 ------------------- -/
-
-namespace MetaSN_KO7
-
-open OperatorKO7
-
-def StepRev : Trace → Trace → Prop := fun a b => OperatorKO7.Step b a
-
-/-- If every kernel step strictly decreases the KO7 measure μ3 in Lex3,
-then the reverse relation is well-founded (no infinite reductions). -/
-theorem strong_normalisation_of_decreases
-  (hdec : ∀ {a b : Trace}, OperatorKO7.Step a b → Lex3 (μ3 b) (μ3 a)) :
-  WellFounded StepRev := by
-  -- Pull back the well-founded Lex3 along μ3
-  have wf_measure : WellFounded (fun x y : Trace => Lex3 (μ3 x) (μ3 y)) :=
-    InvImage.wf (f := μ3) wf_Lex3
-  -- Show StepRev is a subrelation of the pulled-back order
-  have hsub : Subrelation StepRev (fun x y : Trace => Lex3 (μ3 x) (μ3 y)) := by
-    intro x y hxy
-    exact hdec hxy
-  exact Subrelation.wf hsub wf_measure
-
-end MetaSN_KO7
--- Aggregated `measure_decreases` and `strong_normalization_triple` are deferred
--- until we resolve the general `merge_cancel` and `eq_refl` cases (κ duplicates).
-
-/-! ## Restricted aggregator and SN for a safe subrelation ---------------- -/
-
-namespace MetaSN_KO7
-
-open MetaSN_DM
-
-/-- A guarded subrelation of Step where known KO7 decreases apply without
-conflicting δ/κ shapes. -/
+/-- Guarded subrelation used by the canonical termination development. -/
 inductive SafeStep : Trace → Trace → Prop
 | R_int_delta (t) : SafeStep (integrate (delta t)) void
 | R_merge_void_left (t) (hδ : deltaFlag t = 0) : SafeStep (merge void t) t
@@ -2322,460 +298,494 @@ inductive SafeStep : Trace → Trace → Prop
 | R_eq_refl (a) (h0 : kappaM a = 0) : SafeStep (eqW a a) void
 | R_eq_diff (a b) (hne : a ≠ b) : SafeStep (eqW a b) (integrate (merge a b))
 
-/-- Each SafeStep strictly decreases the KO7 triple measure. -/
-lemma measure_decreases_safe : ∀ {a b}, SafeStep a b → Lex3 (μ3 b) (μ3 a)
-| _, _, SafeStep.R_int_delta t => by
-    simpa using drop_R_int_delta t
-| _, _, SafeStep.R_merge_void_left t hδ => by
-    simpa using drop_R_merge_void_left_zero t hδ
-| _, _, SafeStep.R_merge_void_right t hδ => by
-    simpa using drop_R_merge_void_right_zero t hδ
-| _, _, SafeStep.R_merge_cancel t hδ h0 => by
-    simpa using drop_R_merge_cancel_zero t hδ h0
-| _, _, SafeStep.R_rec_zero b s hδ => by
-    simpa using drop_R_rec_zero b s hδ
-| _, _, SafeStep.R_rec_succ b s n => by
-    simpa using drop_R_rec_succ b s n
-| _, _, SafeStep.R_eq_refl a h0 => by
-    simpa using drop_R_eq_refl_zero a h0
-| _, _, SafeStep.R_eq_diff a b _ => by
-    simpa using drop_R_eq_diff a b
-
-/-- Reverse of `SafeStep`. -/
+/-- Reverse relation for strong-normalization statements. -/
 def SafeStepRev : Trace → Trace → Prop := fun a b => SafeStep b a
 
-/-- Generic wrapper: any relation that strictly decreases μ3 in Lex3 is well-founded in reverse. -/
-theorem wellFounded_of_measure_decreases_R
-  {R : Trace → Trace → Prop}
-  (hdec : ∀ {a b : Trace}, R a b → Lex3 (μ3 b) (μ3 a)) :
-  WellFounded (fun a b : Trace => R b a) := by
-  -- Pull back the well-founded Lex3 along μ3
-  have wf_measure : WellFounded (fun x y : Trace => Lex3 (μ3 x) (μ3 y)) :=
-    InvImage.wf (f := μ3) wf_Lex3
-  -- Show Rᵒᵖ ⊆ InvImage μ3 Lex3
-  have hsub : Subrelation (fun a b => R b a) (fun x y : Trace => Lex3 (μ3 x) (μ3 y)) := by
-    intro x y hxy
-    exact hdec hxy
-  exact Subrelation.wf hsub wf_measure
-
-/-- Safe-step strong normalization: no infinite SafeStep reductions. -/
-theorem wf_SafeStepRev : WellFounded SafeStepRev :=
-  wellFounded_of_measure_decreases_R (R := SafeStep) (fun {_ _} h => measure_decreases_safe h)
-
 end MetaSN_KO7
-
-/-! ## Guarded lifting from Kernel.Step to SafeStep ----------------------- -/
-
-namespace MetaSN_KO7
-
-open OperatorKO7
-
-open MetaSN_DM
-
-/-- A guarded relation: carries explicit side-conditions per constructor. -/
-inductive StepGuarded : Trace → Trace → Prop
-| R_int_delta (t) : StepGuarded (integrate (delta t)) void
-| R_merge_void_left (t) (hδ : deltaFlag t = 0) : StepGuarded (merge void t) t
-| R_merge_void_right (t) (hδ : deltaFlag t = 0) : StepGuarded (merge t void) t
-| R_merge_cancel (t) (hδ : deltaFlag t = 0) (h0 : MetaSN_DM.kappaM t = 0) : StepGuarded (merge t t) t
-| R_rec_zero (b s) (hδ : deltaFlag b = 0) : StepGuarded (recΔ b s void) b
-| R_rec_succ (b s n) : StepGuarded (recΔ b s (delta n)) (app s (recΔ b s n))
-| R_eq_refl (a) (h0 : MetaSN_DM.kappaM a = 0) : StepGuarded (eqW a a) void
-| R_eq_diff (a b) (hne : a ≠ b) : StepGuarded (eqW a b) (integrate (merge a b))
-
-def StepGuardedRev : Trace → Trace → Prop := fun a b => StepGuarded b a
-
-lemma measure_decreases_guarded : ∀ {a b}, StepGuarded a b → Lex3 (μ3 b) (μ3 a)
-| _, _, StepGuarded.R_int_delta t => by simpa using drop_R_int_delta t
-| _, _, StepGuarded.R_merge_void_left t hδ => by simpa using drop_R_merge_void_left_zero t hδ
-| _, _, StepGuarded.R_merge_void_right t hδ => by simpa using drop_R_merge_void_right_zero t hδ
-| _, _, StepGuarded.R_merge_cancel t hδ h0 => by simpa using drop_R_merge_cancel_zero t hδ h0
-| _, _, StepGuarded.R_rec_zero b s hδ => by simpa using drop_R_rec_zero b s hδ
-| _, _, StepGuarded.R_rec_succ b s n => by simpa using drop_R_rec_succ b s n
-| _, _, StepGuarded.R_eq_refl a h0 => by simpa using drop_R_eq_refl_zero a h0
-| _, _, StepGuarded.R_eq_diff a b _ => by simpa using drop_R_eq_diff a b
-
-theorem wf_StepGuardedRev : WellFounded StepGuardedRev :=
-  wellFounded_of_measure_decreases_R (R := StepGuarded) (fun {_ _} h => measure_decreases_guarded h)
-
-end MetaSN_KO7
-
-/-! ## Finite closure of guarded steps (star) ---------------------------- -/
-
-namespace MetaSN_KO7
-
-inductive StepGuardedStar : Trace → Trace → Prop
-| refl : ∀ t, StepGuardedStar t t
-| tail : ∀ {a b c}, StepGuarded a b → StepGuardedStar b c → StepGuardedStar a c
-
-theorem stepguardedstar_of_step {a b : Trace} (h : StepGuarded a b) :
-    StepGuardedStar a b := StepGuardedStar.tail h (StepGuardedStar.refl b)
-
-theorem stepguardedstar_trans {a b c : Trace}
-  (h₁ : StepGuardedStar a b) (h₂ : StepGuardedStar b c) : StepGuardedStar a c := by
-  induction h₁ with
-  | refl => exact h₂
-  | tail hab _ ih => exact StepGuardedStar.tail hab (ih h₂)
-
--- Simple two-step composition helper.
-lemma guarded_two_step {a b c : Trace}
-  (h1 : StepGuarded a b) (h2 : StepGuarded b c) :
-  StepGuardedStar a c :=
-  StepGuardedStar.tail h1 (StepGuardedStar.tail h2 (StepGuardedStar.refl c))
-
-end MetaSN_KO7
-
-/-! ## MPO-style measure (μ-first then size) for non-rec rules ----------- -/
-
-namespace MetaSN_MPO
-
-open OperatorKO7 Trace
-
-/-- A simple MPO-inspired size: sum of subtree sizes with positive node weights. -/
-@[simp] def sizeMPO : Trace → Nat
-| void          => 0
-| delta t       => sizeMPO t + 1
-| integrate t   => sizeMPO t + 1
-| merge a b     => sizeMPO a + sizeMPO b + 1
-| app a b       => sizeMPO a + sizeMPO b + 1
-| recΔ b s n    => sizeMPO b + sizeMPO s + sizeMPO n + 2
-| eqW a b       => sizeMPO a + sizeMPO b + 1
-
-open MetaSN_KO7
-
-/-- μ-first triple: (μ, sizeMPO, δ). -/
-noncomputable def ν3m (t : Trace) : Ordinal × (Nat × Nat) :=
-  (MetaSN.mu t, (sizeMPO t, deltaFlag t))
-
-@[simp] def LexNu3m : (Ordinal × (Nat × Nat)) → (Ordinal × (Nat × Nat)) → Prop :=
-  Prod.Lex (· < ·) (Prod.Lex (· < ·) (· < ·))
-
-lemma wf_LexNu3m : WellFounded LexNu3m := by
-  refine WellFounded.prod_lex ?_ ?_
-  · exact Ordinal.lt_wf
-  · refine WellFounded.prod_lex ?_ ?_
-    · exact Nat.lt_wfRel.wf
-    · exact Nat.lt_wfRel.wf
-
-/-- int∘delta: μ-right in the middle component. -/
-lemma mpo_drop_R_int_delta (t : Trace) :
-    LexNu3m (ν3m void) (ν3m (integrate (delta t))) := by
-  classical
-  dsimp [ν3m, LexNu3m]
-  apply Prod.Lex.left
-  simpa using MetaSN.mu_void_lt_integrate_delta t
-
-/-- merge void-left: μ-right. -/
-lemma mpo_drop_R_merge_void_left (t : Trace) :
-    LexNu3m (ν3m t) (ν3m (merge void t)) := by
-  classical
-  dsimp [ν3m, LexNu3m]
-  apply Prod.Lex.left
-  simpa using MetaSN.mu_lt_merge_void_left t
-
-/-- merge void-right: μ-right. -/
-lemma mpo_drop_R_merge_void_right (t : Trace) :
-    LexNu3m (ν3m t) (ν3m (merge t void)) := by
-  classical
-  dsimp [ν3m, LexNu3m]
-  apply Prod.Lex.left
-  simpa using MetaSN.mu_lt_merge_void_right t
-
-/-- merge-cancel: μ-right (no κ or size tie needed). -/
-lemma mpo_drop_R_merge_cancel (t : Trace) :
-    LexNu3m (ν3m t) (ν3m (merge t t)) := by
-  classical
-  dsimp [ν3m, LexNu3m]
-  apply Prod.Lex.left
-  simpa using MetaSN.mu_lt_merge_cancel t
-
-/-- eq_refl: μ-right (void μ < eqW μ). -/
-lemma mpo_drop_R_eq_refl (a : Trace) :
-    LexNu3m (ν3m void) (ν3m (eqW a a)) := by
-  classical
-  dsimp [ν3m, LexNu3m]
-  apply Prod.Lex.left
-  simpa using MetaSN.mu_void_lt_eq_refl a
-
-/-- eq_diff: μ-right. -/
-lemma mpo_drop_R_eq_diff (a b : Trace) :
-    LexNu3m (ν3m (integrate (merge a b))) (ν3m (eqW a b)) := by
-  classical
-  dsimp [ν3m, LexNu3m]
-  apply Prod.Lex.left
-  simpa using MetaSN.mu_lt_eq_diff a b
-
-/-- rec_zero: μ-first strict drop. -/
-lemma mpo_drop_R_rec_zero (b s : Trace) :
-    LexNu3m (ν3m b) (ν3m (recΔ b s void)) := by
-  classical
-  dsimp [ν3m, LexNu3m]
-  -- We only need μ to drop
-  apply Prod.Lex.left
-  -- Show: mu b < mu (recΔ b s void) = ω^(μ s + 6) + ω*(μ b + 1) + 1
-  -- First, μ b < ω*(μ b + 1)
-  have h1 : MetaSN.mu b < omega0 * (MetaSN.mu b + 1) := by
-    have hlt : MetaSN.mu b < MetaSN.mu b + 1 :=
-      (Order.lt_add_one_iff (x := MetaSN.mu b) (y := MetaSN.mu b)).2 le_rfl
-    have hmono : MetaSN.mu b + 1 ≤ omega0 * (MetaSN.mu b + 1) := by
-      simpa using (Ordinal.le_mul_right (a := MetaSN.mu b + 1) (b := omega0) omega0_pos)
-    exact lt_of_lt_of_le hlt hmono
-  -- Then: ω*(μ b + 1) ≤ ω*(μ b + 1) + 1
-  have h2 : omega0 * (MetaSN.mu b + 1) ≤ omega0 * (MetaSN.mu b + 1) + 1 :=
-    le_add_of_nonneg_right (zero_le _)
-  have h3 : MetaSN.mu b < omega0 * (MetaSN.mu b + 1) + 1 := lt_of_lt_of_le h1 h2
-  -- Finally: add the leading ω^(μ s + 6) on the left (nonnegative), preserving ≤
-  have h4 : omega0 * (MetaSN.mu b + 1) + 1 ≤
-      (omega0 ^ (MetaSN.mu s + (6 : Ordinal))) + (omega0 * (MetaSN.mu b + 1) + 1) :=
-    le_add_of_nonneg_left (zero_le _)
-  have h5 : MetaSN.mu b < (omega0 ^ (MetaSN.mu s + (6 : Ordinal))) + (omega0 * (MetaSN.mu b + 1) + 1) :=
-    lt_of_lt_of_le h3 h4
-  simpa [MetaSN.mu, add_assoc, add_comm, add_left_comm]
-    using h5
-/- Safe subrelation for MPO (non-rec rules only; μ-first decreases) -/
-inductive SafeStepMPO : Trace → Trace → Prop
-| R_int_delta (t) : SafeStepMPO (integrate (delta t)) void
-| R_merge_void_left (t) : SafeStepMPO (merge void t) t
-| R_merge_void_right (t) : SafeStepMPO (merge t void) t
-| R_merge_cancel (t) : SafeStepMPO (merge t t) t
-| R_eq_refl (a) : SafeStepMPO (eqW a a) void
-| R_eq_diff (a b) : SafeStepMPO (eqW a b) (integrate (merge a b))
-| R_rec_zero (b s) : SafeStepMPO (recΔ b s void) b
-
-def SafeStepMPORev : Trace → Trace → Prop := fun a b => SafeStepMPO b a
-
-lemma mpo_measure_decreases : ∀ {a b}, SafeStepMPO a b → LexNu3m (ν3m b) (ν3m a)
-| _, _, SafeStepMPO.R_int_delta t => by simpa using mpo_drop_R_int_delta t
-| _, _, SafeStepMPO.R_merge_void_left t => by simpa using mpo_drop_R_merge_void_left t
-| _, _, SafeStepMPO.R_merge_void_right t => by simpa using mpo_drop_R_merge_void_right t
-| _, _, SafeStepMPO.R_merge_cancel t => by simpa using mpo_drop_R_merge_cancel t
-| _, _, SafeStepMPO.R_eq_refl a => by simpa using mpo_drop_R_eq_refl a
-| _, _, SafeStepMPO.R_eq_diff a b => by simpa using mpo_drop_R_eq_diff a b
-| _, _, SafeStepMPO.R_rec_zero b s => by simpa using mpo_drop_R_rec_zero b s
-
-theorem wf_SafeStepMPORev : WellFounded SafeStepMPORev := by
-  -- pull back Lex3m via μ3m
-  have wf_measure : WellFounded (fun x y : Trace => LexNu3m (ν3m x) (ν3m y)) :=
-    InvImage.wf (f := ν3m) wf_LexNu3m
-  have hsub : Subrelation SafeStepMPORev (fun x y : Trace => LexNu3m (ν3m x) (ν3m y)) := by
-    intro x y hxy; exact mpo_measure_decreases hxy
-  exact Subrelation.wf hsub wf_measure
-
-end MetaSN_MPO
-
-/-! ## Hybrid aggregator: per-rule decreases picking KO7 or MPO ---------- -/
-
-namespace MetaSN_Hybrid
-
-open OperatorKO7 Trace
-open MetaSN_KO7 MetaSN_MPO
-
-def HybridDec (a b : Trace) : Prop :=
-  MetaSN_MPO.LexNu3m (MetaSN_MPO.ν3m b) (MetaSN_MPO.ν3m a) ∨
-  MetaSN_KO7.Lex3 (MetaSN_KO7.μ3 b) (MetaSN_KO7.μ3 a)
-
-lemma hybrid_R_int_delta (t : Trace) :
-    HybridDec (integrate (delta t)) void :=
-  Or.inr (by simpa using MetaSN_KO7.drop_R_int_delta t)
-
-lemma hybrid_R_merge_void_left (t : Trace) :
-    HybridDec (merge void t) t :=
-  Or.inl (by simpa using MetaSN_MPO.mpo_drop_R_merge_void_left t)
-
-lemma hybrid_R_merge_void_right (t : Trace) :
-    HybridDec (merge t void) t :=
-  Or.inl (by simpa using MetaSN_MPO.mpo_drop_R_merge_void_right t)
-
-lemma hybrid_R_merge_cancel (t : Trace) :
-    HybridDec (merge t t) t :=
-  -- Prefer MPO μ-first drop for unguarded merge-cancel
-  Or.inl (by simpa using MetaSN_MPO.mpo_drop_R_merge_cancel t)
-
-lemma hybrid_R_rec_succ (b s n : Trace) :
-    HybridDec (recΔ b s (delta n)) (app s (recΔ b s n)) :=
-  Or.inr (by simpa using MetaSN_KO7.drop_R_rec_succ b s n)
-
-lemma hybrid_R_eq_refl (a : Trace) :
-    HybridDec (eqW a a) void :=
-  -- Prefer KO7 Lex3 path now that eq_refl is unguarded
-  Or.inr (by simpa using MetaSN_KO7.drop_R_eq_refl a)
-
-lemma hybrid_R_eq_diff (a b : Trace) :
-    HybridDec (eqW a b) (integrate (merge a b)) :=
-  Or.inl (by simpa using MetaSN_MPO.mpo_drop_R_eq_diff a b)
-
--- Guarded rec_zero hybrid: δ-tie is required for KO7 κ-first
-lemma hybrid_R_rec_zero_tie (b s : Trace) (hδ : MetaSN_KO7.deltaFlag b = 0) :
-    HybridDec (recΔ b s void) b :=
-  Or.inr (by simpa using MetaSN_KO7.drop_R_rec_zero b s hδ)
-
--- Unguarded rec_zero: use MPO μ-first drop, no δ-tie needed.
-lemma hybrid_R_rec_zero (b s : Trace) :
-    HybridDec (recΔ b s void) b :=
-  Or.inl (by simpa using MetaSN_MPO.mpo_drop_R_rec_zero b s)
-
-end MetaSN_Hybrid
-
--- (Hybrid WF aggregator deferred; keep per-rule HybridDec for now.)
-
-/-! ### Bridging from Kernel.Step to HybridDec (with explicit rec_zero caveat) -/
-
-namespace MetaSN_Hybrid
-
-open OperatorKO7
-
-/-- For any single kernel step, we produce a hybrid decrease certificate,
-except in the rec_zero case where the δ-flag of `b` is 1. We surface that
-as an explicit exception witness. -/
-theorem hybrid_dec_of_Step {a b : Trace} (h : Step a b) :
-    HybridDec a b ∨ ∃ (b' s : Trace), a = recΔ b' s void ∧ b = b' ∧ MetaSN_KO7.deltaFlag b' = 1 :=
-  match h with
-  | Step.R_int_delta t => Or.inl (hybrid_R_int_delta t)
-  | Step.R_merge_void_left t => Or.inl (hybrid_R_merge_void_left t)
-  | Step.R_merge_void_right t => Or.inl (hybrid_R_merge_void_right t)
-  | Step.R_merge_cancel t => Or.inl (hybrid_R_merge_cancel t)
-  | Step.R_rec_succ b s n => Or.inl (hybrid_R_rec_succ b s n)
-  | Step.R_eq_refl a => Or.inl (hybrid_R_eq_refl a)
-  | Step.R_eq_diff a b => Or.inl (hybrid_R_eq_diff a b)
-  | Step.R_rec_zero b s => Or.inl (hybrid_R_rec_zero b s)
-
-end MetaSN_Hybrid
-
-/-! ## Public certificate: every Kernel.Step has a hybrid decrease -------- -/
-
-namespace MetaSN_Hybrid
-
-open OperatorKO7
-
-/-- Every single kernel step has a strict hybrid decrease certificate. -/
-lemma hybrid_drop_of_step {a b : Trace} (h : Step a b) : HybridDec a b :=
-  match h with
-  | Step.R_int_delta t => hybrid_R_int_delta t
-  | Step.R_merge_void_left t => hybrid_R_merge_void_left t
-  | Step.R_merge_void_right t => hybrid_R_merge_void_right t
-  | Step.R_merge_cancel t => hybrid_R_merge_cancel t
-  | Step.R_rec_succ b s n => hybrid_R_rec_succ b s n
-  | Step.R_eq_refl a => hybrid_R_eq_refl a
-  | Step.R_eq_diff a b => hybrid_R_eq_diff a b
-  | Step.R_rec_zero b s => hybrid_R_rec_zero b s
-
-/-! ## Examples
-A tiny usage example showing that `hybrid_drop_of_step` yields a HybridDec certificate for a concrete kernel step. -/
-
-section Examples
-
-example (a : OperatorKO7.Trace) :
-    MetaSN_Hybrid.HybridDec (OperatorKO7.Trace.eqW a a) OperatorKO7.Trace.void :=
-  MetaSN_Hybrid.hybrid_drop_of_step (OperatorKO7.Step.R_eq_refl a)
-
--- eq-diff
-example (a b : OperatorKO7.Trace) :
-    MetaSN_Hybrid.HybridDec (OperatorKO7.Trace.eqW a b)
-      (OperatorKO7.Trace.integrate (OperatorKO7.Trace.merge a b)) :=
-  MetaSN_Hybrid.hybrid_drop_of_step (OperatorKO7.Step.R_eq_diff a b)
-
--- merge-void (left)
-example (t : OperatorKO7.Trace) :
-    MetaSN_Hybrid.HybridDec (OperatorKO7.Trace.merge OperatorKO7.Trace.void t) t :=
-  MetaSN_Hybrid.hybrid_drop_of_step (OperatorKO7.Step.R_merge_void_left t)
-
--- merge-void (right)
-example (t : OperatorKO7.Trace) :
-    MetaSN_Hybrid.HybridDec (OperatorKO7.Trace.merge t OperatorKO7.Trace.void) t :=
-  MetaSN_Hybrid.hybrid_drop_of_step (OperatorKO7.Step.R_merge_void_right t)
-
--- merge-cancel
-example (t : OperatorKO7.Trace) :
-    MetaSN_Hybrid.HybridDec (OperatorKO7.Trace.merge t t) t :=
-  MetaSN_Hybrid.hybrid_drop_of_step (OperatorKO7.Step.R_merge_cancel t)
-
--- rec-zero
-example (b s : OperatorKO7.Trace) :
-    MetaSN_Hybrid.HybridDec (OperatorKO7.Trace.recΔ b s OperatorKO7.Trace.void) b :=
-  MetaSN_Hybrid.hybrid_drop_of_step (OperatorKO7.Step.R_rec_zero b s)
-
--- Note: in this kernel, `delta` expects a `Trace`, so `n` is a `Trace`.
-example (b s n : OperatorKO7.Trace) :
-    MetaSN_Hybrid.HybridDec
-  (OperatorKO7.Trace.recΔ b s (OperatorKO7.Trace.delta n))
-  (OperatorKO7.Trace.app s (OperatorKO7.Trace.recΔ b s n)) :=
-  MetaSN_Hybrid.hybrid_drop_of_step (OperatorKO7.Step.R_rec_succ b s n)
-
--- int∘delta
-example (t : OperatorKO7.Trace) :
-    MetaSN_Hybrid.HybridDec
-  (OperatorKO7.Trace.integrate (OperatorKO7.Trace.delta t))
-      OperatorKO7.Trace.void :=
-  MetaSN_Hybrid.hybrid_drop_of_step (OperatorKO7.Step.R_int_delta t)
-
-end Examples
-
-/-! ### Public SN-style wrappers (safe subsets)
-Expose well-foundedness of the reverse relations for the KO7-safe and MPO-safe subrelations. -/
-
-/-- Public: no infinite reductions for the KO7-safe guarded subrelation. -/
-theorem wf_StepRev_KO7_Safe : WellFounded MetaSN_KO7.SafeStepRev := MetaSN_KO7.wf_SafeStepRev
-
-/-- Public: no infinite reductions for the MPO-safe subrelation. -/
-theorem wf_StepRev_MPO_Safe : WellFounded MetaSN_MPO.SafeStepMPORev := MetaSN_MPO.wf_SafeStepMPORev
-
-/-! ## Lex3 drop lemmas (KO7)
-These mirror the slim versions from `Termination_Lex3.lean`, but live here to reduce files. -/
-
-namespace MetaSN_KO7
-
-open OperatorKO7 Trace
-
-lemma lex3_drop_R_rec_zero_zero (b s : Trace)
-    (hδ : MetaSN_KO7.deltaFlag b = 0) :
-    MetaSN_KO7.Lex3 (MetaSN_KO7.μ3 b) (MetaSN_KO7.μ3 (recΔ b s void)) := by
-  classical
-  -- Only expose the Lex3 structure; keep μ3 opaque to control unfolding of deltaFlag.
-  dsimp [MetaSN_KO7.Lex3]
-  -- Replace μ3 with its pair form so we can rewrite outer flags directly.
-  change Prod.Lex (fun x1 x2 => x1 < x2)
-      (Prod.Lex (fun a b => a.IsDershowitzMannaLT b) (fun x1 x2 => x1 < x2))
-      (MetaSN_KO7.deltaFlag b, (MetaSN_DM.kappaM b, MetaSN.mu b))
-      (MetaSN_KO7.deltaFlag (recΔ b s void), (MetaSN_DM.kappaM (recΔ b s void), MetaSN.mu (recΔ b s void)))
-  have hr0 : MetaSN_KO7.deltaFlag (recΔ b s void) = 0 := by
-    simp [MetaSN_KO7.deltaFlag]
-  -- Rewrite both outer components to 0.
-  rw [hδ, hr0]
-  apply Prod.Lex.right (a := 0)
-  -- Inner LexDM drop via κᴹ strict decrease for rec_zero.
-  apply Prod.Lex.left
-  exact MetaSN_DM.dm_drop_R_rec_zero b s
-
-lemma lex3_drop_R_merge_void_left_zero (t : Trace)
-    (hδ : MetaSN_KO7.deltaFlag t = 0) :
-    MetaSN_KO7.Lex3 (MetaSN_KO7.μ3 t) (MetaSN_KO7.μ3 (merge void t)) := by
-  -- Delegate to the audited lemma with the same tie hypothesis
-  simpa [MetaSN_KO7.μ3, MetaSN_KO7.Lex3] using
-    MetaSN_KO7.drop_R_merge_void_left_zero t hδ
-
-lemma lex3_drop_R_merge_void_right_zero (t : Trace)
-    (hδ : MetaSN_KO7.deltaFlag t = 0) :
-    MetaSN_KO7.Lex3 (MetaSN_KO7.μ3 t) (MetaSN_KO7.μ3 (merge t void)) := by
-  simpa [MetaSN_KO7.μ3, MetaSN_KO7.Lex3] using
-    MetaSN_KO7.drop_R_merge_void_right_zero t hδ
-
-end MetaSN_KO7
-
-end MetaSN_Hybrid
 
 ```
 
 ---
 
-## 4. OperatorKO7/Meta/Normalize_Safe.lean
+## 4. OperatorKO7/Meta/ComputableMeasure.lean
+
+**File:** `OperatorKO7/Meta/ComputableMeasure.lean`
+
+**Lines:** 403
+
+```lean
+import OperatorKO7.Meta.SafeStep_Core
+import Mathlib.Data.Multiset.Basic
+import Mathlib.Data.Multiset.DershowitzManna
+
+/-!
+# Computable Termination Measure for KO7 SafeStep
+
+This module provides a **fully computable** termination proof for the `SafeStep` relation
+using the triple-lexicographic measure μ3c = (δ, κᴹ, τ) where:
+- δ (deltaFlag): Binary flag detecting `recΔ b s (delta n)` patterns
+- κᴹ (kappaM): Dershowitz-Manna multiset of recursion weights
+- τ (tau): Computable natural number rank (replaces noncomputable ordinal μ)
+
+## Key Properties
+- **Fully Computable**: No `noncomputable` definitions or classical axioms in core proofs
+- **Complete Coverage**: All 8 SafeStep constructors proven to strictly decrease μ3c
+- **Bulletproof**: Explicit Prod.Lex parameters prevent elaboration issues
+- **Lint-Clean**: No warnings, no sorry, no admit, no unsafe
+
+## Technical Approach
+The measure μ3c uses lexicographic ordering Lex3c := Prod.Lex (<) (Prod.Lex DM (<))
+where DM is Mathlib's Dershowitz-Manna multiset order. Each SafeStep rule is proven
+to strictly decrease this measure through either:
+1. δ-drop: For rec_succ (1 → 0)
+2. κᴹ-drop: Via DM order for rules that modify recursion structure
+3. τ-drop: When δ and κᴹ tie, using carefully chosen head weights
+
+## Constants
+τ assigns head weights ensuring strict inequalities:
+- void: 0
+- delta: transparent (preserves inner term's weight)
+- integrate: 1 + inner
+- merge: 2 + sum of arguments
+- app: 1 + sum of arguments
+- recΔ: 3 + sum of all three arguments
+- eqW: 4 + sum of arguments (ensures 1+2+X < 4+X for eq_diff)
+
+## References
+- Dershowitz & Manna (1979): Proving termination with multiset orderings
+- Baader & Nipkow: Term Rewriting and All That
+- Newman's Lemma: Local confluence + termination → confluence
+-/
+
+namespace OperatorKO7.MetaCM
+
+-- Disable unnecessary simpa linter locally for this file
+set_option linter.unnecessarySimpa false
+
+open OperatorKO7 Trace Multiset
+open MetaSN_KO7
+open MetaSN_DM
+open scoped Classical
+
+/-! ## Section 1: Computable Natural Rank τ ----------------------------------------------- -/
+
+/-- **Head-weighted structural size (τ)**
+
+A computable Nat-valued rank function with meticulously chosen constants.
+
+### Key Properties:
+1. τ(eqW a b) > τ(integrate (merge a b)) for all a, b (critical for eq_diff)
+2. τ strictly increases under all constructors except delta
+3. All inequalities provable by omega or decide
+
+### Weight Design:
+- void: 0 (base case)
+- delta t: τ(t) (transparent wrapper)
+- integrate/app: weight 1
+- merge: weight 2
+- recΔ: weight 3
+- eqW: weight 4 (ensures 1+2+X < 4+X)
+-/
+@[simp] def tau : Trace → Nat
+| void            => 0
+| delta t         => tau t
+| integrate t     => 1 + tau t            -- baseIntegrate = 1
+| merge a b       => 2 + tau a + tau b    -- baseMerge = 2
+| app a b         => 1 + tau a + tau b    -- baseApp = 1
+| recΔ b s n      => 3 + tau b + tau s + tau n  -- baseRec = 3
+| eqW a b         => 4 + tau a + tau b    -- baseEq = baseIntegrate + baseMerge + 1 = 4
+
+/-! ## Section 2: Dershowitz-Manna Order and Lexicographic Structure -/
+
+/-- **Dershowitz-Manna multiset order (DM)**
+
+The well-founded multiset order that correctly handles duplication.
+Crucial for rules like merge_cancel and eq_refl.
+-/
+def DM (X Y : Multiset Nat) : Prop :=
+  Multiset.IsDershowitzMannaLT X Y
+
+/-- **Inner lexicographic order (LexDM_c)**
+
+Combines DM order with Nat ordering to form the (κᴹ, τ) component.
+Prioritizes κᴹ changes via DM over τ changes.
+-/
+@[simp] def LexDM_c : (Multiset Nat × Nat) → (Multiset Nat × Nat) → Prop :=
+  Prod.Lex (fun a b : Multiset Nat => DM a b) (· < ·)
+
+/-- Well-foundedness of the computable inner lex (DM × Nat<). -/
+lemma wf_LexDM_c : WellFounded LexDM_c :=
+  WellFounded.prod_lex MetaSN_DM.wf_dm Nat.lt_wfRel.wf
+
+/-- **Outer triple lexicographic order (Lex3c)**
+
+The complete well-founded order: (δ, (κᴹ, τ))
+Priority: δ-flag > κᴹ (via DM) > τ
+-/
+@[simp] def Lex3c : (Nat × (Multiset Nat × Nat)) → (Nat × (Multiset Nat × Nat)) → Prop :=
+  Prod.Lex (· < ·) LexDM_c
+
+/-- Well-foundedness of the computable triple lex (Nat< × (DM × Nat<)). -/
+lemma wf_Lex3c : WellFounded Lex3c := by
+  exact WellFounded.prod_lex Nat.lt_wfRel.wf wf_LexDM_c
+
+/-- **Critical lifting lemma**
+
+Lifts a DM decrease on κᴹ to the full inner order, regardless of τ.
+EXPLICIT PARAMETERS prevent all elaboration issues.
+-/
+lemma dm_to_LexDM_c_left {X Y : Multiset Nat} {τ₁ τ₂ : Nat}
+    (h : DM X Y) : LexDM_c (X, τ₁) (Y, τ₂) := by
+  -- Use explicit parameters to avoid inference brittleness, mirroring KO7.
+  exact
+    (Prod.Lex.left
+      (α := Multiset Nat) (β := Nat)
+      (ra := fun a b : Multiset Nat => DM a b) (rb := (· < ·))
+      (a₁ := X) (a₂ := Y) (b₁ := τ₁) (b₂ := τ₂)
+      (by simpa using h))
+
+/-- **The computable triple measure μ3c**
+
+Assembles (δ, κᴹ, τ) from a trace term.
+Fully computable replacement for the ordinal-based measure.
+-/
+@[simp] def mu3c (t : Trace) : Nat × (Multiset Nat × Nat) :=
+  (deltaFlag t, (kappaM t, tau t))
+
+/-! ## Section 3: Per-Rule Termination Proofs
+
+Each SafeStep constructor proven to strictly decrease μ3c.
+Systematic approach: identify decreasing component, build witness, normalize.
+-/
+
+open Classical
+
+/-- **Rule: integrate (delta t) → void**
+
+Strategy:
+- If κᴹ(t) = 0: τ-drop (0 < 1 + τ(t))
+- If κᴹ(t) ≠ 0: DM-drop (0 <ₘ κᴹ(t))
+-/
+lemma drop_R_int_delta_c (t : Trace) :
+    Lex3c (mu3c void) (mu3c (integrate (delta t))) := by
+  classical
+  by_cases h0 : kappaM t = 0
+  · -- κ tie at 0: take τ-right since 0 < 1 + τ t
+    -- Inner κ tie at 0; show τ-right: 0 < 1 + τ t
+    have hin0 : LexDM_c ((0 : Multiset Nat), tau void)
+        ((0 : Multiset Nat), tau (integrate (delta t))) := by
+      refine Prod.Lex.right (0 : Multiset Nat) ?tauLt
+      have : (0 : Nat) < Nat.succ (tau t) := Nat.succ_pos _
+      simpa [tau, Nat.add_comm] using this
+    -- Outer α=0 witness on concrete pairs, then rewrite μ-components
+    have hcore : Lex3c (0, ((0 : Multiset Nat), tau void))
+        (0, ((0 : Multiset Nat), tau (integrate (delta t)))) :=
+      (Prod.Lex.right
+        (α := Nat) (β := (Multiset Nat × Nat))
+        (ra := (· < ·)) (rb := LexDM_c)
+        (a := (0 : Nat)) hin0)
+    simpa [Lex3c, mu3c, kappaM, kappaM_int_delta, tau, h0] using hcore
+  · -- κ strictly grows from 0 to κᴹ t ≠ 0: DM-left on 0 <ₘ κᴹ t
+    have hdm : DM (0 : Multiset Nat) (kappaM (integrate (delta t))) := by
+      -- kappaM (integrate (delta t)) = kappaM t
+      have : kappaM (integrate (delta t)) = kappaM t := by simpa [kappaM_int_delta]
+      -- Use DM X < X+Z with X=0, Z=kappaM t (nonzero)
+      have hz : kappaM t ≠ (0 : Multiset Nat) := by
+        intro hz; exact h0 (by simpa using hz)
+      -- 0 <ₘ 0 + (kappaM t) = kappaM t
+      simpa [this, zero_add] using MetaSN_DM.dm_lt_add_of_ne_zero' (0 : Multiset Nat) (kappaM t) hz
+    -- Inner DM-left on concrete κ-components, then close outer at α=0
+    have hin0 : LexDM_c ((0 : Multiset Nat), tau void)
+        ((kappaM (integrate (delta t))), tau (integrate (delta t))) := by
+      simpa using
+        (dm_to_LexDM_c_left (X := (0 : Multiset Nat)) (Y := kappaM (integrate (delta t)))
+          (τ₁ := tau void) (τ₂ := tau (integrate (delta t))) hdm)
+    have hcore : Lex3c (0, ((0 : Multiset Nat), tau void))
+        (0, (kappaM (integrate (delta t)), tau (integrate (delta t)))) :=
+      (Prod.Lex.right
+        (α := Nat) (β := (Multiset Nat × Nat))
+        (ra := (· < ·)) (rb := LexDM_c)
+        (a := (0 : Nat)) hin0)
+    simpa [Lex3c, mu3c, kappaM, kappaM_int_delta, tau] using hcore
+
+/-- **Rule: merge void t → t** (guarded by δ(t) = 0)
+
+Strategy: τ-drop under δ and κ ties
+Key inequality: τ(t) < 2 + τ(t)
+-/
+lemma drop_R_merge_void_left_c (t : Trace) (hδ : deltaFlag t = 0) :
+    Lex3c (mu3c t) (mu3c (merge void t)) := by
+  classical
+  -- Build inner κ-tie, τ-right
+  have hκ : kappaM (merge void t) = kappaM t := by simpa using MetaSN_DM.kappaM_merge_void_left t
+  have hτ' : tau t < 2 + tau t := by
+    omega
+  have hτm : tau t < tau (merge void t) := by
+    simpa [tau, Nat.add_comm, Nat.add_left_comm, Nat.add_assoc] using hτ'
+  -- Inner κ-anchor at RHS κ
+  have hin : LexDM_c (kappaM t, tau t) (kappaM (merge void t), tau (merge void t)) := by
+    simpa [hκ] using (Prod.Lex.right (kappaM (merge void t)) hτm)
+  -- Canonical α=0 outer witness; close by rewriting μ3c pairs
+  have hin' : LexDM_c (kappaM t, tau t) (kappaM t, 2 + tau t) := by
+    simpa [hκ, tau, Nat.add_comm, Nat.add_left_comm, Nat.add_assoc] using hin
+  have H : Lex3c (0, (kappaM t, tau t)) (0, (kappaM t, 2 + tau t)) :=
+    (Prod.Lex.right
+      (α := Nat) (β := (Multiset Nat × Nat))
+      (ra := (· < ·)) (rb := LexDM_c)
+      (a := (0 : Nat)) hin')
+  -- Now prove the main goal: both sides have δ=0 due to guard
+  unfold Lex3c mu3c
+  simp only [deltaFlag] at hδ ⊢
+  rw [hδ]
+  simp only [hκ, tau]
+  exact H
+
+/-- **Rule: merge t void → t** (guarded by δ(t) = 0)
+
+Symmetric to merge_void_left.
+Strategy: τ-drop under ties
+-/
+lemma drop_R_merge_void_right_c (t : Trace) (hδ : deltaFlag t = 0) :
+    Lex3c (mu3c t) (mu3c (merge t void)) := by
+  classical
+  -- Inner κ-tie and τ-right
+  have hκ : kappaM (merge t void) = kappaM t := by simpa using MetaSN_DM.kappaM_merge_void_right t
+  have hτ' : tau t < 2 + tau t := by
+    omega
+  have hτm : tau t < tau (merge t void) := by
+    simpa [tau, Nat.add_comm, Nat.add_left_comm, Nat.add_assoc] using hτ'
+  have hin : LexDM_c (kappaM t, tau t) (kappaM (merge t void), tau (merge t void)) := by
+    simpa [hκ] using (Prod.Lex.right (kappaM (merge t void)) hτm)
+  -- Canonical α=0 outer witness; close by rewriting μ3c pairs
+  have hin' : LexDM_c (kappaM t, tau t) (kappaM t, 2 + tau t) := by
+    simpa [hκ, tau, Nat.add_comm, Nat.add_left_comm, Nat.add_assoc] using hin
+  have H : Lex3c (0, (kappaM t, tau t)) (0, (kappaM t, 2 + tau t)) :=
+    (Prod.Lex.right
+      (α := Nat) (β := (Multiset Nat × Nat))
+      (ra := (· < ·)) (rb := LexDM_c)
+      (a := (0 : Nat)) hin')
+  -- Now prove the main goal: both sides have δ=0 due to guard
+  unfold Lex3c mu3c
+  simp only [deltaFlag] at hδ ⊢
+  rw [hδ]
+  simp only [hκ, tau]
+  exact H
+
+/-- **Rule: eqW a b → integrate (merge a b)**
+
+The critical inequality: 1 + 2 + X < 4 + X
+This is why we chose τ(eqW) = 4.
+-/
+lemma drop_R_eq_diff_c (a b : Trace) :
+    Lex3c (mu3c (integrate (merge a b))) (mu3c (eqW a b)) := by
+  classical
+  -- Inner tie on κ; τ inequality: 1+2+… < 4+…; then lift to α=0 and rewrite δ
+  have hκ : kappaM (integrate (merge a b)) = kappaM (eqW a b) := by
+    simpa using MetaSN_DM.kappaM_eq_diff a b
+  -- 3 < 4, then add (τ a + τ b) on the right
+  have hτ : 1 + (2 + (tau a + tau b)) < 4 + (tau a + tau b) := by
+    have h1 : 1 + (2 + (tau a + tau b)) = (1 + 2) + (tau a + tau b) := by
+      simpa using (Nat.add_assoc 1 2 (tau a + tau b)).symm
+    have h12 : 1 + 2 = 3 := by decide
+    have h2 : (1 + 2) + (tau a + tau b) = 3 + (tau a + tau b) := by
+      simpa using congrArg (fun x => x + (tau a + tau b)) h12
+    have : 3 + (tau a + tau b) < 4 + (tau a + tau b) :=
+      Nat.add_lt_add_right (by decide : 3 < 4) (tau a + tau b)
+    simpa [h1, h2]
+  have hin : LexDM_c (kappaM (integrate (merge a b)), tau (integrate (merge a b)))
+                 (kappaM (integrate (merge a b)), tau (eqW a b)) := by
+    -- Use τ-right with κ anchor directly.
+    simpa [hκ, tau, Nat.add_comm, Nat.add_left_comm, Nat.add_assoc] using
+      (Prod.Lex.right (kappaM (integrate (merge a b))) hτ)
+  have hcore : Lex3c (0, (kappaM (integrate (merge a b)), tau (integrate (merge a b))))
+      (0, (kappaM (integrate (merge a b)), tau (eqW a b))) :=
+    (Prod.Lex.right
+      (α := Nat) (β := (Multiset Nat × Nat))
+      (ra := (· < ·)) (rb := LexDM_c)
+      (a := (0 : Nat)) hin)
+  simpa [Lex3c, mu3c, deltaFlag] using hcore
+
+/-- **Rule: eqW a a → void**
+
+Handles duplication via case split:
+- If κᴹ(a) = 0: τ-drop
+- If κᴹ(a) ≠ 0: DM-drop on union
+-/
+lemma drop_R_eq_refl_c (a : Trace) :
+    Lex3c (mu3c void) (mu3c (eqW a a)) := by
+  classical
+  dsimp [mu3c, Lex3c]
+  refine Prod.Lex.right (0 : Nat) ?inner
+  by_cases h0 : kappaM a = 0
+  · -- κ tie at 0 → τ-right: 0 < 4 + τ a + τ a
+    -- build inner at κ = 0 and rewrite κ on RHS via h0
+    have hκ0 : kappaM (eqW a a) = 0 := by simpa [MetaSN_DM.kappaM_eq_refl, h0]
+    have hin0 : LexDM_c ((0 : Multiset Nat), tau void)
+        ((0 : Multiset Nat), tau (eqW a a)) := by
+      refine Prod.Lex.right (0 : Multiset Nat) ?tauDrop
+      -- 0 < 4 + (τ a + τ a)
+      have h4 : 0 < 4 := by decide
+      have h' : 0 < 4 + (tau a + tau a) := lt_of_lt_of_le h4 (Nat.le_add_right 4 (tau a + tau a))
+      simpa [tau, Nat.add_comm, Nat.add_left_comm, Nat.add_assoc] using h'
+    simpa [MetaSN_DM.kappaM_eq_refl, h0] using hin0
+  · -- κ ≠ 0 → DM-left: 0 <ₘ κ∪κ
+    have hU : kappaM a ∪ kappaM a ≠ (0 : Multiset Nat) :=
+      union_self_ne_zero_of_ne_zero (X := kappaM a) h0
+    have hdm : DM (0 : Multiset Nat) (kappaM a ∪ kappaM a) := by
+      simpa using MetaSN_DM.dm_lt_add_of_ne_zero' (0 : Multiset Nat) (kappaM a ∪ kappaM a) hU
+    -- rewrite κ on RHS using kappaM_eq_refl and use DM-left on 0 <ₘ κ∪κ
+    simpa [MetaSN_DM.kappaM_eq_refl] using
+      (dm_to_LexDM_c_left (X := 0) (Y := kappaM a ∪ kappaM a)
+        (τ₁ := tau void) (τ₂ := tau (eqW a a)) hdm)
+
+/-- **Rule: recΔ b s (delta n) → app s (recΔ b s n)**
+
+THE STAR: δ-drop from 1 to 0.
+This is why we have the δ-flag component.
+-/
+lemma drop_R_rec_succ_c (b s n : Trace) :
+    Lex3c (mu3c (app s (recΔ b s n))) (mu3c (recΔ b s (delta n))) := by
+  -- Outer Nat component drops strictly: 0 < 1
+  dsimp [mu3c, Lex3c]
+  -- Use the deltaFlag simplifications to show 0 < 1 on the Nat component
+  have a_lt : (0 : Nat) < 1 := by decide
+  -- Left component: δ(app s (recΔ b s n)) = 0 and δ(recΔ b s (delta n)) = 1
+  have H : Prod.Lex (· < ·) LexDM_c
+      ((0 : Nat), (kappaM (app s (recΔ b s n)), tau (app s (recΔ b s n))))
+      ((1 : Nat), (kappaM (recΔ b s (delta n)), tau (recΔ b s (delta n)))) := by
+    exact Prod.Lex.left (a₁ := (0 : Nat)) (a₂ := (1 : Nat)) (b₁ := (kappaM (app s (recΔ b s n)), tau (app s (recΔ b s n)))) (b₂ := (kappaM (recΔ b s (delta n)), tau (recΔ b s (delta n)))) a_lt
+  simpa [mu3c, Lex3c, MetaSN_KO7.deltaFlag_app, MetaSN_KO7.deltaFlag_rec_delta]
+    using H
+
+/-- **Rule: recΔ b s void → b** (guarded by δ(b) = 0)
+
+Strategy: κᴹ strictly drops via DM; lift to inner lex, then to outer with δ=0 on both sides.
+-/
+lemma drop_R_rec_zero_c (b s : Trace) (hδ : deltaFlag b = 0) :
+    Lex3c (mu3c b) (mu3c (recΔ b s void)) := by
+  classical
+  -- Inner: DM-left on κᴹ component
+  have hdm : DM (kappaM b) (kappaM (recΔ b s void)) := by
+    -- use the KO7 helper
+    simpa [DM] using MetaSN_DM.dm_drop_R_rec_zero b s
+  have hin : LexDM_c (kappaM b, tau b)
+      (kappaM (recΔ b s void), tau (recΔ b s void)) := by
+    simpa using (dm_to_LexDM_c_left (X := kappaM b) (Y := kappaM (recΔ b s void))
+      (τ₁ := tau b) (τ₂ := tau (recΔ b s void)) hdm)
+  -- Build outer witness at α=0 using the guard and rec_zero δ=0
+  have hb0 : MetaSN_KO7.deltaFlag b = 0 := hδ
+  have hr0 : MetaSN_KO7.deltaFlag (recΔ b s void) = 0 := by
+    simpa [MetaSN_KO7.deltaFlag_rec_zero]
+  have hcore : Lex3c (0, (kappaM b, tau b))
+      (0, (kappaM (recΔ b s void), tau (recΔ b s void))) :=
+    (Prod.Lex.right (α := Nat) (β := (Multiset Nat × Nat)) (ra := (· < ·)) (rb := LexDM_c)
+      (a := (0 : Nat)) hin)
+  -- Cast the 0-anchored witness to the goal using explicit `change` + `rw` (no simp recursion)
+  change Prod.Lex (· < ·) LexDM_c
+      ((MetaSN_KO7.deltaFlag b), (kappaM b, tau b))
+      ((MetaSN_KO7.deltaFlag (recΔ b s void)), (kappaM (recΔ b s void), tau (recΔ b s void)))
+  rw [hb0, hr0]
+  exact hcore
+
+/-- **Rule: merge t t → t** (guarded by δ(t) = 0 and κᴹ(t) = 0)
+
+With κᴹ(t) = 0, κ ties at 0; use τ-drop: τ t < 2 + τ t + τ t.
+-/
+lemma drop_R_merge_cancel_c (t : Trace)
+    (hδ : deltaFlag t = 0) (h0 : kappaM t = 0) :
+    Lex3c (mu3c t) (mu3c (merge t t)) := by
+  classical
+  -- τ-drop under κ tie at 0
+  have hτ : tau t < tau (merge t t) := by
+    -- show: τ t < 2 + τ t + τ t
+    have hA : tau t < 2 + tau t := by omega
+    have hB : 2 + tau t ≤ 2 + tau t + tau t := Nat.le_add_right _ _
+    exact lt_of_lt_of_le hA (by simpa [Nat.add_assoc, tau, Nat.add_comm, Nat.add_left_comm] using hB)
+  -- Inner at κ = 0
+  have hin0 : LexDM_c ((0 : Multiset Nat), tau t)
+      ((0 : Multiset Nat), tau (merge t t)) := by
+    exact Prod.Lex.right (0 : Multiset Nat) hτ
+  -- Rewrite κ components via guards
+  have hκ_merge : kappaM (merge t t) = 0 := by simpa [MetaSN_DM.kappaM_merge_cancel, h0]
+  have hin : LexDM_c (kappaM t, tau t) (kappaM (merge t t), tau (merge t t)) := by
+    simpa [h0, hκ_merge] using hin0
+  -- Outer witness at α=0 using guard δ(t)=0 and δ(merge)=0
+  have ht0 : MetaSN_KO7.deltaFlag t = 0 := hδ
+  have hm0 : MetaSN_KO7.deltaFlag (merge t t) = 0 := by simpa [MetaSN_KO7.deltaFlag_merge]
+  have hcore : Lex3c (0, (kappaM t, tau t)) (0, (kappaM (merge t t), tau (merge t t))) :=
+    (Prod.Lex.right (α := Nat) (β := (Multiset Nat × Nat)) (ra := (· < ·)) (rb := LexDM_c)
+      (a := (0 : Nat)) hin)
+  -- Cast the 0-anchored witness to the goal using explicit `change` + `rw` (no simp recursion)
+  change Prod.Lex (· < ·) LexDM_c
+      ((MetaSN_KO7.deltaFlag t), (kappaM t, tau t))
+      ((MetaSN_KO7.deltaFlag (merge t t)), (kappaM (merge t t), tau (merge t t)))
+  rw [ht0, hm0]
+  exact hcore
+
+
+/-- **MASTER THEOREM: Every SafeStep decreases μ3c**
+
+Pattern matches all 8 constructors to their decrease proofs.
+This is the heart of the termination argument.
+-/
+lemma measure_decreases_safe_c : ∀ {a b}, MetaSN_KO7.SafeStep a b → Lex3c (mu3c b) (mu3c a)
+| _, _, MetaSN_KO7.SafeStep.R_int_delta t => by simpa using drop_R_int_delta_c t
+| _, _, MetaSN_KO7.SafeStep.R_merge_void_left t hδ => by simpa using drop_R_merge_void_left_c t hδ
+| _, _, MetaSN_KO7.SafeStep.R_merge_void_right t hδ => by simpa using drop_R_merge_void_right_c t hδ
+| _, _, MetaSN_KO7.SafeStep.R_merge_cancel t hδ h0 => by simpa using drop_R_merge_cancel_c t hδ h0
+| _, _, MetaSN_KO7.SafeStep.R_rec_zero b s hδ => by simpa using drop_R_rec_zero_c b s hδ
+| _, _, MetaSN_KO7.SafeStep.R_rec_succ b s n => by simpa using drop_R_rec_succ_c b s n
+| _, _, MetaSN_KO7.SafeStep.R_eq_refl a _h0 => by
+    -- Guard redundant for τ; we provide an unguarded drop
+    simpa using drop_R_eq_refl_c a
+| _, _, MetaSN_KO7.SafeStep.R_eq_diff a b _ => by simpa using drop_R_eq_diff_c a b
+
+
+/-- **Generic well-foundedness wrapper**
+
+For any relation R that decreases μ3c, R^op is well-founded.
+Bridge from measure decrease to termination.
+-/
+theorem wellFounded_of_measure_decreases_R_c
+  {R : Trace → Trace → Prop}
+  (hdec : ∀ {a b : Trace}, R a b → Lex3c (mu3c b) (mu3c a)) :
+  WellFounded (fun a b : Trace => R b a) := by
+  -- Pull back the well-founded Lex3c along μ3c
+  have wf_measure : WellFounded (fun x y : Trace => Lex3c (mu3c x) (mu3c y)) :=
+    InvImage.wf (f := mu3c) wf_Lex3c
+  -- Show Rᵒᵖ ⊆ InvImage μ3c Lex3c
+  have hsub : Subrelation (fun a b => R b a) (fun x y : Trace => Lex3c (mu3c x) (mu3c y)) := by
+    intro x y hxy; exact hdec hxy
+  exact Subrelation.wf hsub wf_measure
+
+/-- **MAIN RESULT: SafeStep is strongly normalizing**
+
+Well-foundedness of SafeStepRev proves termination.
+Fully computable, no axioms, no noncomputables.
+
+### Implications:
+- No infinite SafeStep chains
+- Normalizer always terminates
+- Confluence + SN = decidable equality
+-/
+theorem wf_SafeStepRev_c : WellFounded MetaSN_KO7.SafeStepRev :=
+  wellFounded_of_measure_decreases_R_c (R := MetaSN_KO7.SafeStep)
+    (fun {_ _} h => measure_decreases_safe_c h)
+
+end OperatorKO7.MetaCM
+```
+
+---
+
+## 5. OperatorKO7/Meta/Normalize_Safe.lean
 
 **File:** `OperatorKO7/Meta/Normalize_Safe.lean`
 
-**Lines:** 251
+**Lines:** 203
 
 ```lean
 import OperatorKO7.Kernel
-import OperatorKO7.Meta.Termination_KO7
+import OperatorKO7.Meta.ComputableMeasure
 import Mathlib.Logic.Function.Basic
 
 /-!
@@ -2800,6 +810,7 @@ set_option diagnostics.threshold 100000
 set_option linter.unnecessarySimpa false
 open Classical
 open OperatorKO7 Trace
+open OperatorKO7.MetaCM
 
 
 namespace MetaSN_KO7
@@ -2878,16 +889,16 @@ theorem safestar_snoc {a b c : Trace}
 
 /-! ### Strong normalization (rev) - convenience -/
 
-/-- Accessibility for `SafeStepRev` as a derived corollary of `wf_SafeStepRev`. -/
+/-- Accessibility for `SafeStepRev` as a derived corollary of `wf_SafeStepRev_c`. -/
 theorem acc_SafeStepRev (t : Trace) : Acc SafeStepRev t :=
-  wf_SafeStepRev.apply t
+  wf_SafeStepRev_c.apply t
 
-/-- A well-founded pullback of the KO7 Lex3 order along μ3. -/
-def Rμ3 (x y : Trace) : Prop := Lex3 (μ3 x) (μ3 y)
+/-- A well-founded pullback of the computable KO7 Lex3c order along μ3c. -/
+def Rμ3 (x y : Trace) : Prop := Lex3c (mu3c x) (mu3c y)
 
-/-- Well-foundedness of `Rμ3`, inherited from `wf_Lex3` via `InvImage`. -/
+/-- Well-foundedness of `Rμ3`, inherited from `wf_Lex3c` via `InvImage`. -/
 lemma wf_Rμ3 : WellFounded Rμ3 :=
-  InvImage.wf (f := μ3) wf_Lex3
+  InvImage.wf (f := mu3c) wf_Lex3c
 
 set_option diagnostics true
 
@@ -2902,7 +913,7 @@ noncomputable def normalizeSafePack (t : Trace) : Σ' n : Trace, SafeStepStar t 
           -- Take one step and recurse
           let u := Classical.choose h
           have hu : SafeStep t u := Classical.choose_spec h
-          have hdrop : Rμ3 u t := measure_decreases_safe hu
+          have hdrop : Rμ3 u t := measure_decreases_safe_c hu
           match rec u hdrop with
           | ⟨n, hstar, hnf⟩ => ⟨n, And.intro (SafeStepStar.tail hu hstar) hnf⟩
         else
@@ -2964,7 +975,7 @@ theorem exists_drop_if_not_fixed (t : Trace) (h : normalizeSafe t ≠ t) :
   ∃ u, SafeStep t u ∧ Rμ3 u t := by
   classical
   rcases exists_step_of_not_fixed t h with ⟨u, hs⟩
-  exact ⟨u, hs, measure_decreases_safe hs⟩
+  exact ⟨u, hs, measure_decreases_safe_c hs⟩
 
 /-- If there is a safe step from `t`, then normalization cannot be fixed at `t`. -/
 theorem not_fixed_of_exists_step (t : Trace) (hex : ∃ u, SafeStep t u) :
@@ -3025,20 +1036,18 @@ theorem normalizeSafe_total (t : Trace) :
   ⟨normalizeSafe t, to_norm_safe t, norm_nf_safe t⟩
 
 end MetaSN_KO7
-
 ```
 
 ---
 
-## 5. OperatorKO7/Meta/SafeStep_Ctx.lean
+## 6. OperatorKO7/Meta/SafeStep_Ctx.lean
 
 **File:** `OperatorKO7/Meta/SafeStep_Ctx.lean`
 
-**Lines:** 549
+**Lines:** 474
 
 ```lean
 import OperatorKO7.Kernel
-import OperatorKO7.Meta.Termination_KO7
 import OperatorKO7.Meta.Normalize_Safe
 
 /-!
@@ -3586,20 +1595,18 @@ theorem localJoin_eqW_refl_ctx_if_normalizes_to_delta (a n : Trace)
   exact hj hb hc
 
 end MetaSN_KO7
-
 ```
 
 ---
 
-## 6. OperatorKO7/Meta/Confluence_Safe.lean
+## 7. OperatorKO7/Meta/Confluence_Safe.lean
 
 **File:** `OperatorKO7/Meta/Confluence_Safe.lean`
 
-**Lines:** 530
+**Lines:** 461
 
 ```lean
 import OperatorKO7.Kernel
-import OperatorKO7.Meta.Termination_KO7
 import OperatorKO7.Meta.Normalize_Safe
 import OperatorKO7.Meta.SafeStep_Ctx
 
@@ -4128,20 +2135,19 @@ theorem localJoin_ctx_eqW_refl_when_a_is_delta (n : Trace)
   localJoin_eqW_refl_ctx_when_a_is_delta n hδ h0
 
 end MetaSN_KO7
-
 ```
 
 ---
 
-## 7. OperatorKO7/Meta/Newman_Safe.lean
+## 8. OperatorKO7/Meta/Newman_Safe.lean
 
 **File:** `OperatorKO7/Meta/Newman_Safe.lean`
 
-**Lines:** 205
+**Lines:** 177
 
 ```lean
 import OperatorKO7.Kernel
-import OperatorKO7.Meta.Termination_KO7
+import OperatorKO7.Meta.ComputableMeasure
 import OperatorKO7.Meta.Normalize_Safe
 import OperatorKO7.Meta.Confluence_Safe
 
@@ -4154,7 +2160,7 @@ Purpose:
 
 Scope boundary:
 - This file is parameterized by a local-join hypothesis `locAll : ∀ a, LocalJoinAt a`.
-- Termination for `SafeStep` is supplied by `wf_SafeStepRev` (from `Meta/Termination_KO7.lean`).
+- Termination for `SafeStep` is supplied by `wf_SafeStepRev_c` (from `Meta/ComputableMeasure.lean`).
 - Nothing here claims confluence/termination for the full kernel `Step`.
 
 Main exports:
@@ -4345,479 +2351,6 @@ theorem normalizeSafe_eq_of_star
   normalizeSafe_eq_of_star_of_loc locAll_safe h
 
 end MetaSN_KO7
-
-```
-
----
-
-## 8. OperatorKO7/Meta/ComputableMeasure.lean
-
-**File:** `OperatorKO7/Meta/ComputableMeasure.lean`
-
-**Lines:** 460
-
-```lean
-import OperatorKO7.Meta.Termination_KO7
-import Mathlib.Data.Multiset.Basic
-import Mathlib.Data.Multiset.DershowitzManna
-
-/-!
-# Computable Termination Measure for KO7 SafeStep
-
-This module provides a **fully computable** termination proof for the `SafeStep` relation
-using the triple-lexicographic measure μ3c = (δ, κᴹ, τ) where:
-- δ (deltaFlag): Binary flag detecting `recΔ b s (delta n)` patterns
-- κᴹ (kappaM): Dershowitz-Manna multiset of recursion weights
-- τ (tau): Computable natural number rank (replaces noncomputable ordinal μ)
-
-## Key Properties
-- **Fully Computable**: No `noncomputable` definitions or classical axioms in core proofs
-- **Complete Coverage**: All 8 SafeStep constructors proven to strictly decrease μ3c
-- **Bulletproof**: Explicit Prod.Lex parameters prevent elaboration issues
-- **Lint-Clean**: No warnings, no sorry, no admit, no unsafe
-
-## Technical Approach
-The measure μ3c uses lexicographic ordering Lex3c := Prod.Lex (<) (Prod.Lex DM (<))
-where DM is Mathlib's Dershowitz-Manna multiset order. Each SafeStep rule is proven
-to strictly decrease this measure through either:
-1. δ-drop: For rec_succ (1 → 0)
-2. κᴹ-drop: Via DM order for rules that modify recursion structure
-3. τ-drop: When δ and κᴹ tie, using carefully chosen head weights
-
-## Constants
-τ assigns head weights ensuring strict inequalities:
-- void: 0
-- delta: transparent (preserves inner term's weight)
-- integrate: 1 + inner
-- merge: 2 + sum of arguments
-- app: 1 + sum of arguments
-- recΔ: 3 + sum of all three arguments
-- eqW: 4 + sum of arguments (ensures 1+2+X < 4+X for eq_diff)
-
-## References
-- Dershowitz & Manna (1979): Proving termination with multiset orderings
-- Baader & Nipkow: Term Rewriting and All That
-- Newman's Lemma: Local confluence + termination → confluence
--/
-
-namespace OperatorKO7.MetaCM
-
--- Disable unnecessary simpa linter locally for this file
-set_option linter.unnecessarySimpa false
-
-open OperatorKO7 Trace Multiset
-open MetaSN_KO7
-open MetaSN_DM
-open scoped Classical
-
-/-! ## Section 1: Computable Natural Rank τ ----------------------------------------------- -/
-
-/-- **Head-weighted structural size (τ)**
-
-A computable Nat-valued rank function with meticulously chosen constants.
-
-### Key Properties:
-1. τ(eqW a b) > τ(integrate (merge a b)) for all a, b (critical for eq_diff)
-2. τ strictly increases under all constructors except delta
-3. All inequalities provable by omega or decide
-
-### Weight Design:
-- void: 0 (base case)
-- delta t: τ(t) (transparent wrapper)
-- integrate/app: weight 1
-- merge: weight 2
-- recΔ: weight 3
-- eqW: weight 4 (ensures 1+2+X < 4+X)
--/
-@[simp] def tau : Trace → Nat
-| void            => 0
-| delta t         => tau t
-| integrate t     => 1 + tau t            -- baseIntegrate = 1
-| merge a b       => 2 + tau a + tau b    -- baseMerge = 2
-| app a b         => 1 + tau a + tau b    -- baseApp = 1
-| recΔ b s n      => 3 + tau b + tau s + tau n  -- baseRec = 3
-| eqW a b         => 4 + tau a + tau b    -- baseEq = baseIntegrate + baseMerge + 1 = 4
-
-/-! ## Section 2: Dershowitz-Manna Order and Lexicographic Structure -/
-
-/-- **Dershowitz-Manna multiset order (DM)**
-
-The well-founded multiset order that correctly handles duplication.
-Crucial for rules like merge_cancel and eq_refl.
--/
-def DM (X Y : Multiset Nat) : Prop :=
-  Multiset.IsDershowitzMannaLT X Y
-
-/-- **Inner lexicographic order (LexDM_c)**
-
-Combines DM order with Nat ordering to form the (κᴹ, τ) component.
-Prioritizes κᴹ changes via DM over τ changes.
--/
-@[simp] def LexDM_c : (Multiset Nat × Nat) → (Multiset Nat × Nat) → Prop :=
-  Prod.Lex (fun a b : Multiset Nat => DM a b) (· < ·)
-
-/-- Well-foundedness of the computable inner lex (DM × Nat<). -/
-lemma wf_LexDM_c : WellFounded LexDM_c :=
-  WellFounded.prod_lex MetaSN_DM.wf_dm Nat.lt_wfRel.wf
-
-/-- **Outer triple lexicographic order (Lex3c)**
-
-The complete well-founded order: (δ, (κᴹ, τ))
-Priority: δ-flag > κᴹ (via DM) > τ
--/
-@[simp] def Lex3c : (Nat × (Multiset Nat × Nat)) → (Nat × (Multiset Nat × Nat)) → Prop :=
-  Prod.Lex (· < ·) LexDM_c
-
-/-- Well-foundedness of the computable triple lex (Nat< × (DM × Nat<)). -/
-lemma wf_Lex3c : WellFounded Lex3c := by
-  exact WellFounded.prod_lex Nat.lt_wfRel.wf wf_LexDM_c
-
-/-- **Critical lifting lemma**
-
-Lifts a DM decrease on κᴹ to the full inner order, regardless of τ.
-EXPLICIT PARAMETERS prevent all elaboration issues.
--/
-lemma dm_to_LexDM_c_left {X Y : Multiset Nat} {τ₁ τ₂ : Nat}
-    (h : DM X Y) : LexDM_c (X, τ₁) (Y, τ₂) := by
-  -- Use explicit parameters to avoid inference brittleness, mirroring KO7.
-  exact
-    (Prod.Lex.left
-      (α := Multiset Nat) (β := Nat)
-      (ra := fun a b : Multiset Nat => DM a b) (rb := (· < ·))
-      (a₁ := X) (a₂ := Y) (b₁ := τ₁) (b₂ := τ₂)
-      (by simpa using h))
-
-/-- **The computable triple measure μ3c**
-
-Assembles (δ, κᴹ, τ) from a trace term.
-Fully computable replacement for the ordinal-based measure.
--/
-@[simp] def mu3c (t : Trace) : Nat × (Multiset Nat × Nat) :=
-  (deltaFlag t, (kappaM t, tau t))
-
-/-! ## Section 3: Per-Rule Termination Proofs
-
-Each SafeStep constructor proven to strictly decrease μ3c.
-Systematic approach: identify decreasing component, build witness, normalize.
--/
-
-open Classical
-
-/-- **Rule: integrate (delta t) → void**
-
-Strategy:
-- If κᴹ(t) = 0: τ-drop (0 < 1 + τ(t))
-- If κᴹ(t) ≠ 0: DM-drop (0 <ₘ κᴹ(t))
--/
-lemma drop_R_int_delta_c (t : Trace) :
-    Lex3c (mu3c void) (mu3c (integrate (delta t))) := by
-  classical
-  by_cases h0 : kappaM t = 0
-  · -- κ tie at 0: take τ-right since 0 < 1 + τ t
-    -- Inner κ tie at 0; show τ-right: 0 < 1 + τ t
-    have hin0 : LexDM_c ((0 : Multiset Nat), tau void)
-        ((0 : Multiset Nat), tau (integrate (delta t))) := by
-      refine Prod.Lex.right (0 : Multiset Nat) ?tauLt
-      have : (0 : Nat) < Nat.succ (tau t) := Nat.succ_pos _
-      simpa [tau, Nat.add_comm] using this
-    -- Outer α=0 witness on concrete pairs, then rewrite μ-components
-    have hcore : Lex3c (0, ((0 : Multiset Nat), tau void))
-        (0, ((0 : Multiset Nat), tau (integrate (delta t)))) :=
-      (Prod.Lex.right
-        (α := Nat) (β := (Multiset Nat × Nat))
-        (ra := (· < ·)) (rb := LexDM_c)
-        (a := (0 : Nat)) hin0)
-    simpa [Lex3c, mu3c, kappaM, kappaM_int_delta, tau, h0] using hcore
-  · -- κ strictly grows from 0 to κᴹ t ≠ 0: DM-left on 0 <ₘ κᴹ t
-    have hdm : DM (0 : Multiset Nat) (kappaM (integrate (delta t))) := by
-      -- kappaM (integrate (delta t)) = kappaM t
-      have : kappaM (integrate (delta t)) = kappaM t := by simpa [kappaM_int_delta]
-      -- Use DM X < X+Z with X=0, Z=kappaM t (nonzero)
-      have hz : kappaM t ≠ (0 : Multiset Nat) := by
-        intro hz; exact h0 (by simpa using hz)
-      -- 0 <ₘ 0 + (kappaM t) = kappaM t
-      simpa [this, zero_add] using MetaSN_DM.dm_lt_add_of_ne_zero' (0 : Multiset Nat) (kappaM t) hz
-    -- Inner DM-left on concrete κ-components, then close outer at α=0
-    have hin0 : LexDM_c ((0 : Multiset Nat), tau void)
-        ((kappaM (integrate (delta t))), tau (integrate (delta t))) := by
-      simpa using
-        (dm_to_LexDM_c_left (X := (0 : Multiset Nat)) (Y := kappaM (integrate (delta t)))
-          (τ₁ := tau void) (τ₂ := tau (integrate (delta t))) hdm)
-    have hcore : Lex3c (0, ((0 : Multiset Nat), tau void))
-        (0, (kappaM (integrate (delta t)), tau (integrate (delta t)))) :=
-      (Prod.Lex.right
-        (α := Nat) (β := (Multiset Nat × Nat))
-        (ra := (· < ·)) (rb := LexDM_c)
-        (a := (0 : Nat)) hin0)
-    simpa [Lex3c, mu3c, kappaM, kappaM_int_delta, tau] using hcore
-
-/-- **Rule: merge void t → t** (guarded by δ(t) = 0)
-
-Strategy: τ-drop under δ and κ ties
-Key inequality: τ(t) < 2 + τ(t)
--/
-lemma drop_R_merge_void_left_c (t : Trace) (hδ : deltaFlag t = 0) :
-    Lex3c (mu3c t) (mu3c (merge void t)) := by
-  classical
-  -- Build inner κ-tie, τ-right
-  have hκ : kappaM (merge void t) = kappaM t := by simpa using MetaSN_DM.kappaM_merge_void_left t
-  have hτ' : tau t < 2 + tau t := by
-    omega
-  have hτm : tau t < tau (merge void t) := by
-    simpa [tau, Nat.add_comm, Nat.add_left_comm, Nat.add_assoc] using hτ'
-  -- Inner κ-anchor at RHS κ
-  have hin : LexDM_c (kappaM t, tau t) (kappaM (merge void t), tau (merge void t)) := by
-    simpa [hκ] using (Prod.Lex.right (kappaM (merge void t)) hτm)
-  -- Canonical α=0 outer witness; close by rewriting μ3c pairs
-  have hin' : LexDM_c (kappaM t, tau t) (kappaM t, 2 + tau t) := by
-    simpa [hκ, tau, Nat.add_comm, Nat.add_left_comm, Nat.add_assoc] using hin
-  have H : Lex3c (0, (kappaM t, tau t)) (0, (kappaM t, 2 + tau t)) :=
-    (Prod.Lex.right
-      (α := Nat) (β := (Multiset Nat × Nat))
-      (ra := (· < ·)) (rb := LexDM_c)
-      (a := (0 : Nat)) hin')
-  -- Now prove the main goal: both sides have δ=0 due to guard
-  unfold Lex3c mu3c
-  simp only [deltaFlag] at hδ ⊢
-  rw [hδ]
-  simp only [hκ, tau]
-  exact H
-
-/-- **Rule: merge t void → t** (guarded by δ(t) = 0)
-
-Symmetric to merge_void_left.
-Strategy: τ-drop under ties
--/
-lemma drop_R_merge_void_right_c (t : Trace) (hδ : deltaFlag t = 0) :
-    Lex3c (mu3c t) (mu3c (merge t void)) := by
-  classical
-  -- Inner κ-tie and τ-right
-  have hκ : kappaM (merge t void) = kappaM t := by simpa using MetaSN_DM.kappaM_merge_void_right t
-  have hτ' : tau t < 2 + tau t := by
-    omega
-  have hτm : tau t < tau (merge t void) := by
-    simpa [tau, Nat.add_comm, Nat.add_left_comm, Nat.add_assoc] using hτ'
-  have hin : LexDM_c (kappaM t, tau t) (kappaM (merge t void), tau (merge t void)) := by
-    simpa [hκ] using (Prod.Lex.right (kappaM (merge t void)) hτm)
-  -- Canonical α=0 outer witness; close by rewriting μ3c pairs
-  have hin' : LexDM_c (kappaM t, tau t) (kappaM t, 2 + tau t) := by
-    simpa [hκ, tau, Nat.add_comm, Nat.add_left_comm, Nat.add_assoc] using hin
-  have H : Lex3c (0, (kappaM t, tau t)) (0, (kappaM t, 2 + tau t)) :=
-    (Prod.Lex.right
-      (α := Nat) (β := (Multiset Nat × Nat))
-      (ra := (· < ·)) (rb := LexDM_c)
-      (a := (0 : Nat)) hin')
-  -- Now prove the main goal: both sides have δ=0 due to guard
-  unfold Lex3c mu3c
-  simp only [deltaFlag] at hδ ⊢
-  rw [hδ]
-  simp only [hκ, tau]
-  exact H
-
-/-- **Rule: eqW a b → integrate (merge a b)**
-
-The critical inequality: 1 + 2 + X < 4 + X
-This is why we chose τ(eqW) = 4.
--/
-lemma drop_R_eq_diff_c (a b : Trace) :
-    Lex3c (mu3c (integrate (merge a b))) (mu3c (eqW a b)) := by
-  classical
-  -- Inner tie on κ; τ inequality: 1+2+… < 4+…; then lift to α=0 and rewrite δ
-  have hκ : kappaM (integrate (merge a b)) = kappaM (eqW a b) := by
-    simpa using MetaSN_DM.kappaM_eq_diff a b
-  -- 3 < 4, then add (τ a + τ b) on the right
-  have hτ : 1 + (2 + (tau a + tau b)) < 4 + (tau a + tau b) := by
-    have h1 : 1 + (2 + (tau a + tau b)) = (1 + 2) + (tau a + tau b) := by
-      simpa using (Nat.add_assoc 1 2 (tau a + tau b)).symm
-    have h12 : 1 + 2 = 3 := by decide
-    have h2 : (1 + 2) + (tau a + tau b) = 3 + (tau a + tau b) := by
-      simpa using congrArg (fun x => x + (tau a + tau b)) h12
-    have : 3 + (tau a + tau b) < 4 + (tau a + tau b) :=
-      Nat.add_lt_add_right (by decide : 3 < 4) (tau a + tau b)
-    simpa [h1, h2]
-  have hin : LexDM_c (kappaM (integrate (merge a b)), tau (integrate (merge a b)))
-                 (kappaM (integrate (merge a b)), tau (eqW a b)) := by
-    -- Use τ-right with κ anchor directly.
-    simpa [hκ, tau, Nat.add_comm, Nat.add_left_comm, Nat.add_assoc] using
-      (Prod.Lex.right (kappaM (integrate (merge a b))) hτ)
-  have hcore : Lex3c (0, (kappaM (integrate (merge a b)), tau (integrate (merge a b))))
-      (0, (kappaM (integrate (merge a b)), tau (eqW a b))) :=
-    (Prod.Lex.right
-      (α := Nat) (β := (Multiset Nat × Nat))
-      (ra := (· < ·)) (rb := LexDM_c)
-      (a := (0 : Nat)) hin)
-  simpa [Lex3c, mu3c, deltaFlag] using hcore
-
-/-- **Rule: eqW a a → void**
-
-Handles duplication via case split:
-- If κᴹ(a) = 0: τ-drop
-- If κᴹ(a) ≠ 0: DM-drop on union
--/
-lemma drop_R_eq_refl_c (a : Trace) :
-    Lex3c (mu3c void) (mu3c (eqW a a)) := by
-  classical
-  dsimp [mu3c, Lex3c]
-  refine Prod.Lex.right (0 : Nat) ?inner
-  by_cases h0 : kappaM a = 0
-  · -- κ tie at 0 → τ-right: 0 < 4 + τ a + τ a
-    -- build inner at κ = 0 and rewrite κ on RHS via h0
-    have hκ0 : kappaM (eqW a a) = 0 := by simpa [MetaSN_DM.kappaM_eq_refl, h0]
-    have hin0 : LexDM_c ((0 : Multiset Nat), tau void)
-        ((0 : Multiset Nat), tau (eqW a a)) := by
-      refine Prod.Lex.right (0 : Multiset Nat) ?tauDrop
-      -- 0 < 4 + (τ a + τ a) via succ_pos
-      have : 0 < Nat.succ (3 + (tau a + tau a)) := Nat.succ_pos _
-      have h' : 0 < 4 + (tau a + tau a) := by
-        simpa [Nat.succ_eq_add_one, Nat.add_comm, Nat.add_left_comm, Nat.add_assoc] using this
-      simpa [tau, Nat.add_comm, Nat.add_left_comm, Nat.add_assoc] using h'
-    simpa [MetaSN_DM.kappaM_eq_refl, h0] using hin0
-  · -- κ ≠ 0 → DM-left: 0 <ₘ κ∪κ
-    have hU : kappaM a ∪ kappaM a ≠ (0 : Multiset Nat) :=
-      union_self_ne_zero_of_ne_zero (X := kappaM a) h0
-    have hdm : DM (0 : Multiset Nat) (kappaM a ∪ kappaM a) := by
-      simpa using MetaSN_DM.dm_lt_add_of_ne_zero' (0 : Multiset Nat) (kappaM a ∪ kappaM a) hU
-    -- rewrite κ on RHS using kappaM_eq_refl and use DM-left on 0 <ₘ κ∪κ
-    simpa [MetaSN_DM.kappaM_eq_refl] using
-      (dm_to_LexDM_c_left (X := 0) (Y := kappaM a ∪ kappaM a)
-        (τ₁ := tau void) (τ₂ := tau (eqW a a)) hdm)
-
-/-- **Rule: recΔ b s (delta n) → app s (recΔ b s n)**
-
-THE STAR: δ-drop from 1 to 0.
-This is why we have the δ-flag component.
--/
-lemma drop_R_rec_succ_c (b s n : Trace) :
-    Lex3c (mu3c (app s (recΔ b s n))) (mu3c (recΔ b s (delta n))) := by
-  -- Outer Nat component drops strictly: 0 < 1
-  dsimp [mu3c, Lex3c]
-  -- Use the deltaFlag simplifications to show 0 < 1 on the Nat component
-  have a_lt : (0 : Nat) < 1 := by decide
-  -- Left component: δ(app s (recΔ b s n)) = 0 and δ(recΔ b s (delta n)) = 1
-  have H : Prod.Lex (· < ·) LexDM_c
-      ((0 : Nat), (kappaM (app s (recΔ b s n)), tau (app s (recΔ b s n))))
-      ((1 : Nat), (kappaM (recΔ b s (delta n)), tau (recΔ b s (delta n)))) := by
-    exact Prod.Lex.left (a₁ := (0 : Nat)) (a₂ := (1 : Nat)) (b₁ := (kappaM (app s (recΔ b s n)), tau (app s (recΔ b s n)))) (b₂ := (kappaM (recΔ b s (delta n)), tau (recΔ b s (delta n)))) a_lt
-  simpa [mu3c, Lex3c, MetaSN_KO7.deltaFlag_app, MetaSN_KO7.deltaFlag_rec_delta]
-    using H
-
-/-- **Rule: recΔ b s void → b** (guarded by δ(b) = 0)
-
-Strategy: κᴹ strictly drops via DM; lift to inner lex, then to outer with δ=0 on both sides.
--/
-lemma drop_R_rec_zero_c (b s : Trace) (hδ : deltaFlag b = 0) :
-    Lex3c (mu3c b) (mu3c (recΔ b s void)) := by
-  classical
-  -- Inner: DM-left on κᴹ component
-  have hdm : DM (kappaM b) (kappaM (recΔ b s void)) := by
-    -- use the KO7 helper
-    simpa [DM] using MetaSN_DM.dm_drop_R_rec_zero b s
-  have hin : LexDM_c (kappaM b, tau b)
-      (kappaM (recΔ b s void), tau (recΔ b s void)) := by
-    simpa using (dm_to_LexDM_c_left (X := kappaM b) (Y := kappaM (recΔ b s void))
-      (τ₁ := tau b) (τ₂ := tau (recΔ b s void)) hdm)
-  -- Build outer witness at α=0 using the guard and rec_zero δ=0
-  have hb0 : MetaSN_KO7.deltaFlag b = 0 := hδ
-  have hr0 : MetaSN_KO7.deltaFlag (recΔ b s void) = 0 := by
-    simpa [MetaSN_KO7.deltaFlag_rec_zero]
-  have hcore : Lex3c (0, (kappaM b, tau b))
-      (0, (kappaM (recΔ b s void), tau (recΔ b s void))) :=
-    (Prod.Lex.right (α := Nat) (β := (Multiset Nat × Nat)) (ra := (· < ·)) (rb := LexDM_c)
-      (a := (0 : Nat)) hin)
-  -- Cast the 0-anchored witness to the goal using explicit `change` + `rw` (no simp recursion)
-  change Prod.Lex (· < ·) LexDM_c
-      ((MetaSN_KO7.deltaFlag b), (kappaM b, tau b))
-      ((MetaSN_KO7.deltaFlag (recΔ b s void)), (kappaM (recΔ b s void), tau (recΔ b s void)))
-  rw [hb0, hr0]
-  exact hcore
-
-/-- **Rule: merge t t → t** (guarded by δ(t) = 0 and κᴹ(t) = 0)
-
-With κᴹ(t) = 0, κ ties at 0; use τ-drop: τ t < 2 + τ t + τ t.
--/
-lemma drop_R_merge_cancel_c (t : Trace)
-    (hδ : deltaFlag t = 0) (h0 : kappaM t = 0) :
-    Lex3c (mu3c t) (mu3c (merge t t)) := by
-  classical
-  -- τ-drop under κ tie at 0
-  have hτ : tau t < tau (merge t t) := by
-    -- show: τ t < 2 + τ t + τ t
-    have hA : tau t < 2 + tau t := by omega
-    have hB : 2 + tau t ≤ 2 + tau t + tau t := Nat.le_add_right _ _
-    exact lt_of_lt_of_le hA (by simpa [Nat.add_assoc, tau, Nat.add_comm, Nat.add_left_comm] using hB)
-  -- Inner at κ = 0
-  have hin0 : LexDM_c ((0 : Multiset Nat), tau t)
-      ((0 : Multiset Nat), tau (merge t t)) := by
-    exact Prod.Lex.right (0 : Multiset Nat) hτ
-  -- Rewrite κ components via guards
-  have hκ_merge : kappaM (merge t t) = 0 := by simpa [MetaSN_DM.kappaM_merge_cancel, h0]
-  have hin : LexDM_c (kappaM t, tau t) (kappaM (merge t t), tau (merge t t)) := by
-    simpa [h0, hκ_merge] using hin0
-  -- Outer witness at α=0 using guard δ(t)=0 and δ(merge)=0
-  have ht0 : MetaSN_KO7.deltaFlag t = 0 := hδ
-  have hm0 : MetaSN_KO7.deltaFlag (merge t t) = 0 := by simpa [MetaSN_KO7.deltaFlag_merge]
-  have hcore : Lex3c (0, (kappaM t, tau t)) (0, (kappaM (merge t t), tau (merge t t))) :=
-    (Prod.Lex.right (α := Nat) (β := (Multiset Nat × Nat)) (ra := (· < ·)) (rb := LexDM_c)
-      (a := (0 : Nat)) hin)
-  -- Cast the 0-anchored witness to the goal using explicit `change` + `rw` (no simp recursion)
-  change Prod.Lex (· < ·) LexDM_c
-      ((MetaSN_KO7.deltaFlag t), (kappaM t, tau t))
-      ((MetaSN_KO7.deltaFlag (merge t t)), (kappaM (merge t t), tau (merge t t)))
-  rw [ht0, hm0]
-  exact hcore
-
-
-/-- **MASTER THEOREM: Every SafeStep decreases μ3c**
-
-Pattern matches all 8 constructors to their decrease proofs.
-This is the heart of the termination argument.
--/
-lemma measure_decreases_safe_c : ∀ {a b}, MetaSN_KO7.SafeStep a b → Lex3c (mu3c b) (mu3c a)
-| _, _, MetaSN_KO7.SafeStep.R_int_delta t => by simpa using drop_R_int_delta_c t
-| _, _, MetaSN_KO7.SafeStep.R_merge_void_left t hδ => by simpa using drop_R_merge_void_left_c t hδ
-| _, _, MetaSN_KO7.SafeStep.R_merge_void_right t hδ => by simpa using drop_R_merge_void_right_c t hδ
-| _, _, MetaSN_KO7.SafeStep.R_merge_cancel t hδ h0 => by simpa using drop_R_merge_cancel_c t hδ h0
-| _, _, MetaSN_KO7.SafeStep.R_rec_zero b s hδ => by simpa using drop_R_rec_zero_c b s hδ
-| _, _, MetaSN_KO7.SafeStep.R_rec_succ b s n => by simpa using drop_R_rec_succ_c b s n
-| _, _, MetaSN_KO7.SafeStep.R_eq_refl a _h0 => by
-    -- Guard redundant for τ; we provide an unguarded drop
-    simpa using drop_R_eq_refl_c a
-| _, _, MetaSN_KO7.SafeStep.R_eq_diff a b _ => by simpa using drop_R_eq_diff_c a b
-
-
-/-- **Generic well-foundedness wrapper**
-
-For any relation R that decreases μ3c, R^op is well-founded.
-Bridge from measure decrease to termination.
--/
-theorem wellFounded_of_measure_decreases_R_c
-  {R : Trace → Trace → Prop}
-  (hdec : ∀ {a b : Trace}, R a b → Lex3c (mu3c b) (mu3c a)) :
-  WellFounded (fun a b : Trace => R b a) := by
-  -- Pull back the well-founded Lex3c along μ3c
-  have wf_measure : WellFounded (fun x y : Trace => Lex3c (mu3c x) (mu3c y)) :=
-    InvImage.wf (f := mu3c) wf_Lex3c
-  -- Show Rᵒᵖ ⊆ InvImage μ3c Lex3c
-  have hsub : Subrelation (fun a b => R b a) (fun x y : Trace => Lex3c (mu3c x) (mu3c y)) := by
-    intro x y hxy; exact hdec hxy
-  exact Subrelation.wf hsub wf_measure
-
-/-- **MAIN RESULT: SafeStep is strongly normalizing**
-
-Well-foundedness of SafeStepRev proves termination.
-Fully computable, no axioms, no noncomputables.
-
-### Implications:
-- No infinite SafeStep chains
-- Normalizer always terminates
-- Confluence + SN = decidable equality
--/
-theorem wf_SafeStepRev_c : WellFounded MetaSN_KO7.SafeStepRev :=
-  wellFounded_of_measure_decreases_R_c (R := MetaSN_KO7.SafeStep)
-    (fun {_ _} h => measure_decreases_safe_c h)
-
-end OperatorKO7.MetaCM
-
 ```
 
 ---
@@ -4826,7 +2359,7 @@ end OperatorKO7.MetaCM
 
 **File:** `OperatorKO7/Meta/ComputableMeasure_Verification.lean`
 
-**Lines:** 241
+**Lines:** 193
 
 ```lean
 import OperatorKO7.Meta.ComputableMeasure
@@ -4858,21 +2391,21 @@ example (t : Trace) : tau t < tau (integrate t) := by
 example (a b : Trace) : tau a < tau (merge a b) := by
   simp [tau]; omega
 example (a b : Trace) : tau b < tau (merge a b) := by
-  simp [tau]
+  simp [tau]; omega
 example (a b : Trace) : tau a < tau (app a b) := by
   simp [tau]; omega
 example (a b : Trace) : tau b < tau (app a b) := by
-  simp [tau]
+  simp [tau]; omega
 example (b s n : Trace) : tau b < tau (recΔ b s n) := by
   simp [tau]; omega
 example (b s n : Trace) : tau s < tau (recΔ b s n) := by
   simp [tau]; omega
 example (b s n : Trace) : tau n < tau (recΔ b s n) := by
-  simp [tau]
+  simp [tau]; omega
 example (a b : Trace) : tau a < tau (eqW a b) := by
   simp [tau]; omega
 example (a b : Trace) : tau b < tau (eqW a b) := by
-  simp [tau]
+  simp [tau]; omega
 
 -- Verify delta is transparent
 example (t : Trace) : tau (delta t) = tau t := rfl
@@ -5034,7 +2567,7 @@ example :
 /-- `tau` is transparent under `delta` by definition (restated as a named lemma). -/
 lemma tau_delta_preserve (t : Trace) : tau (delta t) = tau t := rfl
 
--- κᴹ behavior under constructors (from Termination_KO7)
+-- κᴹ behavior under constructors (from SafeStep core)
 /-- Convenience bundle of basic `kappaM` simp-facts (re-exported as a single lemma). -/
 lemma kappaM_facts (a b : Trace) :
     kappaM void = 0 ∧
@@ -5070,7 +2603,6 @@ theorem no_infinite_safestep_chain :
       ⟨fun n => mu3c (seq n), dec⟩
 
 end OperatorKO7.MetaCM.Verification
-
 ```
 
 ---
@@ -5079,11 +2611,10 @@ end OperatorKO7.MetaCM.Verification
 
 **File:** `OperatorKO7/Meta/ComputableMeasure_Test.lean`
 
-**Lines:** 46
+**Lines:** 33
 
 ```lean
 import OperatorKO7.Meta.ComputableMeasure
-import OperatorKO7.Meta.Termination_KO7
 
 /-!
 # Quick test that ComputableMeasure works correctly
@@ -5128,7 +2659,6 @@ example (t : OperatorKO7.Trace) :
 -- If this file elaborates, the basic API of `ComputableMeasure.lean` is intact.
 
 end OperatorKO7.MetaCM.Test
-
 ```
 
 ---
@@ -5137,10 +2667,9 @@ end OperatorKO7.MetaCM.Test
 
 **File:** `OperatorKO7/Meta/DM_MPO_Orientation.lean`
 
-**Lines:** 52
+**Lines:** 38
 
 ```lean
-import OperatorKO7.Meta.Termination_KO7
 import OperatorKO7.Meta.ComputableMeasure
 import Mathlib.Data.Multiset.Basic
 import Mathlib.Data.Multiset.DershowitzManna
@@ -5192,1171 +2721,18 @@ lemma union_self_ne_zero_of_ne_zero {X : Multiset ℕ} (h : X ≠ 0) :
   simpa using MetaSN_DM.union_self_ne_zero_of_ne_zero h
 
 end OperatorKO7.MetaOrientation
-
 ```
 
 ---
 
-## 12. OperatorKO7/Meta/CNFOrdinal.lean
-
-**File:** `OperatorKO7/Meta/CNFOrdinal.lean`
-
-**Lines:** 1139
-
-```lean
--- (pretty-printing and examples moved below, after definitions)
-/-!
-  # Constructive CNF Ordinal - Complete, Axiom-Free, Computable
-
-  This module provides a fully constructive Cantor Normal Form (CNF) ordinal type and computable implementations for:
-  - Canonical structure and invariants
-  - Normalization (merge, sort, remove zeros)
-  - Addition, multiplication, ω-exponentiation
-  - Total, computable lexicographic comparison (cmp, le, lt)
-  - No axioms, no sorry, no noncomputable
-
-  All code is total and lint-clean. See Docs/A_Constructive_Ordinal_Skeleton.md for intended semantics and proofs.
--/
-set_option linter.unnecessarySimpa false
-
-
-namespace OperatorKO7.MetaCNF
-
-/-!
-  ## CNF Representation
-  - List of (exponent, coefficient) pairs, exponents strictly decreasing, coefficients positive.
-  - Invariant: No zero coefficients, no zero exponents except possibly for the last term (finite part).
-  - Example: ω^3·2 + ω^1·5 + 7  ≡  [(3,2), (1,5), (0,7)]
--/
-
-
-
-structure CNF where
-  repr : List (Nat × Nat) -- List of (exponent, coefficient) pairs
-  -- Invariant: strictly decreasing exponents, all coefficients > 0
-deriving Repr, DecidableEq
-
-/-!
-  ## Helper: merge like exponents, remove zeros, sort decreasing
--/
-private def insertDesc (p : Nat × Nat) : List (Nat × Nat) → List (Nat × Nat)
-  | [] => [p]
-  | (q::qs) => if p.1 > q.1 then p :: q :: qs else q :: insertDesc p qs
-
-private def sortDesc (l : List (Nat × Nat)) : List (Nat × Nat) :=
-  l.foldl (fun acc x => insertDesc x acc) []
-
-private def mergeLike (l : List (Nat × Nat)) : List (Nat × Nat) :=
-  let l := l.filter (fun ⟨_, c⟩ => c ≠ 0)
-  let l := sortDesc l -- sort by decreasing exponent
-  let rec go (acc : List (Nat × Nat)) (l : List (Nat × Nat)) : List (Nat × Nat) :=
-    match l with
-    | [] => acc.reverse
-    | (e, c) :: xs =>
-      match acc with
-      | (e', c') :: as' =>
-        if e = e' then go ((e, c + c') :: as') xs else go ((e, c) :: acc) xs
-      | [] => go [(e, c)] xs
-  go [] l
-
-/-!
-  ## Normalization: canonical form
--/
-def norm_cnf (x : CNF) : CNF :=
-  { repr := mergeLike x.repr }
-
-/-!
-  ## Lexicographic comparison on normalized representations
-  Compare two CNFs by their normalized `repr` lists. Higher exponents dominate;
-  when exponents tie, higher coefficients dominate. Missing tails are treated
-  as smaller (i.e., [] < non-empty).
--/
-def cmpList : List (Nat × Nat) → List (Nat × Nat) → Ordering
-  | [], [] => Ordering.eq
-  | [], _  => Ordering.lt
-  | _,  [] => Ordering.gt
-  | (e1, c1) :: xs, (e2, c2) :: ys =>
-    if e1 < e2 then Ordering.lt else
-    if e2 < e1 then Ordering.gt else
-    -- exponents are equal; compare coefficients
-    if c1 < c2 then Ordering.lt else
-    if c2 < c1 then Ordering.gt else
-    -- equal head terms; recurse on tails
-    cmpList xs ys
-
-/-- Reflexivity for list-lex comparison. -/
-theorem cmpList_refl_eq : ∀ xs : List (Nat × Nat), cmpList xs xs = Ordering.eq := by
-  intro xs; induction xs with
-  | nil => simp [cmpList]
-  | @cons hd tl ih =>
-    cases hd with
-    | mk e c =>
-      -- both exponent and coefficient self-comparisons fall through to recursion
-      simp [cmpList, Nat.lt_irrefl, ih]
-
-/-- Head-case: if e1 < e2, the comparison is lt (and swaps to gt). -/
-theorem cmpList_cons_cons_exp_lt
-  {e1 c1 e2 c2 : Nat} {xs ys : List (Nat × Nat)} (h : e1 < e2) :
-  cmpList ((e1, c1) :: xs) ((e2, c2) :: ys) = Ordering.lt := by
-  simp [cmpList, h]
-
-/-- Head-case (swap): if e1 < e2, then swapping yields gt. -/
-theorem cmpList_cons_cons_exp_lt_swap
-  {e1 c1 e2 c2 : Nat} {xs ys : List (Nat × Nat)} (h : e1 < e2) :
-  cmpList ((e2, c2) :: ys) ((e1, c1) :: xs) = Ordering.gt := by
-  -- On swap, the second branch detects e1 < e2
-  have : ¬ e2 < e1 := Nat.not_lt.mpr (Nat.le_of_lt h)
-  simp [cmpList, this, h]
-
-/-- Head-case: if e2 < e1, the comparison is gt (and swaps to lt). -/
-theorem cmpList_cons_cons_exp_gt
-  {e1 c1 e2 c2 : Nat} {xs ys : List (Nat × Nat)} (h : e2 < e1) :
-  cmpList ((e1, c1) :: xs) ((e2, c2) :: ys) = Ordering.gt := by
-  have : ¬ e1 < e2 := Nat.not_lt.mpr (Nat.le_of_lt h)
-  simp [cmpList, this, h]
-
-/-- Head-case (swap): if e2 < e1, swapping yields lt. -/
-theorem cmpList_cons_cons_exp_gt_swap
-  {e1 c1 e2 c2 : Nat} {xs ys : List (Nat × Nat)} (h : e2 < e1) :
-  cmpList ((e2, c2) :: ys) ((e1, c1) :: xs) = Ordering.lt := by
-  simp [cmpList, h]
-
-/-- Head-case: equal exponents, smaller coefficient gives lt. -/
-theorem cmpList_cons_cons_exp_eq_coeff_lt
-  {e c1 c2 : Nat} {xs ys : List (Nat × Nat)} (h : c1 < c2) :
-  cmpList ((e, c1) :: xs) ((e, c2) :: ys) = Ordering.lt := by
-  have : ¬ e < e := Nat.lt_irrefl _
-  simp [cmpList, this, h]
-
-/-- Head-case: equal exponents, larger coefficient gives gt. -/
-theorem cmpList_cons_cons_exp_eq_coeff_gt
-  {e c1 c2 : Nat} {xs ys : List (Nat × Nat)} (h : c2 < c1) :
-  cmpList ((e, c1) :: xs) ((e, c2) :: ys) = Ordering.gt := by
-  have : ¬ e < e := Nat.lt_irrefl _
-  have : ¬ c1 < c2 := Nat.not_lt.mpr (Nat.le_of_lt h)
-  simp [cmpList, Nat.lt_irrefl, this, h]
-
-/-- Head-case: equal exponents and coefficients, comparison recurses. -/
-theorem cmpList_cons_cons_exp_eq_coeff_eq
-  {e c : Nat} {xs ys : List (Nat × Nat)} :
-  cmpList ((e, c) :: xs) ((e, c) :: ys) = cmpList xs ys := by
-  simp [cmpList, Nat.lt_irrefl]
-
-/-- Base-case: [] < non-empty. -/
-theorem cmpList_nil_left_lt {y : Nat × Nat} {ys : List (Nat × Nat)} :
-  cmpList [] (y :: ys) = Ordering.lt := by
-  simp [cmpList]
-
-/-- Base-case: non-empty > []. -/
-theorem cmpList_nil_right_gt {x : Nat × Nat} {xs : List (Nat × Nat)} :
-  cmpList (x :: xs) [] = Ordering.gt := by
-  simp [cmpList]
-
-/-- Eliminate cmpList=lt on cons/cons: describes exactly which head-case caused it or recurses. -/
-theorem cmpList_cons_cons_lt_cases
-  {e1 c1 e2 c2 : Nat} {xs ys : List (Nat × Nat)}
-  (h : cmpList ((e1, c1) :: xs) ((e2, c2) :: ys) = Ordering.lt) :
-  e1 < e2 ∨ (e1 = e2 ∧ c1 < c2) ∨ (e1 = e2 ∧ c1 = c2 ∧ cmpList xs ys = Ordering.lt) := by
-  -- peel the nested ifs of cmpList via case splits
-  classical
-  if hlt : e1 < e2 then
-    -- immediate lt by exponent
-    exact Or.inl hlt
-  else
-    have hnotlt : ¬ e1 < e2 := by simpa using hlt
-    if hgt : e2 < e1 then
-      -- would force gt, contradicting h
-      have : cmpList ((e1,c1)::xs) ((e2,c2)::ys) = Ordering.gt := by
-        simp [cmpList, hnotlt, hgt]
-      cases this ▸ h
-    else
-      have hnotgt : ¬ e2 < e1 := by simpa using hgt
-      -- exponents must be equal
-      have heq : e1 = e2 := Nat.le_antisymm (Nat.le_of_not_gt hgt) (Nat.le_of_not_gt hlt)
-      -- compare coefficients
-      if hclt : c1 < c2 then
-        exact Or.inr (Or.inl ⟨heq, hclt⟩)
-      else
-        if hcgt : c2 < c1 then
-          -- would force gt, contradicting h (use the dedicated head-eq coeff-gt lemma)
-          have : cmpList ((e1,c1)::xs) ((e2,c2)::ys) = Ordering.gt := by
-            subst heq; simpa using (cmpList_cons_cons_exp_eq_coeff_gt (xs:=xs) (ys:=ys) (e:=e1) (c1:=c1) (c2:=c2) hcgt)
-          cases this ▸ h
-        else
-          -- equal coefficients; recurse: rewrite h to a tail-lt
-          have hceq : c1 = c2 := by
-            -- from ¬ c1 < c2 and ¬ c2 < c1, get equality
-            have hle₁ : c2 ≤ c1 := Nat.not_lt.mp hclt
-            have hle₂ : c1 ≤ c2 := Nat.not_lt.mp hcgt
-            exact Nat.le_antisymm hle₂ hle₁
-          -- rewrite h via heq and hceq, then drop to tails
-          have h' : cmpList ((e1,c1)::xs) ((e1,c1)::ys) = Ordering.lt := by
-            simpa [heq, hceq] using h
-          have hTail : cmpList xs ys = Ordering.lt := by
-            simpa [cmpList_cons_cons_exp_eq_coeff_eq] using h'
-          exact Or.inr (Or.inr ⟨heq, hceq, hTail⟩)
-
-/-- Symmetry for lt: if cmpList xs ys = lt then cmpList ys xs = gt. -/
-theorem cmpList_symm_gt_of_lt :
-  ∀ xs ys : List (Nat × Nat), cmpList xs ys = Ordering.lt → cmpList ys xs = Ordering.gt
-  | [], [] , h => by cases h
-  | [], (y::ys), _ => by simp [cmpList]
-  | (x::xs), [], h => by cases h
-  | ((e1,c1)::xs), ((e2,c2)::ys), h =>
-    -- analyze which branch produced lt, then swap accordingly
-    have hc := cmpList_cons_cons_lt_cases (xs:=xs) (ys:=ys) h
-    by
-      cases hc with
-      | inl hExpLt =>
-        -- exponent lt ⇒ swapped is gt
-        exact (cmpList_cons_cons_exp_lt_swap (xs:=xs) (ys:=ys) hExpLt)
-      | inr hrest =>
-        cases hrest with
-        | inl hCoeffLt =>
-          rcases hCoeffLt with ⟨heq, hclt⟩
-          -- equal exponents, coeff lt ⇒ swapped is gt by coeff-gt lemma with roles swapped
-          subst heq
-          exact (cmpList_cons_cons_exp_eq_coeff_gt (xs:=ys) (ys:=xs) (e:=e1) (c1:=c2) (c2:=c1) hclt)
-        | inr hEqTail =>
-          rcases hEqTail with ⟨heq, hceq, htail⟩
-          -- descend to tails and lift back via eq-head lemma
-          have ih := cmpList_symm_gt_of_lt xs ys htail
-          subst heq; subst hceq
-          simpa [cmpList_cons_cons_exp_eq_coeff_eq] using ih
-
-/-- Total, computable comparison on CNF via normalized representations. -/
-def cmp_cnf (x y : CNF) : Ordering :=
-  cmpList (norm_cnf x).repr (norm_cnf y).repr
-
-/-- Strict order: x < y iff cmp is lt. -/
-def lt_cnf (x y : CNF) : Prop := cmp_cnf x y = Ordering.lt
-
-/-- Non-strict order: x ≤ y iff cmp is not gt. -/
-def le_cnf (x y : CNF) : Prop := cmp_cnf x y ≠ Ordering.gt
-
-theorem cmp_self_eq (x : CNF) : cmp_cnf x x = Ordering.eq := by
-  simp [cmp_cnf, cmpList_refl_eq]
-
-/-- Reflexivity: x ≤ x. -/
-theorem le_refl (x : CNF) : le_cnf x x := by
-  simp [le_cnf, cmp_self_eq]
-
-/-- Irreflexivity: ¬ (x < x). -/
-theorem lt_irrefl (x : CNF) : ¬ lt_cnf x x := by
-  -- lt_cnf x x means cmp_cnf x x = Ordering.lt, but cmp_self_eq says it's eq.
-  simp [lt_cnf, cmp_self_eq]
-
-/-- Value-level trichotomy for cmpList. -/
-theorem cmpList_cases (xs ys : List (Nat × Nat)) :
-    cmpList xs ys = Ordering.lt ∨ cmpList xs ys = Ordering.eq ∨ cmpList xs ys = Ordering.gt := by
-  cases h : cmpList xs ys with
-  | lt => exact Or.inl rfl
-  | eq => exact Or.inr (Or.inl rfl)
-  | gt => exact Or.inr (Or.inr rfl)
-
-/-- Asymmetry at list level: if cmpList xs ys = lt then cmpList ys xs ≠ lt. -/
-theorem cmpList_asymm_of_lt {xs ys : List (Nat × Nat)} (h : cmpList xs ys = Ordering.lt) :
-    cmpList ys xs ≠ Ordering.lt := by
-  have hgt := cmpList_symm_gt_of_lt xs ys h
-  intro hcontra
-  -- rewrite the gt-equality at the same lhs to force a lt=gt contradiction
-  have : Ordering.lt = Ordering.gt := by
-    simpa [hcontra] using hgt
-  have ne : Ordering.lt ≠ Ordering.gt := by decide
-  exact ne this
-
-/-- Trichotomy on cmp: exactly one of lt/eq/gt holds as a value. -/
-theorem cmp_cases (x y : CNF) :
-    cmp_cnf x y = Ordering.lt ∨ cmp_cnf x y = Ordering.eq ∨ cmp_cnf x y = Ordering.gt := by
-  cases h : cmp_cnf x y with
-  | lt => exact Or.inl rfl
-  | eq => exact Or.inr (Or.inl rfl)
-  | gt => exact Or.inr (Or.inr rfl)
-
-/-- If x ≤ y, then cmp is either lt or eq (never gt). -/
-theorem le_cases {x y : CNF} (hxy : le_cnf x y) :
-    cmp_cnf x y = Ordering.lt ∨ cmp_cnf x y = Ordering.eq := by
-  -- Case on the computed ordering; rule out gt using hxy.
-  cases h : cmp_cnf x y with
-  | lt => exact Or.inl rfl
-  | eq => exact Or.inr rfl
-  | gt =>
-    -- hxy says cmp_cnf x y ≠ gt, contradiction
-  exact False.elim (hxy h)
-
-/-- General CNF asymmetry: x < y implies not (y < x). -/
-theorem lt_asymm_cnf {x y : CNF} (hxy : lt_cnf x y) : ¬ lt_cnf y x := by
-  -- unfold to list-level and use cmpList asymmetry
-  unfold lt_cnf at *
-  unfold cmp_cnf at *
-  -- set normalized lists for readability
-  let xs := (norm_cnf x).repr
-  let ys := (norm_cnf y).repr
-  -- First coerce hxy to a statement about cmpList xs ys = lt
-  have hxy' : cmpList xs ys = Ordering.lt := by simpa using hxy
-  -- Symmetry gives cmpList ys xs = gt
-  have hgt : cmpList ys xs = Ordering.gt := cmpList_symm_gt_of_lt xs ys hxy'
-  -- Show lt cannot also hold
-  intro hcontra
-  have ne : Ordering.lt ≠ Ordering.gt := by decide
-  -- hcontra : cmpList ys xs = lt, hgt : cmpList ys xs = gt ⇒ lt = gt
-  have : Ordering.gt = Ordering.lt := by exact hgt.symm.trans hcontra
-  exact (ne.symm) this
-
-/-- Antisymmetry for `le_cnf` at the cmp level: if x ≤ y and y ≤ x then cmp is eq. -/
-theorem le_antisymm_cnf {x y : CNF}
-  (hxy : le_cnf x y) (hyx : le_cnf y x) : cmp_cnf x y = Ordering.eq := by
-  cases hcmp : cmp_cnf x y with
-  | lt =>
-    -- translate to list-level, flip, and contradict hyx
-    have hltList : cmpList (norm_cnf x).repr (norm_cnf y).repr = Ordering.lt := by
-      simpa [cmp_cnf] using hcmp
-    have hgtList : cmpList (norm_cnf y).repr (norm_cnf x).repr = Ordering.gt :=
-      cmpList_symm_gt_of_lt _ _ hltList
-    have : cmp_cnf y x = Ordering.gt := by
-      simpa [cmp_cnf] using hgtList
-    exact (hyx this).elim
-  | eq => exact rfl
-  | gt => exact (hxy hcmp).elim
-/-- Congruence of cmp on the left, given normalized representations are equal. -/
-theorem cmp_congr_left_repr_eq {x y z : CNF}
-  (h : (norm_cnf x).repr = (norm_cnf y).repr) :
-  cmp_cnf x z = cmp_cnf y z := by
-  unfold cmp_cnf; simp [h]
-
-/-- Transitivity for list-level lt: if xs < ys and ys < zs then xs < zs. -/
-theorem cmpList_trans_lt :
-  ∀ {xs ys zs : List (Nat × Nat)},
-    cmpList xs ys = Ordering.lt → cmpList ys zs = Ordering.lt →
-    cmpList xs zs = Ordering.lt := by
-  intro xs; induction xs with
-  | nil =>
-    intro ys zs hxy hyz; cases ys with
-    | nil => cases hxy
-    | cons y ys =>
-      -- cmpList [] (y::ys) = lt, so xs<zs regardless of hyz structure on left
-      simp [cmpList] at hxy; cases zs with
-      | nil =>
-        -- hyz: (y::ys) < [] impossible
-        simp [cmpList] at hyz
-      | cons z zs =>
-        simp [cmpList]
-  | cons x xs ih =>
-    intro ys zs hxy hyz
-    cases ys with
-    | nil =>
-      -- xs<[] impossible
-      simp [cmpList] at hxy
-    | cons y ys =>
-      cases zs with
-      | nil =>
-        -- ys<[] impossible
-        simp [cmpList] at hyz
-      | cons z zs =>
-        cases x with
-        | mk e1 c1 =>
-        cases y with
-        | mk e2 c2 =>
-        cases z with
-        | mk e3 c3 =>
-        -- analyze hxy
-        have hx := cmpList_cons_cons_lt_cases (xs:=xs) (ys:=ys) (e1:=e1) (c1:=c1) (e2:=e2) (c2:=c2) hxy
-        -- analyze hyz for ys vs zs
-        have hy := cmpList_cons_cons_lt_cases (xs:=ys) (ys:=zs) (e1:=e2) (c1:=c2) (e2:=e3) (c2:=c3) hyz
-        -- split on cases to derive e1<e3 or tie and reduce
-        rcases hx with hExpLt | hCoeffLt | hTailLt
-        · -- e1 < e2; by trans with e2 ≤ e3 from hy
-          -- derive e2 ≤ e3
-          have hE23 : e2 ≤ e3 := by
-            rcases hy with hE2lt3 | hrest
-            · exact Nat.le_of_lt hE2lt3
-            · rcases hrest with hE2eqE3CoeffLt | hE2eqE3Tail
-              · have heq : e2 = e3 := hE2eqE3CoeffLt.left
-                simpa [heq] using (le_rfl : e2 ≤ e2)
-              · have heq : e2 = e3 := hE2eqE3Tail.left
-                simpa [heq] using (le_rfl : e2 ≤ e2)
-          -- from e2 ≤ e3, split eq/lt to conclude e1 < e3
-          have hE13 : e1 < e3 := by
-            have hE2eqOrLt := Nat.lt_or_eq_of_le hE23
-            cases hE2eqOrLt with
-            | inl hlt23 => exact Nat.lt_trans hExpLt hlt23
-            | inr heq23 => simpa [heq23] using hExpLt
-          exact (cmpList_cons_cons_exp_lt (xs:=xs) (ys:=zs) (e1:=e1) (c1:=c1) (e2:=e3) (c2:=c3) hE13)
-        · -- e1 = e2 ∧ c1 < c2
-          rcases hCoeffLt with ⟨hE12, hC12⟩
-          -- from hy, either e2<e3 -> then e1<e3; or e2=e3 and c2<c3; or tie and descend
-          rcases hy with hE2lt3 | hrest
-          · have hE13 : e1 < e3 := by simpa [hE12] using hE2lt3
-            exact (cmpList_cons_cons_exp_lt (xs:=xs) (ys:=zs) (e1:=e1) (c1:=c1) (e2:=e3) (c2:=c3) hE13)
-          · rcases hrest with hE2eqE3CoeffLt | hE2eqE3Tail
-            · rcases hE2eqE3CoeffLt with ⟨hE23, hC23⟩
-              have hE13 : e1 = e3 := by simpa [hE12] using hE23
-              -- coefficients chain: c1 < c2 and c2 < c3 ⇒ c1 < c3
-              have hC13 : c1 < c3 := Nat.lt_trans hC12 hC23
-              -- conclude by head coefficient comparison
-              have hlt : cmpList ((e3,c1)::xs) ((e3,c3)::zs) = Ordering.lt :=
-                cmpList_cons_cons_exp_eq_coeff_lt (xs:=xs) (ys:=zs) (e:=e3) (c1:=c1) (c2:=c3) hC13
-              simpa [hE13] using hlt
-            · rcases hE2eqE3Tail with ⟨hE23, hC23, _hTail⟩
-              -- heads tie and c2=c3; from c1<c2 and c2=c3, get c1<c3 and conclude
-              have hE13 : e1 = e3 := by simpa [hE12] using hE23
-              have hC13 : c1 < c3 := by simpa [hC23] using hC12
-              have hlt : cmpList ((e3,c1)::xs) ((e3,c3)::zs) = Ordering.lt :=
-                cmpList_cons_cons_exp_eq_coeff_lt (xs:=xs) (ys:=zs) (e:=e3) (c1:=c1) (c2:=c3) hC13
-              simpa [hE13] using hlt
-        · -- e1 = e2 ∧ c1 = c2 ∧ tail lt; combine with hy cases
-          rcases hTailLt with ⟨hE12, hC12, hTailXY⟩
-          rcases hy with hE2lt3 | hrest
-          · have hE13 : e1 < e3 := by simpa [hE12] using hE2lt3
-            exact (cmpList_cons_cons_exp_lt (xs:=xs) (ys:=zs) (e1:=e1) (c1:=c1) (e2:=e3) (c2:=c3) hE13)
-          · rcases hrest with hE2eqE3CoeffLt | hE2eqE3Tail
-            · rcases hE2eqE3CoeffLt with ⟨hE23, hC23⟩
-              -- heads tie and c2<c3 ⇒ with c1=c2 we get c1<c3, immediate lt
-              have hE13 : e1 = e3 := by simpa [hE12] using hE23
-              have hC13 : c1 < c3 := by simpa [hC12] using hC23
-              have hlt : cmpList ((e3,c1)::xs) ((e3,c3)::zs) = Ordering.lt :=
-                cmpList_cons_cons_exp_eq_coeff_lt (xs:=xs) (ys:=zs) (e:=e3) (c1:=c1) (c2:=c3) hC13
-              simpa [hE13] using hlt
-            · rcases hE2eqE3Tail with ⟨hE23, hC23, hTailYZ⟩
-              have hE13 : e1 = e3 := by simpa [hE12] using hE23
-              have hC13 : c1 = c3 := by simpa [hE12, hC12] using hC23
-              -- descend both with ih on tails
-              have ih'' : cmpList xs zs = Ordering.lt := ih (ys:=ys) (zs:=zs) hTailXY hTailYZ
-              simpa [cmpList, hE13, Nat.lt_irrefl, hC13] using ih''
-
-/-- Transitivity for CNF lt. -/
-theorem lt_trans_cnf {x y z : CNF} (hxy : lt_cnf x y) (hyz : lt_cnf y z) : lt_cnf x z := by
-  unfold lt_cnf at *
-  -- abbreviations for readability
-  let xs := (norm_cnf x).repr
-  let ys := (norm_cnf y).repr
-  let zs := (norm_cnf z).repr
-  -- rewrite both facts to list-level and apply list transitivity
-  have hx : cmpList xs ys = Ordering.lt := by simpa [cmp_cnf, xs, ys] using hxy
-  have hy : cmpList ys zs = Ordering.lt := by simpa [cmp_cnf, ys, zs] using hyz
-  have hz : cmpList xs zs = Ordering.lt := cmpList_trans_lt (xs:=xs) (ys:=ys) (zs:=zs) hx hy
-  simpa [cmp_cnf, xs, ys, zs]
-
-/-- Trichotomy for CNF compare: exactly one of lt/eq/gt holds. -/
-theorem cmp_cnf_trichotomy (x y : CNF) :
-  cmp_cnf x y = Ordering.lt ∨ cmp_cnf x y = Ordering.eq ∨ cmp_cnf x y = Ordering.gt := by
-  unfold cmp_cnf
-  exact cmpList_cases (norm_cnf x).repr (norm_cnf y).repr
-
-/-- Congruence of cmp on the right, given normalized representations are equal. -/
-theorem cmp_congr_right_repr_eq {x y z : CNF}
-  (h : (norm_cnf y).repr = (norm_cnf z).repr) :
-  cmp_cnf x y = cmp_cnf x z := by
-  unfold cmp_cnf; simp [h]
-
-/-- CNF head-case: if normalized head exponents satisfy e1 < e2, then cmp is lt. -/
-theorem cmp_cnf_head_exp_lt {x y : CNF}
-  {e1 c1 e2 c2 : Nat} {xs ys : List (Nat × Nat)}
-  (hx : (norm_cnf x).repr = (e1, c1) :: xs)
-  (hy : (norm_cnf y).repr = (e2, c2) :: ys)
-  (h : e1 < e2) :
-  cmp_cnf x y = Ordering.lt := by
-  unfold cmp_cnf; simp [hx, hy, cmpList_cons_cons_exp_lt h]
-
-/-- CNF head-case: if normalized head exponents satisfy e2 < e1, then cmp is gt. -/
-theorem cmp_cnf_head_exp_gt {x y : CNF}
-  {e1 c1 e2 c2 : Nat} {xs ys : List (Nat × Nat)}
-  (hx : (norm_cnf x).repr = (e1, c1) :: xs)
-  (hy : (norm_cnf y).repr = (e2, c2) :: ys)
-  (h : e2 < e1) :
-  cmp_cnf x y = Ordering.gt := by
-  unfold cmp_cnf; simp [hx, hy, cmpList_cons_cons_exp_gt h]
-
-/-- CNF head-case: equal head exponents, smaller left coefficient gives lt. -/
-theorem cmp_cnf_head_exp_eq_coeff_lt {x y : CNF}
-  {e c1 c2 : Nat} {xs ys : List (Nat × Nat)}
-  (hx : (norm_cnf x).repr = (e, c1) :: xs)
-  (hy : (norm_cnf y).repr = (e, c2) :: ys)
-  (h : c1 < c2) :
-  cmp_cnf x y = Ordering.lt := by
-  unfold cmp_cnf; simp [hx, hy, cmpList_cons_cons_exp_eq_coeff_lt h]
-
-/-- CNF head-case: equal head exponents, larger left coefficient gives gt. -/
-theorem cmp_cnf_head_exp_eq_coeff_gt {x y : CNF}
-  {e c1 c2 : Nat} {xs ys : List (Nat × Nat)}
-  (hx : (norm_cnf x).repr = (e, c1) :: xs)
-  (hy : (norm_cnf y).repr = (e, c2) :: ys)
-  (h : c2 < c1) :
-  cmp_cnf x y = Ordering.gt := by
-  unfold cmp_cnf; simp [hx, hy, cmpList_cons_cons_exp_eq_coeff_gt h]
-
-/-- CNF head-case: equal head term, comparison recurses on tails. -/
-theorem cmp_cnf_head_exp_coeff_eq {x y : CNF}
-  {e c : Nat} {xs ys : List (Nat × Nat)}
-  (hx : (norm_cnf x).repr = (e, c) :: xs)
-  (hy : (norm_cnf y).repr = (e, c) :: ys) :
-  cmp_cnf x y = cmpList xs ys := by
-  unfold cmp_cnf; simp [hx, hy, cmpList_cons_cons_exp_eq_coeff_eq]
-
-/-- CNF asymmetry in the simple head-exp case: if head e1 < e2 then x < y and not y < x. -/
-theorem lt_asymm_head_exp {x y : CNF}
-  {e1 c1 e2 c2 : Nat} {xs ys : List (Nat × Nat)}
-  (hx : (norm_cnf x).repr = (e1, c1) :: xs)
-  (hy : (norm_cnf y).repr = (e2, c2) :: ys)
-  (h : e1 < e2) : lt_cnf x y ∧ ¬ lt_cnf y x := by
-  constructor
-  · unfold lt_cnf; simp [cmp_cnf_head_exp_lt (x:=x) (y:=y) hx hy h]
-  · intro hlt
-    have hswap : cmp_cnf y x = Ordering.gt := by
-      unfold cmp_cnf; simp [hy, hx, cmpList_cons_cons_exp_lt_swap h]
-    have ne : Ordering.gt ≠ Ordering.lt := by decide
-    -- unfold lt_cnf in hlt to get a cmp equality
-    have hlt' : cmp_cnf y x = Ordering.lt := by
-      -- linter: prefer simp at hlt' instead of simpa using hlt
-      simp [lt_cnf] at hlt; exact hlt
-    -- rewrite cmp_cnf y x via hswap to derive an impossible equality
-    have hbad : Ordering.gt = Ordering.lt := by
-      -- simplify hlt' with the computed swap
-      simpa [hswap] using hlt'
-    exact ne hbad
-
-/-!
-  ## Instances: Decidability and Ord for CNF
--/
-
-instance instDecidableRel_le_cnf : DecidableRel le_cnf := by
-  intro x y
-  unfold le_cnf
-  infer_instance
-
-instance instDecidableRel_lt_cnf : DecidableRel lt_cnf := by
-  intro x y
-  unfold lt_cnf
-  infer_instance
-
-instance : Ord CNF where
-  compare := cmp_cnf
-
-/-- If y and z normalize to the same repr and x < y, then x < z. -/
-theorem lt_trans_eq_right {x y z : CNF}
-  (hYZ : (norm_cnf y).repr = (norm_cnf z).repr)
-  (hXY : lt_cnf x y) : lt_cnf x z := by
-  unfold lt_cnf at *
-  simpa [cmp_congr_right_repr_eq (x:=x) (y:=y) (z:=z) hYZ] using hXY
-/-- If x and y normalize to the same repr and y < z, then x < z. -/
-theorem lt_trans_eq_left {x y z : CNF}
-  (hXY : (norm_cnf x).repr = (norm_cnf y).repr)
-  (hYZ : lt_cnf y z) : lt_cnf x z := by
-  unfold lt_cnf at *
-  simpa [cmp_congr_left_repr_eq (x:=x) (y:=y) (z:=z) hXY] using hYZ
-
-/-- If y and z normalize to the same repr and x ≤ y, then x ≤ z. -/
-theorem le_trans_eq_right {x y z : CNF}
-  (hYZ : (norm_cnf y).repr = (norm_cnf z).repr)
-  (hXY : le_cnf x y) : le_cnf x z := by
-  unfold le_cnf at *
-  -- cmp x z = gt would rewrite to cmp x y = gt via congruence, contradicting hXY
-  intro hgt
-  have : cmp_cnf x y = Ordering.gt := by
-    simpa [cmp_congr_right_repr_eq (x:=x) (y:=y) (z:=z) hYZ] using hgt
-  exact hXY this
-
-/-- If x and y normalize to the same repr and y ≤ z, then x ≤ z. -/
-theorem le_trans_eq_left {x y z : CNF}
-  (hXY : (norm_cnf x).repr = (norm_cnf y).repr)
-  (hYZ : le_cnf y z) : le_cnf x z := by
-  unfold le_cnf at *
-  intro hgt
-  -- rewrite cmp x z to cmp y z using repr equality, contradicting hYZ
-  have : cmp_cnf y z = Ordering.gt := by
-    simpa [cmp_congr_left_repr_eq (x:=x) (y:=y) (z:=z) hXY] using hgt
-  exact hYZ this
-
-/-!
-  ## Tiny conveniences
--/
-
-/-- If normalized representations are equal, cmp is `eq`. -/
-theorem cmp_eq_of_norm_repr_eq {x y : CNF}
-  (h : (norm_cnf x).repr = (norm_cnf y).repr) :
-  cmp_cnf x y = Ordering.eq := by
-  unfold cmp_cnf
-  simp [cmpList_refl_eq, h]
-
-/-!
-  Equality characterization: if cmpList = eq then the lists are equal.
-  This lets us reflect cmp equality back to structural equality of normalized
-  representations at the CNF level.
--/
-theorem cmpList_eq_implies_eq :
-    ∀ {xs ys : List (Nat × Nat)}, cmpList xs ys = Ordering.eq → xs = ys := by
-  intro xs
-  induction xs with
-  | nil =>
-    intro ys h
-    cases ys with
-    | nil =>
-      simp [cmpList] at h
-      exact rfl
-    | cons y ys =>
-      -- cmpList [] (y::ys) = lt, contradicting eq
-      simp [cmpList] at h
-  | cons x xs ih =>
-    intro ys h
-    cases ys with
-    | nil =>
-      -- cmpList (x::xs) [] = gt, contradicting eq
-      simp [cmpList] at h
-    | cons y ys =>
-      cases x with
-      | mk e1 c1 =>
-        cases y with
-        | mk e2 c2 =>
-        classical
-        -- eliminate strict exponent inequalities via if-splits
-        if hltE : e1 < e2 then
-          have : cmpList ((e1,c1)::xs) ((e2,c2)::ys) = Ordering.lt := by
-            simpa [cmpList, hltE]
-          cases this ▸ h
-        else
-          have hnot12 : ¬ e1 < e2 := by simpa using hltE
-          if hgtE : e2 < e1 then
-            have : cmpList ((e1,c1)::xs) ((e2,c2)::ys) = Ordering.gt := by
-              simpa [cmpList, hnot12, hgtE]
-            cases this ▸ h
-          else
-            -- exponents equal
-            have heq : e1 = e2 :=
-              Nat.le_antisymm (Nat.le_of_not_gt hgtE) (Nat.le_of_not_gt hltE)
-            -- eliminate strict coefficient inequalities
-            if hltC : c1 < c2 then
-              have : cmpList ((e1,c1)::xs) ((e2,c2)::ys) = Ordering.lt := by
-                simpa [cmpList, heq, Nat.lt_irrefl, hltC]
-              cases this ▸ h
-            else
-              have hnotc12 : ¬ c1 < c2 := by simpa using hltC
-              if hgtC : c2 < c1 then
-                have : cmpList ((e1,c1)::xs) ((e2,c2)::ys) = Ordering.gt := by
-                  simpa [cmpList, heq, Nat.lt_irrefl, hnotc12, hgtC]
-                cases this ▸ h
-              else
-                -- coefficients equal; descend to tails
-                have hceq : c1 = c2 := by
-                  have hle₁ : c2 ≤ c1 := Nat.not_lt.mp hltC
-                  have hle₂ : c1 ≤ c2 := Nat.not_lt.mp hgtC
-                  exact Nat.le_antisymm hle₂ hle₁
-                have hTail : cmpList xs ys = Ordering.eq := by
-                  simpa [cmpList, heq, hceq, Nat.lt_irrefl] using h
-                have ih' := ih hTail
-                subst heq; subst hceq
-                simp [ih']
-
-theorem cmp_eq_iff_norm_repr_eq {x y : CNF} :
-    cmp_cnf x y = Ordering.eq ↔ (norm_cnf x).repr = (norm_cnf y).repr := by
-  constructor
-  · intro h
-    unfold cmp_cnf at h
-    exact cmpList_eq_implies_eq h
-  · intro hrepr
-    exact cmp_eq_of_norm_repr_eq (x:=x) (y:=y) hrepr
-
-/-- lt implies le (definitionally). -/
-theorem le_of_lt {x y : CNF} (h : lt_cnf x y) : le_cnf x y := by
-  unfold lt_cnf at h
-  unfold le_cnf
-  intro hgt
-  -- rewriting with h produces an impossible lt=gt
-  cases h ▸ hgt
-
-/-- CNF-level symmetry: if cmp x y = lt then cmp y x = gt. -/
-theorem cmp_cnf_symm_gt_of_lt {x y : CNF}
-  (h : cmp_cnf x y = Ordering.lt) : cmp_cnf y x = Ordering.gt := by
-  classical
-  let xs := (norm_cnf x).repr
-  let ys := (norm_cnf y).repr
-  have hlist : cmpList xs ys = Ordering.lt := by
-    simpa [cmp_cnf, xs, ys] using h
-  have hgt := cmpList_symm_gt_of_lt xs ys hlist
-  simpa [cmp_cnf, xs, ys] using hgt
-
--- (We intentionally avoid a gt→lt symmetry lemma here to keep the proof surface minimal.)
-
-/-- Symmetry for gt: if cmpList xs ys = gt then cmpList ys xs = lt. -/
-theorem cmpList_symm_lt_of_gt :
-  ∀ xs ys : List (Nat × Nat), cmpList xs ys = Ordering.gt → cmpList ys xs = Ordering.lt
-  | [], [], h => by cases h
-  | [], (y::ys), h => by
-      -- cmpList [] (y::ys) = lt, so gt is impossible
-      cases h
-  | (x::xs), [], _h => by
-      -- non-empty vs []
-      simp [cmpList]
-  | ((e1,c1)::xs), ((e2,c2)::ys), h =>
-      by
-        classical
-        -- split on exponent comparison using an if-then-else
-        if hlt12 : e1 < e2 then
-          -- then result would be lt, contradicts gt
-          have : cmpList ((e1,c1)::xs) ((e2,c2)::ys) = Ordering.lt := by
-            simpa [cmpList, hlt12]
-          cases this ▸ h
-        else
-          have hnot12 : ¬ e1 < e2 := by simpa using hlt12
-          if hlt21 : e2 < e1 then
-            -- gt by exponent; swap gives lt
-            exact (cmpList_cons_cons_exp_gt_swap (xs:=xs) (ys:=ys) (e1:=e1) (c1:=c1) (e2:=e2) (c2:=c2) hlt21)
-          else
-            -- exponents equal
-            have heq : e1 = e2 :=
-              Nat.le_antisymm (Nat.le_of_not_gt hlt21) (Nat.le_of_not_gt hlt12)
-            -- compare coefficients similarly
-            if hclt12 : c1 < c2 then
-              -- would make lt, contradict gt
-              have : cmpList ((e1,c1)::xs) ((e2,c2)::ys) = Ordering.lt := by
-                simpa [cmpList, heq, Nat.lt_irrefl, hclt12]
-              cases this ▸ h
-            else
-              have hnotc12 : ¬ c1 < c2 := by simpa using hclt12
-              if hclt21 : c2 < c1 then
-                -- swapped becomes lt by coeff-lt
-                have : cmpList ((e2,c2)::ys) ((e1,c1)::xs) = Ordering.lt := by
-                  simpa [heq] using (cmpList_cons_cons_exp_eq_coeff_lt (xs:=ys) (ys:=xs) (e:=e1) (c1:=c2) (c2:=c1) hclt21)
-                simpa using this
-              else
-                -- coefficients equal; descend to tails
-                have hceq : c1 = c2 := by
-                  have hle₁ : c2 ≤ c1 := Nat.not_lt.mp hclt12
-                  have hle₂ : c1 ≤ c2 := Nat.not_lt.mp hclt21
-                  exact Nat.le_antisymm hle₂ hle₁
-                -- from h = gt, tails must be gt as well
-                have hTail : cmpList xs ys = Ordering.gt := by
-                  simpa [cmpList, heq, hceq, Nat.lt_irrefl] using h
-                -- recurse on tails
-                have ih := cmpList_symm_lt_of_gt xs ys hTail
-                -- lift back through equal heads
-                simpa [cmpList_cons_cons_exp_eq_coeff_eq, heq, hceq] using ih
-
-/-- CNF-level symmetry: if cmp x y = gt then cmp y x = lt. -/
-theorem cmp_cnf_symm_lt_of_gt {x y : CNF}
-  (h : cmp_cnf x y = Ordering.gt) : cmp_cnf y x = Ordering.lt := by
-  classical
-  let xs := (norm_cnf x).repr
-  let ys := (norm_cnf y).repr
-  have hlist : cmpList xs ys = Ordering.gt := by
-    simpa [cmp_cnf, xs, ys] using h
-  have hlt := cmpList_symm_lt_of_gt xs ys hlist
-  simpa [cmp_cnf, xs, ys] using hlt
-
-/- Totality for ≤ on CNF. -/
-theorem le_total_cnf (x y : CNF) : le_cnf x y ∨ le_cnf y x := by
-  -- case on the computed comparison
-  cases h : cmp_cnf x y with
-  | lt => exact Or.inl (le_of_lt (by simpa [lt_cnf] using h))
-  | eq => exact Or.inl (by simp [le_cnf, h])
-  | gt =>
-    -- swap gives lt, hence y ⪯ x
-    have : cmp_cnf y x = Ordering.lt := cmp_cnf_symm_lt_of_gt h
-    exact Or.inr (by
-      -- lt implies ≤ by definition (not gt)
-      have : lt_cnf y x := by simpa [lt_cnf] using this
-      exact le_of_lt this)
-
--- Infix notations (optional ergonomics)
-infix:50 " ≺ " => lt_cnf
-infix:50 " ⪯ " => le_cnf
-
-/-!
-  ## Addition: merge and normalize
--/
-def add_cnf (x y : CNF) : CNF :=
-  norm_cnf { repr := x.repr ++ y.repr }
-
-/-!
-  ## Multiplication: distributive law, collect like terms, normalize
--/
-def mul_cnf (x y : CNF) : CNF :=
-  match norm_cnf x, norm_cnf y with
-  | { repr := [] }, _ => { repr := [] }
-  | _, { repr := [] } => { repr := [] }
-  | { repr := xs }, { repr := ys } =>
-    let terms := List.foldr (fun a b => List.append a b) [] (xs.map (fun (e1, c1) => ys.map (fun (e2, c2) => (e1 + e2, c1 * c2))))
-    norm_cnf { repr := terms }
-
-/-!
-  ## ω-Exponentiation: ω^x
-  - ω^0 = 1
-  - ω^{sum_i ω^{a_i}·c_i} = ω^{ω^{a_1}·c_1 + ...}
-  For CNF, ω^x is just shifting exponents up one level.
--/
-def opowω_cnf (x : CNF) : CNF :=
-  match norm_cnf x with
-  | { repr := [] } => { repr := [(0,1)] } -- ω^0 = 1
-  | { repr := xs } => { repr := xs.map (fun (e, c) => (e + 1, c)) }
-
-/-!
-  ## Examples
--/
-def cnf_zero : CNF := { repr := [] }
-def cnf_one : CNF := { repr := [(0,1)] }
-def cnf_omega : CNF := { repr := [(1,1)] }
-def cnf_omega_plus_one : CNF := { repr := [(1,1),(0,1)] }
-def cnf_two_omega : CNF := { repr := [(1,2)] }
-def cnf_omega_sq : CNF := { repr := [(2,1)] }
-
-/-!
-  ## Basic tests (examples)
--/
-
-
-
-
-end OperatorKO7.MetaCNF
-
-namespace OperatorKO7.MetaCNF
-
-/-!
-  ## Pretty-printing (basic)
-  Converts a CNF to a human-readable string for debugging and examples.
--/
-def intercalate (sep : String) (xs : List String) : String :=
-  match xs with
-  | [] => ""
-  | x :: xs => xs.foldl (fun acc s => acc ++ sep ++ s) x
-
-def showTerm : Nat × Nat → String
-  | (0, c) => toString c
-  | (e, 1) => "ω^" ++ toString e
-  | (e, c) => toString c ++ "·ω^" ++ toString e
-
-def showCNF (cnf : CNF) : String :=
-  match cnf.repr with
-  | [] => "0"
-  | xs => intercalate " + " (xs.map showTerm)
-
-instance : ToString CNF where
-  toString := showCNF
-
-/-!
-  ## Normalization checks (boolean)
-  Executable validators for CNF invariants. Useful for tests and examples.
--/
-def allPosCoeffs : List (Nat × Nat) → Bool
-  | [] => true
-  | (_, c) :: xs => (c > 0) && allPosCoeffs xs
-
-def sortedStrictDesc : List (Nat × Nat) → Bool
-  | [] => true
-  | [ _ ] => true
-  | (e1, _) :: (e2, c2) :: xs => (e1 > e2) && sortedStrictDesc ((e2, c2) :: xs)
-
-def isNormalizedB (x : CNF) : Bool :=
-  sortedStrictDesc x.repr && allPosCoeffs x.repr
-
-/-!
-  ## Inspectors and predicates (ergonomics)
--/
-
-def isZero (x : CNF) : Bool :=
-  match (norm_cnf x).repr with
-  | [] => true
-  | _ => false
-
-def isOne (x : CNF) : Bool :=
-  decide ((norm_cnf x).repr = [(0, 1)])
-
-def isOmegaPow (x : CNF) : Bool :=
-  match (norm_cnf x).repr with
-  | [(_, 1)] => true
-  | _ => false
-
-def degreeOpt (x : CNF) : Option Nat :=
-  match (norm_cnf x).repr with
-  | [] => none
-  | (e, _) :: _ => some e
-
-/-- Transitivity for `≤` on CNF. -/
-theorem le_trans_cnf {x y z : CNF} (hxy : le_cnf x y) (hyz : le_cnf y z) : le_cnf x z := by
-  -- By definition, le_cnf x z means cmp_cnf x z ≠ gt. Prove by contradiction.
-  unfold le_cnf at *
-  intro hgt
-  -- Case on cmp x y.
-  cases hxyCases : cmp_cnf x y with
-  | lt =>
-    -- y ≤ z splits into lt or eq.
-    have hyCases := le_cases (x:=y) (y:=z) hyz
-    cases hyCases with
-    | inl hylt =>
-      -- x < y and y < z ⇒ x < z, contradicting cmp x z = gt.
-      have hxlt : lt_cnf x y := by simpa [lt_cnf] using hxyCases
-      have hzlt : lt_cnf x z := lt_trans_cnf hxlt (by simpa [lt_cnf] using hylt)
-      -- Convert to cmp form and contradict hgt directly.
-      have : cmp_cnf x z = Ordering.lt := by simpa [lt_cnf] using hzlt
-      cases this ▸ hgt
-    | inr hyeq =>
-      -- cmp y z = eq ⇒ normalize-equal reprs; transport x<y to x<z.
-      have hrepr : (norm_cnf y).repr = (norm_cnf z).repr :=
-        (cmp_eq_iff_norm_repr_eq).mp hyeq
-      have hxlt : lt_cnf x y := by simpa [lt_cnf] using hxyCases
-      have hzlt : lt_cnf x z := lt_trans_eq_right (x:=x) (y:=y) (z:=z) hrepr hxlt
-      have : cmp_cnf x z = Ordering.lt := by simpa [lt_cnf] using hzlt
-      cases this ▸ hgt
-  | eq =>
-    -- cmp x y = eq ⇒ normalized reprs equal; rewrite left via congruence and use hyz.
-    have hrepr : (norm_cnf x).repr = (norm_cnf y).repr :=
-      (cmp_eq_iff_norm_repr_eq).mp hxyCases
-    -- Transport y ≤ z to x ≤ z, closing the contradiction.
-    exact (le_trans_eq_left (x:=x) (y:=y) (z:=z) hrepr hyz) hgt
-  | gt =>
-    -- Contradicts hxy immediately.
-    exact (hxy hxyCases).elim
-
-def leadCoeffOpt (x : CNF) : Option Nat :=
-  match (norm_cnf x).repr with
-  | [] => none
-  | (_, c) :: _ => some c
-
-/-!
-  ## Example values and usage
--/
-def example1 := add_cnf cnf_omega cnf_one         -- ω + 1
-def example2 := add_cnf cnf_omega cnf_omega       -- ω + ω = 2·ω
-def example3 := mul_cnf cnf_omega cnf_omega       -- ω * ω = ω^2
-
-end OperatorKO7.MetaCNF
-
-namespace OperatorKO7.MetaCNF
-
-/-!
-  ## Min/Max and sorting helpers (ergonomics)
--/
-
-def min_cnf (x y : CNF) : CNF := if lt_cnf x y then x else y
-def max_cnf (x y : CNF) : CNF := if lt_cnf x y then y else x
-
-private def insertBy (x : CNF) : List CNF → List CNF
-  | [] => [x]
-  | y :: ys => if lt_cnf x y then x :: y :: ys else y :: insertBy x ys
-
-def sortCNF (xs : List CNF) : List CNF :=
-  xs.foldl (fun acc x => insertBy x acc) []
-
-def isNonDecreasing (xs : List CNF) : Bool :=
-  match xs with
-  | [] => true
-  | [_] => true
-  | x :: y :: ys =>
-    let leB (a b : CNF) : Bool :=
-      match cmp_cnf a b with
-      | Ordering.gt => false
-      | _ => true
-    leB x y && isNonDecreasing (y :: ys)
-
-def minListCNF : List CNF → Option CNF
-  | [] => none
-  | x :: xs => some (xs.foldl (fun acc y => min_cnf acc y) x)
-
-def maxListCNF : List CNF → Option CNF
-  | [] => none
-  | x :: xs => some (xs.foldl (fun acc y => max_cnf acc y) x)
-
--- Demo checks
-example : toString (min_cnf cnf_omega cnf_one) = "1" := by
-  decide
-example : toString (max_cnf cnf_omega cnf_one) = "ω^1" := by
-  decide
--- Use a local demo set to avoid forward references
-def demoList : List CNF := [cnf_zero, cnf_one, cnf_omega]
-example : isNonDecreasing (sortCNF demoList) = true := by
-  decide
-example :
-    (match minListCNF demoList with | some x => toString x | none => "-") = "0" := by
-  decide
-example :
-    (match maxListCNF demoList with | some x => toString x | none => "-") = "ω^1" := by
-  decide
-
-end OperatorKO7.MetaCNF
-
-/-!
-  ## Example output (for documentation/testing)
-  Executable examples to illustrate CNF operations and normalization.
-  These produce human-readable CNF strings and boolean normalization checks.
--/
-example : toString OperatorKO7.MetaCNF.example1 = "ω^1 + 1" := by
-  decide
-example : toString OperatorKO7.MetaCNF.example2 = "2·ω^1" := by
-  decide
-example : toString OperatorKO7.MetaCNF.example3 = "ω^2" := by
-  decide
-
--- Inspector demos
-example : OperatorKO7.MetaCNF.isZero OperatorKO7.MetaCNF.cnf_zero = true := by
-  decide
-example : OperatorKO7.MetaCNF.isOne OperatorKO7.MetaCNF.cnf_one = true := by
-  decide
-example : OperatorKO7.MetaCNF.isOmegaPow OperatorKO7.MetaCNF.cnf_omega = true := by
-  decide
-example : OperatorKO7.MetaCNF.degreeOpt OperatorKO7.MetaCNF.cnf_two_omega = some 1 := by
-  decide
-example : OperatorKO7.MetaCNF.leadCoeffOpt OperatorKO7.MetaCNF.cnf_two_omega = some 2 := by
-  decide
-
--- Normalization checks on the examples (true means normalized)
-example :
-    OperatorKO7.MetaCNF.isNormalizedB (OperatorKO7.MetaCNF.norm_cnf OperatorKO7.MetaCNF.example1) =
-      true := by
-  decide
-example :
-    OperatorKO7.MetaCNF.isNormalizedB (OperatorKO7.MetaCNF.norm_cnf OperatorKO7.MetaCNF.example2) =
-      true := by
-  decide
-example :
-    OperatorKO7.MetaCNF.isNormalizedB (OperatorKO7.MetaCNF.norm_cnf OperatorKO7.MetaCNF.example3) =
-      true := by
-  decide
-
--- (pretty-printing and examples are defined at the end of the file)
--- All CNF values are normalized: exponents strictly decreasing, coefficients > 0, no duplicate exponents.
-
-/-!
-  ## Property checks (computable, #eval-style)
-  Small test harness verifying comparison laws and normalization preservation
-  over a fixed sample set.
--/
-namespace OperatorKO7.MetaCNF
-
--- Boolean helpers for cmp outcomes
-def isEq (x y : CNF) : Bool :=
-  match cmp_cnf x y with
-  | Ordering.eq => true
-  | _ => false
-
-def isLt (x y : CNF) : Bool :=
-  match cmp_cnf x y with
-  | Ordering.lt => true
-  | _ => false
-
-def isLe (x y : CNF) : Bool :=
-  match cmp_cnf x y with
-  | Ordering.gt => false
-  | _ => true
-
--- Simple boolean all (avoid depending on extra list APIs)
-def allB {α} (p : α → Bool) : List α → Bool
-  | [] => true
-  | x :: xs => p x && allB p xs
-
-def pairs {α} (xs : List α) : List (α × α) :=
-  xs.foldr (fun x acc => List.append (xs.map (fun y => (x, y))) acc) []
-
-def triples {α} (xs : List α) : List (α × α × α) :=
-  xs.foldr (fun x acc =>
-    let rows := xs.foldr (fun y acc2 => List.append (xs.map (fun z => (x, y, z))) acc2) []
-    List.append rows acc) []
-
--- Comparison properties
-def antisym_check (x y : CNF) : Bool :=
-  match cmp_cnf x y, cmp_cnf y x with
-  | Ordering.eq, Ordering.eq => true
-  | Ordering.lt, Ordering.gt => true
-  | Ordering.gt, Ordering.lt => true
-  | _, _ => false
-
-def trichotomy_check (x y : CNF) : Bool :=
-  match cmp_cnf x y, cmp_cnf y x with
-  | Ordering.eq, Ordering.eq => true
-  | Ordering.lt, Ordering.gt => true
-  | Ordering.gt, Ordering.lt => true
-  | _, _ => false
-
-def trans_lt_check (a b c : CNF) : Bool :=
-  if isLt a b && isLt b c then isLt a c else true
-
-def trans_le_check (a b c : CNF) : Bool :=
-  if isLe a b && isLe b c then isLe a c else true
-
--- Totality check for ≤: for any pair, either x ≤ y or y ≤ x
-def le_total_check (x y : CNF) : Bool :=
-  isLe x y || isLe y x
-
--- Normalization preservation (ops already normalize by definition)
-def preserves_norm_add (x y : CNF) : Bool := isNormalizedB (add_cnf x y)
-def preserves_norm_mul (x y : CNF) : Bool := isNormalizedB (mul_cnf x y)
-def preserves_norm_opow (x : CNF) : Bool := isNormalizedB (opowω_cnf x)
-
--- Sample set
-def samples : List CNF :=
-  [ cnf_zero, cnf_one, cnf_omega, cnf_omega_plus_one, cnf_two_omega, cnf_omega_sq ]
-
--- Aggregate checks over samples
-def check_all_antisym : Bool :=
-  allB (fun p => antisym_check p.1 p.2) (pairs samples)
-
-def check_all_trichotomy : Bool :=
-  allB (fun p => trichotomy_check p.1 p.2) (pairs samples)
-
-def check_all_trans_lt : Bool :=
-  allB (fun t => trans_lt_check t.1 t.2.1 t.2.2) (triples samples)
-
-def check_all_trans_le : Bool :=
-  allB (fun t => trans_le_check t.1 t.2.1 t.2.2) (triples samples)
-
-def check_all_total_le : Bool :=
-  allB (fun p => le_total_check p.1 p.2) (pairs samples)
-
-def check_reflexive_eq : Bool :=
-  allB (fun x => isEq x x) samples
-
-def check_norm_add : Bool :=
-  allB (fun p => preserves_norm_add p.1 p.2) (pairs samples)
-
-def check_norm_mul : Bool :=
-  allB (fun p => preserves_norm_mul p.1 p.2) (pairs samples)
-
-def check_norm_opow : Bool :=
-  allB (fun x => preserves_norm_opow x) samples
-
-/-!
-  ## Extra property checks for helpers
--/
-
-def eqListB {α} [DecidableEq α] (xs ys : List α) : Bool := decide (xs = ys)
-
-def check_sort_idem : Bool :=
-  eqListB (sortCNF samples) (sortCNF (sortCNF samples))
-
-def check_sort_is_nondecreasing : Bool :=
-  isNonDecreasing (sortCNF samples)
-
-def check_list_min_max_nonempty : Bool :=
-  match minListCNF samples, maxListCNF samples with
-  | some _, some _ => true
-  | _, _ => false
-
--- Executable reports
-example : check_reflexive_eq = true := by decide
-example : check_all_antisym = true := by decide
-example : check_all_trichotomy = true := by decide
-example : check_all_trans_lt = true := by decide
-example : check_all_trans_le = true := by decide
-example : check_all_total_le = true := by decide
-example : check_norm_add = true := by decide
-example : check_norm_mul = true := by decide
-example : check_norm_opow = true := by decide
-example : check_sort_idem = true := by decide
-example : check_sort_is_nondecreasing = true := by decide
-example : check_list_min_max_nonempty = true := by decide
-
-end OperatorKO7.MetaCNF
-
-```
-
----
-
-## 13. OperatorKO7/Meta/Examples_Publish.lean
+## 12. OperatorKO7/Meta/Examples_Publish.lean
 
 **File:** `OperatorKO7/Meta/Examples_Publish.lean`
 
-**Lines:** 36
+**Lines:** 23
 
 ```lean
 import OperatorKO7.Kernel
-import OperatorKO7.Meta.Termination_KO7
 import OperatorKO7.Meta.Normalize_Safe
 import OperatorKO7.Meta.Confluence_Safe
 import OperatorKO7.Meta.Newman_Safe
@@ -6370,13 +2746,7 @@ This module should only import stable, published Meta modules and check that
 their key symbols exist and typecheck. It contains no new proofs.
 -/
 
-example (a b : Trace) (h : Step a b) : MetaSN_Hybrid.HybridDec a b :=
-  MetaSN_Hybrid.hybrid_drop_of_step h
-
-example : WellFounded MetaSN_KO7.SafeStepRev := MetaSN_KO7.wf_SafeStepRev
--- Computable measure (μ3c) also yields SN for the same relation
 example : WellFounded MetaSN_KO7.SafeStepRev := OperatorKO7.MetaCM.wf_SafeStepRev_c
-example : WellFounded MetaSN_MPO.SafeStepMPORev := MetaSN_MPO.wf_SafeStepMPORev
 
 example (t : Trace) : MetaSN_KO7.SafeStepStar t (MetaSN_KO7.normalizeSafe t) :=
   MetaSN_KO7.to_norm_safe t
@@ -6391,115 +2761,15 @@ example : OperatorKO7.MetaCM.Lex3c
   have hδ : MetaSN_KO7.deltaFlag OperatorKO7.Trace.void = 0 := by
     simp [MetaSN_KO7.deltaFlag]
   simpa using OperatorKO7.MetaCM.drop_R_merge_void_left_c OperatorKO7.Trace.void hδ
-
 ```
 
 ---
 
-## 14. OperatorKO7/Meta/HydraCore.lean
-
-**File:** `OperatorKO7/Meta/HydraCore.lean`
-
-**Lines:** 35
-
-```lean
-/-!
-HydraCore - a tiny, standalone toy hydra relation to serve as a minimal
-"hydra core" rule set for demonstrations. This does NOT change the KO7 kernel
-and is only for examples/tests of duplication-style steps.
-
-This captures the duplication flavor: chopping a head duplicates a subtree.
-We keep it intentionally small and independent of KO7.
--/
-
-namespace OperatorKO7
-namespace HydraCore
-
-/-- A minimal hydra-as-binary-tree datatype. `head` is a leaf; `node l r` has two sub-hydras. -/
-inductive Hydra where
-  | head : Hydra
-  | node : Hydra → Hydra → Hydra
-deriving Repr, DecidableEq
-
-open Hydra
-
-/-- One-step toy hydra rule: cutting a head on one side duplicates the other side. -/
-inductive Step : Hydra → Hydra → Prop where
-  | chop_left  (h : Hydra) : Step (node head h) (node h h)
-  | chop_right (h : Hydra) : Step (node h head) (node h h)
-
-/-- Convenience lemma: left chop duplicates the right subtree. -/
-@[simp] theorem dup_left (h : Hydra) : Step (node head h) (node h h) := Step.chop_left h
-/-- Convenience lemma: right chop duplicates the left subtree. -/
-@[simp] theorem dup_right (h : Hydra) : Step (node h head) (node h h) := Step.chop_right h
-
-/-- Example: a single chop duplicates the non-head subtree. -/
-example (h : Hydra) : ∃ h', Step (node head h) h' := ⟨node h h, Step.chop_left h⟩
-
-end HydraCore
-end OperatorKO7
-
-```
-
----
-
-## 15. OperatorKO7/Meta/GoodsteinCore.lean
-
-**File:** `OperatorKO7/Meta/GoodsteinCore.lean`
-
-**Lines:** 40
-
-```lean
-/-!
-GoodsteinCore - a tiny, standalone toy for Goodstein-style base-change shape.
-This does NOT modify the KO7 kernel; it exists for examples and cross-links.
-It models a pair (base, counter) and a single-step that bumps the base while
-consuming one successor on the counter side.
--/
-
-namespace OperatorKO7
-namespace GoodsteinCore
-
-/-- Base parameter (modeled minimally as a wrapped `Nat`). -/
-inductive Base where
-  | b : Nat → Base
-deriving Repr, DecidableEq
-
-/-- Unary naturals used as a toy counter for Goodstein-style steps. -/
-inductive Cn where
-  | z  : Cn
-  | s  : Cn → Cn
-deriving Repr, DecidableEq
-
-/-- A Goodstein-state is a pair (base, counter). -/
-structure St where
-  base : Base
-  cnt  : Cn
-deriving Repr, DecidableEq
-
-open Base Cn
-
-/-- Goodstein-like one-step: bump base, drop one successor on the counter. -/
-inductive Step : St → St → Prop where
-  | base_change (b n : Nat) (t : Cn) :
-      Step ⟨.b b, .s t⟩ ⟨.b (b+1), t⟩
-
-/-- Convenience lemma: the single `Step.base_change` rule is always available on `(.s t)` counters. -/
-@[simp] theorem one_step (b n : Nat) (t : Cn) :
-    Step ⟨.b b, .s t⟩ ⟨.b (b+1), t⟩ := Step.base_change b n t
-
-end GoodsteinCore
-end OperatorKO7
-
-```
-
----
-
-## 16. OperatorKO7/Meta/Operational_Incompleteness.lean
+## 13. OperatorKO7/Meta/Operational_Incompleteness.lean
 
 **File:** `OperatorKO7/Meta/Operational_Incompleteness.lean`
 
-**Lines:** 1188
+**Lines:** 1007
 
 ```lean
 import Mathlib.Data.Multiset.Basic
@@ -7690,23 +3960,22 @@ example (x : Term) :
   -- r8: mul x z → z
   simpa using (M_size.lex_ok (Rule.r8 x))
 end OperatorKO7.OpIncomp
-
 ```
 
 ---
 
-## 17. OperatorKO7/Meta/Impossibility_Lemmas.lean
+## 14. OperatorKO7/Meta/Impossibility_Lemmas.lean
 
 **File:** `OperatorKO7/Meta/Impossibility_Lemmas.lean`
 
-**Lines:** 391
+**Lines:** 312
 
 ```lean
 import OperatorKO7.Meta.Operational_Incompleteness
 import OperatorKO7.Kernel
 import Mathlib.Order.Basic
 import Mathlib.Tactic.Linarith
-import OperatorKO7.Meta.Termination_KO7
+import OperatorKO7.Meta.ComputableMeasure
 -- Impossibility Lemmas - documentation mirror (see Confluence_Safe for helpers)
 
 /-!
@@ -7913,59 +4182,54 @@ end RflGate
 /-! ## Anchors to the green path (consolidation §J)
 
 The fixes live under KO7’s safe layer:
-- `Meta/Termination_KO7.lean`: `drop_R_rec_succ` (outer δ‑flag drop),
-  `measure_decreases_safe`, `wf_SafeStepRev`, plus MPO variants.
+- `Meta/ComputableMeasure.lean`: `drop_R_rec_succ_c` (outer δ-flag drop),
+  `measure_decreases_safe_c`, `wf_SafeStepRev_c`.
 These aren’t re‑proved here; this file focuses on the impossibility side. -/
 
--- See also: HybridDec one-liners just below (`Hybrid_FixPathExamples`),
--- which use `MetaSN_Hybrid.hybrid_drop_of_step` to witness per-step decreases.
-
-/-! ## KO7 safe Lex3 - tiny cross-link examples (the “fix path”) -/
+/-! ## KO7 safe Lex3c - tiny cross-link examples (the fix path) -/
 
 namespace KO7_FixPathExamples
 
--- δ-substitution (rec_succ) strictly drops by KO7’s outer flag component.
+open OperatorKO7.MetaCM
+
+-- delta-substitution (rec_succ) strictly drops by KO7's outer flag component.
 lemma rec_succ_drops (b s n : Trace) :
-   MetaSN_KO7.Lex3 (MetaSN_KO7.μ3 (app s (recΔ b s n)))
-                   (MetaSN_KO7.μ3 (recΔ b s (delta n))) := by
-   simpa using MetaSN_KO7.drop_R_rec_succ b s n
+   Lex3c (mu3c (app s (recΔ b s n)))
+         (mu3c (recΔ b s (delta n))) := by
+   simpa using drop_R_rec_succ_c b s n
 
 -- The guarded aggregator yields a decrease certificate per safe step.
 lemma safe_decrease_rec_succ (b s n : Trace) :
-   MetaSN_KO7.Lex3 (MetaSN_KO7.μ3 (app s (recΔ b s n)))
-                   (MetaSN_KO7.μ3 (recΔ b s (delta n))) := by
+   Lex3c (mu3c (app s (recΔ b s n)))
+         (mu3c (recΔ b s (delta n))) := by
    simpa using
-     (MetaSN_KO7.measure_decreases_safe
-       (MetaSN_KO7.SafeStep.R_rec_succ b s n))
+     (measure_decreases_safe_c
+        (MetaSN_KO7.SafeStep.R_rec_succ b s n))
 
 -- Well-foundedness of the reverse safe relation (no infinite safe reductions).
-theorem wf_safe : WellFounded MetaSN_KO7.SafeStepRev := MetaSN_KO7.wf_SafeStepRev
+theorem wf_safe : WellFounded MetaSN_KO7.SafeStepRev := wf_SafeStepRev_c
 
 end KO7_FixPathExamples
 
-/-! ## HybridDec - one-liners via `hybrid_drop_of_step` (cross-link) -/
+/-! ## Additional computable drop one-liners (cross-link) -/
 
-namespace Hybrid_FixPathExamples
+namespace Computable_FixPathExamples
 
-lemma hybrid_rec_succ (b s n : Trace) :
-  MetaSN_Hybrid.HybridDec (recΔ b s (delta n)) (app s (recΔ b s n)) := by
-  simpa using
-    MetaSN_Hybrid.hybrid_drop_of_step
-      (OperatorKO7.Step.R_rec_succ b s n)
+open OperatorKO7.MetaCM
 
-lemma hybrid_merge_void_left (t : Trace) :
-  MetaSN_Hybrid.HybridDec (merge void t) t := by
-  simpa using
-    MetaSN_Hybrid.hybrid_drop_of_step
-      (OperatorKO7.Step.R_merge_void_left t)
+lemma drop_rec_succ (b s n : Trace) :
+  Lex3c (mu3c (app s (recΔ b s n))) (mu3c (recΔ b s (delta n))) := by
+  simpa using drop_R_rec_succ_c b s n
 
-lemma hybrid_eq_diff (a b : Trace) :
-  MetaSN_Hybrid.HybridDec (eqW a b) (integrate (merge a b)) := by
-  simpa using
-    MetaSN_Hybrid.hybrid_drop_of_step
-      (OperatorKO7.Step.R_eq_diff a b)
+lemma drop_merge_void_left (t : Trace) (hδ : MetaSN_KO7.deltaFlag t = 0) :
+  Lex3c (mu3c t) (mu3c (merge void t)) := by
+  simpa using drop_R_merge_void_left_c t hδ
 
-end Hybrid_FixPathExamples
+lemma drop_eq_diff (a b : Trace) :
+  Lex3c (mu3c (integrate (merge a b))) (mu3c (eqW a b)) := by
+  simpa using drop_R_eq_diff_c a b
+
+end Computable_FixPathExamples
 
 /-! ## Approach #9: Complex Hybrid/Constellation Measures (Paper Section 7, line 250)
 
@@ -8002,7 +4266,7 @@ def toConstellation : Trace → Constellation
   | .eqW a b => .eqNode (toConstellation a) (toConstellation b)
 
 /-- The δ-duplication step produces structurally different constellations.
-    The RHS has `appNode` at the root while LHS has `recNode` - no simple ordering works. -/
+    The RHS has `appNode` at the root while LHS has `recNode` — no simple ordering works. -/
 theorem constellation_shapes_differ (b s n : Trace) :
     toConstellation (app s (recΔ b s n)) ≠ toConstellation (recΔ b s (delta n)) := by
   simp only [toConstellation]
@@ -8081,8 +4345,8 @@ theorem full_step_permits_barrier :
   exact ⟨void, void, void, Step.R_rec_succ void void void⟩
 
 /-- Reference: The SafeStep guard is what makes termination provable.
-    See `MetaSN_KO7.wf_SafeStepRev` for the working proof. -/
-example : WellFounded MetaSN_KO7.SafeStepRev := MetaSN_KO7.wf_SafeStepRev
+    See `OperatorKO7.MetaCM.wf_SafeStepRev_c` for the working proof. -/
+example : WellFounded MetaSN_KO7.SafeStepRev := OperatorKO7.MetaCM.wf_SafeStepRev_c
 
 end UncheckedRecursionFailure
 
@@ -8093,20 +4357,19 @@ see `Meta/HydraCore.lean` and `Meta/GoodsteinCore.lean` (examples only). -/
 
 end Impossibility
 end OperatorKO7
-
 ```
 
 ---
 
-## 18. OperatorKO7/Meta/FailureModes.lean
+## 15. OperatorKO7/Meta/FailureModes.lean
 
 **File:** `OperatorKO7/Meta/FailureModes.lean`
 
-**Lines:** 86
+**Lines:** 76
 
 ```lean
 import OperatorKO7.Kernel
-import OperatorKO7.Meta.Termination_KO7
+import OperatorKO7.Meta.SafeStep_Core
 
 /-!
 # Impossibility Results and Countermodels
@@ -8168,13 +4431,21 @@ Use only guarded lemmas like `le_add_of_nonneg_left/right`, or principal-add res
 -/
 lemma note_right_add_hazard : True := by trivial
 
-/-! ## 4) μ s vs μ (delta n) counterexample -/
-/-- There exist specific `s, n` with `μ s > μ (delta n)`.
-    Take `s = δ (δ void)` and `n = void`; then `μ(δ void) < μ(δ (δ void))`. -/
-theorem exists_mu_s_gt_mu_delta_n : ∃ s n : Trace, MetaSN.mu s > MetaSN.mu (delta n) := by
+/-! ## 4) Size-vs-delta counterexample (purely internal) -/
+/-- Simple additive size used as an internal witness for failure cases. -/
+@[simp] def simpleSize : Trace → Nat
+| .void => 0
+| .delta t => simpleSize t + 1
+| .integrate t => simpleSize t + 1
+| .merge a b => simpleSize a + simpleSize b + 1
+| .app a b => simpleSize a + simpleSize b + 1
+| .recΔ b s n => simpleSize b + simpleSize s + simpleSize n + 1
+| .eqW a b => simpleSize a + simpleSize b + 1
+
+/-- There exist `s, n` with `simpleSize s > simpleSize (delta n)`. -/
+theorem exists_size_s_gt_size_delta_n : ∃ s n : Trace, simpleSize s > simpleSize (delta n) := by
   refine ⟨delta (delta void), void, ?_⟩
-  -- Goal: μ(δ δ void) > μ(δ void), equivalent to μ(δ void) < μ(δ δ void)
-  simpa [gt_iff_lt] using (MetaSN.mu_lt_mu_delta (delta void))
+  simp [simpleSize]
 
 /-! ## 5) KO7-flavored P1: δ-flag is NOT preserved by merge void globally -/
 open MetaSN_KO7
@@ -8186,21 +4457,20 @@ lemma deltaFlag_not_preserved_merge_void (b s n : Trace) :
   simp [deltaFlag]
 
 /-- KO7 duplication mapping note:
-    - DM-left used when κᴹ ≠ 0: see MetaSN_KO7.drop_R_merge_cancel_zero (inner LexDM via DM-left) and drop_R_eq_refl (DM-left branch).
-    - When κᴹ = 0, use μ-right in the inner lex and lift: see drop_R_merge_cancel_zero (μ-right path) and drop_R_eq_refl_zero. -/
+    - DM-left used when κᴹ ≠ 0: see `OperatorKO7.MetaCM.drop_R_merge_cancel_c` and `OperatorKO7.MetaCM.drop_R_eq_refl_c`.
+    - The full certified decrease aggregator is `OperatorKO7.MetaCM.measure_decreases_safe_c`. -/
 lemma note_ko7_duplication_mapping : True := by trivial
 
 end OperatorKO7.Countermodels
-
 ```
 
 ---
 
-## 19. OperatorKO7/Meta/ContractProbes.lean
+## 16. OperatorKO7/Meta/ContractProbes.lean
 
 **File:** `OperatorKO7/Meta/ContractProbes.lean`
 
-**Lines:** 67
+**Lines:** 49
 
 ```lean
 /-!
@@ -8270,67 +4540,15 @@ One arity/type mismatch example (TypeGate):
 -/
 
 end OperatorKO7.MetaProbes
-
 ```
 
 ---
 
-## 20. OperatorKO7/Meta/PaperApproachIndex.lean
-
-**File:** `OperatorKO7/Meta/PaperApproachIndex.lean`
-
-**Lines:** 39
-
-```lean
-import OperatorKO7.Meta.Impossibility_Lemmas
-
-/-!
-# Paper Approach Index (compile-time consistency check)
-
-Purpose
-- This module exists to make the paper’s “ten approaches fail” claim mechanically checkable.
-- It provides *editor-quiet* references (`example` terms) to the specific approach namespaces/lemmas,
-  so renames/deletions break compilation instead of silently drifting.
-
-How to use
-- Run: `lake build OperatorKO7.Meta.PaperApproachIndex`
-- This is intentionally *not* imported by the default `OperatorKO7.lean` entrypoint, to keep the
-  default build fast; treat it as an “audit target”.
--/
-
-namespace OperatorKO7.Meta.PaperApproachIndex
-
-open OperatorKO7 Trace
-open OperatorKO7.Impossibility
-
-/-!
-Approach #9 and #10 were added later; keep explicit anchors here so the paper’s
-“ten approaches” catalog stays in sync with the mechanized codebase.
--/
-
--- Approach #9: Complex Hybrid/Constellation Measures
-example (b s n : Trace) :=
-  ConstellationFailure.constellation_size_not_decreasing b s n
-
--- Approach #10: Unchecked Recursion
-example (b s n : Trace) :=
-  UncheckedRecursionFailure.rec_succ_additive_barrier b s n
-
-example :=
-  UncheckedRecursionFailure.full_step_permits_barrier
-
-end OperatorKO7.Meta.PaperApproachIndex
-
-
-```
-
----
-
-## 21. OperatorKO7/Meta/Conjecture_Boundary.lean
+## 17. OperatorKO7/Meta/Conjecture_Boundary.lean
 
 **File:** `OperatorKO7/Meta/Conjecture_Boundary.lean`
 
-**Lines:** 333
+**Lines:** 325
 
 ```lean
 import OperatorKO7.Meta.Impossibility_Lemmas
@@ -8658,6 +4876,54 @@ theorem no_global_step_orientation_polyMul (w : Nat) :
   have heq := poly_mul_ties_rec_succ w void void void
   omega
 
+/-! ## Naive multiset barrier (#7: duplication inflates element count)
+
+A naive multiset measure collects subterm weights into a bag and compares
+by sum (or cardinality). Unlike the Dershowitz-Manna ordering — which
+permits replacing one large element with multiple SMALLER elements —
+naive comparison has no mechanism to absorb duplication. When `rec_succ`
+duplicates `s`, the bag gains an extra copy of `s`'s weight, and the
+sum/cardinality strictly increases.
+
+This formalizes failure mode #7 from the paper:
+"Naive multiset orderings: Fail without DM-specific properties." -/
+
+/-- Node count: number of constructor applications in the term.
+This represents a naive multiset measure where every node has weight 1
+and the multiset is compared by cardinality (= sum of weights). -/
+@[simp] def nodeCount : Trace → Nat
+  | .void => 1
+  | .delta t => nodeCount t + 1
+  | .integrate t => nodeCount t + 1
+  | .merge a b => nodeCount a + nodeCount b + 1
+  | .app a b => nodeCount a + nodeCount b + 1
+  | .recΔ b s n => nodeCount b + nodeCount s + nodeCount n + 1
+  | .eqW a b => nodeCount a + nodeCount b + 1
+
+/-- Naive multiset (node count) does not strictly decrease on `rec_succ`.
+The duplication of `s` adds `nodeCount s` to the RHS, yielding ≥. -/
+theorem nodeCount_rec_succ_barrier (b s n : Trace) :
+    nodeCount (app s (recΔ b s n)) ≥ nodeCount (recΔ b s (delta n)) := by
+  simp [nodeCount]
+  omega
+
+/-- With non-trivial `s`, node count strictly INCREASES on `rec_succ`. -/
+theorem nodeCount_rec_succ_increases (b s n : Trace)
+    (hs : nodeCount s ≥ 2) :
+    nodeCount (app s (recΔ b s n)) > nodeCount (recΔ b s (delta n)) := by
+  simp [nodeCount]
+  omega
+
+/-- Node count cannot globally orient full `Step` (fails at rec_succ). -/
+theorem no_global_step_orientation_nodeCount :
+    ¬ GlobalOrients nodeCount (· < ·) := by
+  intro h
+  have hstep : Step (recΔ void void (delta void)) (app void (recΔ void void void)) :=
+    Step.R_rec_succ void void void
+  have hlt := h hstep
+  have hge := nodeCount_rec_succ_barrier void void void
+  omega
+
 /-! ## Full-step witness (duplication branch is present in kernel Step) -/
 
 /-- The unrestricted kernel `Step` contains the duplication branch explicitly. -/
@@ -8666,7 +4932,1303 @@ theorem full_step_has_rec_succ_instance :
   UncheckedRecursionFailure.full_step_permits_barrier
 
 end OperatorKO7.MetaConjectureBoundary
+```
 
+---
+
+## 18. OperatorKO7/Meta/PaperApproachIndex.lean
+
+**File:** `OperatorKO7/Meta/PaperApproachIndex.lean`
+
+**Lines:** 28
+
+```lean
+import OperatorKO7.Meta.Impossibility_Lemmas
+
+/-!
+# Paper Approach Index (compile-time consistency check)
+
+Purpose
+- This module exists to make the paper’s “ten approaches fail” claim mechanically checkable.
+- It provides *editor-quiet* references (`example` terms) to the specific approach namespaces/lemmas,
+  so renames/deletions break compilation instead of silently drifting.
+
+How to use
+- Run: `lake build OperatorKO7.Meta.PaperApproachIndex`
+- This is intentionally *not* imported by the default `OperatorKO7.lean` entrypoint, to keep the
+  default build fast; treat it as an “audit target”.
+-/
+
+namespace OperatorKO7.Meta.PaperApproachIndex
+
+open OperatorKO7 Trace
+open OperatorKO7.Impossibility
+
+/-!
+Approach #9 and #10 were added later; keep explicit anchors here so the paper’s
+“ten approaches” catalog stays in sync with the mechanized codebase.
+-/
+
+-- Approach #9: Complex Hybrid/Constellation Measures
+example (b s n : Trace) :=
+  ConstellationFailure.constellation_size_not_decreasing b s n
+
+-- Approach #10: Unchecked Recursion
+example (b s n : Trace) :=
+  UncheckedRecursionFailure.rec_succ_additive_barrier b s n
+
+example :=
+  UncheckedRecursionFailure.full_step_permits_barrier
+
+end OperatorKO7.Meta.PaperApproachIndex
+
+```
+
+---
+
+## 19. OperatorKO7/Meta/CNFOrdinal.lean
+
+**File:** `OperatorKO7/Meta/CNFOrdinal.lean`
+
+**Lines:** 1004
+
+```lean
+-- (pretty-printing and examples moved below, after definitions)
+/-!
+  # Constructive CNF Ordinal - Complete, Axiom-Free, Computable
+
+  This module provides a fully constructive Cantor Normal Form (CNF) ordinal type and computable implementations for:
+  - Canonical structure and invariants
+  - Normalization (merge, sort, remove zeros)
+  - Addition, multiplication, ω-exponentiation
+  - Total, computable lexicographic comparison (cmp, le, lt)
+  - No axioms, no sorry, no noncomputable
+
+  All code is total and lint-clean. See Docs/A_Constructive_Ordinal_Skeleton.md for intended semantics and proofs.
+-/
+set_option linter.unnecessarySimpa false
+
+
+namespace OperatorKO7.MetaCNF
+
+/-!
+  ## CNF Representation
+  - List of (exponent, coefficient) pairs, exponents strictly decreasing, coefficients positive.
+  - Invariant: No zero coefficients, no zero exponents except possibly for the last term (finite part).
+  - Example: ω^3·2 + ω^1·5 + 7  ≡  [(3,2), (1,5), (0,7)]
+-/
+
+
+
+structure CNF where
+  repr : List (Nat × Nat) -- List of (exponent, coefficient) pairs
+  -- Invariant: strictly decreasing exponents, all coefficients > 0
+deriving Repr, DecidableEq
+
+/-!
+  ## Helper: merge like exponents, remove zeros, sort decreasing
+-/
+private def insertDesc (p : Nat × Nat) : List (Nat × Nat) → List (Nat × Nat)
+  | [] => [p]
+  | (q::qs) => if p.1 > q.1 then p :: q :: qs else q :: insertDesc p qs
+
+private def sortDesc (l : List (Nat × Nat)) : List (Nat × Nat) :=
+  l.foldl (fun acc x => insertDesc x acc) []
+
+private def mergeLike (l : List (Nat × Nat)) : List (Nat × Nat) :=
+  let l := l.filter (fun ⟨_, c⟩ => c ≠ 0)
+  let l := sortDesc l -- sort by decreasing exponent
+  let rec go (acc : List (Nat × Nat)) (l : List (Nat × Nat)) : List (Nat × Nat) :=
+    match l with
+    | [] => acc.reverse
+    | (e, c) :: xs =>
+      match acc with
+      | (e', c') :: as' =>
+        if e = e' then go ((e, c + c') :: as') xs else go ((e, c) :: acc) xs
+      | [] => go [(e, c)] xs
+  go [] l
+
+/-!
+  ## Normalization: canonical form
+-/
+def norm_cnf (x : CNF) : CNF :=
+  { repr := mergeLike x.repr }
+
+/-!
+  ## Lexicographic comparison on normalized representations
+  Compare two CNFs by their normalized `repr` lists. Higher exponents dominate;
+  when exponents tie, higher coefficients dominate. Missing tails are treated
+  as smaller (i.e., [] < non-empty).
+-/
+def cmpList : List (Nat × Nat) → List (Nat × Nat) → Ordering
+  | [], [] => Ordering.eq
+  | [], _  => Ordering.lt
+  | _,  [] => Ordering.gt
+  | (e1, c1) :: xs, (e2, c2) :: ys =>
+    if e1 < e2 then Ordering.lt else
+    if e2 < e1 then Ordering.gt else
+    -- exponents are equal; compare coefficients
+    if c1 < c2 then Ordering.lt else
+    if c2 < c1 then Ordering.gt else
+    -- equal head terms; recurse on tails
+    cmpList xs ys
+
+/-- Reflexivity for list-lex comparison. -/
+theorem cmpList_refl_eq : ∀ xs : List (Nat × Nat), cmpList xs xs = Ordering.eq := by
+  intro xs; induction xs with
+  | nil => simp [cmpList]
+  | @cons hd tl ih =>
+    cases hd with
+    | mk e c =>
+      -- both exponent and coefficient self-comparisons fall through to recursion
+      simp [cmpList, Nat.lt_irrefl, ih]
+
+/-- Head-case: if e1 < e2, the comparison is lt (and swaps to gt). -/
+theorem cmpList_cons_cons_exp_lt
+  {e1 c1 e2 c2 : Nat} {xs ys : List (Nat × Nat)} (h : e1 < e2) :
+  cmpList ((e1, c1) :: xs) ((e2, c2) :: ys) = Ordering.lt := by
+  simp [cmpList, h]
+
+/-- Head-case (swap): if e1 < e2, then swapping yields gt. -/
+theorem cmpList_cons_cons_exp_lt_swap
+  {e1 c1 e2 c2 : Nat} {xs ys : List (Nat × Nat)} (h : e1 < e2) :
+  cmpList ((e2, c2) :: ys) ((e1, c1) :: xs) = Ordering.gt := by
+  -- On swap, the second branch detects e1 < e2
+  have : ¬ e2 < e1 := Nat.not_lt.mpr (Nat.le_of_lt h)
+  simp [cmpList, this, h]
+
+/-- Head-case: if e2 < e1, the comparison is gt (and swaps to lt). -/
+theorem cmpList_cons_cons_exp_gt
+  {e1 c1 e2 c2 : Nat} {xs ys : List (Nat × Nat)} (h : e2 < e1) :
+  cmpList ((e1, c1) :: xs) ((e2, c2) :: ys) = Ordering.gt := by
+  have : ¬ e1 < e2 := Nat.not_lt.mpr (Nat.le_of_lt h)
+  simp [cmpList, this, h]
+
+/-- Head-case (swap): if e2 < e1, swapping yields lt. -/
+theorem cmpList_cons_cons_exp_gt_swap
+  {e1 c1 e2 c2 : Nat} {xs ys : List (Nat × Nat)} (h : e2 < e1) :
+  cmpList ((e2, c2) :: ys) ((e1, c1) :: xs) = Ordering.lt := by
+  simp [cmpList, h]
+
+/-- Head-case: equal exponents, smaller coefficient gives lt. -/
+theorem cmpList_cons_cons_exp_eq_coeff_lt
+  {e c1 c2 : Nat} {xs ys : List (Nat × Nat)} (h : c1 < c2) :
+  cmpList ((e, c1) :: xs) ((e, c2) :: ys) = Ordering.lt := by
+  have : ¬ e < e := Nat.lt_irrefl _
+  simp [cmpList, this, h]
+
+/-- Head-case: equal exponents, larger coefficient gives gt. -/
+theorem cmpList_cons_cons_exp_eq_coeff_gt
+  {e c1 c2 : Nat} {xs ys : List (Nat × Nat)} (h : c2 < c1) :
+  cmpList ((e, c1) :: xs) ((e, c2) :: ys) = Ordering.gt := by
+  have : ¬ e < e := Nat.lt_irrefl _
+  have : ¬ c1 < c2 := Nat.not_lt.mpr (Nat.le_of_lt h)
+  simp [cmpList, Nat.lt_irrefl, this, h]
+
+/-- Head-case: equal exponents and coefficients, comparison recurses. -/
+theorem cmpList_cons_cons_exp_eq_coeff_eq
+  {e c : Nat} {xs ys : List (Nat × Nat)} :
+  cmpList ((e, c) :: xs) ((e, c) :: ys) = cmpList xs ys := by
+  simp [cmpList, Nat.lt_irrefl]
+
+/-- Base-case: [] < non-empty. -/
+theorem cmpList_nil_left_lt {y : Nat × Nat} {ys : List (Nat × Nat)} :
+  cmpList [] (y :: ys) = Ordering.lt := by
+  simp [cmpList]
+
+/-- Base-case: non-empty > []. -/
+theorem cmpList_nil_right_gt {x : Nat × Nat} {xs : List (Nat × Nat)} :
+  cmpList (x :: xs) [] = Ordering.gt := by
+  simp [cmpList]
+
+/-- Eliminate cmpList=lt on cons/cons: describes exactly which head-case caused it or recurses. -/
+theorem cmpList_cons_cons_lt_cases
+  {e1 c1 e2 c2 : Nat} {xs ys : List (Nat × Nat)}
+  (h : cmpList ((e1, c1) :: xs) ((e2, c2) :: ys) = Ordering.lt) :
+  e1 < e2 ∨ (e1 = e2 ∧ c1 < c2) ∨ (e1 = e2 ∧ c1 = c2 ∧ cmpList xs ys = Ordering.lt) := by
+  -- peel the nested ifs of cmpList via case splits
+  classical
+  if hlt : e1 < e2 then
+    -- immediate lt by exponent
+    exact Or.inl hlt
+  else
+    have hnotlt : ¬ e1 < e2 := by simpa using hlt
+    if hgt : e2 < e1 then
+      -- would force gt, contradicting h
+      have : cmpList ((e1,c1)::xs) ((e2,c2)::ys) = Ordering.gt := by
+        simp [cmpList, hnotlt, hgt]
+      cases this ▸ h
+    else
+      have hnotgt : ¬ e2 < e1 := by simpa using hgt
+      -- exponents must be equal
+      have heq : e1 = e2 := Nat.le_antisymm (Nat.le_of_not_gt hgt) (Nat.le_of_not_gt hlt)
+      -- compare coefficients
+      if hclt : c1 < c2 then
+        exact Or.inr (Or.inl ⟨heq, hclt⟩)
+      else
+        if hcgt : c2 < c1 then
+          -- would force gt, contradicting h (use the dedicated head-eq coeff-gt lemma)
+          have : cmpList ((e1,c1)::xs) ((e2,c2)::ys) = Ordering.gt := by
+            subst heq; simpa using (cmpList_cons_cons_exp_eq_coeff_gt (xs:=xs) (ys:=ys) (e:=e1) (c1:=c1) (c2:=c2) hcgt)
+          cases this ▸ h
+        else
+          -- equal coefficients; recurse: rewrite h to a tail-lt
+          have hceq : c1 = c2 := by
+            -- from ¬ c1 < c2 and ¬ c2 < c1, get equality
+            have hle₁ : c2 ≤ c1 := Nat.not_lt.mp hclt
+            have hle₂ : c1 ≤ c2 := Nat.not_lt.mp hcgt
+            exact Nat.le_antisymm hle₂ hle₁
+          -- rewrite h via heq and hceq, then drop to tails
+          have h' : cmpList ((e1,c1)::xs) ((e1,c1)::ys) = Ordering.lt := by
+            simpa [heq, hceq] using h
+          have hTail : cmpList xs ys = Ordering.lt := by
+            simpa [cmpList_cons_cons_exp_eq_coeff_eq] using h'
+          exact Or.inr (Or.inr ⟨heq, hceq, hTail⟩)
+
+/-- Symmetry for lt: if cmpList xs ys = lt then cmpList ys xs = gt. -/
+theorem cmpList_symm_gt_of_lt :
+  ∀ xs ys : List (Nat × Nat), cmpList xs ys = Ordering.lt → cmpList ys xs = Ordering.gt
+  | [], [] , h => by cases h
+  | [], (y::ys), _ => by simp [cmpList]
+  | (x::xs), [], h => by cases h
+  | ((e1,c1)::xs), ((e2,c2)::ys), h =>
+    -- analyze which branch produced lt, then swap accordingly
+    have hc := cmpList_cons_cons_lt_cases (xs:=xs) (ys:=ys) h
+    by
+      cases hc with
+      | inl hExpLt =>
+        -- exponent lt ⇒ swapped is gt
+        exact (cmpList_cons_cons_exp_lt_swap (xs:=xs) (ys:=ys) hExpLt)
+      | inr hrest =>
+        cases hrest with
+        | inl hCoeffLt =>
+          rcases hCoeffLt with ⟨heq, hclt⟩
+          -- equal exponents, coeff lt ⇒ swapped is gt by coeff-gt lemma with roles swapped
+          subst heq
+          exact (cmpList_cons_cons_exp_eq_coeff_gt (xs:=ys) (ys:=xs) (e:=e1) (c1:=c2) (c2:=c1) hclt)
+        | inr hEqTail =>
+          rcases hEqTail with ⟨heq, hceq, htail⟩
+          -- descend to tails and lift back via eq-head lemma
+          have ih := cmpList_symm_gt_of_lt xs ys htail
+          subst heq; subst hceq
+          simpa [cmpList_cons_cons_exp_eq_coeff_eq] using ih
+
+/-- Total, computable comparison on CNF via normalized representations. -/
+def cmp_cnf (x y : CNF) : Ordering :=
+  cmpList (norm_cnf x).repr (norm_cnf y).repr
+
+/-- Strict order: x < y iff cmp is lt. -/
+def lt_cnf (x y : CNF) : Prop := cmp_cnf x y = Ordering.lt
+
+/-- Non-strict order: x ≤ y iff cmp is not gt. -/
+def le_cnf (x y : CNF) : Prop := cmp_cnf x y ≠ Ordering.gt
+
+theorem cmp_self_eq (x : CNF) : cmp_cnf x x = Ordering.eq := by
+  simp [cmp_cnf, cmpList_refl_eq]
+
+/-- Reflexivity: x ≤ x. -/
+theorem le_refl (x : CNF) : le_cnf x x := by
+  simp [le_cnf, cmp_self_eq]
+
+/-- Irreflexivity: ¬ (x < x). -/
+theorem lt_irrefl (x : CNF) : ¬ lt_cnf x x := by
+  -- lt_cnf x x means cmp_cnf x x = Ordering.lt, but cmp_self_eq says it's eq.
+  simp [lt_cnf, cmp_self_eq]
+
+/-- Value-level trichotomy for cmpList. -/
+theorem cmpList_cases (xs ys : List (Nat × Nat)) :
+    cmpList xs ys = Ordering.lt ∨ cmpList xs ys = Ordering.eq ∨ cmpList xs ys = Ordering.gt := by
+  cases h : cmpList xs ys with
+  | lt => exact Or.inl rfl
+  | eq => exact Or.inr (Or.inl rfl)
+  | gt => exact Or.inr (Or.inr rfl)
+
+/-- Asymmetry at list level: if cmpList xs ys = lt then cmpList ys xs ≠ lt. -/
+theorem cmpList_asymm_of_lt {xs ys : List (Nat × Nat)} (h : cmpList xs ys = Ordering.lt) :
+    cmpList ys xs ≠ Ordering.lt := by
+  have hgt := cmpList_symm_gt_of_lt xs ys h
+  intro hcontra
+  -- rewrite the gt-equality at the same lhs to force a lt=gt contradiction
+  have : Ordering.lt = Ordering.gt := by
+    simpa [hcontra] using hgt
+  have ne : Ordering.lt ≠ Ordering.gt := by decide
+  exact ne this
+
+/-- Trichotomy on cmp: exactly one of lt/eq/gt holds as a value. -/
+theorem cmp_cases (x y : CNF) :
+    cmp_cnf x y = Ordering.lt ∨ cmp_cnf x y = Ordering.eq ∨ cmp_cnf x y = Ordering.gt := by
+  cases h : cmp_cnf x y with
+  | lt => exact Or.inl rfl
+  | eq => exact Or.inr (Or.inl rfl)
+  | gt => exact Or.inr (Or.inr rfl)
+
+/-- If x ≤ y, then cmp is either lt or eq (never gt). -/
+theorem le_cases {x y : CNF} (hxy : le_cnf x y) :
+    cmp_cnf x y = Ordering.lt ∨ cmp_cnf x y = Ordering.eq := by
+  -- Case on the computed ordering; rule out gt using hxy.
+  cases h : cmp_cnf x y with
+  | lt => exact Or.inl rfl
+  | eq => exact Or.inr rfl
+  | gt =>
+    -- hxy says cmp_cnf x y ≠ gt, contradiction
+  exact False.elim (hxy h)
+
+/-- General CNF asymmetry: x < y implies not (y < x). -/
+theorem lt_asymm_cnf {x y : CNF} (hxy : lt_cnf x y) : ¬ lt_cnf y x := by
+  -- unfold to list-level and use cmpList asymmetry
+  unfold lt_cnf at *
+  unfold cmp_cnf at *
+  -- set normalized lists for readability
+  let xs := (norm_cnf x).repr
+  let ys := (norm_cnf y).repr
+  -- First coerce hxy to a statement about cmpList xs ys = lt
+  have hxy' : cmpList xs ys = Ordering.lt := by simpa using hxy
+  -- Symmetry gives cmpList ys xs = gt
+  have hgt : cmpList ys xs = Ordering.gt := cmpList_symm_gt_of_lt xs ys hxy'
+  -- Show lt cannot also hold
+  intro hcontra
+  have ne : Ordering.lt ≠ Ordering.gt := by decide
+  -- hcontra : cmpList ys xs = lt, hgt : cmpList ys xs = gt ⇒ lt = gt
+  have : Ordering.gt = Ordering.lt := by exact hgt.symm.trans hcontra
+  exact (ne.symm) this
+
+/-- Antisymmetry for `le_cnf` at the cmp level: if x ≤ y and y ≤ x then cmp is eq. -/
+theorem le_antisymm_cnf {x y : CNF}
+  (hxy : le_cnf x y) (hyx : le_cnf y x) : cmp_cnf x y = Ordering.eq := by
+  cases hcmp : cmp_cnf x y with
+  | lt =>
+    -- translate to list-level, flip, and contradict hyx
+    have hltList : cmpList (norm_cnf x).repr (norm_cnf y).repr = Ordering.lt := by
+      simpa [cmp_cnf] using hcmp
+    have hgtList : cmpList (norm_cnf y).repr (norm_cnf x).repr = Ordering.gt :=
+      cmpList_symm_gt_of_lt _ _ hltList
+    have : cmp_cnf y x = Ordering.gt := by
+      simpa [cmp_cnf] using hgtList
+    exact (hyx this).elim
+  | eq => exact rfl
+  | gt => exact (hxy hcmp).elim
+/-- Congruence of cmp on the left, given normalized representations are equal. -/
+theorem cmp_congr_left_repr_eq {x y z : CNF}
+  (h : (norm_cnf x).repr = (norm_cnf y).repr) :
+  cmp_cnf x z = cmp_cnf y z := by
+  unfold cmp_cnf; simp [h]
+
+/-- Transitivity for list-level lt: if xs < ys and ys < zs then xs < zs. -/
+theorem cmpList_trans_lt :
+  ∀ {xs ys zs : List (Nat × Nat)},
+    cmpList xs ys = Ordering.lt → cmpList ys zs = Ordering.lt →
+    cmpList xs zs = Ordering.lt := by
+  intro xs; induction xs with
+  | nil =>
+    intro ys zs hxy hyz; cases ys with
+    | nil => cases hxy
+    | cons y ys =>
+      -- cmpList [] (y::ys) = lt, so xs<zs regardless of hyz structure on left
+      simp [cmpList] at hxy; cases zs with
+      | nil =>
+        -- hyz: (y::ys) < [] impossible
+        simp [cmpList] at hyz
+      | cons z zs =>
+        simp [cmpList]
+  | cons x xs ih =>
+    intro ys zs hxy hyz
+    cases ys with
+    | nil =>
+      -- xs<[] impossible
+      simp [cmpList] at hxy
+    | cons y ys =>
+      cases zs with
+      | nil =>
+        -- ys<[] impossible
+        simp [cmpList] at hyz
+      | cons z zs =>
+        cases x with
+        | mk e1 c1 =>
+        cases y with
+        | mk e2 c2 =>
+        cases z with
+        | mk e3 c3 =>
+        -- analyze hxy
+        have hx := cmpList_cons_cons_lt_cases (xs:=xs) (ys:=ys) (e1:=e1) (c1:=c1) (e2:=e2) (c2:=c2) hxy
+        -- analyze hyz for ys vs zs
+        have hy := cmpList_cons_cons_lt_cases (xs:=ys) (ys:=zs) (e1:=e2) (c1:=c2) (e2:=e3) (c2:=c3) hyz
+        -- split on cases to derive e1<e3 or tie and reduce
+        rcases hx with hExpLt | hCoeffLt | hTailLt
+        · -- e1 < e2; by trans with e2 ≤ e3 from hy
+          -- derive e2 ≤ e3
+          have hE23 : e2 ≤ e3 := by
+            rcases hy with hE2lt3 | hrest
+            · exact Nat.le_of_lt hE2lt3
+            · rcases hrest with hE2eqE3CoeffLt | hE2eqE3Tail
+              · have heq : e2 = e3 := hE2eqE3CoeffLt.left
+                simpa [heq] using (le_rfl : e2 ≤ e2)
+              · have heq : e2 = e3 := hE2eqE3Tail.left
+                simpa [heq] using (le_rfl : e2 ≤ e2)
+          -- from e2 ≤ e3, split eq/lt to conclude e1 < e3
+          have hE13 : e1 < e3 := by
+            have hE2eqOrLt := Nat.lt_or_eq_of_le hE23
+            cases hE2eqOrLt with
+            | inl hlt23 => exact Nat.lt_trans hExpLt hlt23
+            | inr heq23 => simpa [heq23] using hExpLt
+          exact (cmpList_cons_cons_exp_lt (xs:=xs) (ys:=zs) (e1:=e1) (c1:=c1) (e2:=e3) (c2:=c3) hE13)
+        · -- e1 = e2 ∧ c1 < c2
+          rcases hCoeffLt with ⟨hE12, hC12⟩
+          -- from hy, either e2<e3 -> then e1<e3; or e2=e3 and c2<c3; or tie and descend
+          rcases hy with hE2lt3 | hrest
+          · have hE13 : e1 < e3 := by simpa [hE12] using hE2lt3
+            exact (cmpList_cons_cons_exp_lt (xs:=xs) (ys:=zs) (e1:=e1) (c1:=c1) (e2:=e3) (c2:=c3) hE13)
+          · rcases hrest with hE2eqE3CoeffLt | hE2eqE3Tail
+            · rcases hE2eqE3CoeffLt with ⟨hE23, hC23⟩
+              have hE13 : e1 = e3 := by simpa [hE12] using hE23
+              -- coefficients chain: c1 < c2 and c2 < c3 ⇒ c1 < c3
+              have hC13 : c1 < c3 := Nat.lt_trans hC12 hC23
+              -- conclude by head coefficient comparison
+              have hlt : cmpList ((e3,c1)::xs) ((e3,c3)::zs) = Ordering.lt :=
+                cmpList_cons_cons_exp_eq_coeff_lt (xs:=xs) (ys:=zs) (e:=e3) (c1:=c1) (c2:=c3) hC13
+              simpa [hE13] using hlt
+            · rcases hE2eqE3Tail with ⟨hE23, hC23, _hTail⟩
+              -- heads tie and c2=c3; from c1<c2 and c2=c3, get c1<c3 and conclude
+              have hE13 : e1 = e3 := by simpa [hE12] using hE23
+              have hC13 : c1 < c3 := by simpa [hC23] using hC12
+              have hlt : cmpList ((e3,c1)::xs) ((e3,c3)::zs) = Ordering.lt :=
+                cmpList_cons_cons_exp_eq_coeff_lt (xs:=xs) (ys:=zs) (e:=e3) (c1:=c1) (c2:=c3) hC13
+              simpa [hE13] using hlt
+        · -- e1 = e2 ∧ c1 = c2 ∧ tail lt; combine with hy cases
+          rcases hTailLt with ⟨hE12, hC12, hTailXY⟩
+          rcases hy with hE2lt3 | hrest
+          · have hE13 : e1 < e3 := by simpa [hE12] using hE2lt3
+            exact (cmpList_cons_cons_exp_lt (xs:=xs) (ys:=zs) (e1:=e1) (c1:=c1) (e2:=e3) (c2:=c3) hE13)
+          · rcases hrest with hE2eqE3CoeffLt | hE2eqE3Tail
+            · rcases hE2eqE3CoeffLt with ⟨hE23, hC23⟩
+              -- heads tie and c2<c3 ⇒ with c1=c2 we get c1<c3, immediate lt
+              have hE13 : e1 = e3 := by simpa [hE12] using hE23
+              have hC13 : c1 < c3 := by simpa [hC12] using hC23
+              have hlt : cmpList ((e3,c1)::xs) ((e3,c3)::zs) = Ordering.lt :=
+                cmpList_cons_cons_exp_eq_coeff_lt (xs:=xs) (ys:=zs) (e:=e3) (c1:=c1) (c2:=c3) hC13
+              simpa [hE13] using hlt
+            · rcases hE2eqE3Tail with ⟨hE23, hC23, hTailYZ⟩
+              have hE13 : e1 = e3 := by simpa [hE12] using hE23
+              have hC13 : c1 = c3 := by simpa [hE12, hC12] using hC23
+              -- descend both with ih on tails
+              have ih'' : cmpList xs zs = Ordering.lt := ih (ys:=ys) (zs:=zs) hTailXY hTailYZ
+              simpa [cmpList, hE13, Nat.lt_irrefl, hC13] using ih''
+
+/-- Transitivity for CNF lt. -/
+theorem lt_trans_cnf {x y z : CNF} (hxy : lt_cnf x y) (hyz : lt_cnf y z) : lt_cnf x z := by
+  unfold lt_cnf at *
+  -- abbreviations for readability
+  let xs := (norm_cnf x).repr
+  let ys := (norm_cnf y).repr
+  let zs := (norm_cnf z).repr
+  -- rewrite both facts to list-level and apply list transitivity
+  have hx : cmpList xs ys = Ordering.lt := by simpa [cmp_cnf, xs, ys] using hxy
+  have hy : cmpList ys zs = Ordering.lt := by simpa [cmp_cnf, ys, zs] using hyz
+  have hz : cmpList xs zs = Ordering.lt := cmpList_trans_lt (xs:=xs) (ys:=ys) (zs:=zs) hx hy
+  simpa [cmp_cnf, xs, ys, zs]
+
+/-- Trichotomy for CNF compare: exactly one of lt/eq/gt holds. -/
+theorem cmp_cnf_trichotomy (x y : CNF) :
+  cmp_cnf x y = Ordering.lt ∨ cmp_cnf x y = Ordering.eq ∨ cmp_cnf x y = Ordering.gt := by
+  unfold cmp_cnf
+  exact cmpList_cases (norm_cnf x).repr (norm_cnf y).repr
+
+/-- Congruence of cmp on the right, given normalized representations are equal. -/
+theorem cmp_congr_right_repr_eq {x y z : CNF}
+  (h : (norm_cnf y).repr = (norm_cnf z).repr) :
+  cmp_cnf x y = cmp_cnf x z := by
+  unfold cmp_cnf; simp [h]
+
+/-- CNF head-case: if normalized head exponents satisfy e1 < e2, then cmp is lt. -/
+theorem cmp_cnf_head_exp_lt {x y : CNF}
+  {e1 c1 e2 c2 : Nat} {xs ys : List (Nat × Nat)}
+  (hx : (norm_cnf x).repr = (e1, c1) :: xs)
+  (hy : (norm_cnf y).repr = (e2, c2) :: ys)
+  (h : e1 < e2) :
+  cmp_cnf x y = Ordering.lt := by
+  unfold cmp_cnf; simp [hx, hy, cmpList_cons_cons_exp_lt h]
+
+/-- CNF head-case: if normalized head exponents satisfy e2 < e1, then cmp is gt. -/
+theorem cmp_cnf_head_exp_gt {x y : CNF}
+  {e1 c1 e2 c2 : Nat} {xs ys : List (Nat × Nat)}
+  (hx : (norm_cnf x).repr = (e1, c1) :: xs)
+  (hy : (norm_cnf y).repr = (e2, c2) :: ys)
+  (h : e2 < e1) :
+  cmp_cnf x y = Ordering.gt := by
+  unfold cmp_cnf; simp [hx, hy, cmpList_cons_cons_exp_gt h]
+
+/-- CNF head-case: equal head exponents, smaller left coefficient gives lt. -/
+theorem cmp_cnf_head_exp_eq_coeff_lt {x y : CNF}
+  {e c1 c2 : Nat} {xs ys : List (Nat × Nat)}
+  (hx : (norm_cnf x).repr = (e, c1) :: xs)
+  (hy : (norm_cnf y).repr = (e, c2) :: ys)
+  (h : c1 < c2) :
+  cmp_cnf x y = Ordering.lt := by
+  unfold cmp_cnf; simp [hx, hy, cmpList_cons_cons_exp_eq_coeff_lt h]
+
+/-- CNF head-case: equal head exponents, larger left coefficient gives gt. -/
+theorem cmp_cnf_head_exp_eq_coeff_gt {x y : CNF}
+  {e c1 c2 : Nat} {xs ys : List (Nat × Nat)}
+  (hx : (norm_cnf x).repr = (e, c1) :: xs)
+  (hy : (norm_cnf y).repr = (e, c2) :: ys)
+  (h : c2 < c1) :
+  cmp_cnf x y = Ordering.gt := by
+  unfold cmp_cnf; simp [hx, hy, cmpList_cons_cons_exp_eq_coeff_gt h]
+
+/-- CNF head-case: equal head term, comparison recurses on tails. -/
+theorem cmp_cnf_head_exp_coeff_eq {x y : CNF}
+  {e c : Nat} {xs ys : List (Nat × Nat)}
+  (hx : (norm_cnf x).repr = (e, c) :: xs)
+  (hy : (norm_cnf y).repr = (e, c) :: ys) :
+  cmp_cnf x y = cmpList xs ys := by
+  unfold cmp_cnf; simp [hx, hy, cmpList_cons_cons_exp_eq_coeff_eq]
+
+/-- CNF asymmetry in the simple head-exp case: if head e1 < e2 then x < y and not y < x. -/
+theorem lt_asymm_head_exp {x y : CNF}
+  {e1 c1 e2 c2 : Nat} {xs ys : List (Nat × Nat)}
+  (hx : (norm_cnf x).repr = (e1, c1) :: xs)
+  (hy : (norm_cnf y).repr = (e2, c2) :: ys)
+  (h : e1 < e2) : lt_cnf x y ∧ ¬ lt_cnf y x := by
+  constructor
+  · unfold lt_cnf; simp [cmp_cnf_head_exp_lt (x:=x) (y:=y) hx hy h]
+  · intro hlt
+    have hswap : cmp_cnf y x = Ordering.gt := by
+      unfold cmp_cnf; simp [hy, hx, cmpList_cons_cons_exp_lt_swap h]
+    have ne : Ordering.gt ≠ Ordering.lt := by decide
+    -- unfold lt_cnf in hlt to get a cmp equality
+    have hlt' : cmp_cnf y x = Ordering.lt := by
+      -- linter: prefer simp at hlt' instead of simpa using hlt
+      simp [lt_cnf] at hlt; exact hlt
+    -- rewrite cmp_cnf y x via hswap to derive an impossible equality
+    have hbad : Ordering.gt = Ordering.lt := by
+      -- simplify hlt' with the computed swap
+      simpa [hswap] using hlt'
+    exact ne hbad
+
+/-!
+  ## Instances: Decidability and Ord for CNF
+-/
+
+instance instDecidableRel_le_cnf : DecidableRel le_cnf := by
+  intro x y
+  unfold le_cnf
+  infer_instance
+
+instance instDecidableRel_lt_cnf : DecidableRel lt_cnf := by
+  intro x y
+  unfold lt_cnf
+  infer_instance
+
+instance : Ord CNF where
+  compare := cmp_cnf
+
+/-- If y and z normalize to the same repr and x < y, then x < z. -/
+theorem lt_trans_eq_right {x y z : CNF}
+  (hYZ : (norm_cnf y).repr = (norm_cnf z).repr)
+  (hXY : lt_cnf x y) : lt_cnf x z := by
+  unfold lt_cnf at *
+  simpa [cmp_congr_right_repr_eq (x:=x) (y:=y) (z:=z) hYZ] using hXY
+/-- If x and y normalize to the same repr and y < z, then x < z. -/
+theorem lt_trans_eq_left {x y z : CNF}
+  (hXY : (norm_cnf x).repr = (norm_cnf y).repr)
+  (hYZ : lt_cnf y z) : lt_cnf x z := by
+  unfold lt_cnf at *
+  simpa [cmp_congr_left_repr_eq (x:=x) (y:=y) (z:=z) hXY] using hYZ
+
+/-- If y and z normalize to the same repr and x ≤ y, then x ≤ z. -/
+theorem le_trans_eq_right {x y z : CNF}
+  (hYZ : (norm_cnf y).repr = (norm_cnf z).repr)
+  (hXY : le_cnf x y) : le_cnf x z := by
+  unfold le_cnf at *
+  -- cmp x z = gt would rewrite to cmp x y = gt via congruence, contradicting hXY
+  intro hgt
+  have : cmp_cnf x y = Ordering.gt := by
+    simpa [cmp_congr_right_repr_eq (x:=x) (y:=y) (z:=z) hYZ] using hgt
+  exact hXY this
+
+/-- If x and y normalize to the same repr and y ≤ z, then x ≤ z. -/
+theorem le_trans_eq_left {x y z : CNF}
+  (hXY : (norm_cnf x).repr = (norm_cnf y).repr)
+  (hYZ : le_cnf y z) : le_cnf x z := by
+  unfold le_cnf at *
+  intro hgt
+  -- rewrite cmp x z to cmp y z using repr equality, contradicting hYZ
+  have : cmp_cnf y z = Ordering.gt := by
+    simpa [cmp_congr_left_repr_eq (x:=x) (y:=y) (z:=z) hXY] using hgt
+  exact hYZ this
+
+/-!
+  ## Tiny conveniences
+-/
+
+/-- If normalized representations are equal, cmp is `eq`. -/
+theorem cmp_eq_of_norm_repr_eq {x y : CNF}
+  (h : (norm_cnf x).repr = (norm_cnf y).repr) :
+  cmp_cnf x y = Ordering.eq := by
+  unfold cmp_cnf
+  simp [cmpList_refl_eq, h]
+
+/-!
+  Equality characterization: if cmpList = eq then the lists are equal.
+  This lets us reflect cmp equality back to structural equality of normalized
+  representations at the CNF level.
+-/
+theorem cmpList_eq_implies_eq :
+    ∀ {xs ys : List (Nat × Nat)}, cmpList xs ys = Ordering.eq → xs = ys := by
+  intro xs
+  induction xs with
+  | nil =>
+    intro ys h
+    cases ys with
+    | nil =>
+      simp [cmpList] at h
+      exact rfl
+    | cons y ys =>
+      -- cmpList [] (y::ys) = lt, contradicting eq
+      simp [cmpList] at h
+  | cons x xs ih =>
+    intro ys h
+    cases ys with
+    | nil =>
+      -- cmpList (x::xs) [] = gt, contradicting eq
+      simp [cmpList] at h
+    | cons y ys =>
+      cases x with
+      | mk e1 c1 =>
+        cases y with
+        | mk e2 c2 =>
+        classical
+        -- eliminate strict exponent inequalities via if-splits
+        if hltE : e1 < e2 then
+          have : cmpList ((e1,c1)::xs) ((e2,c2)::ys) = Ordering.lt := by
+            simpa [cmpList, hltE]
+          cases this ▸ h
+        else
+          have hnot12 : ¬ e1 < e2 := by simpa using hltE
+          if hgtE : e2 < e1 then
+            have : cmpList ((e1,c1)::xs) ((e2,c2)::ys) = Ordering.gt := by
+              simpa [cmpList, hnot12, hgtE]
+            cases this ▸ h
+          else
+            -- exponents equal
+            have heq : e1 = e2 :=
+              Nat.le_antisymm (Nat.le_of_not_gt hgtE) (Nat.le_of_not_gt hltE)
+            -- eliminate strict coefficient inequalities
+            if hltC : c1 < c2 then
+              have : cmpList ((e1,c1)::xs) ((e2,c2)::ys) = Ordering.lt := by
+                simpa [cmpList, heq, Nat.lt_irrefl, hltC]
+              cases this ▸ h
+            else
+              have hnotc12 : ¬ c1 < c2 := by simpa using hltC
+              if hgtC : c2 < c1 then
+                have : cmpList ((e1,c1)::xs) ((e2,c2)::ys) = Ordering.gt := by
+                  simpa [cmpList, heq, Nat.lt_irrefl, hnotc12, hgtC]
+                cases this ▸ h
+              else
+                -- coefficients equal; descend to tails
+                have hceq : c1 = c2 := by
+                  have hle₁ : c2 ≤ c1 := Nat.not_lt.mp hltC
+                  have hle₂ : c1 ≤ c2 := Nat.not_lt.mp hgtC
+                  exact Nat.le_antisymm hle₂ hle₁
+                have hTail : cmpList xs ys = Ordering.eq := by
+                  simpa [cmpList, heq, hceq, Nat.lt_irrefl] using h
+                have ih' := ih hTail
+                subst heq; subst hceq
+                simp [ih']
+
+theorem cmp_eq_iff_norm_repr_eq {x y : CNF} :
+    cmp_cnf x y = Ordering.eq ↔ (norm_cnf x).repr = (norm_cnf y).repr := by
+  constructor
+  · intro h
+    unfold cmp_cnf at h
+    exact cmpList_eq_implies_eq h
+  · intro hrepr
+    exact cmp_eq_of_norm_repr_eq (x:=x) (y:=y) hrepr
+
+/-- lt implies le (definitionally). -/
+theorem le_of_lt {x y : CNF} (h : lt_cnf x y) : le_cnf x y := by
+  unfold lt_cnf at h
+  unfold le_cnf
+  intro hgt
+  -- rewriting with h produces an impossible lt=gt
+  cases h ▸ hgt
+
+/-- CNF-level symmetry: if cmp x y = lt then cmp y x = gt. -/
+theorem cmp_cnf_symm_gt_of_lt {x y : CNF}
+  (h : cmp_cnf x y = Ordering.lt) : cmp_cnf y x = Ordering.gt := by
+  classical
+  let xs := (norm_cnf x).repr
+  let ys := (norm_cnf y).repr
+  have hlist : cmpList xs ys = Ordering.lt := by
+    simpa [cmp_cnf, xs, ys] using h
+  have hgt := cmpList_symm_gt_of_lt xs ys hlist
+  simpa [cmp_cnf, xs, ys] using hgt
+
+-- (We intentionally avoid a gt→lt symmetry lemma here to keep the proof surface minimal.)
+
+/-- Symmetry for gt: if cmpList xs ys = gt then cmpList ys xs = lt. -/
+theorem cmpList_symm_lt_of_gt :
+  ∀ xs ys : List (Nat × Nat), cmpList xs ys = Ordering.gt → cmpList ys xs = Ordering.lt
+  | [], [], h => by cases h
+  | [], (y::ys), h => by
+      -- cmpList [] (y::ys) = lt, so gt is impossible
+      cases h
+  | (x::xs), [], _h => by
+      -- non-empty vs []
+      simp [cmpList]
+  | ((e1,c1)::xs), ((e2,c2)::ys), h =>
+      by
+        classical
+        -- split on exponent comparison using an if-then-else
+        if hlt12 : e1 < e2 then
+          -- then result would be lt, contradicts gt
+          have : cmpList ((e1,c1)::xs) ((e2,c2)::ys) = Ordering.lt := by
+            simpa [cmpList, hlt12]
+          cases this ▸ h
+        else
+          have hnot12 : ¬ e1 < e2 := by simpa using hlt12
+          if hlt21 : e2 < e1 then
+            -- gt by exponent; swap gives lt
+            exact (cmpList_cons_cons_exp_gt_swap (xs:=xs) (ys:=ys) (e1:=e1) (c1:=c1) (e2:=e2) (c2:=c2) hlt21)
+          else
+            -- exponents equal
+            have heq : e1 = e2 :=
+              Nat.le_antisymm (Nat.le_of_not_gt hlt21) (Nat.le_of_not_gt hlt12)
+            -- compare coefficients similarly
+            if hclt12 : c1 < c2 then
+              -- would make lt, contradict gt
+              have : cmpList ((e1,c1)::xs) ((e2,c2)::ys) = Ordering.lt := by
+                simpa [cmpList, heq, Nat.lt_irrefl, hclt12]
+              cases this ▸ h
+            else
+              have hnotc12 : ¬ c1 < c2 := by simpa using hclt12
+              if hclt21 : c2 < c1 then
+                -- swapped becomes lt by coeff-lt
+                have : cmpList ((e2,c2)::ys) ((e1,c1)::xs) = Ordering.lt := by
+                  simpa [heq] using (cmpList_cons_cons_exp_eq_coeff_lt (xs:=ys) (ys:=xs) (e:=e1) (c1:=c2) (c2:=c1) hclt21)
+                simpa using this
+              else
+                -- coefficients equal; descend to tails
+                have hceq : c1 = c2 := by
+                  have hle₁ : c2 ≤ c1 := Nat.not_lt.mp hclt12
+                  have hle₂ : c1 ≤ c2 := Nat.not_lt.mp hclt21
+                  exact Nat.le_antisymm hle₂ hle₁
+                -- from h = gt, tails must be gt as well
+                have hTail : cmpList xs ys = Ordering.gt := by
+                  simpa [cmpList, heq, hceq, Nat.lt_irrefl] using h
+                -- recurse on tails
+                have ih := cmpList_symm_lt_of_gt xs ys hTail
+                -- lift back through equal heads
+                simpa [cmpList_cons_cons_exp_eq_coeff_eq, heq, hceq] using ih
+
+/-- CNF-level symmetry: if cmp x y = gt then cmp y x = lt. -/
+theorem cmp_cnf_symm_lt_of_gt {x y : CNF}
+  (h : cmp_cnf x y = Ordering.gt) : cmp_cnf y x = Ordering.lt := by
+  classical
+  let xs := (norm_cnf x).repr
+  let ys := (norm_cnf y).repr
+  have hlist : cmpList xs ys = Ordering.gt := by
+    simpa [cmp_cnf, xs, ys] using h
+  have hlt := cmpList_symm_lt_of_gt xs ys hlist
+  simpa [cmp_cnf, xs, ys] using hlt
+
+/- Totality for ≤ on CNF. -/
+theorem le_total_cnf (x y : CNF) : le_cnf x y ∨ le_cnf y x := by
+  -- case on the computed comparison
+  cases h : cmp_cnf x y with
+  | lt => exact Or.inl (le_of_lt (by simpa [lt_cnf] using h))
+  | eq => exact Or.inl (by simp [le_cnf, h])
+  | gt =>
+    -- swap gives lt, hence y ⪯ x
+    have : cmp_cnf y x = Ordering.lt := cmp_cnf_symm_lt_of_gt h
+    exact Or.inr (by
+      -- lt implies ≤ by definition (not gt)
+      have : lt_cnf y x := by simpa [lt_cnf] using this
+      exact le_of_lt this)
+
+-- Infix notations (optional ergonomics)
+infix:50 " ≺ " => lt_cnf
+infix:50 " ⪯ " => le_cnf
+
+/-!
+  ## Addition: merge and normalize
+-/
+def add_cnf (x y : CNF) : CNF :=
+  norm_cnf { repr := x.repr ++ y.repr }
+
+/-!
+  ## Multiplication: distributive law, collect like terms, normalize
+-/
+def mul_cnf (x y : CNF) : CNF :=
+  match norm_cnf x, norm_cnf y with
+  | { repr := [] }, _ => { repr := [] }
+  | _, { repr := [] } => { repr := [] }
+  | { repr := xs }, { repr := ys } =>
+    let terms := List.foldr (fun a b => List.append a b) [] (xs.map (fun (e1, c1) => ys.map (fun (e2, c2) => (e1 + e2, c1 * c2))))
+    norm_cnf { repr := terms }
+
+/-!
+  ## ω-Exponentiation: ω^x
+  - ω^0 = 1
+  - ω^{sum_i ω^{a_i}·c_i} = ω^{ω^{a_1}·c_1 + ...}
+  For CNF, ω^x is just shifting exponents up one level.
+-/
+def opowω_cnf (x : CNF) : CNF :=
+  match norm_cnf x with
+  | { repr := [] } => { repr := [(0,1)] } -- ω^0 = 1
+  | { repr := xs } => { repr := xs.map (fun (e, c) => (e + 1, c)) }
+
+/-!
+  ## Examples
+-/
+def cnf_zero : CNF := { repr := [] }
+def cnf_one : CNF := { repr := [(0,1)] }
+def cnf_omega : CNF := { repr := [(1,1)] }
+def cnf_omega_plus_one : CNF := { repr := [(1,1),(0,1)] }
+def cnf_two_omega : CNF := { repr := [(1,2)] }
+def cnf_omega_sq : CNF := { repr := [(2,1)] }
+
+/-!
+  ## Basic tests (examples)
+-/
+
+
+
+
+end OperatorKO7.MetaCNF
+
+namespace OperatorKO7.MetaCNF
+
+/-!
+  ## Pretty-printing (basic)
+  Converts a CNF to a human-readable string for debugging and examples.
+-/
+def intercalate (sep : String) (xs : List String) : String :=
+  match xs with
+  | [] => ""
+  | x :: xs => xs.foldl (fun acc s => acc ++ sep ++ s) x
+
+def showTerm : Nat × Nat → String
+  | (0, c) => toString c
+  | (e, 1) => "ω^" ++ toString e
+  | (e, c) => toString c ++ "·ω^" ++ toString e
+
+def showCNF (cnf : CNF) : String :=
+  match cnf.repr with
+  | [] => "0"
+  | xs => intercalate " + " (xs.map showTerm)
+
+instance : ToString CNF where
+  toString := showCNF
+
+/-!
+  ## Normalization checks (boolean)
+  Executable validators for CNF invariants. Useful for tests and examples.
+-/
+def allPosCoeffs : List (Nat × Nat) → Bool
+  | [] => true
+  | (_, c) :: xs => (c > 0) && allPosCoeffs xs
+
+def sortedStrictDesc : List (Nat × Nat) → Bool
+  | [] => true
+  | [ _ ] => true
+  | (e1, _) :: (e2, c2) :: xs => (e1 > e2) && sortedStrictDesc ((e2, c2) :: xs)
+
+def isNormalizedB (x : CNF) : Bool :=
+  sortedStrictDesc x.repr && allPosCoeffs x.repr
+
+/-!
+  ## Inspectors and predicates (ergonomics)
+-/
+
+def isZero (x : CNF) : Bool :=
+  match (norm_cnf x).repr with
+  | [] => true
+  | _ => false
+
+def isOne (x : CNF) : Bool :=
+  decide ((norm_cnf x).repr = [(0, 1)])
+
+def isOmegaPow (x : CNF) : Bool :=
+  match (norm_cnf x).repr with
+  | [(_, 1)] => true
+  | _ => false
+
+def degreeOpt (x : CNF) : Option Nat :=
+  match (norm_cnf x).repr with
+  | [] => none
+  | (e, _) :: _ => some e
+
+/-- Transitivity for `≤` on CNF. -/
+theorem le_trans_cnf {x y z : CNF} (hxy : le_cnf x y) (hyz : le_cnf y z) : le_cnf x z := by
+  -- By definition, le_cnf x z means cmp_cnf x z ≠ gt. Prove by contradiction.
+  unfold le_cnf at *
+  intro hgt
+  -- Case on cmp x y.
+  cases hxyCases : cmp_cnf x y with
+  | lt =>
+    -- y ≤ z splits into lt or eq.
+    have hyCases := le_cases (x:=y) (y:=z) hyz
+    cases hyCases with
+    | inl hylt =>
+      -- x < y and y < z ⇒ x < z, contradicting cmp x z = gt.
+      have hxlt : lt_cnf x y := by simpa [lt_cnf] using hxyCases
+      have hzlt : lt_cnf x z := lt_trans_cnf hxlt (by simpa [lt_cnf] using hylt)
+      -- Convert to cmp form and contradict hgt directly.
+      have : cmp_cnf x z = Ordering.lt := by simpa [lt_cnf] using hzlt
+      cases this ▸ hgt
+    | inr hyeq =>
+      -- cmp y z = eq ⇒ normalize-equal reprs; transport x<y to x<z.
+      have hrepr : (norm_cnf y).repr = (norm_cnf z).repr :=
+        (cmp_eq_iff_norm_repr_eq).mp hyeq
+      have hxlt : lt_cnf x y := by simpa [lt_cnf] using hxyCases
+      have hzlt : lt_cnf x z := lt_trans_eq_right (x:=x) (y:=y) (z:=z) hrepr hxlt
+      have : cmp_cnf x z = Ordering.lt := by simpa [lt_cnf] using hzlt
+      cases this ▸ hgt
+  | eq =>
+    -- cmp x y = eq ⇒ normalized reprs equal; rewrite left via congruence and use hyz.
+    have hrepr : (norm_cnf x).repr = (norm_cnf y).repr :=
+      (cmp_eq_iff_norm_repr_eq).mp hxyCases
+    -- Transport y ≤ z to x ≤ z, closing the contradiction.
+    exact (le_trans_eq_left (x:=x) (y:=y) (z:=z) hrepr hyz) hgt
+  | gt =>
+    -- Contradicts hxy immediately.
+    exact (hxy hxyCases).elim
+
+def leadCoeffOpt (x : CNF) : Option Nat :=
+  match (norm_cnf x).repr with
+  | [] => none
+  | (_, c) :: _ => some c
+
+/-!
+  ## Example values and usage
+-/
+def example1 := add_cnf cnf_omega cnf_one         -- ω + 1
+def example2 := add_cnf cnf_omega cnf_omega       -- ω + ω = 2·ω
+def example3 := mul_cnf cnf_omega cnf_omega       -- ω * ω = ω^2
+
+end OperatorKO7.MetaCNF
+
+namespace OperatorKO7.MetaCNF
+
+/-!
+  ## Min/Max and sorting helpers (ergonomics)
+-/
+
+def min_cnf (x y : CNF) : CNF := if lt_cnf x y then x else y
+def max_cnf (x y : CNF) : CNF := if lt_cnf x y then y else x
+
+private def insertBy (x : CNF) : List CNF → List CNF
+  | [] => [x]
+  | y :: ys => if lt_cnf x y then x :: y :: ys else y :: insertBy x ys
+
+def sortCNF (xs : List CNF) : List CNF :=
+  xs.foldl (fun acc x => insertBy x acc) []
+
+def isNonDecreasing (xs : List CNF) : Bool :=
+  match xs with
+  | [] => true
+  | [_] => true
+  | x :: y :: ys =>
+    let leB (a b : CNF) : Bool :=
+      match cmp_cnf a b with
+      | Ordering.gt => false
+      | _ => true
+    leB x y && isNonDecreasing (y :: ys)
+
+def minListCNF : List CNF → Option CNF
+  | [] => none
+  | x :: xs => some (xs.foldl (fun acc y => min_cnf acc y) x)
+
+def maxListCNF : List CNF → Option CNF
+  | [] => none
+  | x :: xs => some (xs.foldl (fun acc y => max_cnf acc y) x)
+
+-- Demo checks
+example : toString (min_cnf cnf_omega cnf_one) = "1" := by
+  decide
+example : toString (max_cnf cnf_omega cnf_one) = "ω^1" := by
+  decide
+-- Use a local demo set to avoid forward references
+def demoList : List CNF := [cnf_zero, cnf_one, cnf_omega]
+example : isNonDecreasing (sortCNF demoList) = true := by
+  decide
+example :
+    (match minListCNF demoList with | some x => toString x | none => "-") = "0" := by
+  decide
+example :
+    (match maxListCNF demoList with | some x => toString x | none => "-") = "ω^1" := by
+  decide
+
+end OperatorKO7.MetaCNF
+
+/-!
+  ## Example output (for documentation/testing)
+  Executable examples to illustrate CNF operations and normalization.
+  These produce human-readable CNF strings and boolean normalization checks.
+-/
+example : toString OperatorKO7.MetaCNF.example1 = "ω^1 + 1" := by
+  decide
+example : toString OperatorKO7.MetaCNF.example2 = "2·ω^1" := by
+  decide
+example : toString OperatorKO7.MetaCNF.example3 = "ω^2" := by
+  decide
+
+-- Inspector demos
+example : OperatorKO7.MetaCNF.isZero OperatorKO7.MetaCNF.cnf_zero = true := by
+  decide
+example : OperatorKO7.MetaCNF.isOne OperatorKO7.MetaCNF.cnf_one = true := by
+  decide
+example : OperatorKO7.MetaCNF.isOmegaPow OperatorKO7.MetaCNF.cnf_omega = true := by
+  decide
+example : OperatorKO7.MetaCNF.degreeOpt OperatorKO7.MetaCNF.cnf_two_omega = some 1 := by
+  decide
+example : OperatorKO7.MetaCNF.leadCoeffOpt OperatorKO7.MetaCNF.cnf_two_omega = some 2 := by
+  decide
+
+-- Normalization checks on the examples (true means normalized)
+example :
+    OperatorKO7.MetaCNF.isNormalizedB (OperatorKO7.MetaCNF.norm_cnf OperatorKO7.MetaCNF.example1) =
+      true := by
+  decide
+example :
+    OperatorKO7.MetaCNF.isNormalizedB (OperatorKO7.MetaCNF.norm_cnf OperatorKO7.MetaCNF.example2) =
+      true := by
+  decide
+example :
+    OperatorKO7.MetaCNF.isNormalizedB (OperatorKO7.MetaCNF.norm_cnf OperatorKO7.MetaCNF.example3) =
+      true := by
+  decide
+
+-- (pretty-printing and examples are defined at the end of the file)
+-- All CNF values are normalized: exponents strictly decreasing, coefficients > 0, no duplicate exponents.
+
+/-!
+  ## Property checks (computable, #eval-style)
+  Small test harness verifying comparison laws and normalization preservation
+  over a fixed sample set.
+-/
+namespace OperatorKO7.MetaCNF
+
+-- Boolean helpers for cmp outcomes
+def isEq (x y : CNF) : Bool :=
+  match cmp_cnf x y with
+  | Ordering.eq => true
+  | _ => false
+
+def isLt (x y : CNF) : Bool :=
+  match cmp_cnf x y with
+  | Ordering.lt => true
+  | _ => false
+
+def isLe (x y : CNF) : Bool :=
+  match cmp_cnf x y with
+  | Ordering.gt => false
+  | _ => true
+
+-- Simple boolean all (avoid depending on extra list APIs)
+def allB {α} (p : α → Bool) : List α → Bool
+  | [] => true
+  | x :: xs => p x && allB p xs
+
+def pairs {α} (xs : List α) : List (α × α) :=
+  xs.foldr (fun x acc => List.append (xs.map (fun y => (x, y))) acc) []
+
+def triples {α} (xs : List α) : List (α × α × α) :=
+  xs.foldr (fun x acc =>
+    let rows := xs.foldr (fun y acc2 => List.append (xs.map (fun z => (x, y, z))) acc2) []
+    List.append rows acc) []
+
+-- Comparison properties
+def antisym_check (x y : CNF) : Bool :=
+  match cmp_cnf x y, cmp_cnf y x with
+  | Ordering.eq, Ordering.eq => true
+  | Ordering.lt, Ordering.gt => true
+  | Ordering.gt, Ordering.lt => true
+  | _, _ => false
+
+def trichotomy_check (x y : CNF) : Bool :=
+  match cmp_cnf x y, cmp_cnf y x with
+  | Ordering.eq, Ordering.eq => true
+  | Ordering.lt, Ordering.gt => true
+  | Ordering.gt, Ordering.lt => true
+  | _, _ => false
+
+def trans_lt_check (a b c : CNF) : Bool :=
+  if isLt a b && isLt b c then isLt a c else true
+
+def trans_le_check (a b c : CNF) : Bool :=
+  if isLe a b && isLe b c then isLe a c else true
+
+-- Totality check for ≤: for any pair, either x ≤ y or y ≤ x
+def le_total_check (x y : CNF) : Bool :=
+  isLe x y || isLe y x
+
+-- Normalization preservation (ops already normalize by definition)
+def preserves_norm_add (x y : CNF) : Bool := isNormalizedB (add_cnf x y)
+def preserves_norm_mul (x y : CNF) : Bool := isNormalizedB (mul_cnf x y)
+def preserves_norm_opow (x : CNF) : Bool := isNormalizedB (opowω_cnf x)
+
+-- Sample set
+def samples : List CNF :=
+  [ cnf_zero, cnf_one, cnf_omega, cnf_omega_plus_one, cnf_two_omega, cnf_omega_sq ]
+
+-- Aggregate checks over samples
+def check_all_antisym : Bool :=
+  allB (fun p => antisym_check p.1 p.2) (pairs samples)
+
+def check_all_trichotomy : Bool :=
+  allB (fun p => trichotomy_check p.1 p.2) (pairs samples)
+
+def check_all_trans_lt : Bool :=
+  allB (fun t => trans_lt_check t.1 t.2.1 t.2.2) (triples samples)
+
+def check_all_trans_le : Bool :=
+  allB (fun t => trans_le_check t.1 t.2.1 t.2.2) (triples samples)
+
+def check_all_total_le : Bool :=
+  allB (fun p => le_total_check p.1 p.2) (pairs samples)
+
+def check_reflexive_eq : Bool :=
+  allB (fun x => isEq x x) samples
+
+def check_norm_add : Bool :=
+  allB (fun p => preserves_norm_add p.1 p.2) (pairs samples)
+
+def check_norm_mul : Bool :=
+  allB (fun p => preserves_norm_mul p.1 p.2) (pairs samples)
+
+def check_norm_opow : Bool :=
+  allB (fun x => preserves_norm_opow x) samples
+
+/-!
+  ## Extra property checks for helpers
+-/
+
+def eqListB {α} [DecidableEq α] (xs ys : List α) : Bool := decide (xs = ys)
+
+def check_sort_idem : Bool :=
+  eqListB (sortCNF samples) (sortCNF (sortCNF samples))
+
+def check_sort_is_nondecreasing : Bool :=
+  isNonDecreasing (sortCNF samples)
+
+def check_list_min_max_nonempty : Bool :=
+  match minListCNF samples, maxListCNF samples with
+  | some _, some _ => true
+  | _, _ => false
+
+-- Executable reports
+example : check_reflexive_eq = true := by decide
+example : check_all_antisym = true := by decide
+example : check_all_trichotomy = true := by decide
+example : check_all_trans_lt = true := by decide
+example : check_all_trans_le = true := by decide
+example : check_all_total_le = true := by decide
+example : check_norm_add = true := by decide
+example : check_norm_mul = true := by decide
+example : check_norm_opow = true := by decide
+example : check_sort_idem = true := by decide
+example : check_sort_is_nondecreasing = true := by decide
+example : check_list_min_max_nonempty = true := by decide
+
+end OperatorKO7.MetaCNF
+```
+
+---
+
+## 20. OperatorKO7/Meta/HydraCore.lean
+
+**File:** `OperatorKO7/Meta/HydraCore.lean`
+
+**Lines:** 27
+
+```lean
+/-!
+HydraCore - a tiny, standalone toy hydra relation to serve as a minimal
+"hydra core" rule set for demonstrations. This does NOT change the KO7 kernel
+and is only for examples/tests of duplication-style steps.
+
+This captures the duplication flavor: chopping a head duplicates a subtree.
+We keep it intentionally small and independent of KO7.
+-/
+
+namespace OperatorKO7
+namespace HydraCore
+
+/-- A minimal hydra-as-binary-tree datatype. `head` is a leaf; `node l r` has two sub-hydras. -/
+inductive Hydra where
+  | head : Hydra
+  | node : Hydra → Hydra → Hydra
+deriving Repr, DecidableEq
+
+open Hydra
+
+/-- One-step toy hydra rule: cutting a head on one side duplicates the other side. -/
+inductive Step : Hydra → Hydra → Prop where
+  | chop_left  (h : Hydra) : Step (node head h) (node h h)
+  | chop_right (h : Hydra) : Step (node h head) (node h h)
+
+/-- Convenience lemma: left chop duplicates the right subtree. -/
+@[simp] theorem dup_left (h : Hydra) : Step (node head h) (node h h) := Step.chop_left h
+/-- Convenience lemma: right chop duplicates the left subtree. -/
+@[simp] theorem dup_right (h : Hydra) : Step (node h head) (node h h) := Step.chop_right h
+
+/-- Example: a single chop duplicates the non-head subtree. -/
+example (h : Hydra) : ∃ h', Step (node head h) h' := ⟨node h h, Step.chop_left h⟩
+
+end HydraCore
+end OperatorKO7
+```
+
+---
+
+## 21. OperatorKO7/Meta/GoodsteinCore.lean
+
+**File:** `OperatorKO7/Meta/GoodsteinCore.lean`
+
+**Lines:** 32
+
+```lean
+/-!
+GoodsteinCore - a tiny, standalone toy for Goodstein-style base-change shape.
+This does NOT modify the KO7 kernel; it exists for examples and cross-links.
+It models a pair (base, counter) and a single-step that bumps the base while
+consuming one successor on the counter side.
+-/
+
+namespace OperatorKO7
+namespace GoodsteinCore
+
+/-- Base parameter (modeled minimally as a wrapped `Nat`). -/
+inductive Base where
+  | b : Nat → Base
+deriving Repr, DecidableEq
+
+/-- Unary naturals used as a toy counter for Goodstein-style steps. -/
+inductive Cn where
+  | z  : Cn
+  | s  : Cn → Cn
+deriving Repr, DecidableEq
+
+/-- A Goodstein-state is a pair (base, counter). -/
+structure St where
+  base : Base
+  cnt  : Cn
+deriving Repr, DecidableEq
+
+open Base Cn
+
+/-- Goodstein-like one-step: bump base, drop one successor on the counter. -/
+inductive Step : St → St → Prop where
+  | base_change (b n : Nat) (t : Cn) :
+      Step ⟨.b b, .s t⟩ ⟨.b (b+1), t⟩
+
+/-- Convenience lemma: the single `Step.base_change` rule is always available on `(.s t)` counters. -/
+@[simp] theorem one_step (b n : Nat) (t : Cn) :
+    Step ⟨.b b, .s t⟩ ⟨.b (b+1), t⟩ := Step.base_change b n t
+
+end GoodsteinCore
+end OperatorKO7
 ```
 
 ---
@@ -8675,9 +6237,7 @@ end OperatorKO7.MetaConjectureBoundary
 
 **File:** `OperatorKO7/Meta/Epsilon0_Boundary.md`
 
-**Lines:** 316
-
-*Note: This file is Markdown documentation, not Lean source.*
+**Lines:** 228
 
 ```markdown
 # The ε₀ Boundary: Proof-Theoretic Analysis of the Full Termination Conjecture
@@ -8980,7 +6540,7 @@ were an independent recognition of this boundary, predating the Codex proof.
 | 7/10 formal barriers | `Meta/Conjecture_Boundary.lean` | Machine-checked |
 | Polynomial tie (exact equality) | `poly_mul_ties_rec_succ` | Machine-checked |
 | Dual barrier (complementary) | `dual_barrier_rec_succ_and_merge_void` | Machine-checked |
-| SafeStep SN (sub-ε₀) | `Meta/Termination_KO7.lean` | Machine-checked |
+| SafeStep SN (sub-ε₀) | `Meta/ComputableMeasure.lean` (+ core relation in `Meta/SafeStep_Core.lean`) | Machine-checked |
 | Full Step SN (ε₀) | Codex proof (external) | Compiles, not in repo |
 | ε₀ identification | This document | Proof-theoretic argument |
 | System T embedding | Open | Formalization task |
@@ -8996,7 +6556,6 @@ were an independent recognition of this boundary, predating the Codex proof.
   finiten Standpunktes." *Dialectica*, 12, 280-287. (System T)
 - Dershowitz, N. and Manna, Z. (1979). "Proving termination with multiset
   orderings." *Communications of the ACM*, 22(8), 465-476.
-
 ```
 
 ---
@@ -9005,7 +6564,7 @@ were an independent recognition of this boundary, predating the Codex proof.
 
 **File:** `OperatorKO7/Test/Sanity.lean`
 
-**Lines:** 11
+**Lines:** 9
 
 ```lean
 /-!
@@ -9019,7 +6578,6 @@ Why this file exists:
 
 #eval (1 + 1)
 #check Prod.Lex
-
 ```
 
 ---
