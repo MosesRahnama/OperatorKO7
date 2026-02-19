@@ -24,3 +24,5 @@ Thumbs.db
 .tmp_missing_decls.csv
 OperatorKO7/Meta/Termination_KO7_Legacy.lean
 OperatorKO7/Meta/Termination_Legacy.lean
+Relational_Order_and_NonTermination.md
+Strict_Execution_Contract_KO7.md
