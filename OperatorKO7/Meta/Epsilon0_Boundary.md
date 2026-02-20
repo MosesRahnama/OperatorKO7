@@ -2,7 +2,7 @@
 
 **Repository**: [MosesRahnama/OperatorKO7](https://github.com/MosesRahnama/OperatorKO7)
 **Companion file**: `Meta/Conjecture_Boundary.lean` (formal barriers)
-**Paper**: Rahnama, "Strong Normalization for the Safe Fragment of a Minimal Rewrite System" (JAIR, submitted February 2026)
+**Paper**: Rahnama, "Strong Normalization for the Safe Fragment of a Minimal Rewrite System" (pre-print, February 2026)
 
 ---
 
@@ -245,10 +245,12 @@ sub-ω^ω method families fail on KO7.
 
 ---
 
-## 7. The Codex Proof as Mechanical Witness
+## 7. The Codex Proof as Mechanical Witness (External, Not in Repo)
 
 In February 2026, OpenAI Codex produced a compiling Lean proof of full-Step
-termination using an exponential ordinal measure of the form:
+termination using an exponential ordinal measure of the form. **Note:** This
+proof is not included in the current repository; it is referenced here as
+external evidence for the conjecture's boundary analysis.
 
 ```
 μ(recΔ b s n) = ω^(μ b + μ s + μ n + 6) + 1

@@ -691,9 +691,9 @@ open OperatorKO7.GoodsteinCore
 open OperatorKO7.HydraCore
 
 /- Goodstein: one-step base-change on the toy state. -/
-example (b n : Nat) (t : Cn) :
+example (b : Nat) (t : Cn) :
   GoodsteinCore.Step ⟨Base.b b, Cn.s t⟩ ⟨Base.b (b+1), t⟩ := by
-  simpa using GoodsteinCore.one_step b n t
+  simpa using GoodsteinCore.one_step b t
 
 /- Hydra: a chop duplicates the other subtree (left and right variants). -/
 example (h : Hydra) :

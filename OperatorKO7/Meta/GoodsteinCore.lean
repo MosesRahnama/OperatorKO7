@@ -29,12 +29,12 @@ open Base Cn
 
 /-- Goodstein-like one-step: bump base, drop one successor on the counter. -/
 inductive Step : St → St → Prop where
-  | base_change (b n : Nat) (t : Cn) :
+  | base_change (b : Nat) (t : Cn) :
       Step ⟨.b b, .s t⟩ ⟨.b (b+1), t⟩
 
 /-- Convenience lemma: the single `Step.base_change` rule is always available on `(.s t)` counters. -/
-@[simp] theorem one_step (b n : Nat) (t : Cn) :
-    Step ⟨.b b, .s t⟩ ⟨.b (b+1), t⟩ := Step.base_change b n t
+@[simp] theorem one_step (b : Nat) (t : Cn) :
+    Step ⟨.b b, .s t⟩ ⟨.b (b+1), t⟩ := Step.base_change b t
 
 end GoodsteinCore
 end OperatorKO7

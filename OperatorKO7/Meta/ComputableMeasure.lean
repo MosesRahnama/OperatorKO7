@@ -12,7 +12,8 @@ using the triple-lexicographic measure μ3c = (δ, κᴹ, τ) where:
 - τ (tau): Computable natural number rank (replaces noncomputable ordinal μ)
 
 ## Key Properties
-- **Fully Computable**: No `noncomputable` definitions or classical axioms in core proofs
+- **Fully Computable Measures**: All measure functions (`deltaFlag`, `kappaM`, `tau`) are computable;
+  classical reasoning is used only in proof terms (Prop-valued well-foundedness arguments)
 - **Complete Coverage**: All 8 SafeStep constructors proven to strictly decrease μ3c
 - **Bulletproof**: Explicit Prod.Lex parameters prevent elaboration issues
 - **Lint-Clean**: No warnings, no sorry, no admit, no unsafe
