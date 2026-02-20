@@ -371,6 +371,115 @@ theorem no_global_step_orientation_nodeCount :
   have hge := nodeCount_rec_succ_barrier void void void
   omega
 
+/-! ## The Boundary Between Code and Meta-Theory (Path Orders)
+
+CRITICAL NOTE: This file does NOT demonstrate that full Lexicographic Path Ordering (LPO)
+or Multiset Path Ordering (MPO) fails to orient the KO7 calculus. Mathematically,
+full LPO *succeeds* in orienting the unrestricted system.
+
+Instead, the following two theorems demonstrate that the isolated *components* of path
+orders (pure head precedence and linear KBO-style weights) fail independently.
+Because these simple structural methods fail, any successful path order is
+mathematically forced to rely on the universal Subterm Property (f(t) > t).
+
+The companion paper argues that importing the Subterm Property (and by extension,
+Kruskal's Tree Theorem) violates the "no imported axioms" constraint of a Pure
+Recursive Calculus. Thus, the code demonstrates the *necessity* of the external axiom,
+while the paper critiques its *validity*.
+-/
+
+/-! ## Pure Precedence Barrier (#7: Precedence conflict on collapsing rules)
+
+A measure that relies strictly on the precedence of the head constructor
+cannot orient collapsing rules like `merge_cancel`, because the RHS can
+have the same head constructor as the LHS.
+-/
+
+inductive OpHead | void | delta | integrate | merge | app | recΔ | eqW
+
+def getHead : Trace → OpHead
+  | .void => .void
+  | .delta _ => .delta
+  | .integrate _ => .integrate
+  | .merge _ _ => .merge
+  | .app _ _ => .app
+  | .recΔ _ _ _ => .recΔ
+  | .eqW _ _ => .eqW
+
+def headPrecedenceMeasure (rank : OpHead → Nat) : Trace → Nat :=
+  fun t => rank (getHead t)
+
+/-- Pure head precedence cannot globally orient `Step` (fails at merge_cancel). -/
+theorem no_global_step_orientation_headPrecedence (rank : OpHead → Nat) :
+    ¬ GlobalOrients (headPrecedenceMeasure rank) (· < ·) := by
+  intro h
+  have hstep : Step (merge (merge void void) (merge void void)) (merge void void) :=
+    Step.R_merge_cancel (merge void void)
+  have hlt := h hstep
+  revert hlt
+  simp [headPrecedenceMeasure, getHead]
+
+/-! ## Linear Weight Barrier (KBO-style without precedence)
+
+A purely additive weight function (where each constructor adds a fixed constant
+to the sum of its arguments' weights) cannot globally orient `Step`.
+This formalizes the failure of basic Knuth-Bendix Order (KBO) weight functions
+on the duplication in `rec_succ`.
+-/
+
+def linearWeight (c_void c_delta c_int c_merge c_app c_rec c_eq : Nat) : Trace → Nat
+  | .void => c_void
+  | .delta t => c_delta + linearWeight c_void c_delta c_int c_merge c_app c_rec c_eq t
+  | .integrate t => c_int + linearWeight c_void c_delta c_int c_merge c_app c_rec c_eq t
+  | .merge a b => c_merge + linearWeight c_void c_delta c_int c_merge c_app c_rec c_eq a + linearWeight c_void c_delta c_int c_merge c_app c_rec c_eq b
+  | .app a b => c_app + linearWeight c_void c_delta c_int c_merge c_app c_rec c_eq a + linearWeight c_void c_delta c_int c_merge c_app c_rec c_eq b
+  | .recΔ b s n => c_rec + linearWeight c_void c_delta c_int c_merge c_app c_rec c_eq b + linearWeight c_void c_delta c_int c_merge c_app c_rec c_eq s + linearWeight c_void c_delta c_int c_merge c_app c_rec c_eq n
+  | .eqW a b => c_eq + linearWeight c_void c_delta c_int c_merge c_app c_rec c_eq a + linearWeight c_void c_delta c_int c_merge c_app c_rec c_eq b
+
+/-- No linear weight function can globally orient `Step` (fails at rec_succ). -/
+theorem no_global_step_orientation_linearWeight (c_void c_delta c_int c_merge c_app c_rec c_eq : Nat) :
+    ¬ GlobalOrients (linearWeight c_void c_delta c_int c_merge c_app c_rec c_eq) (· < ·) := by
+  intro h
+  have h1 := h (Step.R_rec_succ void void void)
+  have h2 := h (Step.R_rec_succ void (delta void) void)
+  simp [linearWeight] at h1 h2
+  omega
+
+/-! ## Standard Tree Depth Barrier
+
+A standard tree depth measure (where every constructor adds 1 to the maximum
+depth of its arguments) cannot globally orient `Step` because the duplication
+of `s` in `rec_succ` can strictly increase the overall depth of the term.
+-/
+
+@[simp] def treeDepth : Trace → Nat
+  | .void => 0
+  | .delta t => treeDepth t + 1
+  | .integrate t => treeDepth t + 1
+  | .merge a b => max (treeDepth a) (treeDepth b) + 1
+  | .app a b => max (treeDepth a) (treeDepth b) + 1
+  | .recΔ b s n => max (max (treeDepth b) (treeDepth s)) (treeDepth n) + 1
+  | .eqW a b => max (treeDepth a) (treeDepth b) + 1
+
+/-- Standard tree depth strictly INCREASES on `rec_succ` when `s` is deep. -/
+theorem treeDepth_rec_succ_increases (b s n : Trace)
+    (hs : treeDepth s > treeDepth n + 1) :
+    treeDepth (app s (recΔ b s n)) > treeDepth (recΔ b s (delta n)) := by
+  simp [treeDepth]
+  omega
+
+/-- Standard tree depth cannot globally orient `Step`. -/
+theorem no_global_step_orientation_treeDepth :
+    ¬ GlobalOrients treeDepth (· < ·) := by
+  intro h
+  -- Let n = void (depth 0). Let s = delta (delta void) (depth 2).
+  have hstep : Step (recΔ void (delta (delta void)) (delta void))
+                    (app (delta (delta void)) (recΔ void (delta (delta void)) void)) :=
+    Step.R_rec_succ void (delta (delta void)) void
+  have hlt := h hstep
+  -- LHS depth is 3. RHS depth is 4. 3 < 4 contradicts orientation.
+  simp [treeDepth] at hlt
+
 /-! ## Full-step witness (duplication branch is present in kernel Step) -/
 
 /-- The unrestricted kernel `Step` contains the duplication branch explicitly. -/
