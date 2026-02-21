@@ -4,7 +4,7 @@ import OperatorKO7.Meta.Impossibility_Lemmas
 # Paper Approach Index (compile-time consistency check)
 
 Purpose
-- This module exists to make the paper’s “ten approaches fail” claim mechanically checkable.
+- This module exists to keep the paper's multi-approach impossibility claims mechanically checkable.
 - It provides *editor-quiet* references (`example` terms) to the specific approach namespaces/lemmas,
   so renames/deletions break compilation instead of silently drifting.
 
@@ -20,8 +20,8 @@ open OperatorKO7 Trace
 open OperatorKO7.Impossibility
 
 /-!
-Approach #9 and #10 were added later; keep explicit anchors here so the paper’s
-“ten approaches” catalog stays in sync with the mechanized codebase.
+Approach #9 and #10 were added later; keep explicit anchors here so this audit target
+continues to catch drift between manuscript wording and mechanized names.
 -/
 
 -- Approach #9: Complex Hybrid/Constellation Measures
@@ -36,4 +36,3 @@ example :=
   UncheckedRecursionFailure.full_step_permits_barrier
 
 end OperatorKO7.Meta.PaperApproachIndex
-
