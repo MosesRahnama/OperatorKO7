@@ -2,7 +2,7 @@
 
 **Repository:** [MosesRahnama/OperatorKO7](https://github.com/MosesRahnama/OperatorKO7)
 **Updated:** February 2026
-**Total LOC:** ~6,100 (Lean 4)
+**Total LOC:** ~5,500 (Lean 4)
 
 Complete source listing. Every file in the project excluding README.
 
