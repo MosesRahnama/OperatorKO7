@@ -87,7 +87,8 @@ lemma deltaFlag_not_preserved_merge_void (b s n : Trace) :
   simp [deltaFlag]
 
 /-- KO7 duplication mapping note:
-    - DM-left used when κᴹ ≠ 0: see `OperatorKO7.MetaCM.drop_R_merge_cancel_c` and `OperatorKO7.MetaCM.drop_R_eq_refl_c`.
+    - DM-left used when κᴹ ≠ 0: see `OperatorKO7.MetaCM.drop_R_eq_refl_c`.
+    - Guarded merge-cancel (`κᴹ = 0`) is discharged by τ/right-lex: see `OperatorKO7.MetaCM.drop_R_merge_cancel_c`.
     - The full certified decrease aggregator is `OperatorKO7.MetaCM.measure_decreases_safe_c`. -/
 lemma note_ko7_duplication_mapping : True := by trivial
 
