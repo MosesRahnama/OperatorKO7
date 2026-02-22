@@ -5,7 +5,7 @@
 [![arXiv](https://img.shields.io/badge/arXiv-2512.00081-b31b1b.svg)](https://arxiv.org/abs/2512.00081)
 [![License](https://img.shields.io/badge/License-Dual%20(Academic%20Free%20%7C%20Commercial%20Paid)-green.svg)](LICENSE)
 
-Lean 4 formalization (~5,5000 LOC) for the KO7 rewrite calculus (7 constructors, 8 rules). Zero `sorry`, `admit`, or `axiom`.
+Lean 4 formalization (~6,0000 LOC) for the KO7 rewrite calculus (7 constructors, 8 rules). Zero `sorry`, `admit`, or `axiom`.
 
 **Paper:** [arXiv:2512.00081](https://arxiv.org/abs/2512.00081)
 **Contact:** moses.rahnama@gmail.com
