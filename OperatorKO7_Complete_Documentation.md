@@ -2,7 +2,7 @@
 
 **Repository:** [MosesRahnama/OperatorKO7](https://github.com/MosesRahnama/OperatorKO7)
 **Updated:** February 2026
-**Total LOC:** ~5,500 (Lean 4)
+**Total LOC:** ~6,100 (Lean 4)
 
 Complete source listing. Every file in the project excluding README.
 
@@ -24,10 +24,10 @@ Complete source listing. Every file in the project excluding README.
 12. [OperatorKO7/Meta/Examples_Publish.lean](#12-OperatorKO7-Meta-Examples_Publish-lean) - 29 lines
 13. [OperatorKO7/Meta/Operational_Incompleteness.lean](#13-OperatorKO7-Meta-Operational_Incompleteness-lean) - 1188 lines
 14. [OperatorKO7/Meta/Impossibility_Lemmas.lean](#14-OperatorKO7-Meta-Impossibility_Lemmas-lean) - 386 lines
-15. [OperatorKO7/Meta/FailureModes.lean](#15-OperatorKO7-Meta-FailureModes-lean) - 94 lines
+15. [OperatorKO7/Meta/FailureModes.lean](#15-OperatorKO7-Meta-FailureModes-lean) - 95 lines
 16. [OperatorKO7/Meta/ContractProbes.lean](#16-OperatorKO7-Meta-ContractProbes-lean) - 67 lines
 17. [OperatorKO7/Meta/Conjecture_Boundary.lean](#17-OperatorKO7-Meta-Conjecture_Boundary-lean) - 490 lines
-18. [OperatorKO7/Meta/PaperApproachIndex.lean](#18-OperatorKO7-Meta-PaperApproachIndex-lean) - 39 lines
+18. [OperatorKO7/Meta/PaperApproachIndex.lean](#18-OperatorKO7-Meta-PaperApproachIndex-lean) - 38 lines
 19. [OperatorKO7/Meta/CNFOrdinal.lean](#19-OperatorKO7-Meta-CNFOrdinal-lean) - 1139 lines
 20. [OperatorKO7/Meta/HydraCore.lean](#20-OperatorKO7-Meta-HydraCore-lean) - 35 lines
 21. [OperatorKO7/Meta/GoodsteinCore.lean](#21-OperatorKO7-Meta-GoodsteinCore-lean) - 40 lines
@@ -53,6 +53,8 @@ Why this file exists:
   (e.g. in `OperatorKO7/Meta/Examples_Publish.lean`).
 -/
 ```
+
+---
 
 ## 2. OperatorKO7/Kernel.lean
 
@@ -119,6 +121,8 @@ theorem nf_no_stepstar_forward {a b : Trace} (hnf : NormalForm a) (h : StepStar 
 
 end OperatorKO7
 ```
+
+---
 
 ## 3. OperatorKO7/Meta/SafeStep_Core.lean
 
@@ -280,8 +284,9 @@ inductive SafeStep : Trace → Trace → Prop
 def SafeStepRev : Trace → Trace → Prop := fun a b => SafeStep b a
 
 end MetaSN_KO7
-
 ```
+
+---
 
 ## 4. OperatorKO7/Meta/ComputableMeasure.lean
 
@@ -750,6 +755,8 @@ theorem wf_SafeStepRev_c : WellFounded MetaSN_KO7.SafeStepRev :=
 end OperatorKO7.MetaCM
 ```
 
+---
+
 ## 5. OperatorKO7/Meta/Normalize_Safe.lean
 
 **Lines:** 252
@@ -1008,6 +1015,8 @@ theorem normalizeSafe_total (t : Trace) :
 
 end MetaSN_KO7
 ```
+
+---
 
 ## 6. OperatorKO7/Meta/SafeStep_Ctx.lean
 
@@ -1564,6 +1573,8 @@ theorem localJoin_eqW_refl_ctx_if_normalizes_to_delta (a n : Trace)
 end MetaSN_KO7
 ```
 
+---
+
 ## 7. OperatorKO7/Meta/Confluence_Safe.lean
 
 **Lines:** 529
@@ -2100,6 +2111,8 @@ theorem localJoin_ctx_eqW_refl_when_a_is_delta (n : Trace)
 end MetaSN_KO7
 ```
 
+---
+
 ## 8. OperatorKO7/Meta/Newman_Safe.lean
 
 **Lines:** 205
@@ -2311,6 +2324,8 @@ theorem normalizeSafe_eq_of_star
 
 end MetaSN_KO7
 ```
+
+---
 
 ## 9. OperatorKO7/Meta/ComputableMeasure_Verification.lean
 
@@ -2560,6 +2575,8 @@ theorem no_infinite_safestep_chain :
 end OperatorKO7.MetaCM.Verification
 ```
 
+---
+
 ## 10. OperatorKO7/Meta/ComputableMeasure_Test.lean
 
 **Lines:** 45
@@ -2611,6 +2628,8 @@ example (t : OperatorKO7.Trace) :
 
 end OperatorKO7.MetaCM.Test
 ```
+
+---
 
 ## 11. OperatorKO7/Meta/DM_MPO_Orientation.lean
 
@@ -2670,6 +2689,8 @@ lemma union_self_ne_zero_of_ne_zero {X : Multiset ℕ} (h : X ≠ 0) :
 end OperatorKO7.MetaOrientation
 ```
 
+---
+
 ## 12. OperatorKO7/Meta/Examples_Publish.lean
 
 **Lines:** 29
@@ -2705,6 +2726,8 @@ example : OperatorKO7.MetaCM.Lex3c
     simp [MetaSN_KO7.deltaFlag]
   simpa using OperatorKO7.MetaCM.drop_R_merge_void_left_c OperatorKO7.Trace.void hδ
 ```
+
+---
 
 ## 13. OperatorKO7/Meta/Operational_Incompleteness.lean
 
@@ -3901,6 +3924,8 @@ example (x : Term) :
 end OperatorKO7.OpIncomp
 ```
 
+---
+
 ## 14. OperatorKO7/Meta/Impossibility_Lemmas.lean
 
 **Lines:** 386
@@ -4201,7 +4226,7 @@ def toConstellation : Trace → Constellation
   | .eqW a b => .eqNode (toConstellation a) (toConstellation b)
 
 /-- The δ-duplication step produces structurally different constellations.
-    The RHS has `appNode` at the root while LHS has `recNode` -- no simple ordering works. -/
+    The RHS has `appNode` at the root while LHS has `recNode` — no simple ordering works. -/
 theorem constellation_shapes_differ (b s n : Trace) :
     toConstellation (app s (recΔ b s n)) ≠ toConstellation (recΔ b s (delta n)) := by
   simp only [toConstellation]
@@ -4294,9 +4319,11 @@ end Impossibility
 end OperatorKO7
 ```
 
+---
+
 ## 15. OperatorKO7/Meta/FailureModes.lean
 
-**Lines:** 94
+**Lines:** 95
 
 ```lean
 import OperatorKO7.Kernel
@@ -4388,12 +4415,15 @@ lemma deltaFlag_not_preserved_merge_void (b s n : Trace) :
   simp [deltaFlag]
 
 /-- KO7 duplication mapping note:
-    - DM-left used when κᴹ ≠ 0: see `OperatorKO7.MetaCM.drop_R_merge_cancel_c` and `OperatorKO7.MetaCM.drop_R_eq_refl_c`.
+    - DM-left used when κᴹ ≠ 0: see `OperatorKO7.MetaCM.drop_R_eq_refl_c`.
+    - Guarded merge-cancel (`κᴹ = 0`) is discharged by τ/right-lex: see `OperatorKO7.MetaCM.drop_R_merge_cancel_c`.
     - The full certified decrease aggregator is `OperatorKO7.MetaCM.measure_decreases_safe_c`. -/
 lemma note_ko7_duplication_mapping : True := by trivial
 
 end OperatorKO7.Countermodels
 ```
+
+---
 
 ## 16. OperatorKO7/Meta/ContractProbes.lean
 
@@ -4468,6 +4498,8 @@ One arity/type mismatch example (TypeGate):
 
 end OperatorKO7.MetaProbes
 ```
+
+---
 
 ## 17. OperatorKO7/Meta/Conjecture_Boundary.lean
 
@@ -4802,8 +4834,8 @@ theorem no_global_step_orientation_polyMul (w : Nat) :
 /-! ## Naive multiset barrier (#7: duplication inflates element count)
 
 A naive multiset measure collects subterm weights into a bag and compares
-by sum (or cardinality). Unlike the Dershowitz-Manna ordering -- which
-permits replacing one large element with multiple SMALLER elements --
+by sum (or cardinality). Unlike the Dershowitz-Manna ordering — which
+permits replacing one large element with multiple SMALLER elements —
 naive comparison has no mechanism to absorb duplication. When `rec_succ`
 duplicates `s`, the bag gains an extra copy of `s`'s weight, and the
 sum/cardinality strictly increases.
@@ -4966,9 +4998,11 @@ theorem full_step_has_rec_succ_instance :
 end OperatorKO7.MetaConjectureBoundary
 ```
 
+---
+
 ## 18. OperatorKO7/Meta/PaperApproachIndex.lean
 
-**Lines:** 39
+**Lines:** 38
 
 ```lean
 import OperatorKO7.Meta.Impossibility_Lemmas
@@ -4977,7 +5011,7 @@ import OperatorKO7.Meta.Impossibility_Lemmas
 # Paper Approach Index (compile-time consistency check)
 
 Purpose
-- This module exists to make the paper’s “ten approaches fail” claim mechanically checkable.
+- This module exists to keep the paper's multi-approach impossibility claims mechanically checkable.
 - It provides *editor-quiet* references (`example` terms) to the specific approach namespaces/lemmas,
   so renames/deletions break compilation instead of silently drifting.
 
@@ -4993,8 +5027,8 @@ open OperatorKO7 Trace
 open OperatorKO7.Impossibility
 
 /-!
-Approach #9 and #10 were added later; keep explicit anchors here so the paper’s
-“ten approaches” catalog stays in sync with the mechanized codebase.
+Approach #9 and #10 were added later; keep explicit anchors here so this audit target
+continues to catch drift between manuscript wording and mechanized names.
 -/
 
 -- Approach #9: Complex Hybrid/Constellation Measures
@@ -5009,8 +5043,9 @@ example :=
   UncheckedRecursionFailure.full_step_permits_barrier
 
 end OperatorKO7.Meta.PaperApproachIndex
-
 ```
+
+---
 
 ## 19. OperatorKO7/Meta/CNFOrdinal.lean
 
@@ -6158,6 +6193,8 @@ example : check_list_min_max_nonempty = true := by decide
 end OperatorKO7.MetaCNF
 ```
 
+---
+
 ## 20. OperatorKO7/Meta/HydraCore.lean
 
 **Lines:** 35
@@ -6199,6 +6236,8 @@ example (h : Hydra) : ∃ h', Step (node head h) h' := ⟨node h h, Step.chop_le
 end HydraCore
 end OperatorKO7
 ```
+
+---
 
 ## 21. OperatorKO7/Meta/GoodsteinCore.lean
 
@@ -6247,6 +6286,8 @@ end GoodsteinCore
 end OperatorKO7
 ```
 
+---
+
 ## 22. OperatorKO7/Test/Sanity.lean
 
 **Lines:** 11
@@ -6265,3 +6306,4 @@ Why this file exists:
 #check Prod.Lex
 ```
 
+---
