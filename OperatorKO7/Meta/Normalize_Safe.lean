@@ -8,12 +8,12 @@ Certified normalization for the KO7 safe fragment.
 Purpose:
 - Defines `SafeStepStar` (multi-step closure of `SafeStep`).
 - Defines `NormalFormSafe` and proves basic normal-form facts for the safe relation.
-- Constructs a *certified* normalizer `normalizeSafe` for `SafeStep` using well-founded recursion.
+- Constructs a *computable certified* normalizer `normalizeSafe` for `SafeStep` using
+  deterministic well-founded recursion.
 
 Important scope boundary:
 - Everything in this file is about `SafeStep` (the guarded fragment), not the full kernel `Step`.
-- The normalizer is `noncomputable` because it is obtained from well-foundedness via `WellFounded.fix`.
-  This is the standard "certified existence" construction: it produces a term and a proof certificate.
+- The normalizer is definitional/recursive (no `Classical.choose`); certificates are bundled directly.
 
 Main exports:
 - `normalizeSafe` and its certificates: `to_norm_safe`, `norm_nf_safe`
@@ -25,6 +25,7 @@ set_option linter.unnecessarySimpa false
 open Classical
 open OperatorKO7 Trace
 open OperatorKO7.MetaCM
+open MetaSN_DM
 
 
 namespace MetaSN_KO7
@@ -114,28 +115,105 @@ def Rμ3 (x y : Trace) : Prop := Lex3c (mu3c x) (mu3c y)
 lemma wf_Rμ3 : WellFounded Rμ3 :=
   InvImage.wf (f := mu3c) wf_Lex3c
 
-set_option diagnostics true
+/-- Deterministic one-step selector for root `SafeStep`.
+Returns a witness term and its `SafeStep` proof when a root step exists, otherwise `none`. -/
+@[simp] def safeStepWitness? : (t : Trace) → Option {u : Trace // SafeStep t u}
+  | integrate (delta t) =>
+      some ⟨void, SafeStep.R_int_delta t⟩
+  | merge void t =>
+      if hδ : deltaFlag t = 0 then
+        some ⟨t, SafeStep.R_merge_void_left t hδ⟩
+      else
+        none
+  | merge t void =>
+      if hδ : deltaFlag t = 0 then
+        some ⟨t, SafeStep.R_merge_void_right t hδ⟩
+      else
+        none
+  | merge a b =>
+      if hEq : a = b then
+        match hEq with
+        | rfl =>
+            if hδ : deltaFlag a = 0 then
+              if h0 : kappaM a = 0 then
+                some ⟨a, SafeStep.R_merge_cancel a hδ h0⟩
+              else
+                none
+            else
+              none
+      else
+        none
+  | recΔ b s void =>
+      if hδ : deltaFlag b = 0 then
+        some ⟨b, SafeStep.R_rec_zero b s hδ⟩
+      else
+        none
+  | recΔ b s (delta n) =>
+      some ⟨app s (recΔ b s n), SafeStep.R_rec_succ b s n⟩
+  | eqW a b =>
+      if hEq : a = b then
+        match hEq with
+        | rfl =>
+            if h0 : kappaM a = 0 then
+              some ⟨void, SafeStep.R_eq_refl a h0⟩
+            else
+              none
+      else
+        some ⟨integrate (merge a b), SafeStep.R_eq_diff a b hEq⟩
+  | _ =>
+      none
+
+/-- Step target-only view of `safeStepWitness?` for executable stepping. -/
+@[simp] def safeStepNext? (t : Trace) : Option Trace :=
+  (safeStepWitness? t).map (fun w => w.1)
+
+/-- If the deterministic selector returns `none`, no root `SafeStep` exists. -/
+lemma safeStepWitness?_none_no_step {t : Trace} (hnone : safeStepWitness? t = none) :
+    ∀ u, ¬ SafeStep t u := by
+  intro u hu
+  cases hu with
+  | R_int_delta t =>
+      simp [safeStepWitness?] at hnone
+  | R_merge_void_left t hδ =>
+      cases u <;> simp [safeStepWitness?, deltaFlag] at hδ hnone
+      all_goals exact hnone hδ
+  | R_merge_void_right t hδ =>
+      cases u <;> simp [safeStepWitness?, deltaFlag] at hδ hnone
+      all_goals exact hnone hδ
+  | R_merge_cancel t hδ h0 =>
+      cases u <;> simp [safeStepWitness?, deltaFlag, MetaSN_DM.kappaM] at hδ h0 hnone
+      all_goals exact hnone h0
+  | R_rec_zero b s hδ =>
+      cases u <;> simp [safeStepWitness?, deltaFlag] at hδ hnone
+      all_goals exact hnone hδ
+  | R_rec_succ b s n =>
+      simp [safeStepWitness?] at hnone
+  | R_eq_refl a h0 =>
+      cases a <;> simp [safeStepWitness?, MetaSN_DM.kappaM] at h0 hnone
+      all_goals exact hnone h0
+  | R_eq_diff a b hne =>
+      simp [safeStepWitness?, hne] at hnone
 
 /-- Deterministic normalization for the safe subrelation, bundled with a proof certificate. -/
-noncomputable def normalizeSafePack (t : Trace) : Σ' n : Trace, SafeStepStar t n ∧ NormalFormSafe n :=
+def normalizeSafePack (t : Trace) : Σ' n : Trace, SafeStepStar t n ∧ NormalFormSafe n :=
   WellFounded.fix wf_Rμ3 (C := fun t => Σ' n : Trace, SafeStepStar t n ∧ NormalFormSafe n)
-    (fun t rec => by
-      classical
-      -- Use term-mode if-split on existence of a safe step
-      exact
-        (if h : ∃ u, SafeStep t u then
-          -- Take one step and recurse
-          let u := Classical.choose h
-          have hu : SafeStep t u := Classical.choose_spec h
+    (fun t rec =>
+      match hnext : safeStepWitness? t with
+      | some w =>
+          let u : Trace := w.1
+          let hu : SafeStep t u := w.2
           have hdrop : Rμ3 u t := measure_decreases_safe_c hu
           match rec u hdrop with
-          | ⟨n, hstar, hnf⟩ => ⟨n, And.intro (SafeStepStar.tail hu hstar) hnf⟩
-        else
-          -- Stuck: already normal
-          ⟨t, And.intro (SafeStepStar.refl t) (by intro ex; exact h ex)⟩)) t
+          | ⟨n, hstar, hnf⟩ => ⟨n, SafeStepStar.tail hu hstar, hnf⟩
+      | none =>
+          ⟨t, SafeStepStar.refl t, by
+            intro ex
+            rcases ex with ⟨u, hu⟩
+            exact (safeStepWitness?_none_no_step hnext u) hu⟩
+    ) t
 
 /-- The safe normal form selected by `normalizeSafePack`. -/
-noncomputable def normalizeSafe (t : Trace) : Trace := (normalizeSafePack t).1
+def normalizeSafe (t : Trace) : Trace := (normalizeSafePack t).1
 
 /-- Certificate: `t` reduces to `normalizeSafe t` by `SafeStepStar`. -/
 theorem to_norm_safe (t : Trace) : SafeStepStar t (normalizeSafe t) := (normalizeSafePack t).2.left

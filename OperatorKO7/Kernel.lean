@@ -19,6 +19,7 @@ inductive Trace : Type
 | app : Trace → Trace → Trace
 | recΔ : Trace → Trace → Trace → Trace
 | eqW : Trace → Trace → Trace
+deriving DecidableEq, Repr
 open Trace
 
 /-- The full kernel reduction relation (8 unconditional root rules). -/
