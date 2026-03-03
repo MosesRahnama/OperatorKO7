@@ -60,7 +60,6 @@ lake build
 | [`Impossibility_Lemmas.lean`](OperatorKO7/Meta/Impossibility_Lemmas.lean) | Additive, flag, constellation, unchecked-recursion failure witnesses |
 | [`Operational_Incompleteness.lean`](OperatorKO7/Meta/Operational_Incompleteness.lean) | Toy calculus, `InternallyDefinableMeasure`, DM/MPO orientation, Goodstein/Hydra simulation |
 | [`DM_MPO_Orientation.lean`](OperatorKO7/Meta/DM_MPO_Orientation.lean) | DM/MPO helper wrappers |
-| [`FailureModes.lean`](OperatorKO7/Meta/FailureModes.lean) | Countermodels (branch realism, duplication, ordinal right-add) |
 | [`ContractProbes.lean`](OperatorKO7/Meta/ContractProbes.lean) | P1-P3 contract probe documentation |
 | [`PaperApproachIndex.lean`](OperatorKO7/Meta/PaperApproachIndex.lean) | Compile-time consistency check for paper's impossibility catalog |
 | [`CNFOrdinal.lean`](OperatorKO7/Meta/CNFOrdinal.lean) | Constructive CNF ordinal with computable comparison |

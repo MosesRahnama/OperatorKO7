@@ -1,15 +1,19 @@
 -- (pretty-printing and examples moved below, after definitions)
 /-!
-  # Constructive CNF Ordinal - Complete, Axiom-Free, Computable
+  # CNF-like Normal Forms (Constructive, Axiom-Free, Computable)
 
-  This module provides a fully constructive Cantor Normal Form (CNF) ordinal type and computable implementations for:
+  This module provides a fully constructive CNF-inspired *normal form* type (a list of exponent/coeff pairs)
+  and executable implementations for:
   - Canonical structure and invariants
   - Normalization (merge, sort, remove zeros)
-  - Addition, multiplication, ω-exponentiation
+  - Basic algebra on the representation (as currently implemented: formal/multiset-style add/mul and an
+    exponent-shift “ω-power” operator)
   - Total, computable lexicographic comparison (cmp, le, lt)
   - No axioms, no sorry, no noncomputable
 
-  All code is total and lint-clean. See Docs/A_Constructive_Ordinal_Skeleton.md for intended semantics and proofs.
+  All code is total and lint-clean. See `Docs/A_Constructive_Ordinal_Skeleton.md` for intended semantics,
+  scope, and current limitations (in particular: the arithmetic operations here are *not* claimed to coincide
+  with full ordinal arithmetic unless separately validated).
 -/
 set_option linter.unnecessarySimpa false
 
