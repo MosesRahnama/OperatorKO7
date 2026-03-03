@@ -4,9 +4,9 @@ import OperatorKO7.Meta.Conjecture_Boundary
 /-!
 # Compositional Measure Impossibility Theorem
 
-This module defines a precise axiom system for "compositional measures" — termination
+This module defines a precise axiom system for "compositional measures" - termination
 measures that compute the value of a compound term by aggregating the values of its
-subterms — and proves that NO such measure can orient the duplicating recursor rule
+subterms - and proves that NO such measure can orient the duplicating recursor rule
 `recΔ b s (delta n) → app s (recΔ b s n)` for all instantiations.
 
 The module then shows that the Dependency Pair framework (TTT2's subterm criterion with
@@ -16,9 +16,9 @@ axioms: it projects to a single argument instead of aggregating all subterm cont
 ## Structure
 
 - **Section 1**: Helper: iterated `app` constructor (the "pump" for making μ(s) large)
-- **Section 2**: `AdditiveCompositionalMeasure` — concrete Nat-weighted structure
+- **Section 2**: `AdditiveCompositionalMeasure` - concrete Nat-weighted structure
 - **Section 3**: Tier 1 impossibility theorem (additive measures)
-- **Section 4**: `CompositionalMeasure` — abstract combining-function structure
+- **Section 4**: `CompositionalMeasure` - abstract combining-function structure
 - **Section 5**: Tier 2 impossibility theorem (transparent-delta case)
 - **Section 6**: DP projection escape clause
 - **Section 7**: Instance witnesses (simpleSize, tau, nodeCount)
@@ -59,7 +59,7 @@ The measure of a compound term is the constructor's weight plus the sum of its s
 
 This axiom system captures: `simpleSize`, `tau`, `nodeCount`, `linearWeight`, `treeDepth`,
 and all parameter choices thereof. The single constraint `hw_app_pos` (app adds at least 1)
-ensures the measure grows under the `app` constructor — this is what makes it "see" duplication. -/
+ensures the measure grows under the `app` constructor - this is what makes it "see" duplication. -/
 structure AdditiveCompositionalMeasure where
   w_void      : Nat
   w_delta     : Nat
@@ -129,8 +129,8 @@ Each constructor has a combining function that maps subterm measure values to
 the compound term's measure value.
 
 The key axioms are the **subterm properties** for `c_app`:
-- `app_subterm1`: `c_app(x, y) > x` — app is strictly larger than its first argument
-- `app_subterm2`: `c_app(x, y) > y` — app is strictly larger than its second argument
+- `app_subterm1`: `c_app(x, y) > x` - app is strictly larger than its first argument
+- `app_subterm2`: `c_app(x, y) > y` - app is strictly larger than its second argument
 
 These capture the essence of "compositionality": the measure of `app s (recΔ b s n)`
 is built from the measures of BOTH `s` and `recΔ b s n`, and is strictly larger than
@@ -160,7 +160,7 @@ structure CompositionalMeasure where
 
 /-- **IMPOSSIBILITY THEOREM (Abstract Compositional, Transparent Delta)**
 
-When `c_delta(c_void) = c_void` (delta is transparent at base level — as in `tau` where
+When `c_delta(c_void) = c_void` (delta is transparent at base level - as in `tau` where
 `tau(delta t) = tau t`), no compositional measure with subterm properties for `c_app`
 can orient the duplicating recursor.
 
@@ -304,7 +304,7 @@ The impossibility theorem establishes:
 
 2. **DP projection succeeds**: The subterm criterion with projection π(recΔ#) = 3
    DOES orient the recursor, but it escapes the impossibility by violating the
-   compositionality axioms — it projects to one argument and ignores the others.
+   compositionality axioms - it projects to one argument and ignores the others.
 
 3. **The boundary is at Axiom `app_subterm`**: Compositional measures must satisfy
    `c_app(x, y) > x` and `c_app(x, y) > y`. DP projection satisfies neither.
