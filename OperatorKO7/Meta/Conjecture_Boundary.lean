@@ -5,8 +5,7 @@ import OperatorKO7.Meta.Operational_Incompleteness
 # Conjecture Boundary (Theorem-Level No-Go Statements)
 
 This module collects theorem-level barriers that are already justified by the
-current KO7 artifact. It does **not** claim a proof of full-system
-non-termination, and it does **not** upgrade the paper conjecture to a theorem.
+current KO7 artifact.
 
 The purpose is narrower:
 - record explicit "no-go" theorems for concrete internal method families;
@@ -382,10 +381,10 @@ orders (pure head precedence and linear KBO-style weights) fail independently.
 Because these simple structural methods fail, any successful path order is
 mathematically forced to rely on the universal Subterm Property (f(t) > t).
 
-The companion paper argues that importing the Subterm Property (and by extension,
-Kruskal's Tree Theorem) violates the "no imported axioms" constraint of a Pure
-Recursive Calculus. Thus, the code demonstrates the *necessity* of the external axiom,
-while the paper critiques its *validity*.
+The paper argues that importing the Subterm Property (and by extension,
+Kruskal's Tree Theorem) goes beyond the "no imported axioms" structural
+constraint of KO7 (§3). Thus, the code demonstrates the *necessity* of the
+external axiom, while the paper critiques its *validity*.
 -/
 
 /-! ## Pure Precedence Barrier (#7: Precedence conflict on collapsing rules)

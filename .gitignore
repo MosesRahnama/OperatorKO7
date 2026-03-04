@@ -47,10 +47,8 @@ _tmp_ordcheck3.lean
 _tmp_print.lean
 _tmp_prodlex.lean
 _tmp_succ.lean
-OperatorKO7/Meta/DM_OrderType.lean
 _tmp_succ.lean
 _tmp_prodlex.lean
-OperatorKO7/Meta/DM_OrderType.lean
 _tmp_check.lean
 _tmp_check2.lean
 _tmp_check3.lean
@@ -65,7 +63,6 @@ _tmp_ordcheck3.lean
 _tmp_print.lean
 _tmp_prodlex.lean
 _tmp_succ.lean
-OperatorKO7/Meta/DM_OrderType.lean
 _tmp_check.lean
 _tmp_check2.lean
 _tmp_check3.lean
@@ -85,3 +82,10 @@ _tmp_counter.lean
 _tmp_counter3.lean
 _tmp_counter2.lean
 _tmp_naddcheck.lean
+_tmp_countconv.lean
+_tmp_countconv2.lean
+_tmp_leadd.lean
+_tmp_sublist.lean
+DM_ORDER_TYPE_EXACT_ROADMAP.md
+_tmp_check_reflect.lean
+_tmp_check_filter.lean

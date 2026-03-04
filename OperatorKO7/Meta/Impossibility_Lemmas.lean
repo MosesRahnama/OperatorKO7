@@ -258,7 +258,7 @@ lemma drop_eq_diff (a b : Trace) :
 
 end Computable_FixPathExamples
 
-/-! ## Approach #9: Complex Hybrid/Constellation Measures (Paper Section 7, line 250)
+/-! ## Approach #9: Complex Hybrid/Constellation Measures (Paper §7, Item 9 in failure catalog)
 
 Paper quote: "Attempts to combine measures in ad-hoc ways failed to provide
 a uniform decrease across all 8 rules."
@@ -324,11 +324,11 @@ theorem constellation_size_not_decreasing (b s n : Trace)
 
 end ConstellationFailure
 
-/-! ## Approach #10: Unchecked Recursion (Paper Section 7, line 251)
+/-! ## Approach #10: Unchecked Recursion (Paper §7, Item 10 in failure catalog)
 
-Paper quote: "The raw rec_succ rule itself serves as the ultimate counterexample;
-without the SafeStep guards, it permits unbounded recursion that no internal
-measure can bound."
+Paper quote: "The raw duplicating rule is the canonical obstacle for global
+aggregation: it entangles the relevant recursion counter with an irrelevant
+duplicated mass trapped under inert app."
 
 The rule `recΔ b s (delta n) → app s (recΔ b s n)`:
 1. Duplicates `s` (appears once on LHS, twice on RHS)
