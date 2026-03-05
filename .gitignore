@@ -93,3 +93,6 @@ _tmp_check_filter.lean
 # Lean-to-Markdown conversion
 lean_to_md.sh
 OperatorKO7/Meta_md/
+_tmp_ctx2.lean
+_tmp_ctx3.lean
+_tmp_ctx4.lean

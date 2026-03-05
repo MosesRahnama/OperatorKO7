@@ -3,6 +3,7 @@ import OperatorKO7.Meta.ComputableMeasure
 import OperatorKO7.Meta.ComputableMeasure_Verification
 import OperatorKO7.Meta.DM_OrderType
 import OperatorKO7.Meta.DM_OrderType_LowerBound
+import OperatorKO7.Meta.RecCore
 
 /-!
 Public entrypoint for the `OperatorKO7` Lean library.
