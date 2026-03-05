@@ -4,6 +4,7 @@ import OperatorKO7.Meta.ComputableMeasure_Verification
 import OperatorKO7.Meta.DM_OrderType
 import OperatorKO7.Meta.DM_OrderType_LowerBound
 import OperatorKO7.Meta.RecCore
+import OperatorKO7.Meta.ContextClosed_SN
 
 /-!
 Public entrypoint for the `OperatorKO7` Lean library.

@@ -1,7 +1,7 @@
 # OperatorKO7
 
-This README is a file-level map of the repository.
-It does not make theorem or performance claims.
+This README is a repository map.  
+It is intentionally file-descriptive and does not present theorem or benchmark claims.
 
 ## Build
 
@@ -13,87 +13,83 @@ lake exe cache get
 lake build
 ```
 
-Toolchain and dependency pins are in:
+Toolchain/dependency pins are in:
 - `lean-toolchain`
 - `lakefile.lean`
 - `lake-manifest.json`
 
-## Top-Level Files
+## Top-Level Layout
 
-- [`OperatorKO7.lean`](OperatorKO7.lean): library entrypoint imports.
-- [`lakefile.lean`](lakefile.lean): Lake package configuration.
-- [`lean-toolchain`](lean-toolchain): Lean version pin.
-- [`LICENSE`](LICENSE): repository license text.
-- [`OperatorKO7_Complete_Documentation.md`](OperatorKO7_Complete_Documentation.md): generated code dump/documentation.
+- `OperatorKO7.lean`: library entrypoint imports.
+- `OperatorKO7/`: Lean source tree.
+- `Artifacts/`: external tool artifacts.
+- `Paper/`: manuscript source and paper-related material.
+- `Comments/`: notes, review logs, and working records.
+- `Docs/`: supplemental documentation files.
+- `OperatorKO7_Complete_Documentation.md`: extended file-level map.
 
 ## Lean Source Layout
 
 ### Core
 
-- [`OperatorKO7/Kernel.lean`](OperatorKO7/Kernel.lean):
-  `Trace`, `Step`, `StepStar`, `NormalForm`, and basic closure lemmas.
+- `OperatorKO7/Kernel.lean`:
+  core term syntax (`Trace`), kernel root relation (`Step`), and closures (`StepStar`).
 
 ### Active Meta Modules
 
-- [`OperatorKO7/Meta/SafeStep_Core.lean`](OperatorKO7/Meta/SafeStep_Core.lean):
-  guarded relation (`SafeStep`), `deltaFlag`, `kappaM`, DM helpers.
-- [`OperatorKO7/Meta/ComputableMeasure.lean`](OperatorKO7/Meta/ComputableMeasure.lean):
-  computable triple measure (`mu3c`), lex orders, per-rule decrease lemmas.
-- [`OperatorKO7/Meta/ComputableMeasure_Verification.lean`](OperatorKO7/Meta/ComputableMeasure_Verification.lean):
-  additional checks/examples around the computable measure layer.
-- [`OperatorKO7/Meta/Normalize_Safe.lean`](OperatorKO7/Meta/Normalize_Safe.lean):
-  `SafeStepStar`, normal-form predicate, normalization function and related lemmas.
-- [`OperatorKO7/Meta/SafeStep_Ctx.lean`](OperatorKO7/Meta/SafeStep_Ctx.lean):
-  context closure (`SafeStepCtx`) and star lifting utilities.
-- [`OperatorKO7/Meta/Confluence_Safe.lean`](OperatorKO7/Meta/Confluence_Safe.lean):
-  local-join definitions/lemmas for safe relation plus full-step non-join witness.
-- [`OperatorKO7/Meta/Newman_Safe.lean`](OperatorKO7/Meta/Newman_Safe.lean):
-  Newman-style confluence packaging on safe-star relation.
-- [`OperatorKO7/Meta/Impossibility_Lemmas.lean`](OperatorKO7/Meta/Impossibility_Lemmas.lean):
-  catalog-style impossibility/failure witnesses.
-- [`OperatorKO7/Meta/Conjecture_Boundary.lean`](OperatorKO7/Meta/Conjecture_Boundary.lean):
-  no-go theorem wrappers and `GlobalOrients` interface.
-- [`OperatorKO7/Meta/CompositionalMeasure_Impossibility.lean`](OperatorKO7/Meta/CompositionalMeasure_Impossibility.lean):
-  compositional-measure classes and barrier/DP-escape statements.
-- [`OperatorKO7/Meta/Operational_Incompleteness.lean`](OperatorKO7/Meta/Operational_Incompleteness.lean):
-  auxiliary probe language/relation and related scaffolding.
-- [`OperatorKO7/Meta/DM_OrderType.lean`](OperatorKO7/Meta/DM_OrderType.lean):
+- `OperatorKO7/Meta/SafeStep_Core.lean`:
+  guarded relation (`SafeStep`), `deltaFlag`, and multiset payload helpers.
+- `OperatorKO7/Meta/ComputableMeasure.lean`:
+  computable measure stack (`mu3c`), lex orders, and per-rule decrease lemmas.
+- `OperatorKO7/Meta/ComputableMeasure_Verification.lean`:
+  additional measure-layer checks/examples.
+- `OperatorKO7/Meta/Normalize_Safe.lean`:
+  safe-star relation, normal-form predicate, normalizer definitions.
+- `OperatorKO7/Meta/SafeStep_Ctx.lean`:
+  partial context closure relation and star lifting lemmas.
+- `OperatorKO7/Meta/ContextClosed_SN.lean`:
+  context-closure accessibility and well-foundedness results.
+- `OperatorKO7/Meta/Confluence_Safe.lean`:
+  local-join constructions for safe relations.
+- `OperatorKO7/Meta/Newman_Safe.lean`:
+  Newman-style confluence packaging over safe-star.
+- `OperatorKO7/Meta/Conjecture_Boundary.lean`:
+  boundary-oriented theorem scaffolding/interfaces.
+- `OperatorKO7/Meta/CompositionalMeasure_Impossibility.lean`:
+  compositional-measure classes, impossibility statements, projection comparison lemmas.
+- `OperatorKO7/Meta/Impossibility_Lemmas.lean`:
+  additional failure/impossibility lemma collection.
+- `OperatorKO7/Meta/Operational_Incompleteness.lean`:
+  auxiliary probe predicates/relations.
+- `OperatorKO7/Meta/DM_OrderType.lean`:
   ordinal upper-bound calibration layer.
-- [`OperatorKO7/Meta/DM_OrderType_LowerBound.lean`](OperatorKO7/Meta/DM_OrderType_LowerBound.lean):
-  CNF carrier and lower-bound/rank-bridge calibration layer.
-- [`OperatorKO7/Meta/LinearRec_Ablation.lean`](OperatorKO7/Meta/LinearRec_Ablation.lean):
-  linear-recursion ablation module and comparison lemmas.
-- [`OperatorKO7/Meta/HydraCore.lean`](OperatorKO7/Meta/HydraCore.lean):
-  small Hydra-style auxiliary core.
-- [`OperatorKO7/Meta/GoodsteinCore.lean`](OperatorKO7/Meta/GoodsteinCore.lean):
-  small Goodstein-style auxiliary core.
+- `OperatorKO7/Meta/DM_OrderType_LowerBound.lean`:
+  lower-bound/rank-bridge calibration layer.
+- `OperatorKO7/Meta/RecCore.lean`:
+  reduced RecΔ-core signature and specialization lemmas.
+- `OperatorKO7/Meta/LinearRec_Ablation.lean`:
+  linear-recursion ablation definitions/lemmas.
+- `OperatorKO7/Meta/HydraCore.lean`:
+  auxiliary Hydra-style module.
+- `OperatorKO7/Meta/GoodsteinCore.lean`:
+  auxiliary Goodstein-style module.
 
-### Test
+### Tests
 
-- [`OperatorKO7/Test/Sanity.lean`](OperatorKO7/Test/Sanity.lean):
-  basic compile/eval checks.
+- `OperatorKO7/Test/Sanity.lean`:
+  basic compilation/evaluation checks.
 
-### Archived Modules
+### Legacy
 
-Archived files are in [`OperatorKO7/Legacy/`](OperatorKO7/Legacy) and are not part of the active `Meta` set.
+- `OperatorKO7/Legacy/`:
+  archived Lean files retained for reference.
 
-## TTT2/CeTA Artifacts
+## Artifact Folders
 
-[`Artifacts/ttt2/`](Artifacts/ttt2/) contains the termination-tool pipeline:
-
-- `KO7_full_step.trs`: input TRS (8 rules, 7 constructors).
-- CPF proof certificates for each YES strategy:
-  - `KO7_FAST.cpf`, `KO7_LPO.cpf`, `KO7_COMP.cpf`.
-- CPF outputs for MAYBE strategies:
-  - `KO7_KBO.cpf`, `KO7_POLY.cpf`, `KO7_MAT2.cpf`, `KO7_MAT3.cpf`.
-- `KO7_CeTA_certification.txt`: CeTA 2.36 verification log.
-
-All four modular/structural strategies (FAST, HYDRA, COMP, LPO) are **CeTA CERTIFIED**.
-All four global/compositional strategies (KBO, POLY, MAT(2), MAT(3)) are **CeTA REJECTED**.
-FBI returned MAYBE with no certifiable output.
+- `Artifacts/ttt2/`:
+  TRS input, CPF outputs, and certification logs.
 
 ## Paper Folder
 
-- [`Paper/Rahnama_KO7_Submission.tex`](Paper/Rahnama_KO7_Submission.tex): manuscript source.
+- `Paper/Rahnama_KO7_Submission.tex`: manuscript source.
 - `Paper/references.bib`: bibliography source.
-

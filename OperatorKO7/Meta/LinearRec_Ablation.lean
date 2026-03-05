@@ -7,9 +7,10 @@ namespace OperatorKO7
 
 This module proves that removing step duplication (barrier condition 4)
 dissolves the global orientation barrier. We define a linear recursor variant
-where the step argument `s` does not appear on the RHS of `rec_succ`, and
-show that `simpleSize` (a Tier-1 additive compositional measure) strictly
-orients both rules.
+where the step argument `s` is not duplicated on the RHS of `rec_succ`
+(the RHS is `recΔ b s n` instead of `app s (recΔ b s n)`), and show that
+`simpleSize` (a Tier-1 additive compositional measure) strictly orients both
+rules.
 
 This confirms: the barrier is caused by duplication, not by the recursor
 pattern itself.
