@@ -77,6 +77,21 @@ Toolchain and dependency pins are in:
 
 Archived files are in [`OperatorKO7/Legacy/`](OperatorKO7/Legacy) and are not part of the active `Meta` set.
 
+## TTT2/CeTA Artifacts
+
+[`Artifacts/ttt2/`](Artifacts/ttt2/) contains the termination-tool pipeline:
+
+- `KO7_full_step.trs`: input TRS (8 rules, 7 constructors).
+- CPF proof certificates for each YES strategy:
+  - `KO7_FAST.cpf`, `KO7_LPO.cpf`, `KO7_COMP.cpf`.
+- CPF outputs for MAYBE strategies:
+  - `KO7_KBO.cpf`, `KO7_POLY.cpf`, `KO7_MAT2.cpf`, `KO7_MAT3.cpf`.
+- `KO7_CeTA_certification.txt`: CeTA 2.36 verification log.
+
+All four modular/structural strategies (FAST, HYDRA, COMP, LPO) are **CeTA CERTIFIED**.
+All four global/compositional strategies (KBO, POLY, MAT(2), MAT(3)) are **CeTA REJECTED**.
+FBI returned MAYBE with no certifiable output.
+
 ## Paper Folder
 
 - [`Paper/Rahnama_KO7_Submission.tex`](Paper/Rahnama_KO7_Submission.tex): manuscript source.

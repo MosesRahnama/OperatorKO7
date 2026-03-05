@@ -89,3 +89,7 @@ _tmp_sublist.lean
 DM_ORDER_TYPE_EXACT_ROADMAP.md
 _tmp_check_reflect.lean
 _tmp_check_filter.lean
+
+# Lean-to-Markdown conversion
+lean_to_md.sh
+OperatorKO7/Meta_md/

@@ -1,6 +1,6 @@
 # OperatorKO7 Complete Documentation
 
-Generated: 2026-03-04 20:53:40 +03:30
+Generated: 2026-03-05 01:56:00 +03:30
 Source files: 19
 Total source lines: 6537
 
@@ -3755,7 +3755,7 @@ Goal
 
 What’s inside (all self‑contained, kernel unchanged)
 - P1/P2/P3 probes: re‑anchored pointers and small runnable examples.
-- κ+ k counterexample on KO6 traces (R_rec_succ): ties by rfl branchwise.
+- κ+ k counterexample on KO7 traces (R_rec_succ): ties by rfl branchwise.
 - Flag‑only outer discriminator failure: concrete Step raises the flag.
 - Duplication stress identity (toy calculus): additive counter non‑drop, plus
   DM and MPO orientation witnesses.
