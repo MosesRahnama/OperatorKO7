@@ -5,6 +5,7 @@ import OperatorKO7.Meta.DM_OrderType
 import OperatorKO7.Meta.DM_OrderType_LowerBound
 import OperatorKO7.Meta.RecCore
 import OperatorKO7.Meta.ContextClosed_SN
+import OperatorKO7.Meta.MPO_FullStep
 
 /-!
 Public entrypoint for the `OperatorKO7` Lean library.

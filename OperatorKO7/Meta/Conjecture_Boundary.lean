@@ -373,8 +373,9 @@ theorem no_global_step_orientation_nodeCount :
 /-! ## The Boundary Between Code and Meta-Theory (Path Orders)
 
 CRITICAL NOTE: This file does NOT demonstrate that full Lexicographic Path Ordering (LPO)
-or Multiset Path Ordering (MPO) fails to orient the KO7 calculus. Mathematically,
-full LPO *succeeds* in orienting the unrestricted system.
+or Multiset Path Ordering (MPO) fails to orient the KO7 calculus. Both full LPO and
+full MPO *succeed* in orienting the unrestricted system: LPO is CeTA-certified (external),
+and MPO orientation is Lean-mechanized in `Meta/MPO_FullStep.lean` (`mpo_orients_step`).
 
 Instead, the following two theorems demonstrate that the isolated *components* of path
 orders (pure head precedence and linear KBO-style weights) fail independently.

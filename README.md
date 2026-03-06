@@ -35,44 +35,46 @@ Toolchain/dependency pins are in:
 - `OperatorKO7/Kernel.lean`:
   core term syntax (`Trace`), kernel root relation (`Step`), and closures (`StepStar`).
 
-### Active Meta Modules
+### Meta Modules
 
 - `OperatorKO7/Meta/SafeStep_Core.lean`:
-  guarded relation (`SafeStep`), `deltaFlag`, and multiset payload helpers.
+  `weight`, `kappaM`, `deltaFlag`, guarded `SafeStep` relation.
 - `OperatorKO7/Meta/ComputableMeasure.lean`:
-  computable measure stack (`mu3c`), lex orders, and per-rule decrease lemmas.
+  `tau`, `Lex3c`, per-rule decrease (`drop_R_*_c`), `wf_SafeStepRev_c`.
 - `OperatorKO7/Meta/ComputableMeasure_Verification.lean`:
-  additional measure-layer checks/examples.
+  sanity checks: `deltaFlag_binary`, `no_infinite_safestep_chain`.
 - `OperatorKO7/Meta/Normalize_Safe.lean`:
-  safe-star relation, normal-form predicate, normalizer definitions.
+  certified normalizer (`WellFounded.fix`); totality and soundness proofs.
 - `OperatorKO7/Meta/SafeStep_Ctx.lean`:
-  partial context closure relation and star lifting lemmas.
+  partial context closure `SafeStepCtx` and star lifting lemmas.
 - `OperatorKO7/Meta/ContextClosed_SN.lean`:
-  context-closure accessibility and well-foundedness results.
+  `ctxFuel` exponential-weight measure; `wf_SafeStepCtxRev` (unconditional SN).
 - `OperatorKO7/Meta/Confluence_Safe.lean`:
-  local-join constructions for safe relations.
+  local-join lemmas; `localJoin_all_safe`.
 - `OperatorKO7/Meta/Newman_Safe.lean`:
-  Newman-style confluence packaging over safe-star.
-- `OperatorKO7/Meta/Conjecture_Boundary.lean`:
-  boundary-oriented theorem scaffolding/interfaces.
-- `OperatorKO7/Meta/CompositionalMeasure_Impossibility.lean`:
-  compositional-measure classes, impossibility statements, projection comparison lemmas.
+  Newman instantiation; `confluentSafe`, unique normal forms.
 - `OperatorKO7/Meta/Impossibility_Lemmas.lean`:
-  additional failure/impossibility lemma collection.
-- `OperatorKO7/Meta/Operational_Incompleteness.lean`:
-  auxiliary probe predicates/relations.
-- `OperatorKO7/Meta/DM_OrderType.lean`:
-  ordinal upper-bound calibration layer.
-- `OperatorKO7/Meta/DM_OrderType_LowerBound.lean`:
-  lower-bound/rank-bridge calibration layer.
+  machine-checked failed-measure catalog.
+- `OperatorKO7/Meta/Conjecture_Boundary.lean`:
+  no-go theorems, `GlobalOrients` framework.
+- `OperatorKO7/Meta/CompositionalMeasure_Impossibility.lean`:
+  impossibility theorems (Tier 1 and Tier 2), DP escape clause, `GlobalOrients` bridge.
 - `OperatorKO7/Meta/RecCore.lean`:
-  reduced RecΔ-core signature and specialization lemmas.
+  RecΔ-core (4 constructors); impossibility restated on minimal sub-signature.
+- `OperatorKO7/Meta/DM_OrderType.lean`:
+  DM-to-ordinal embedding; ε₀ bridge; per-step strictness; upper-bound calibration.
+- `OperatorKO7/Meta/DM_OrderType_LowerBound.lean`:
+  `CNFωω` canonical carrier; surjectivity below ω^ω, reflection, rank bridge.
+- `OperatorKO7/Meta/Operational_Incompleteness.lean`:
+  probe predicates (P1–P3), `InternallyDefinableMeasure`.
 - `OperatorKO7/Meta/LinearRec_Ablation.lean`:
-  linear-recursion ablation definitions/lemmas.
+  linear recursor variant; `simpleSize` orientation (ablation).
+- `OperatorKO7/Meta/MPO_FullStep.lean`:
+  MPO orientation of all 8 full-kernel rules (`mpo_orients_step`).
 - `OperatorKO7/Meta/HydraCore.lean`:
-  auxiliary Hydra-style module.
+  toy hydra duplication relation; stress-test encoding for `Operational_Incompleteness`.
 - `OperatorKO7/Meta/GoodsteinCore.lean`:
-  auxiliary Goodstein-style module.
+  toy Goodstein base-change relation; stress-test encoding for `Operational_Incompleteness`.
 
 ### Tests
 
