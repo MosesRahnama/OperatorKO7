@@ -61,6 +61,8 @@ Toolchain/dependency pins are in:
   impossibility theorems (Tier 1 and Tier 2), DP escape clause, `GlobalOrients` bridge.
 - `OperatorKO7/Meta/RecCore.lean`:
   RecΔ-core (4 constructors); impossibility restated on minimal sub-signature.
+- `OperatorKO7/Meta/DependencyPairs_Works.lean`:
+  extracted DP pair for `rec_succ`; projection decrease and DP-chain well-foundedness (`wf_DPPairRev`).
 - `OperatorKO7/Meta/DM_OrderType.lean`:
   DM-to-ordinal embedding; ε₀ bridge; per-step strictness; upper-bound calibration.
 - `OperatorKO7/Meta/DM_OrderType_LowerBound.lean`:
