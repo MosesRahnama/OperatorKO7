@@ -1,6 +1,6 @@
 # OperatorKO7 Complete Documentation
 
-Generated: 2026-03-08 15:25:30 +03:30
+Generated: 2026-03-08 17:06:13 +03:30
 Source files: 24
 Total source lines: 7573
 
@@ -4904,8 +4904,8 @@ where the step argument `s` is not duplicated on the RHS of `rec_succ`
 `simpleSize` (a Tier-1 additive compositional measure) strictly orients both
 rules.
 
-This confirms: the barrier is caused by duplication, not by the recursor
-pattern itself.
+This is consistent with duplication being the operative source of the barrier,
+not the recursor pattern itself.
 -/
 
 open Trace
