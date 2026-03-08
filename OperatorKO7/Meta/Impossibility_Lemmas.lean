@@ -149,19 +149,9 @@ Commentary-only: transporting strict inequalities to the left over arbitrary
 ordinal right-addends is invalid. Attempted patches that relax `=` to `≤` do
 not fix the nested-δ counterexample. The following fragments are intentionally
 commented to keep the build green; they illustrate the bad shapes. -/
-/-
--- namespace RightAddHazard
--- open Ordinal
--- variable (p q : Ordinal)
--- -- BAD SHAPE (do not try to prove globally): from μ n < μ (delta n) derive
--- -- μ n + p < μ (delta n) + p for arbitrary p.
--- lemma add_right_strict_mono_bad
---   (h : p < q) :
---   (∀ s, p + s < q + s) := by
---   -- Not true on ordinals in general; right addition isn’t strictly monotone.
---   admit
--- end RightAddHazard
--/
+-- RightAddHazard (dead end): ordinal right-addition is not strictly monotone.
+-- The bad shape `p < q → p + s < q + s` fails on ordinals in general.
+-- This dead end is documented; no code is needed.
 
 /-! ## P2 duplication realism - references and examples (fails_central §G)
 

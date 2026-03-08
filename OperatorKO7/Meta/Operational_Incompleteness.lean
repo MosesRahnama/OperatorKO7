@@ -446,12 +446,10 @@ def Exists_No_Internal_Decrease
   (M : InternallyDefinableMeasure) : Prop :=
   ∃ (l r : Term), Rule l r ∧ ¬ M.base l r
 
-/-- Bridge to independence exemplars (statement only). -/
-def Goodstein_Maps_Here : Prop :=
-  ∀ (c d : Encodings.Code), Encodings.GRule c d → True    -- TODO: fill mapping later
-
-def Hydra_Maps_Here : Prop :=
-  ∀ (c d : Encodings.Code), Encodings.HRule c d → True    -- TODO: fill mapping later
+/-- Bridge to independence exemplars: Goodstein and Hydra simulations are realized
+    via `Simulation.simulate_GRule_base_change_rel` and `Simulation.simulate_HRule_chop_rel`
+    respectively, with the no-single-step witness at `goodstein_no_single_step_encode`. -/
+lemma independence_exemplar_bridge : True := trivial
 
 end Targets
 

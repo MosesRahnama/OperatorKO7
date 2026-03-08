@@ -19,7 +19,7 @@ This folder stores reproducibility artifacts for the KO7 full-step TRS.
 - `KO7_MAT3.cpf`: MAT(3) strategy (matrix interpretation, dim 3)
 
 ### Not Certifiable
-- `KO7_FBI.cpf`: FBI strategy (forward/backward instantiation) — MAYBE, no proof generated
+- FBI strategy: returned MAYBE (0.17s) but produced no CPF certificate. No `.cpf` file is included for this strategy.
 
 ## Prior Text Outputs
 - `KO7_full_step_TTT2_results_FAST.txt`: FAST strategy human-readable output
