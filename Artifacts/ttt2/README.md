@@ -25,7 +25,7 @@ This folder stores reproducibility artifacts for the KO7 full-step TRS.
 - `KO7_full_step_TTT2_results_FAST.txt`: FAST strategy human-readable output
 - `KO7_full_step_TTT2_results_POLY.txt`: POLY strategy human-readable output
 
-Note: Human-readable text outputs are preserved only for FAST and POLY. Timings for other strategies are from TTT2 runs and can be reproduced using the generation commands below. All CPF files (which encode the complete proof certificates) are included for all strategies.
+Note: Human-readable text outputs are preserved only for FAST and POLY. Timings for other strategies are from TTT2 runs and can be reproduced using the generation commands below. CPF files (which encode the complete proof certificates) are included for all strategies that produced them (FBI returned MAYBE with no CPF output).
 
 ## Certification Log
 - `KO7_CeTA_certification.txt`: full CeTA 2.36 verification results for all strategies

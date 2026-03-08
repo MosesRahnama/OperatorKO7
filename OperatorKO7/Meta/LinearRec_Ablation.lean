@@ -12,8 +12,8 @@ where the step argument `s` is not duplicated on the RHS of `rec_succ`
 `simpleSize` (a Tier-1 additive compositional measure) strictly orients both
 rules.
 
-This confirms: the barrier is caused by duplication, not by the recursor
-pattern itself.
+This is consistent with duplication being the operative source of the barrier,
+not the recursor pattern itself.
 -/
 
 open Trace
