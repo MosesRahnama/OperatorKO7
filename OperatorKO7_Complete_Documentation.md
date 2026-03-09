@@ -4,34 +4,36 @@ Generated: 2026-03-08 17:06:13 +03:30
 Source files: 24
 Total source lines: 7573
 
-Scope: `OperatorKO7/Kernel.lean` + `OperatorKO7/Meta/**/*.lean` (excluding `OperatorKO7/Legacy/**`).
+Scope: `OperatorKO7/Kernel.lean` + `OperatorKO7/Meta/**/*.lean`
 
 ## Table of Contents
 
-- [OperatorKO7/Kernel.lean](#operatorko7-kernel-lean)
-- [OperatorKO7/Meta/CompositionalMeasure_Impossibility.lean](#operatorko7-meta-compositionalmeasure-impossibility-lean)
-- [OperatorKO7/Meta/ComputableMeasure_Verification.lean](#operatorko7-meta-computablemeasure-verification-lean)
-- [OperatorKO7/Meta/ComputableMeasure.lean](#operatorko7-meta-computablemeasure-lean)
-- [OperatorKO7/Meta/Confluence_Safe.lean](#operatorko7-meta-confluence-safe-lean)
-- [OperatorKO7/Meta/Conjecture_Boundary.lean](#operatorko7-meta-conjecture-boundary-lean)
-- [OperatorKO7/Meta/ContextClosed_SN.lean](#operatorko7-meta-contextclosed-sn-lean)
-- [OperatorKO7/Meta/DependencyPairs_Works.lean](#operatorko7-meta-dependencypairs-works-lean)
-- [OperatorKO7/Meta/DM_MPO_Orientation.lean](#operatorko7-meta-dm-mpo-orientation-lean)
-- [OperatorKO7/Meta/DM_OrderType_LowerBound.lean](#operatorko7-meta-dm-ordertype-lowerbound-lean)
-- [OperatorKO7/Meta/DM_OrderType.lean](#operatorko7-meta-dm-ordertype-lean)
-- [OperatorKO7/Meta/FailureModes.lean](#operatorko7-meta-failuremodes-lean)
-- [OperatorKO7/Meta/GoodsteinCore.lean](#operatorko7-meta-goodsteincore-lean)
-- [OperatorKO7/Meta/HydraCore.lean](#operatorko7-meta-hydracore-lean)
-- [OperatorKO7/Meta/Impossibility_Lemmas.lean](#operatorko7-meta-impossibility-lemmas-lean)
-- [OperatorKO7/Meta/LinearRec_Ablation.lean](#operatorko7-meta-linearrec-ablation-lean)
-- [OperatorKO7/Meta/MPO_FullStep.lean](#operatorko7-meta-mpo-fullstep-lean)
-- [OperatorKO7/Meta/Newman_Safe.lean](#operatorko7-meta-newman-safe-lean)
-- [OperatorKO7/Meta/Normalize_Safe.lean](#operatorko7-meta-normalize-safe-lean)
-- [OperatorKO7/Meta/Operational_Incompleteness.lean](#operatorko7-meta-operational-incompleteness-lean)
-- [OperatorKO7/Meta/PaperApproachIndex.lean](#operatorko7-meta-paperapproachindex-lean)
-- [OperatorKO7/Meta/RecCore.lean](#operatorko7-meta-reccore-lean)
-- [OperatorKO7/Meta/SafeStep_Core.lean](#operatorko7-meta-safestep-core-lean)
-- [OperatorKO7/Meta/SafeStep_Ctx.lean](#operatorko7-meta-safestep-ctx-lean)
+- [OperatorKO7 Complete Documentation](#operatorko7-complete-documentation)
+  - [Table of Contents](#table-of-contents)
+  - [OperatorKO7/Kernel.lean](#operatorko7kernellean)
+  - [OperatorKO7/Meta/CompositionalMeasure\_Impossibility.lean](#operatorko7metacompositionalmeasure_impossibilitylean)
+  - [OperatorKO7/Meta/ComputableMeasure\_Verification.lean](#operatorko7metacomputablemeasure_verificationlean)
+  - [OperatorKO7/Meta/ComputableMeasure.lean](#operatorko7metacomputablemeasurelean)
+  - [OperatorKO7/Meta/Confluence\_Safe.lean](#operatorko7metaconfluence_safelean)
+  - [OperatorKO7/Meta/Conjecture\_Boundary.lean](#operatorko7metaconjecture_boundarylean)
+  - [OperatorKO7/Meta/ContextClosed\_SN.lean](#operatorko7metacontextclosed_snlean)
+  - [OperatorKO7/Meta/DependencyPairs\_Works.lean](#operatorko7metadependencypairs_workslean)
+  - [OperatorKO7/Meta/DM\_MPO\_Orientation.lean](#operatorko7metadm_mpo_orientationlean)
+  - [OperatorKO7/Meta/DM\_OrderType\_LowerBound.lean](#operatorko7metadm_ordertype_lowerboundlean)
+  - [OperatorKO7/Meta/DM\_OrderType.lean](#operatorko7metadm_ordertypelean)
+  - [OperatorKO7/Meta/FailureModes.lean](#operatorko7metafailuremodeslean)
+  - [OperatorKO7/Meta/GoodsteinCore.lean](#operatorko7metagoodsteincorelean)
+  - [OperatorKO7/Meta/HydraCore.lean](#operatorko7metahydracorelean)
+  - [OperatorKO7/Meta/Impossibility\_Lemmas.lean](#operatorko7metaimpossibility_lemmaslean)
+  - [OperatorKO7/Meta/LinearRec\_Ablation.lean](#operatorko7metalinearrec_ablationlean)
+  - [OperatorKO7/Meta/MPO\_FullStep.lean](#operatorko7metampo_fullsteplean)
+  - [OperatorKO7/Meta/Newman\_Safe.lean](#operatorko7metanewman_safelean)
+  - [OperatorKO7/Meta/Normalize\_Safe.lean](#operatorko7metanormalize_safelean)
+  - [OperatorKO7/Meta/Operational\_Incompleteness.lean](#operatorko7metaoperational_incompletenesslean)
+  - [OperatorKO7/Meta/PaperApproachIndex.lean](#operatorko7metapaperapproachindexlean)
+  - [OperatorKO7/Meta/RecCore.lean](#operatorko7metareccorelean)
+  - [OperatorKO7/Meta/SafeStep\_Core.lean](#operatorko7metasafestep_corelean)
+  - [OperatorKO7/Meta/SafeStep\_Ctx.lean](#operatorko7metasafestep_ctxlean)
 
 ---
 
