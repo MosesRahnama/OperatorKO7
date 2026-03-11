@@ -1,4 +1,5 @@
 import OperatorKO7.Kernel
+import OperatorKO7.Meta.StepDuplicatingSchema
 import OperatorKO7.Meta.Conjecture_Boundary
 
 /-!
@@ -29,6 +30,8 @@ axioms: it projects to a single argument instead of aggregating all subterm cont
 - `no_additive_compositional_orients_rec_succ`: No additive compositional measure orients rec_succ
 - `no_compositional_orients_rec_succ_transparent_delta`: No abstract compositional measure
   with transparent delta orients rec_succ
+- `no_global_step_orientation_compositional_transparent_delta`: No abstract compositional
+  measure with transparent delta globally orients full `Step`
 - `dp_projection_orients_rec_succ`: DP projection DOES orient rec_succ
 - `dp_projection_violates_sensitivity`: DP projection violates the subterm/sensitivity axiom
 
@@ -43,14 +46,28 @@ axioms: it projects to a single argument instead of aggregating all subterm cont
 namespace OperatorKO7.CompositionalImpossibility
 
 open OperatorKO7 Trace
+open OperatorKO7.StepDuplicating
+
+/-- The four-role KO7 schema underlying the duplication barrier. -/
+def ko7Schema : StepDuplicatingSchema where
+  T := Trace
+  base := void
+  succ := delta
+  wrap := app
+  recur := recΔ
+
+/-- KO7 viewed as a step-duplicating system. -/
+def ko7System : StepDuplicatingSchema.StepDuplicatingSystem where
+  toStepDuplicatingSchema := ko7Schema
+  Step := Step
+  dup_step := Step.R_rec_succ
 
 /-! ## Section 1: Iterated App Constructor -/
 
 /-- Build `app(app(...(void)...), void)` with `k` nestings.
 This is the "pump" that makes `μ(s)` arbitrarily large for any compositional measure. -/
-def appIter : Nat → Trace
-  | 0     => void
-  | k + 1 => app (appIter k) void
+def appIter : Nat → Trace :=
+  StepDuplicatingSchema.wrapIter ko7Schema
 
 /-! ## Section 2: Additive Compositional Measure (Tier 1) -/
 
@@ -82,16 +99,28 @@ For each constructor, adds the constructor's weight to the sum of subterm evalua
   | recΔ b s n  => M.w_rec + M.eval b + M.eval s + M.eval n
   | eqW a b     => M.w_eq + M.eval a + M.eval b
 
+/-- Forget the KO7-specific extra constructors and view the measure on the generic schema. -/
+def AdditiveCompositionalMeasure.toSchemaMeasure
+    (M : AdditiveCompositionalMeasure) :
+    StepDuplicatingSchema.AdditiveMeasure ko7Schema where
+  eval := M.eval
+  w_base := M.w_void
+  w_succ := M.w_delta
+  w_wrap := M.w_app
+  w_recur := M.w_rec
+  eval_base := by rfl
+  eval_succ := by intro t; rfl
+  eval_wrap := by intro x y; rfl
+  eval_recur := by intro b s n; rfl
+  h_wrap_pos := M.hw_app_pos
+
 /-- The eval of `appIter k` grows at least as fast as `k` for any additive compositional measure
 with `w_app ≥ 1`. This is the key "pump" lemma: we can make `M.eval s` arbitrarily large. -/
 lemma eval_appIter_ge (M : AdditiveCompositionalMeasure) (k : Nat) :
     M.eval (appIter k) ≥ k := by
-  induction k with
-  | zero => simp [appIter, AdditiveCompositionalMeasure.eval]
-  | succ k ih =>
-    simp only [appIter, AdditiveCompositionalMeasure.eval]
-    have := M.hw_app_pos
-    omega
+  simpa [appIter, AdditiveCompositionalMeasure.toSchemaMeasure] using
+    (StepDuplicatingSchema.eval_wrapIter_ge
+      (S := ko7Schema) (M := M.toSchemaMeasure) k)
 
 /-! ## Section 3: Tier 1 Impossibility Theorem -/
 
@@ -110,17 +139,9 @@ This subsumes all 12 failure witnesses in the catalog under a single theorem. -/
 theorem no_additive_compositional_orients_rec_succ (M : AdditiveCompositionalMeasure) :
     ¬ (∀ (b s n : Trace),
       M.eval (app s (recΔ b s n)) < M.eval (recΔ b s (delta n))) := by
-  intro h
-  -- Specialize to b = void, n = void, s = appIter(M.w_delta)
-  have hspec := h void (appIter M.w_delta) void
-  -- After unfolding eval, the goal becomes arithmetic in M's weights and M.eval(appIter M.w_delta)
-  simp only [AdditiveCompositionalMeasure.eval] at hspec
-  -- We know M.eval(appIter M.w_delta) ≥ M.w_delta
-  have hge := eval_appIter_ge M M.w_delta
-  -- The arithmetic contradiction: duplication adds M.eval(s) ≥ w_delta,
-  -- but the delta wrapper only contributes w_delta. With w_app ≥ 1, the RHS exceeds the LHS.
-  have := M.hw_app_pos
-  omega
+  simpa [ko7Schema, AdditiveCompositionalMeasure.toSchemaMeasure] using
+    (StepDuplicatingSchema.no_additive_orients_dup_step
+      (S := ko7Schema) (M := M.toSchemaMeasure))
 
 /-! ## Section 4: Abstract Compositional Measure (Tier 2) -/
 
@@ -156,6 +177,22 @@ structure CompositionalMeasure where
   | recΔ b s n  => CM.c_recΔ (CM.eval b) (CM.eval s) (CM.eval n)
   | eqW a b     => CM.c_eqW (CM.eval a) (CM.eval b)
 
+/-- Generic-schema view of a KO7 compositional measure. -/
+def CompositionalMeasure.toSchemaMeasure
+    (CM : CompositionalMeasure) :
+    StepDuplicatingSchema.CompositionalMeasure ko7Schema where
+  eval := CM.eval
+  c_base := CM.c_void
+  c_succ := CM.c_delta
+  c_wrap := CM.c_app
+  c_recur := CM.c_recΔ
+  eval_base := by rfl
+  eval_succ := by intro t; rfl
+  eval_wrap := by intro x y; rfl
+  eval_recur := by intro b s n; rfl
+  wrap_subterm1 := CM.app_subterm1
+  wrap_subterm2 := CM.app_subterm2
+
 /-! ## Section 5: Tier 2 Impossibility (Transparent Delta) -/
 
 /-- **IMPOSSIBILITY THEOREM (Abstract Compositional, Transparent Delta)**
@@ -174,14 +211,9 @@ theorem no_compositional_orients_rec_succ_transparent_delta
     (h_transparent : CM.c_delta CM.c_void = CM.c_void) :
     ¬ (∀ (b s n : Trace),
       CM.eval (app s (recΔ b s n)) < CM.eval (recΔ b s (delta n))) := by
-  intro h
-  have hspec := h void void void
-  simp only [CompositionalMeasure.eval] at hspec
-  rw [h_transparent] at hspec
-  -- hspec : c_app c_void (c_recΔ c_void c_void c_void) < c_recΔ c_void c_void c_void
-  have hsub := CM.app_subterm2 CM.c_void (CM.c_recΔ CM.c_void CM.c_void CM.c_void)
-  -- hsub : c_app c_void (c_recΔ c_void c_void c_void) > c_recΔ c_void c_void c_void
-  omega
+  simpa [ko7Schema, CompositionalMeasure.toSchemaMeasure] using
+    (StepDuplicatingSchema.no_compositional_orients_dup_step_transparent_succ
+      (S := ko7Schema) (CM := CM.toSchemaMeasure) h_transparent)
 
 /-! ## Section 6: DP Projection Escape -/
 
@@ -197,11 +229,21 @@ It projects to the recursion counter and IGNORES all other structure. -/
   | recΔ _ _ n  => dpProjection n
   | eqW _ _     => 0
 
+/-- KO7's DP projection packaged as a generic schema rank. -/
+def dpProjectionRank : StepDuplicatingSchema.ProjectionRank ko7Schema where
+  rank := dpProjection
+  rank_base := by rfl
+  rank_succ := by intro t; rfl
+  rank_wrap := by intro x y; rfl
+  rank_recur := by intro b s n; rfl
+
 /-- The DP projection DOES orient rec_succ: the 3rd argument strictly decreases
 from `delta n` (depth k+1) to `n` (depth k). -/
 theorem dp_projection_orients_rec_succ (b s n : Trace) :
     dpProjection (app s (recΔ b s n)) < dpProjection (recΔ b s (delta n)) := by
-  simp [dpProjection]
+  exact
+    (StepDuplicatingSchema.projection_orients_dup_step
+      (S := ko7Schema) dpProjectionRank b s n)
 
 /-- The DP projection VIOLATES the subterm property for `app`.
 Specifically, `dpProjection(app x y)` is NOT always > `dpProjection(x)`.
@@ -211,13 +253,17 @@ Counterexample: `x = delta void` (dpProjection = 1), `y = void` (dpProjection = 
 This is the precise axiom that DP violates, escaping the impossibility theorem. -/
 theorem dp_projection_violates_sensitivity :
     ∃ x y : Trace, ¬ (dpProjection (app x y) > dpProjection x) := by
-  exact ⟨delta void, void, by simp [dpProjection]⟩
+  simpa [ko7Schema, dpProjectionRank] using
+    (StepDuplicatingSchema.projection_violates_wrap_subterm1
+      (S := ko7Schema) dpProjectionRank)
 
 /-- The DP projection also violates the second subterm property.
 `dpProjection(app x y)` = 0 is NOT always > `dpProjection(y)`. -/
 theorem dp_projection_violates_subterm2 :
     ∃ x y : Trace, ¬ (dpProjection (app x y) > dpProjection y) := by
-  exact ⟨void, delta void, by simp [dpProjection]⟩
+  simpa [ko7Schema, dpProjectionRank] using
+    (StepDuplicatingSchema.projection_violates_wrap_subterm2
+      (S := ko7Schema) dpProjectionRank)
 
 /-! ## Section 7: Instance Witnesses -/
 
@@ -289,10 +335,21 @@ contradicting the impossibility theorem. -/
 theorem no_global_step_orientation_additive_compositional
     (M : AdditiveCompositionalMeasure) :
     ¬ MetaConjectureBoundary.GlobalOrients M.eval (· < ·) := by
-  intro h
-  apply no_additive_compositional_orients_rec_succ M
-  intro b s n
-  exact h (Step.R_rec_succ b s n)
+  simpa [ko7System, StepDuplicatingSchema.GlobalOrients,
+    MetaConjectureBoundary.GlobalOrients, AdditiveCompositionalMeasure.toSchemaMeasure] using
+    (StepDuplicatingSchema.no_global_orients_additive
+      (Sys := ko7System) (M := M.toSchemaMeasure))
+
+/-- No abstract compositional measure with transparent delta at `void`
+can globally orient the full KO7 `Step` relation. -/
+theorem no_global_step_orientation_compositional_transparent_delta
+    (CM : CompositionalMeasure)
+    (h_transparent : CM.c_delta CM.c_void = CM.c_void) :
+    ¬ MetaConjectureBoundary.GlobalOrients CM.eval (· < ·) := by
+  simpa [ko7System, StepDuplicatingSchema.GlobalOrients,
+    MetaConjectureBoundary.GlobalOrients, CompositionalMeasure.toSchemaMeasure] using
+    (StepDuplicatingSchema.no_global_orients_compositional_transparent_succ
+      (Sys := ko7System) (CM := CM.toSchemaMeasure) h_transparent)
 
 /-! ## Summary of the Boundary
 

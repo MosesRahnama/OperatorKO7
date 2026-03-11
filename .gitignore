@@ -29,62 +29,11 @@ Strict_Execution_Contract_KO7.md
 Alignment_Report.md
 
 # Legacy and docs folders
-OperatorKO7/Legacy/
+OperatorKO7/Ignore_Legacy/
 Docs/
 
 # Temporary Lean scratch files
-_tmp_check2.lean
-_tmp_check.lean
-_tmp_check3.lean
-_tmp_leftcomm.lean
-_tmp_mulmono.lean
-_tmp_nmul.lean
-_tmp_natomega.lean
-_tmp_nmul2.lean
-_tmp_ordcheck.lean
-_tmp_ordcheck2.lean
-_tmp_ordcheck3.lean
-_tmp_print.lean
-_tmp_prodlex.lean
-_tmp_succ.lean
-_tmp_succ.lean
-_tmp_prodlex.lean
-_tmp_check.lean
-_tmp_check2.lean
-_tmp_check3.lean
-_tmp_leftcomm.lean
-_tmp_mulmono.lean
-_tmp_natomega.lean
-_tmp_nmul.lean
-_tmp_nmul2.lean
-_tmp_ordcheck.lean
-_tmp_ordcheck2.lean
-_tmp_ordcheck3.lean
-_tmp_print.lean
-_tmp_prodlex.lean
-_tmp_succ.lean
-_tmp_check.lean
-_tmp_check2.lean
-_tmp_check3.lean
-_tmp_leftcomm.lean
-_tmp_mulmono.lean
-_tmp_natomega.lean
-_tmp_nmul.lean
-_tmp_nmul2.lean
-_tmp_ordcheck.lean
-_tmp_ordcheck2.lean
-_tmp_ordcheck3.lean
-_tmp_print.lean
-_tmp_prodlex.lean
-_tmp_succ.lean
-_tmp_check.lean
-_tmp_counter.lean
-_tmp_counter3.lean
-_tmp_counter2.lean
-_tmp_naddcheck.lean
-_tmp_countconv.lean
-_tmp_countconv2.lean
-_tmp_leadd.lean
+
 _tmp_sublist.lean
 DM_ORDER_TYPE_EXACT_ROADMAP.md
 _tmp_check_reflect.lean
@@ -92,7 +41,7 @@ _tmp_check_filter.lean
 
 # Lean-to-Markdown conversion
 lean_to_md.sh
-OperatorKO7/Meta_md/
+OperatorKO7/Ignore_Meta_md/
 _tmp_ctx2.lean
 _tmp_ctx3.lean
 _tmp_ctx4.lean
