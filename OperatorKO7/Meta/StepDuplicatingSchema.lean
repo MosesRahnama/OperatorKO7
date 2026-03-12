@@ -293,6 +293,44 @@ theorem no_global_orients_affine_of_wrap_pump
   refine ⟨wrapIter Sys.toStepDuplicatingSchema k, ?_⟩
   simpa using eval_wrapIter_ge_affine M h_wrap_bias k
 
+/-- Any Nat-valued global orienter is not representable by an additive measure
+from the schema barrier class. -/
+theorem global_orienter_not_additive_representable
+    {Sys : StepDuplicatingSystem} (μ : Sys.T → Nat)
+    (horient : GlobalOrients Sys μ (· < ·)) :
+    ¬ ∃ M : AdditiveMeasure Sys.toStepDuplicatingSchema, M.eval = μ := by
+  intro hrep
+  rcases hrep with ⟨M, hM⟩
+  subst hM
+  exact (no_global_orients_additive (Sys := Sys) M) horient
+
+/-- Any Nat-valued global orienter is not representable by a transparent Tier-2
+compositional measure from the schema barrier class. -/
+theorem global_orienter_not_compositional_transparent_representable
+    {Sys : StepDuplicatingSystem} (μ : Sys.T → Nat)
+    (horient : GlobalOrients Sys μ (· < ·)) :
+    ¬ ∃ CM : CompositionalMeasure Sys.toStepDuplicatingSchema,
+        CM.c_succ CM.c_base = CM.c_base ∧ CM.eval = μ := by
+  intro hrep
+  rcases hrep with ⟨CM, htrans, hCM⟩
+  subst hCM
+  exact (no_global_orients_compositional_transparent_succ
+    (Sys := Sys) CM htrans) horient
+
+/-- Any Nat-valued global orienter is not representable by an affine measure
+from the schema barrier class when the affine measure satisfies the unbounded
+pump hypothesis used by the affine theorem. -/
+theorem global_orienter_not_affine_unbounded_representable
+    {Sys : StepDuplicatingSystem} (μ : Sys.T → Nat)
+    (horient : GlobalOrients Sys μ (· < ·)) :
+    ¬ ∃ M : AffineMeasure Sys.toStepDuplicatingSchema,
+        HasUnboundedRange M ∧ M.eval = μ := by
+  intro hrep
+  rcases hrep with ⟨M, hunbounded, hM⟩
+  subst hM
+  exact (no_global_orients_affine_of_unbounded
+    (Sys := Sys) M hunbounded) horient
+
 /-- Projection-style ranks that only track successor depth through the recursor argument. -/
 structure ProjectionRank (S : StepDuplicatingSchema) where
   rank : S.T → Nat
