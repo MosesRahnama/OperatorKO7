@@ -351,6 +351,106 @@ theorem no_global_step_orientation_compositional_transparent_delta
     (StepDuplicatingSchema.no_global_orients_compositional_transparent_succ
       (Sys := ko7System) (CM := CM.toSchemaMeasure) h_transparent)
 
+/-! ## Section 9: KO7-level Affine Measure Instantiation -/
+
+/-- An affine constructor-local measure over KO7's 7-constructor signature.
+Each constructor computes `const + scale₁ * arg₁ + scale₂ * arg₂ + ...` with no cross terms.
+The key hypotheses are positive wrapper sensitivity: `wrap_left ≥ 1` and `wrap_right ≥ 1`. -/
+structure AffineCompositionalMeasure where
+  c_void      : Nat
+  succ_bias   : Nat
+  succ_scale  : Nat
+  int_bias    : Nat
+  int_scale   : Nat
+  merge_const : Nat
+  merge_left  : Nat
+  merge_right : Nat
+  app_const   : Nat
+  app_left    : Nat
+  app_right   : Nat
+  rec_const   : Nat
+  rec_base    : Nat
+  rec_step    : Nat
+  rec_counter : Nat
+  eq_const    : Nat
+  eq_left     : Nat
+  eq_right    : Nat
+  h_app_left_pos  : 1 ≤ app_left
+  h_app_right_pos : 1 ≤ app_right
+
+/-- Evaluation for an affine KO7 measure. -/
+@[simp] def AffineCompositionalMeasure.eval
+    (M : AffineCompositionalMeasure) : Trace → Nat
+  | void        => M.c_void
+  | delta t     => M.succ_bias + M.succ_scale * M.eval t
+  | integrate t => M.int_bias + M.int_scale * M.eval t
+  | merge a b   => M.merge_const + M.merge_left * M.eval a + M.merge_right * M.eval b
+  | app a b     => M.app_const + M.app_left * M.eval a + M.app_right * M.eval b
+  | recΔ b s n  => M.rec_const + M.rec_base * M.eval b + M.rec_step * M.eval s + M.rec_counter * M.eval n
+  | eqW a b     => M.eq_const + M.eq_left * M.eval a + M.eq_right * M.eval b
+
+/-- View a KO7 affine measure as a schema-level AffineMeasure. -/
+def AffineCompositionalMeasure.toSchemaMeasure
+    (M : AffineCompositionalMeasure) :
+    StepDuplicatingSchema.AffineMeasure ko7Schema where
+  eval := M.eval
+  c_base := M.c_void
+  succ_bias := M.succ_bias
+  succ_scale := M.succ_scale
+  wrap_const := M.app_const
+  wrap_left := M.app_left
+  wrap_right := M.app_right
+  recur_const := M.rec_const
+  recur_base := M.rec_base
+  recur_step := M.rec_step
+  recur_counter := M.rec_counter
+  eval_base := by rfl
+  eval_succ := by intro t; rfl
+  eval_wrap := by intro x y; rfl
+  eval_recur := by intro b s n; rfl
+  h_wrap_left_pos := M.h_app_left_pos
+  h_wrap_right_pos := M.h_app_right_pos
+
+/-- No affine constructor-local measure with unbounded range can orient KO7's rec_succ. -/
+theorem no_affine_compositional_orients_rec_succ_of_unbounded
+    (M : AffineCompositionalMeasure)
+    (hunbounded : StepDuplicatingSchema.HasUnboundedRange M.toSchemaMeasure) :
+    ¬ (∀ (b s n : Trace),
+      M.eval (app s (recΔ b s n)) < M.eval (recΔ b s (delta n))) := by
+  simpa [ko7Schema, AffineCompositionalMeasure.toSchemaMeasure] using
+    (StepDuplicatingSchema.no_affine_orients_dup_step_of_unbounded
+      (S := ko7Schema) (M := M.toSchemaMeasure) hunbounded)
+
+/-- Positive successor pump corollary for KO7 affine measures. -/
+theorem no_affine_compositional_orients_rec_succ_of_succ_pump
+    (M : AffineCompositionalMeasure)
+    (h_succ_bias : 1 ≤ M.succ_bias) (h_succ_scale : 1 ≤ M.succ_scale) :
+    ¬ (∀ (b s n : Trace),
+      M.eval (app s (recΔ b s n)) < M.eval (recΔ b s (delta n))) := by
+  simpa [ko7Schema, AffineCompositionalMeasure.toSchemaMeasure] using
+    (StepDuplicatingSchema.no_affine_orients_dup_step_of_succ_pump
+      (S := ko7Schema) (M := M.toSchemaMeasure) h_succ_bias h_succ_scale)
+
+/-- Positive wrap/base pump corollary for KO7 affine measures. -/
+theorem no_affine_compositional_orients_rec_succ_of_wrap_pump
+    (M : AffineCompositionalMeasure)
+    (h_wrap_bias : 1 ≤ M.app_const + M.app_right * M.c_void) :
+    ¬ (∀ (b s n : Trace),
+      M.eval (app s (recΔ b s n)) < M.eval (recΔ b s (delta n))) := by
+  simpa [ko7Schema, AffineCompositionalMeasure.toSchemaMeasure] using
+    (StepDuplicatingSchema.no_affine_orients_dup_step_of_wrap_pump
+      (S := ko7Schema) (M := M.toSchemaMeasure) h_wrap_bias)
+
+/-- No affine measure with unbounded range can globally orient full KO7 `Step`. -/
+theorem no_global_step_orientation_affine_of_unbounded
+    (M : AffineCompositionalMeasure)
+    (hunbounded : StepDuplicatingSchema.HasUnboundedRange M.toSchemaMeasure) :
+    ¬ MetaConjectureBoundary.GlobalOrients M.eval (· < ·) := by
+  simpa [ko7System, StepDuplicatingSchema.GlobalOrients,
+    MetaConjectureBoundary.GlobalOrients, AffineCompositionalMeasure.toSchemaMeasure] using
+    (StepDuplicatingSchema.no_global_orients_affine_of_unbounded
+      (Sys := ko7System) (M := M.toSchemaMeasure) hunbounded)
+
 /-! ## Summary of the Boundary
 
 The impossibility theorem establishes:
@@ -359,11 +459,14 @@ The impossibility theorem establishes:
    (additive weight structure with w_app ≥ 1, or abstract combining functions with
    subterm properties) CANNOT orient the duplicating recursor for all term instantiations.
 
-2. **DP projection succeeds**: The subterm criterion with projection π(recΔ#) = 3
+2. **Affine/linear measures fail**: Constructor-local affine measures with positive
+   wrapper sensitivity and unbounded range also cannot orient the duplicating recursor.
+
+3. **DP projection succeeds**: The subterm criterion with projection π(recΔ#) = 3
    DOES orient the recursor, but it escapes the impossibility by violating the
    compositionality axioms - it projects to one argument and ignores the others.
 
-3. **The boundary is at Axiom `app_subterm`**: Compositional measures must satisfy
+4. **The boundary is at Axiom `app_subterm`**: Compositional measures must satisfy
    `c_app(x, y) > x` and `c_app(x, y) > y`. DP projection satisfies neither.
    This is exactly where the "multiplicity-aware vs. multiplicity-blind" distinction
    manifests as a formal axiom.
