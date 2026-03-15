@@ -5,19 +5,27 @@ import OperatorKO7.Meta.DM_OrderType
 import OperatorKO7.Meta.DM_OrderType_LowerBound
 import OperatorKO7.Meta.RecCore
 import OperatorKO7.Meta.QuadraticBarrier
+import OperatorKO7.Meta.QuadraticCrossTermBarrier
 import OperatorKO7.Meta.ObjectAxiom_Ablation
 import OperatorKO7.Meta.MutualDuplication_Case
 import OperatorKO7.Meta.MutualDuplication_General
 import OperatorKO7.Meta.MatrixBarrier2
+import OperatorKO7.Meta.MatrixBarrierD
 import OperatorKO7.Meta.MatrixBarrierLex
 import OperatorKO7.Meta.PumpedBarrierClasses
+import OperatorKO7.Meta.StandardPumpLemmas
 import OperatorKO7.Meta.EscapeTrichotomy
 import OperatorKO7.Meta.DepthBarrier
 import OperatorKO7.Meta.PrecedenceBarrier
 import OperatorKO7.Meta.TPDB_Export
 import OperatorKO7.Meta.DependencyPairs_Works
 import OperatorKO7.Meta.ContextClosed_SN
+import OperatorKO7.Meta.NormalizeSafe_LowerBound
+import OperatorKO7.Meta.EqW_Guard_Barrier
+import OperatorKO7.Meta.ContextClosed_SN_Full
+import OperatorKO7.Meta.SafeStep_Complexity
 import OperatorKO7.Meta.MPO_FullStep
+import OperatorKO7.Meta.MPO_Precedence_Barrier
 import OperatorKO7.Meta.PolyInterpretation_FullStep
 
 /-!

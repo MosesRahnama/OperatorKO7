@@ -1,7 +1,7 @@
 # OperatorKO7 Complete Documentation
-Generated: 2026-03-15 03:02:23 +0330
-Source files: 34
-Total source lines: 9073
+Generated: 2026-03-15 12:54:59 +0330
+Source files: 44
+Total source lines: 10410
 Scope: active `.lean` files in the repository
 
 ## Table of Contents
@@ -15,30 +15,40 @@ Scope: active `.lean` files in the repository
 - [OperatorKO7/Meta/Confluence_Safe.lean](#operatorko7metaconfluencesafelean)
 - [OperatorKO7/Meta/Conjecture_Boundary.lean](#operatorko7metaconjectureboundarylean)
 - [OperatorKO7/Meta/ContextClosed_SN.lean](#operatorko7metacontextclosedsnlean)
+- [OperatorKO7/Meta/ContextClosed_SN_Full.lean](#operatorko7metacontextclosedsnfulllean)
 - [OperatorKO7/Meta/DependencyPairs_Works.lean](#operatorko7metadependencypairsworkslean)
 - [OperatorKO7/Meta/DepthBarrier.lean](#operatorko7metadepthbarrierlean)
 - [OperatorKO7/Meta/DM_OrderType.lean](#operatorko7metadmordertypelean)
 - [OperatorKO7/Meta/DM_OrderType_LowerBound.lean](#operatorko7metadmordertypelowerboundlean)
+- [OperatorKO7/Meta/EqW_Guard_Barrier.lean](#operatorko7metaeqwguardbarrierlean)
 - [OperatorKO7/Meta/EscapeTrichotomy.lean](#operatorko7metaescapetrichotomylean)
 - [OperatorKO7/Meta/Impossibility_Lemmas.lean](#operatorko7metaimpossibilitylemmaslean)
 - [OperatorKO7/Meta/LinearRec_Ablation.lean](#operatorko7metalinearrecablationlean)
 - [OperatorKO7/Meta/MatrixBarrier2.lean](#operatorko7metamatrixbarrier2lean)
+- [OperatorKO7/Meta/MatrixBarrierD.lean](#operatorko7metamatrixbarrierdlean)
 - [OperatorKO7/Meta/MatrixBarrierLex.lean](#operatorko7metamatrixbarrierlexlean)
 - [OperatorKO7/Meta/MPO_FullStep.lean](#operatorko7metampofullsteplean)
+- [OperatorKO7/Meta/MPO_Precedence_Barrier.lean](#operatorko7metampoprecedencebarrierlean)
 - [OperatorKO7/Meta/MutualDuplication_Case.lean](#operatorko7metamutualduplicationcaselean)
 - [OperatorKO7/Meta/MutualDuplication_General.lean](#operatorko7metamutualduplicationgenerallean)
 - [OperatorKO7/Meta/Newman_Safe.lean](#operatorko7metanewmansafelean)
 - [OperatorKO7/Meta/Normalize_Safe.lean](#operatorko7metanormalizesafelean)
+- [OperatorKO7/Meta/NormalizeSafe_LowerBound.lean](#operatorko7metanormalizesafelowerboundlean)
 - [OperatorKO7/Meta/ObjectAxiom_Ablation.lean](#operatorko7metaobjectaxiomablationlean)
 - [OperatorKO7/Meta/PolyInterpretation_FullStep.lean](#operatorko7metapolyinterpretationfullsteplean)
 - [OperatorKO7/Meta/PrecedenceBarrier.lean](#operatorko7metaprecedencebarrierlean)
 - [OperatorKO7/Meta/PumpedBarrierClasses.lean](#operatorko7metapumpedbarrierclasseslean)
 - [OperatorKO7/Meta/QuadraticBarrier.lean](#operatorko7metaquadraticbarrierlean)
+- [OperatorKO7/Meta/QuadraticCrossTermBarrier.lean](#operatorko7metaquadraticcrosstermbarrierlean)
 - [OperatorKO7/Meta/RecCore.lean](#operatorko7metareccorelean)
+- [OperatorKO7/Meta/SafeStep_Complexity.lean](#operatorko7metasafestepcomplexitylean)
 - [OperatorKO7/Meta/SafeStep_Core.lean](#operatorko7metasafestepcorelean)
 - [OperatorKO7/Meta/SafeStep_Ctx.lean](#operatorko7metasafestepctxlean)
+- [OperatorKO7/Meta/StandardPumpLemmas.lean](#operatorko7metastandardpumplemmaslean)
 - [OperatorKO7/Meta/StepDuplicatingSchema.lean](#operatorko7metastepduplicatingschemalean)
+- [OperatorKO7/Meta/TPDB_Export.lean](#operatorko7metatpdbexportlean)
 - [OperatorKO7/Test/Sanity.lean](#operatorko7testsanitylean)
+- [OperatorKO7/Test/TPDB_Export.lean](#operatorko7testtpdbexportlean)
 
 ---
 
@@ -78,7 +88,7 @@ require mathlib from git "https://github.com/leanprover-community/mathlib4.git" 
 
 ## OperatorKO7.lean
 
-**Lines:** 33
+**Lines:** 42
 
 ```lean
 import OperatorKO7.Kernel
@@ -88,18 +98,27 @@ import OperatorKO7.Meta.DM_OrderType
 import OperatorKO7.Meta.DM_OrderType_LowerBound
 import OperatorKO7.Meta.RecCore
 import OperatorKO7.Meta.QuadraticBarrier
+import OperatorKO7.Meta.QuadraticCrossTermBarrier
 import OperatorKO7.Meta.ObjectAxiom_Ablation
 import OperatorKO7.Meta.MutualDuplication_Case
 import OperatorKO7.Meta.MutualDuplication_General
 import OperatorKO7.Meta.MatrixBarrier2
+import OperatorKO7.Meta.MatrixBarrierD
 import OperatorKO7.Meta.MatrixBarrierLex
 import OperatorKO7.Meta.PumpedBarrierClasses
+import OperatorKO7.Meta.StandardPumpLemmas
 import OperatorKO7.Meta.EscapeTrichotomy
 import OperatorKO7.Meta.DepthBarrier
 import OperatorKO7.Meta.PrecedenceBarrier
+import OperatorKO7.Meta.TPDB_Export
 import OperatorKO7.Meta.DependencyPairs_Works
 import OperatorKO7.Meta.ContextClosed_SN
+import OperatorKO7.Meta.NormalizeSafe_LowerBound
+import OperatorKO7.Meta.EqW_Guard_Barrier
+import OperatorKO7.Meta.ContextClosed_SN_Full
+import OperatorKO7.Meta.SafeStep_Complexity
 import OperatorKO7.Meta.MPO_FullStep
+import OperatorKO7.Meta.MPO_Precedence_Barrier
 import OperatorKO7.Meta.PolyInterpretation_FullStep
 
 /-!
@@ -3055,6 +3074,110 @@ end MetaSN_KO7
 
 ---
 
+## OperatorKO7/Meta/ContextClosed_SN_Full.lean
+
+**Lines:** 95
+
+```lean
+import OperatorKO7.Meta.PolyInterpretation_FullStep
+import Mathlib.Order.WellFounded
+import Mathlib.Tactic.Linarith
+
+/-!
+Context-closed strong normalization for the full unguarded KO7 system.
+
+This module closes the remaining internal gap between the root-step full-system proofs and
+context-closed termination. The key point is that the nonlinear polynomial witness `W`
+from `Meta/PolyInterpretation_FullStep.lean` is strictly monotone in every constructor
+argument, so every contextual closure of a `Step` contraction still strictly decreases `W`.
+-/
+
+open OperatorKO7 Trace
+open OperatorKO7.PolyInterpretation
+
+namespace MetaSN_KO7
+
+/-- Full context closure of the unguarded kernel relation `Step`. -/
+inductive StepCtxFull : Trace → Trace → Prop
+| root {a b : Trace} : Step a b → StepCtxFull a b
+| delta {t u : Trace} : StepCtxFull t u → StepCtxFull (delta t) (delta u)
+| integrate {t u : Trace} : StepCtxFull t u → StepCtxFull (integrate t) (integrate u)
+| mergeL {a a' b : Trace} : StepCtxFull a a' → StepCtxFull (merge a b) (merge a' b)
+| mergeR {a b b' : Trace} : StepCtxFull b b' → StepCtxFull (merge a b) (merge a b')
+| appL {a a' b : Trace} : StepCtxFull a a' → StepCtxFull (app a b) (app a' b)
+| appR {a b b' : Trace} : StepCtxFull b b' → StepCtxFull (app a b) (app a b')
+| recB {b b' s n : Trace} : StepCtxFull b b' → StepCtxFull (recΔ b s n) (recΔ b' s n)
+| recS {b s s' n : Trace} : StepCtxFull s s' → StepCtxFull (recΔ b s n) (recΔ b s' n)
+| recN {b s n n' : Trace} : StepCtxFull n n' → StepCtxFull (recΔ b s n) (recΔ b s n')
+| eqWL {a a' b : Trace} : StepCtxFull a a' → StepCtxFull (eqW a b) (eqW a' b)
+| eqWR {a b b' : Trace} : StepCtxFull b b' → StepCtxFull (eqW a b) (eqW a b')
+
+/-- Reverse full context relation. -/
+def StepCtxFullRev : Trace → Trace → Prop := fun a b => StepCtxFull b a
+
+/-- The global polynomial witness `W` strictly decreases on every full contextual step. -/
+theorem W_orients_stepCtxFull : ∀ {a b : Trace}, StepCtxFull a b → W b < W a
+  | _, _, StepCtxFull.root h => W_orients_step h
+  | _, _, StepCtxFull.delta h => by
+      simpa [W] using Nat.succ_lt_succ (W_orients_stepCtxFull h)
+  | _, _, StepCtxFull.integrate h => by
+      simpa [W] using Nat.succ_lt_succ (W_orients_stepCtxFull h)
+  | _, _, StepCtxFull.mergeL h => by
+      have hh := W_orients_stepCtxFull h
+      simp only [W] at hh ⊢
+      omega
+  | _, _, StepCtxFull.mergeR h => by
+      have hh := W_orients_stepCtxFull h
+      simp only [W] at hh ⊢
+      omega
+  | _, _, StepCtxFull.appL h => by
+      have hh := W_orients_stepCtxFull h
+      simp only [W] at hh ⊢
+      omega
+  | _, _, StepCtxFull.appR h => by
+      have hh := W_orients_stepCtxFull h
+      simp only [W] at hh ⊢
+      omega
+  | _, _, StepCtxFull.recB (s := s) (n := n) h => by
+      have hh := W_orients_stepCtxFull h
+      have hs : 1 ≤ W s := W_pos s
+      have hn : 1 ≤ W n := W_pos n
+      simp only [W] at hh ⊢
+      nlinarith
+  | _, _, StepCtxFull.recS (b := b) (n := n) h => by
+      have hh := W_orients_stepCtxFull h
+      have hb : 1 ≤ W b := W_pos b
+      have hn : 1 ≤ W n := W_pos n
+      simp only [W] at hh ⊢
+      nlinarith
+  | _, _, StepCtxFull.recN (b := b) (s := s) h => by
+      have hh := W_orients_stepCtxFull h
+      have hb : 1 ≤ W b := W_pos b
+      have hs : 1 ≤ W s := W_pos s
+      simp only [W] at hh ⊢
+      nlinarith
+  | _, _, StepCtxFull.eqWL h => by
+      have hh := W_orients_stepCtxFull h
+      simp only [W] at hh ⊢
+      omega
+  | _, _, StepCtxFull.eqWR h => by
+      have hh := W_orients_stepCtxFull h
+      simp only [W] at hh ⊢
+      omega
+
+/-- Full context-closed strong normalization from the global polynomial witness. -/
+theorem wf_StepCtxFullRev_poly : WellFounded StepCtxFullRev := by
+  have hsub :
+      Subrelation StepCtxFullRev (fun x y : Trace => W x < W y) := by
+    intro x y hxy
+    exact W_orients_stepCtxFull hxy
+  exact Subrelation.wf hsub (InvImage.wf (f := W) Nat.lt_wfRel.wf)
+
+end MetaSN_KO7
+```
+
+---
+
 ## OperatorKO7/Meta/DependencyPairs_Works.lean
 
 **Lines:** 61
@@ -4720,9 +4843,68 @@ end OperatorKO7.MetaDM
 
 ---
 
+## OperatorKO7/Meta/EqW_Guard_Barrier.lean
+
+**Lines:** 50
+
+```lean
+import OperatorKO7.Meta.Confluence_Safe
+
+/-!
+Guard-necessity results for the `eqW` overlap in the full kernel relation.
+
+The original affine-orientation target for this suggestion was too strong and in fact false.
+What the artifact can prove cleanly is the confluence-theoretic obstruction directly: in the
+unguarded kernel relation, the overlap at `eqW a a` is never locally joinable.
+-/
+
+open OperatorKO7 Trace
+
+namespace MetaSN_KO7
+
+/-- `integrate (merge a a)` is a full-step normal form. -/
+theorem normalForm_integrate_merge_self (a : Trace) :
+    NormalForm (integrate (merge a a)) := by
+  intro ex
+  rcases ex with ⟨u, hu⟩
+  cases hu
+
+/-- The two unguarded `eqW` reducts are always distinct. -/
+theorem void_ne_integrate_merge_self (a : Trace) :
+    (void : Trace) ≠ integrate (merge a a) := by
+  intro h
+  cases h
+
+/-- In the full unguarded kernel relation, the `eqW a a` overlap is never locally joinable. -/
+theorem not_localJoinStep_eqW_refl (a : Trace) : ¬ LocalJoinStep (eqW a a) := by
+  intro hjoin
+  have hb : Step (eqW a a) void := Step.R_eq_refl a
+  have hc : Step (eqW a a) (integrate (merge a a)) := Step.R_eq_diff a a
+  rcases hjoin hb hc with ⟨d, hbStar, hcStar⟩
+  have hnf_void : NormalForm void := by
+    intro ex
+    rcases ex with ⟨u, hu⟩
+    cases hu
+  have hnf_int : NormalForm (integrate (merge a a)) :=
+    normalForm_integrate_merge_self a
+  have hd_eq_void : d = void := (nf_no_stepstar_forward hnf_void hbStar).symm
+  have hd_eq_int : d = integrate (merge a a) :=
+    (nf_no_stepstar_forward hnf_int hcStar).symm
+  exact void_ne_integrate_merge_self a (hd_eq_void.symm.trans hd_eq_int)
+
+/-- The `eqW` guards in `SafeStep` are genuine local-confluence guards. -/
+theorem eqW_guards_are_confluence_necessary :
+    ∀ a : Trace, ¬ LocalJoinStep (eqW a a) :=
+  not_localJoinStep_eqW_refl
+
+end MetaSN_KO7
+```
+
+---
+
 ## OperatorKO7/Meta/EscapeTrichotomy.lean
 
-**Lines:** 162
+**Lines:** 246
 
 ```lean
 import OperatorKO7.Meta.PumpedBarrierClasses
@@ -4822,6 +5004,28 @@ open OperatorKO7.MetaConjectureBoundary
 open OperatorKO7.DepthBarrier
 open OperatorKO7.PrecedenceBarrier
 
+/-- An explicit KO7 direct-orienter universe covering the current scalar families and the
+tracked-primary pair families. -/
+inductive KO7DirectOrienter where
+  | nat (μ : Trace → Nat)
+  | pairComponentwise (μ : Trace → StepDuplicatingSchema.Vec2)
+  | pairLex (μ : Trace → StepDuplicatingSchema.Vec2)
+
+/-- The tracked primary scalar exposed by an orienter in the explicit KO7 direct universe. -/
+def KO7DirectOrienter.primaryScalar : KO7DirectOrienter → Trace → Nat
+  | .nat μ => μ
+  | .pairComponentwise μ => fun t => (μ t).1
+  | .pairLex μ => fun t => (μ t).1
+
+/-- Orientation predicate for the explicit KO7 direct-orienter universe. -/
+def KO7DirectOrienter.Orients : KO7DirectOrienter → Prop
+  | .nat μ =>
+      MetaConjectureBoundary.GlobalOrients μ (· < ·)
+  | .pairComponentwise μ =>
+      StepDuplicatingSchema.GlobalOrients ko7System μ StepDuplicatingSchema.PairLt
+  | .pairLex μ =>
+      StepDuplicatingSchema.GlobalOrients ko7System μ StepDuplicatingSchema.PairLexLt
+
 /-- KO7-specific extension of the Nat-valued direct universe used by the escape
 trichotomy theorem. It adds the theorem-level depth and pure-precedence families
 to the generic additive / transparent-compositional / pumped affine / pumped
@@ -4836,6 +5040,29 @@ inductive KO7NatDirectBarrierRepresentable (μ : Trace → Nat) : Prop
       (heval : ∀ t : Trace, M.eval t = μ t)
   | depth (M : MaxDepthMeasure) (heval : M.eval = μ)
   | precedence (M : HeadPrecedenceFamily) (heval : M.eval = μ)
+
+/-- Extended KO7 direct universe adding the tracked-primary pair families to the previous
+Nat-valued direct families. -/
+inductive KO7DirectBarrierRepresentable : KO7DirectOrienter → Prop
+  | additive (M : AdditiveCompositionalMeasure) :
+      KO7DirectBarrierRepresentable (.nat M.eval)
+  | compositionalTransparent (CM : CompositionalMeasure)
+      (htransparent : CM.c_delta CM.c_void = CM.c_void) :
+      KO7DirectBarrierRepresentable (.nat CM.eval)
+  | affineWithPump (M : StepDuplicatingSchema.AffineMeasureWithPump ko7Schema) :
+      KO7DirectBarrierRepresentable (.nat M.eval)
+  | quadraticWithPump (M : StepDuplicatingSchema.QuadraticCounterMeasureWithPump ko7Schema) :
+      KO7DirectBarrierRepresentable (.nat M.eval)
+  | depth (M : MaxDepthMeasure) :
+      KO7DirectBarrierRepresentable (.nat M.eval)
+  | precedence (M : HeadPrecedenceFamily) :
+      KO7DirectBarrierRepresentable (.nat M.eval)
+  | matrix2ComponentwiseWithPrimaryPump
+      (M : StepDuplicatingSchema.MatrixMeasure2WithPrimaryPump ko7Schema) :
+      KO7DirectBarrierRepresentable (.pairComponentwise M.eval)
+  | matrix2LexWithPrimaryPump
+      (M : StepDuplicatingSchema.MatrixMeasure2WithPrimaryPump ko7Schema) :
+      KO7DirectBarrierRepresentable (.pairLex M.eval)
 
 /-- KO7 escape trichotomy for the explicit Nat-valued direct universe formalized
 in the artifact. Any successful Nat-valued root-step orienter must fail wrapper
@@ -4880,6 +5107,45 @@ theorem ko7_nat_direct_escape_trichotomy
       | precedence M heval =>
           subst heval
           exact (no_global_step_orientation_headPrecedenceFamily M) horient
+    · right
+      left
+      exact htrans
+  · left
+    exact hsub
+
+/-- Extended KO7 escape trichotomy for the explicit direct universe formalized in the
+artifact, now including the tracked-primary componentwise and lexicographic pair families.
+The failure modes are stated on the tracked primary scalar exposed by the orienter. -/
+theorem ko7_direct_escape_trichotomy_extended
+    {O : KO7DirectOrienter}
+    (horient : O.Orients) :
+    ¬ StepDuplicatingSchema.WrapSubtermSensitive ko7Schema O.primaryScalar ∨
+      ¬ StepDuplicatingSchema.TransparentAtBase ko7Schema O.primaryScalar ∨
+      ¬ KO7DirectBarrierRepresentable O := by
+  classical
+  by_cases hsub : StepDuplicatingSchema.WrapSubtermSensitive ko7Schema O.primaryScalar
+  · by_cases htrans : StepDuplicatingSchema.TransparentAtBase ko7Schema O.primaryScalar
+    · right
+      right
+      intro hrepr
+      cases hrepr with
+      | additive M =>
+          exact (no_global_step_orientation_additive_compositional M) horient
+      | compositionalTransparent CM htransparent =>
+          exact
+            (no_global_step_orientation_compositional_transparent_delta CM htransparent) horient
+      | affineWithPump M =>
+          exact (PumpedBarrierClasses.no_global_step_orientation_affine_with_pump M) horient
+      | quadraticWithPump M =>
+          exact (PumpedBarrierClasses.no_global_step_orientation_quadratic_with_pump M) horient
+      | depth M =>
+          exact (no_global_step_orientation_maxDepth M) horient
+      | precedence M =>
+          exact (no_global_step_orientation_headPrecedenceFamily M) horient
+      | matrix2ComponentwiseWithPrimaryPump M =>
+          exact (PumpedBarrierClasses.no_global_step_orientation_matrix2_with_primary_pump M) horient
+      | matrix2LexWithPrimaryPump M =>
+          exact (PumpedBarrierClasses.no_global_step_orientation_matrix2_lex_with_primary_pump M) horient
     · right
       left
       exact htrans
@@ -5610,6 +5876,220 @@ theorem no_global_step_orientation_matrix2_of_wrap_pump
       (S := ko7Schema) M h_wrap_bias hdup
 
 end OperatorKO7.MatrixBarrier2
+```
+
+---
+
+## OperatorKO7/Meta/MatrixBarrierD.lean
+
+**Lines:** 205
+
+```lean
+import OperatorKO7.Meta.CompositionalMeasure_Impossibility
+
+/-!
+# Dimension-Parametric Componentwise Matrix Barrier
+
+This module generalizes the tracked-component componentwise barrier from dimension `2` to
+arbitrary fixed finite dimension.
+
+The proof remains deliberately modest: if one tracked coordinate already satisfies the scalar
+affine barrier hypotheses, then strict componentwise decrease is impossible, because it would
+force strict decrease in that coordinate.
+
+This is a dimension-parametric extension of the tracked-component barrier, not a full theorem
+about arbitrary mixed matrix interpretations.
+-/
+
+namespace OperatorKO7.StepDuplicating
+
+namespace StepDuplicatingSchema
+
+/-- Strict componentwise order on `Fin d → Nat` vectors. -/
+def VecLt {d : Nat} (u v : Fin d → Nat) : Prop :=
+  ∀ i : Fin d, u i < v i
+
+/-- A finite-dimensional matrix-style measure with one tracked affine coordinate. -/
+structure MatrixMeasureD (S : StepDuplicatingSchema) (d : Nat) (tracked : Fin d) where
+  eval : S.T → Fin d → Nat
+  c_base : Nat
+  succ_bias : Nat
+  succ_scale : Nat
+  wrap_const : Nat
+  wrap_left : Nat
+  wrap_right : Nat
+  recur_const : Nat
+  recur_base : Nat
+  recur_step : Nat
+  recur_counter : Nat
+  eval_base : eval S.base tracked = c_base
+  eval_succ :
+    ∀ t, eval (S.succ t) tracked = succ_bias + succ_scale * eval t tracked
+  eval_wrap :
+    ∀ x y,
+      eval (S.wrap x y) tracked =
+        wrap_const + wrap_left * eval x tracked + wrap_right * eval y tracked
+  eval_recur :
+    ∀ b s n,
+      eval (S.recur b s n) tracked =
+        recur_const + recur_base * eval b tracked +
+          recur_step * eval s tracked + recur_counter * eval n tracked
+  h_wrap_left_pos : 1 ≤ wrap_left
+  h_wrap_right_pos : 1 ≤ wrap_right
+
+/-- Project the tracked coordinate to the scalar affine barrier infrastructure. -/
+def MatrixMeasureD.trackedAffine
+    {S : StepDuplicatingSchema} {d : Nat} {tracked : Fin d}
+    (M : MatrixMeasureD S d tracked) : AffineMeasure S where
+  eval := fun t => M.eval t tracked
+  c_base := M.c_base
+  succ_bias := M.succ_bias
+  succ_scale := M.succ_scale
+  wrap_const := M.wrap_const
+  wrap_left := M.wrap_left
+  wrap_right := M.wrap_right
+  recur_const := M.recur_const
+  recur_base := M.recur_base
+  recur_step := M.recur_step
+  recur_counter := M.recur_counter
+  eval_base := M.eval_base
+  eval_succ := M.eval_succ
+  eval_wrap := M.eval_wrap
+  eval_recur := M.eval_recur
+  h_wrap_left_pos := M.h_wrap_left_pos
+  h_wrap_right_pos := M.h_wrap_right_pos
+
+/-- Unbounded pump in the tracked coordinate. -/
+def HasUnboundedRangeTracked
+    {S : StepDuplicatingSchema} {d : Nat} {tracked : Fin d}
+    (M : MatrixMeasureD S d tracked) : Prop :=
+  ∀ k : Nat, ∃ t : S.T, k ≤ M.eval t tracked
+
+/-- A tracked affine failure already rules out strict componentwise orientation in any
+fixed finite dimension. -/
+theorem no_matrixD_orients_dup_step_of_componentwise_pump
+    {S : StepDuplicatingSchema} {d : Nat} {tracked : Fin d}
+    (M : MatrixMeasureD S d tracked)
+    (hunbounded : HasUnboundedRangeTracked M) :
+    ¬ (∀ (b s n : S.T),
+      VecLt (M.eval (S.wrap s (S.recur b s n))) (M.eval (S.recur b s (S.succ n)))) := by
+  intro h
+  have htracked :
+      ∀ (b s n : S.T),
+        M.eval (S.wrap s (S.recur b s n)) tracked <
+          M.eval (S.recur b s (S.succ n)) tracked := by
+    intro b s n
+    exact h b s n tracked
+  have hunbounded' : HasUnboundedRange M.trackedAffine := by
+    intro k
+    rcases hunbounded k with ⟨t, ht⟩
+    exact ⟨t, ht⟩
+  exact
+    no_affine_orients_dup_step_of_unbounded
+      (S := S) M.trackedAffine hunbounded' htracked
+
+/-- Successor-pump corollary for the tracked coordinate. -/
+theorem no_matrixD_orients_dup_step_of_succ_pump
+    {S : StepDuplicatingSchema} {d : Nat} {tracked : Fin d}
+    (M : MatrixMeasureD S d tracked)
+    (h_succ_bias : 1 ≤ M.succ_bias) (h_succ_scale : 1 ≤ M.succ_scale) :
+    ¬ (∀ (b s n : S.T),
+      VecLt (M.eval (S.wrap s (S.recur b s n))) (M.eval (S.recur b s (S.succ n)))) := by
+  intro h
+  have htracked :
+      ∀ (b s n : S.T),
+        M.eval (S.wrap s (S.recur b s n)) tracked <
+          M.eval (S.recur b s (S.succ n)) tracked := by
+    intro b s n
+    exact h b s n tracked
+  exact
+    no_affine_orients_dup_step_of_succ_pump
+      (S := S) M.trackedAffine h_succ_bias h_succ_scale htracked
+
+/-- Wrap-pump corollary for the tracked coordinate. -/
+theorem no_matrixD_orients_dup_step_of_wrap_pump
+    {S : StepDuplicatingSchema} {d : Nat} {tracked : Fin d}
+    (M : MatrixMeasureD S d tracked)
+    (h_wrap_bias : 1 ≤ M.wrap_const + M.wrap_right * M.c_base) :
+    ¬ (∀ (b s n : S.T),
+      VecLt (M.eval (S.wrap s (S.recur b s n))) (M.eval (S.recur b s (S.succ n)))) := by
+  intro h
+  have htracked :
+      ∀ (b s n : S.T),
+        M.eval (S.wrap s (S.recur b s n)) tracked <
+          M.eval (S.recur b s (S.succ n)) tracked := by
+    intro b s n
+    exact h b s n tracked
+  exact
+    no_affine_orients_dup_step_of_wrap_pump
+      (S := S) M.trackedAffine h_wrap_bias htracked
+
+/-- The tracked-component componentwise barrier also lifts to global root orientation. -/
+theorem no_global_orients_matrixD_of_componentwise_pump
+    {Sys : StepDuplicatingSystem} {d : Nat} {tracked : Fin d}
+    (M : MatrixMeasureD Sys.toStepDuplicatingSchema d tracked)
+    (hunbounded : HasUnboundedRangeTracked M) :
+    ¬ GlobalOrients Sys M.eval VecLt := by
+  intro h
+  exact
+    no_matrixD_orients_dup_step_of_componentwise_pump
+      (S := Sys.toStepDuplicatingSchema) M hunbounded
+      (fun b s n => h (Sys.dup_step b s n))
+
+end StepDuplicatingSchema
+
+end OperatorKO7.StepDuplicating
+
+namespace OperatorKO7.MatrixBarrierD
+
+open OperatorKO7
+open OperatorKO7.Trace
+open OperatorKO7.StepDuplicating
+open OperatorKO7.CompositionalImpossibility
+
+/-- KO7 specialization of the tracked fixed-dimension componentwise barrier. -/
+theorem no_global_step_orientation_matrixD_of_componentwise_pump
+    {d : Nat} (tracked : Fin d)
+    (M : StepDuplicatingSchema.MatrixMeasureD ko7Schema d tracked)
+    (hunbounded : StepDuplicatingSchema.HasUnboundedRangeTracked M) :
+    ¬ StepDuplicatingSchema.GlobalOrients ko7System M.eval StepDuplicatingSchema.VecLt := by
+  exact
+    StepDuplicatingSchema.no_global_orients_matrixD_of_componentwise_pump
+      (Sys := ko7System) M hunbounded
+
+/-- KO7 successor-pump specialization. -/
+theorem no_global_step_orientation_matrixD_of_succ_pump
+    {d : Nat} (tracked : Fin d)
+    (M : StepDuplicatingSchema.MatrixMeasureD ko7Schema d tracked)
+    (h_succ_bias : 1 ≤ M.succ_bias) (h_succ_scale : 1 ≤ M.succ_scale) :
+    ¬ (∀ {a b : Trace}, Step a b → StepDuplicatingSchema.VecLt (M.eval b) (M.eval a)) := by
+  intro h
+  have hdup :
+      ∀ b s n : Trace,
+        StepDuplicatingSchema.VecLt (M.eval (app s (recΔ b s n))) (M.eval (recΔ b s (delta n))) := by
+    intro b s n
+    exact h (Step.R_rec_succ b s n)
+  exact
+    StepDuplicatingSchema.no_matrixD_orients_dup_step_of_succ_pump
+      (S := ko7Schema) M h_succ_bias h_succ_scale hdup
+
+/-- KO7 wrap-pump specialization. -/
+theorem no_global_step_orientation_matrixD_of_wrap_pump
+    {d : Nat} (tracked : Fin d)
+    (M : StepDuplicatingSchema.MatrixMeasureD ko7Schema d tracked)
+    (h_wrap_bias : 1 ≤ M.wrap_const + M.wrap_right * M.c_base) :
+    ¬ (∀ {a b : Trace}, Step a b → StepDuplicatingSchema.VecLt (M.eval b) (M.eval a)) := by
+  intro h
+  have hdup :
+      ∀ b s n : Trace,
+        StepDuplicatingSchema.VecLt (M.eval (app s (recΔ b s n))) (M.eval (recΔ b s (delta n))) := by
+    intro b s n
+    exact h (Step.R_rec_succ b s n)
+  exact
+    StepDuplicatingSchema.no_matrixD_orients_dup_step_of_wrap_pump
+      (S := ko7Schema) M h_wrap_bias hdup
+
+end OperatorKO7.MatrixBarrierD
 ```
 
 ---
@@ -6361,6 +6841,122 @@ end OperatorKO7.MetaMPO
 
 ---
 
+## OperatorKO7/Meta/MPO_Precedence_Barrier.lean
+
+**Lines:** 107
+
+```lean
+import OperatorKO7.Meta.MPO_FullStep
+
+/-!
+# Precedence-Sensitive MPO Barrier
+
+This module complements the positive KO7-specialized MPO theorem with one explicit
+negative precedence regime.
+
+We keep the same KO7-specific MPO shape as `Meta/MPO_FullStep.lean`:
+- subterm clause
+- precedence clause
+- same-head `recΔ` counter descent
+
+The only change is the precedence order: here `app` is placed above `recΔ`.
+Under that bad precedence, the duplicating rule already fails on the smallest
+concrete `rec_succ` instance.
+-/
+
+namespace OperatorKO7.MPOPrecedenceBarrier
+
+open Trace
+open OperatorKO7.MetaMPO
+
+/-- Bad precedence ranking: `app` is placed above `recΔ`. -/
+@[simp] def rankBad : Sym → Nat
+  | .void => 0
+  | .delta => 1
+  | .merge => 2
+  | .integrate => 3
+  | .recΔ => 4
+  | .eqW => 5
+  | .app => 6
+
+/-- Strict precedence induced by `rankBad`. -/
+def symPrecBad (f g : Sym) : Prop := rankBad f < rankBad g
+
+/-- KO7 MPO with the bad precedence `app ≻ recΔ`. -/
+inductive MPOBad : Trace → Trace → Prop
+| subEq : ∀ {s u : Trace}, u ∈ args s → MPOBad s u
+| subGt : ∀ {s u t : Trace}, u ∈ args s → MPOBad u t → MPOBad s t
+| byPrec : ∀ {s t : Trace},
+    symPrecBad (sym t) (sym s) →
+    (∀ u, u ∈ args t → MPOBad s u) →
+    MPOBad s t
+| recArg : ∀ {b s n n' : Trace},
+    MPOBad n' n →
+    MPOBad (recΔ b s n') (recΔ b s n)
+
+/-- In the bad precedence, `app` strictly outranks `recΔ`. -/
+theorem app_outranks_rec : symPrecBad Sym.recΔ Sym.app := by
+  simp [symPrecBad, rankBad]
+
+/-- The smallest `rec_succ` source instance used for the bad-precedence witness. -/
+@[simp] def badRecSuccSrc : Trace := recΔ void void (delta void)
+
+/-- The corresponding `rec_succ` target instance. -/
+@[simp] def badRecSuccTgt : Trace := app void (recΔ void void void)
+
+theorem not_mpoBad_void_badRecSuccTgt :
+    ¬ MPOBad void badRecSuccTgt := by
+  intro h
+  cases h with
+  | subEq hmem =>
+      simp [badRecSuccTgt, args] at hmem
+  | subGt hmem _ =>
+      simp [args] at hmem
+  | byPrec hprec _ =>
+      simp [symPrecBad, rankBad, sym, badRecSuccTgt] at hprec
+
+theorem not_mpoBad_deltaVoid_badRecSuccTgt :
+    ¬ MPOBad (delta void) badRecSuccTgt := by
+  intro h
+  cases h with
+  | subEq hmem =>
+      simp [badRecSuccTgt, args] at hmem
+  | subGt hmem hinner =>
+      simp [args] at hmem
+      subst hmem
+      exact not_mpoBad_void_badRecSuccTgt hinner
+  | byPrec hprec _ =>
+      simp [symPrecBad, rankBad, sym, badRecSuccTgt] at hprec
+
+/-- Under the bad precedence `app ≻ recΔ`, the duplicating rule already fails on the
+smallest concrete `rec_succ` instance. -/
+theorem not_mpoBad_rec_succ_instance :
+    ¬ MPOBad badRecSuccSrc badRecSuccTgt := by
+  intro h
+  cases h with
+  | subEq hmem =>
+      simp [badRecSuccSrc, badRecSuccTgt, args] at hmem
+  | subGt hmem hinner =>
+      simp [badRecSuccSrc, args] at hmem
+      rcases hmem with rfl | rfl
+      · exact not_mpoBad_void_badRecSuccTgt hinner
+      · exact not_mpoBad_deltaVoid_badRecSuccTgt hinner
+  | byPrec hprec _ =>
+      simp [symPrecBad, rankBad, sym, badRecSuccSrc, badRecSuccTgt] at hprec
+
+/-- Consequently, the bad-precedence KO7 MPO cannot orient all root steps. -/
+theorem no_global_step_orientation_mpo_bad_prec :
+    ¬ (∀ {a b : Trace}, Step a b → MPOBad a b) := by
+  intro h
+  exact
+    not_mpoBad_rec_succ_instance
+      (h (Step.R_rec_succ void void void))
+
+end OperatorKO7.MPOPrecedenceBarrier
+```
+
+---
+
 ## OperatorKO7/Meta/MutualDuplication_Case.lean
 
 **Lines:** 138
@@ -6510,7 +7106,7 @@ end OperatorKO7.MutualDuplicationCase
 
 ## OperatorKO7/Meta/MutualDuplication_General.lean
 
-**Lines:** 146
+**Lines:** 250
 
 ```lean
 import OperatorKO7.Meta.StepDuplicatingSchema
@@ -6550,6 +7146,15 @@ def toPumpSchema (S : AlternatingDupSchema) : StepDuplicatingSchema where
 /-- Wrapper-chain pump used in the bounded SCC theorem. -/
 def wrapIter (S : AlternatingDupSchema) : Nat → S.T :=
   StepDuplicatingSchema.wrapIter S.toPumpSchema
+
+/-- Derived single-rule schema for one full SCC cycle: the successor is doubled and
+the wrapper duplicates the payload across two nested wraps. -/
+def toDup2Schema (S : AlternatingDupSchema) : StepDuplicatingSchema where
+  T := S.T
+  base := S.base
+  succ := fun n => S.succ (S.succ n)
+  wrap := fun s t => S.wrap s (S.wrap s t)
+  recur := S.recurA
 
 /-- Uniform additive measures on the alternating SCC schema. Both recursors share one
 constructor-local weight profile. -/
@@ -6591,6 +7196,70 @@ lemma eval_wrapIter_ge {S : AlternatingDupSchema} (M : AdditiveMeasure S) (k : N
     (StepDuplicatingSchema.eval_wrapIter_ge
       (S := S.toPumpSchema) (M := M.toPumpMeasure) k)
 
+/-- Uniform affine constructor-local measures on the alternating SCC schema. Both recursors
+share one constructor-local affine profile. -/
+structure AffineMeasure (S : AlternatingDupSchema) where
+  eval : S.T → Nat
+  c_base : Nat
+  succ_bias : Nat
+  succ_scale : Nat
+  wrap_const : Nat
+  wrap_left : Nat
+  wrap_right : Nat
+  recur_const : Nat
+  recur_base : Nat
+  recur_step : Nat
+  recur_counter : Nat
+  eval_base : eval S.base = c_base
+  eval_succ : ∀ t, eval (S.succ t) = succ_bias + succ_scale * eval t
+  eval_wrap : ∀ x y, eval (S.wrap x y) = wrap_const + wrap_left * eval x + wrap_right * eval y
+  eval_recurA :
+    ∀ b s n, eval (S.recurA b s n) = recur_const + recur_base * eval b + recur_step * eval s + recur_counter * eval n
+  eval_recurB :
+    ∀ b s n, eval (S.recurB b s n) = recur_const + recur_base * eval b + recur_step * eval s + recur_counter * eval n
+  h_wrap_left_pos : 1 ≤ wrap_left
+  h_wrap_right_pos : 1 ≤ wrap_right
+
+/-- View the alternating SCC affine measure as a schema-level affine measure for one
+full SCC cycle. -/
+def AffineMeasure.toDup2Measure {S : AlternatingDupSchema}
+    (M : AffineMeasure S) :
+    StepDuplicatingSchema.AffineMeasure S.toDup2Schema where
+  eval := M.eval
+  c_base := M.c_base
+  succ_bias := M.succ_bias + M.succ_scale * M.succ_bias
+  succ_scale := M.succ_scale * M.succ_scale
+  wrap_const := M.wrap_const + M.wrap_right * M.wrap_const
+  wrap_left := M.wrap_left + M.wrap_right * M.wrap_left
+  wrap_right := M.wrap_right * M.wrap_right
+  recur_const := M.recur_const
+  recur_base := M.recur_base
+  recur_step := M.recur_step
+  recur_counter := M.recur_counter
+  eval_base := M.eval_base
+  eval_succ := by
+    intro t
+    rw [show S.toDup2Schema.succ t = S.succ (S.succ t) by rfl]
+    rw [M.eval_succ, M.eval_succ]
+    ring
+  eval_wrap := by
+    intro x y
+    rw [show S.toDup2Schema.wrap x y = S.wrap x (S.wrap x y) by rfl]
+    rw [M.eval_wrap, M.eval_wrap]
+    ring
+  eval_recur := by
+    intro b s n
+    simpa [AlternatingDupSchema.toDup2Schema] using M.eval_recurA b s n
+  h_wrap_left_pos := by
+    have hwl := M.h_wrap_left_pos
+    have hnonneg : 0 ≤ M.wrap_right * M.wrap_left := Nat.zero_le _
+    omega
+  h_wrap_right_pos := by
+    have hwr := M.h_wrap_right_pos
+    have hsq : 1 * 1 ≤ M.wrap_right * M.wrap_right := by
+      exact Nat.mul_le_mul hwr hwr
+    simpa using hsq
+
 /-- Bounded SCC theorem: one alternating two-step duplicate already defeats any additive
 direct orienter on the composite profile. -/
 theorem no_additive_orients_alternating_dup2_composite
@@ -6613,6 +7282,18 @@ theorem no_additive_orients_alternating_dup2_composite
     simpa [Sval] using hge
   have hwrap := M.h_wrap_pos
   omega
+
+/-- One SCC cycle also defeats any affine direct orienter on the composite profile,
+provided the derived two-step schema admits the usual unbounded pump. -/
+theorem no_affine_orients_alternating_dup2_composite_of_unbounded
+    {S : AlternatingDupSchema} (M : AffineMeasure S)
+    (hunbounded : StepDuplicatingSchema.HasUnboundedRange M.toDup2Measure) :
+    ¬ (∀ (b s n : S.T),
+      M.eval (S.wrap s (S.wrap s (S.recurA b s n))) <
+        M.eval (S.recurA b s (S.succ (S.succ n)))) := by
+  simpa [AlternatingDupSchema.toDup2Schema, AffineMeasure.toDup2Measure] using
+    (StepDuplicatingSchema.no_affine_orients_dup_step_of_unbounded
+      (S := S.toDup2Schema) (M := M.toDup2Measure) hunbounded)
 
 /-- A bounded two-node mutually recursive system whose payload duplication appears only after
 one full SCC cycle. -/
@@ -6655,6 +7336,25 @@ theorem no_global_orients_ctx_additive
     rcases alternating_dup2_realized Sys b s n with ⟨u, h₁, h₂⟩
     exact Nat.lt_trans (h h₂) (h h₁)
   exact no_additive_orients_alternating_dup2_composite (S := Sys.toAlternatingDupSchema) M hcomp
+
+/-- The bounded SCC theorem also rules out any affine orientation of the whole
+minimal-context relation, provided the derived two-step schema admits the usual
+unbounded pump. -/
+theorem no_global_orients_ctx_affine_of_unbounded
+    {Sys : AlternatingDupSystem} (M : AffineMeasure Sys.toAlternatingDupSchema)
+    (hunbounded : StepDuplicatingSchema.HasUnboundedRange M.toDup2Measure) :
+    ¬ GlobalOrientsCtx Sys M.eval (· < ·) := by
+  intro h
+  have hcomp :
+      ∀ (b s n : Sys.T),
+        M.eval (Sys.wrap s (Sys.wrap s (Sys.recurA b s n))) <
+          M.eval (Sys.recurA b s (Sys.succ (Sys.succ n))) := by
+    intro b s n
+    rcases alternating_dup2_realized Sys b s n with ⟨u, h₁, h₂⟩
+    exact Nat.lt_trans (h h₂) (h h₁)
+  exact
+    no_affine_orients_alternating_dup2_composite_of_unbounded
+      (S := Sys.toAlternatingDupSchema) M hunbounded hcomp
 
 end AlternatingDupSchema
 
@@ -7236,6 +7936,160 @@ theorem normalizeSafe_sound (t : Trace) :
 theorem normalizeSafe_total (t : Trace) :
   ∃ n, SafeStepStar t n ∧ NormalFormSafe n :=
   ⟨normalizeSafe t, to_norm_safe t, norm_nf_safe t⟩
+
+end MetaSN_KO7
+```
+
+---
+
+## OperatorKO7/Meta/NormalizeSafe_LowerBound.lean
+
+**Lines:** 145
+
+```lean
+import OperatorKO7.Meta.Newman_Safe
+
+/-!
+Lower bounds for the certified safe normalizer.
+
+This file adds a small executable cost model `normalizeSafeSteps` that follows the same
+deterministic recursion as `normalizeSafe`, but counts root contractions instead of returning
+the final normal form.
+
+The first worked family is the left-nested `merge void` spine
+
+`mergeVoidChain n = merge void ( ... (merge void void) ... )`
+
+which contracts by `R_merge_void_left` exactly `n` times to `void`.
+-/
+
+open OperatorKO7 Trace
+open MetaSN_DM
+open OperatorKO7.MetaCM
+
+namespace MetaSN_KO7
+
+/-- Exact-length reflexive-transitive closure of `SafeStep`. -/
+inductive SafeStepPow : Trace → Nat → Trace → Prop
+| refl (t : Trace) : SafeStepPow t 0 t
+| tail {a b c : Trace} (hab : SafeStep a b) (hbc : SafeStepPow b n c) :
+    SafeStepPow a (n + 1) c
+
+/-- Forget the exact length and obtain a `SafeStepStar` path. -/
+theorem safepow_to_safestar {a b : Trace} {n : Nat}
+    (h : SafeStepPow a n b) : SafeStepStar a b := by
+  induction h with
+  | refl t =>
+      exact SafeStepStar.refl t
+  | tail hab hbc ih =>
+      exact SafeStepStar.tail hab ih
+
+/-- Count the number of deterministic root contractions used by the certified normalizer. -/
+def normalizeSafeSteps (t : Trace) : Nat :=
+  WellFounded.fix wf_Rμ3 (C := fun _ => Nat)
+    (fun t rec =>
+      match safeStepWitness? t with
+      | some w =>
+          let u : Trace := w.1
+          let hu : SafeStep t u := w.2
+          have hdrop : Rμ3 u t := measure_decreases_safe_c hu
+          Nat.succ (rec u hdrop)
+      | none =>
+          0) t
+
+theorem normalizeSafeSteps_eq (t : Trace) :
+    normalizeSafeSteps t =
+      match safeStepWitness? t with
+      | some w => Nat.succ (normalizeSafeSteps w.1)
+      | none => 0 := by
+  unfold normalizeSafeSteps
+  rw [WellFounded.fix_eq]
+
+/-- The guarded root relation is deterministic. -/
+theorem safeStep_deterministic {t u v : Trace}
+    (hu : SafeStep t u) (hv : SafeStep t v) : u = v := by
+  cases hu <;> cases hv <;> simp at *
+
+/-- `void` is a safe normal form. -/
+theorem void_nf_safe : NormalFormSafe void := by
+  intro h
+  rcases h with ⟨u, hu⟩
+  cases hu
+
+/-- The certified normalizer fixes `void`. -/
+@[simp] theorem normalizeSafe_void : normalizeSafe void = void := by
+  exact normalizeSafe_eq_self_of_nf void void_nf_safe
+
+/-- Left-nested `merge void` spine. -/
+@[simp] def mergeVoidChain : Nat → Trace
+| 0 => void
+| n + 1 => merge void (mergeVoidChain n)
+
+@[simp] theorem deltaFlag_mergeVoidChain (n : Nat) :
+    deltaFlag (mergeVoidChain n) = 0 := by
+  induction n with
+  | zero =>
+      simp [mergeVoidChain]
+  | succ n ih =>
+      simp [mergeVoidChain]
+
+/-- The merge spine contracts to `void` by exactly `n` root steps. -/
+theorem mergeVoidChain_pow_void (n : Nat) :
+    SafeStepPow (mergeVoidChain n) n void := by
+  induction n with
+  | zero =>
+      simpa [mergeVoidChain] using SafeStepPow.refl void
+  | succ n ih =>
+      have hstep : SafeStep (mergeVoidChain (n + 1)) (mergeVoidChain n) := by
+        simpa [mergeVoidChain, deltaFlag_mergeVoidChain n] using
+          (SafeStep.R_merge_void_left (mergeVoidChain n) (deltaFlag_mergeVoidChain n))
+      simpa [Nat.add_comm, Nat.add_left_comm, Nat.add_assoc, mergeVoidChain] using
+        (SafeStepPow.tail hstep ih)
+
+/-- The merge spine reaches `void` by the uncounted safe-star relation. -/
+theorem mergeVoidChain_star_void (n : Nat) :
+    SafeStepStar (mergeVoidChain n) void :=
+  safepow_to_safestar (mergeVoidChain_pow_void n)
+
+/-- The certified normalizer returns `void` on the merge spine family. -/
+@[simp] theorem normalizeSafe_mergeVoidChain (n : Nat) :
+    normalizeSafe (mergeVoidChain n) = void := by
+  rw [normalizeSafe_eq_of_star (mergeVoidChain_star_void n), normalizeSafe_void]
+
+@[simp] theorem normalizeSafeSteps_void : normalizeSafeSteps void = 0 := by
+  rw [normalizeSafeSteps_eq]
+  simp [safeStepWitness?]
+
+/-- One merge-left contraction increments the counted normalization cost by exactly one. -/
+@[simp] theorem normalizeSafeSteps_mergeVoidChain_succ (n : Nat) :
+    normalizeSafeSteps (mergeVoidChain (n + 1)) =
+      Nat.succ (normalizeSafeSteps (mergeVoidChain n)) := by
+  have hstep : SafeStep (mergeVoidChain (n + 1)) (mergeVoidChain n) := by
+    simpa [mergeVoidChain, deltaFlag_mergeVoidChain n] using
+      (SafeStep.R_merge_void_left (mergeVoidChain n) (deltaFlag_mergeVoidChain n))
+  rw [normalizeSafeSteps_eq]
+  cases hnext : safeStepWitness? (mergeVoidChain (n + 1)) with
+  | none =>
+      exfalso
+      exact (safeStepWitness?_none_no_step hnext _ hstep).elim
+  | some w =>
+      have hw : SafeStep (mergeVoidChain (n + 1)) w.1 := w.2
+      have hEq : w.1 = mergeVoidChain n := safeStep_deterministic hw hstep
+      simp [hEq]
+
+/-- Exact cost of certified normalization on the merge spine family. -/
+@[simp] theorem normalizeSafeSteps_mergeVoidChain (n : Nat) :
+    normalizeSafeSteps (mergeVoidChain n) = n := by
+  induction n with
+  | zero =>
+      simp
+  | succ n ih =>
+      rw [normalizeSafeSteps_mergeVoidChain_succ, ih]
+
+/-- Lower-bound corollary phrased in the style needed by the paper. -/
+theorem normalizeSafeSteps_mergeVoidChain_lower_bound (n : Nat) :
+    n ≤ normalizeSafeSteps (mergeVoidChain n) := by
+  simp [normalizeSafeSteps_mergeVoidChain n]
 
 end MetaSN_KO7
 ```
@@ -8027,6 +8881,253 @@ end OperatorKO7.QuadraticBarrier
 
 ---
 
+## OperatorKO7/Meta/QuadraticCrossTermBarrier.lean
+
+**Lines:** 238
+
+```lean
+import OperatorKO7.Meta.CompositionalMeasure_Impossibility
+
+/-!
+# Bounded Cross-Term Quadratic Barrier
+
+This module strengthens the restricted quadratic barrier by allowing one explicit step-counter
+cross term in the recursor, but only inside a bounded coupling regime.
+
+The recursor shape is:
+
+`eval (recur b s n) = const + base*B + step*S + counter*N + quad*N^2 + cross*S*N`.
+
+The theorem below does **not** cover arbitrary cross terms. It isolates a concrete regime in
+which the wrapper gain still dominates the cross-term contribution after one successor step.
+-/
+
+namespace OperatorKO7.StepDuplicating
+
+namespace StepDuplicatingSchema
+
+/-- Constructor-local quadratic measures with one explicit step-counter cross term. -/
+structure CrossTermQuadraticMeasure (S : StepDuplicatingSchema) where
+  eval : S.T → Nat
+  c_base : Nat
+  succ_bias : Nat
+  succ_scale : Nat
+  wrap_const : Nat
+  wrap_left : Nat
+  wrap_right : Nat
+  recur_const : Nat
+  recur_base : Nat
+  recur_step : Nat
+  recur_counter : Nat
+  recur_quad : Nat
+  recur_cross : Nat
+  eval_base : eval S.base = c_base
+  eval_succ : ∀ t, eval (S.succ t) = succ_bias + succ_scale * eval t
+  eval_wrap :
+    ∀ x y, eval (S.wrap x y) = wrap_const + wrap_left * eval x + wrap_right * eval y
+  eval_recur :
+    ∀ b s n,
+      eval (S.recur b s n) =
+        recur_const + recur_base * eval b + recur_step * eval s +
+          recur_counter * eval n + recur_quad * eval n * eval n +
+          recur_cross * eval s * eval n
+  h_wrap_left_pos : 1 ≤ wrap_left
+  h_wrap_right_pos : 1 ≤ wrap_right
+
+/-- Unbounded range hypothesis for the bounded cross-term barrier. -/
+def HasUnboundedRangeX {S : StepDuplicatingSchema} (M : CrossTermQuadraticMeasure S) : Prop :=
+  ∀ k : Nat, ∃ t : S.T, k ≤ M.eval t
+
+/-- A bounded-cross regime at the base point: the wrapper gain in the pumped step argument
+still dominates one successor-step increase in the cross term. -/
+def CrossTermBoundedAtBase {S : StepDuplicatingSchema}
+    (M : CrossTermQuadraticMeasure S) : Prop :=
+  let succBase := M.succ_bias + M.succ_scale * M.c_base
+  M.recur_step + M.recur_cross * succBase + 1 ≤
+    M.wrap_left + M.wrap_right * (M.recur_step + M.recur_cross * M.c_base)
+
+/-- Positive successor drift still pumps the cross-term family because the successor constructor
+itself remains affine. -/
+lemma eval_succIter_ge_cross {S : StepDuplicatingSchema} (M : CrossTermQuadraticMeasure S)
+    (h_succ_bias : 1 ≤ M.succ_bias) (h_succ_scale : 1 ≤ M.succ_scale) (k : Nat) :
+    k ≤ M.eval (succIter S k) := by
+  induction k with
+  | zero =>
+      rw [succIter, M.eval_base]
+      omega
+  | succ k ih =>
+      simp [succIter, M.eval_succ]
+      nlinarith
+
+/-- Positive wrap/base drift still pumps the cross-term family because the wrapper itself
+remains affine. -/
+lemma eval_wrapIter_ge_cross {S : StepDuplicatingSchema} (M : CrossTermQuadraticMeasure S)
+    (h_wrap_bias : 1 ≤ M.wrap_const + M.wrap_right * M.c_base) (k : Nat) :
+    k ≤ M.eval (wrapIter S k) := by
+  induction k with
+  | zero =>
+      rw [wrapIter, M.eval_base]
+      omega
+  | succ k ih =>
+      simp [wrapIter, M.eval_wrap, M.eval_base]
+      nlinarith [M.h_wrap_left_pos, h_wrap_bias, ih]
+
+/-- Bounded cross-term quadratic barrier:
+if the step-counter coupling stays below the explicit base-point wrapper-dominance bound,
+the duplicating step still cannot be oriented uniformly. -/
+theorem no_cross_quadratic_orients_dup_step_of_unbounded
+    {S : StepDuplicatingSchema} (M : CrossTermQuadraticMeasure S)
+    (hunbounded : HasUnboundedRangeX M)
+    (hbounded : CrossTermBoundedAtBase M) :
+    ¬ (∀ (b s n : S.T),
+      M.eval (S.wrap s (S.recur b s n)) < M.eval (S.recur b s (S.succ n))) := by
+  intro h
+  let succBase := M.succ_bias + M.succ_scale * M.c_base
+  let sourceCoeff := M.recur_step + M.recur_cross * succBase
+  let targetCoeff := M.wrap_left + M.wrap_right * (M.recur_step + M.recur_cross * M.c_base)
+  let sourceConst :=
+    M.recur_const + M.recur_base * M.c_base +
+      M.recur_counter * succBase + M.recur_quad * succBase * succBase
+  rcases hunbounded sourceConst with ⟨s, hs⟩
+  let Sval := M.eval s
+  let targetConst :=
+    M.wrap_const +
+      M.wrap_right *
+        (M.recur_const + M.recur_base * M.c_base +
+          M.recur_counter * M.c_base + M.recur_quad * M.c_base * M.c_base)
+  have hspec := h S.base s S.base
+  have hspec' :
+      targetConst + targetCoeff * Sval < sourceConst + sourceCoeff * Sval := by
+    simpa [Sval, succBase, sourceCoeff, targetCoeff, sourceConst, targetConst,
+      M.eval_base, M.eval_succ, M.eval_wrap, M.eval_recur,
+      Nat.add_assoc, Nat.add_left_comm, Nat.add_comm, Nat.mul_add, Nat.add_mul,
+      Nat.mul_assoc, Nat.mul_left_comm, Nat.mul_comm] using hspec
+  have hs0 : sourceConst ≤ Sval := by
+    simpa [sourceConst, succBase, Sval] using hs
+  have hcoeff : sourceCoeff + 1 ≤ targetCoeff := by
+    simpa [CrossTermBoundedAtBase, succBase, sourceCoeff, targetCoeff] using hbounded
+  have hmul :
+      (sourceCoeff + 1) * Sval ≤ targetCoeff * Sval := by
+    exact Nat.mul_le_mul_right Sval hcoeff
+  have hsource_to_mul :
+      sourceConst + sourceCoeff * Sval ≤ (sourceCoeff + 1) * Sval := by
+    nlinarith
+  have htarget_nonneg :
+      targetCoeff * Sval ≤ targetConst + targetCoeff * Sval := by
+    exact Nat.le_add_left _ _
+  have hge :
+      sourceConst + sourceCoeff * Sval ≤ targetConst + targetCoeff * Sval := by
+    exact le_trans hsource_to_mul <| le_trans hmul htarget_nonneg
+  exact Nat.not_lt_of_ge hge hspec'
+
+/-- Positive successor drift specializes the bounded cross-term barrier via a successor pump. -/
+theorem no_cross_quadratic_orients_dup_step_of_succ_pump
+    {S : StepDuplicatingSchema} (M : CrossTermQuadraticMeasure S)
+    (h_succ_bias : 1 ≤ M.succ_bias) (h_succ_scale : 1 ≤ M.succ_scale)
+    (hbounded : CrossTermBoundedAtBase M) :
+    ¬ (∀ (b s n : S.T),
+      M.eval (S.wrap s (S.recur b s n)) < M.eval (S.recur b s (S.succ n))) := by
+  apply no_cross_quadratic_orients_dup_step_of_unbounded (M := M)
+  · intro k
+    refine ⟨succIter S k, ?_⟩
+    simpa using eval_succIter_ge_cross (M := M) h_succ_bias h_succ_scale k
+  · exact hbounded
+
+/-- Positive wrap/base drift specializes the bounded cross-term barrier via a wrapper pump. -/
+theorem no_cross_quadratic_orients_dup_step_of_wrap_pump
+    {S : StepDuplicatingSchema} (M : CrossTermQuadraticMeasure S)
+    (h_wrap_bias : 1 ≤ M.wrap_const + M.wrap_right * M.c_base)
+    (hbounded : CrossTermBoundedAtBase M) :
+    ¬ (∀ (b s n : S.T),
+      M.eval (S.wrap s (S.recur b s n)) < M.eval (S.recur b s (S.succ n))) := by
+  apply no_cross_quadratic_orients_dup_step_of_unbounded (M := M)
+  · intro k
+    refine ⟨wrapIter S k, ?_⟩
+    simpa using eval_wrapIter_ge_cross (M := M) h_wrap_bias k
+  · exact hbounded
+
+/-- The bounded cross-term barrier also lifts to global root orientation. -/
+theorem no_global_orients_cross_quadratic_of_unbounded
+    {Sys : StepDuplicatingSystem} (M : CrossTermQuadraticMeasure Sys.toStepDuplicatingSchema)
+    (hunbounded : HasUnboundedRangeX M)
+    (hbounded : CrossTermBoundedAtBase M) :
+    ¬ GlobalOrients Sys M.eval (· < ·) := by
+  intro h
+  exact
+    no_cross_quadratic_orients_dup_step_of_unbounded
+      (S := Sys.toStepDuplicatingSchema) M hunbounded hbounded
+      (fun b s n => h (Sys.dup_step b s n))
+
+/-- Successor-pump global specialization for the bounded cross-term barrier. -/
+theorem no_global_orients_cross_quadratic_of_succ_pump
+    {Sys : StepDuplicatingSystem} (M : CrossTermQuadraticMeasure Sys.toStepDuplicatingSchema)
+    (h_succ_bias : 1 ≤ M.succ_bias) (h_succ_scale : 1 ≤ M.succ_scale)
+    (hbounded : CrossTermBoundedAtBase M) :
+    ¬ GlobalOrients Sys M.eval (· < ·) := by
+  apply no_global_orients_cross_quadratic_of_unbounded (M := M)
+  · intro k
+    refine ⟨succIter Sys.toStepDuplicatingSchema k, ?_⟩
+    simpa using eval_succIter_ge_cross (M := M) h_succ_bias h_succ_scale k
+  · exact hbounded
+
+/-- Wrap-pump global specialization for the bounded cross-term barrier. -/
+theorem no_global_orients_cross_quadratic_of_wrap_pump
+    {Sys : StepDuplicatingSystem} (M : CrossTermQuadraticMeasure Sys.toStepDuplicatingSchema)
+    (h_wrap_bias : 1 ≤ M.wrap_const + M.wrap_right * M.c_base)
+    (hbounded : CrossTermBoundedAtBase M) :
+    ¬ GlobalOrients Sys M.eval (· < ·) := by
+  apply no_global_orients_cross_quadratic_of_unbounded (M := M)
+  · intro k
+    refine ⟨wrapIter Sys.toStepDuplicatingSchema k, ?_⟩
+    simpa using eval_wrapIter_ge_cross (M := M) h_wrap_bias k
+  · exact hbounded
+
+end StepDuplicatingSchema
+
+end OperatorKO7.StepDuplicating
+
+namespace OperatorKO7.QuadraticCrossTermBarrier
+
+open OperatorKO7
+open OperatorKO7.Trace
+open OperatorKO7.StepDuplicating
+open OperatorKO7.CompositionalImpossibility
+
+/-- KO7 root-orientation also fails for the bounded cross-term quadratic family. -/
+theorem no_global_step_orientation_cross_quadratic_of_unbounded
+    (M : StepDuplicatingSchema.CrossTermQuadraticMeasure ko7Schema)
+    (hunbounded : StepDuplicatingSchema.HasUnboundedRangeX M)
+    (hbounded : StepDuplicatingSchema.CrossTermBoundedAtBase M) :
+    ¬ StepDuplicatingSchema.GlobalOrients ko7System M.eval (· < ·) := by
+  exact
+    StepDuplicatingSchema.no_global_orients_cross_quadratic_of_unbounded
+      (Sys := ko7System) M hunbounded hbounded
+
+/-- KO7 successor-pump specialization of the bounded cross-term quadratic barrier. -/
+theorem no_global_step_orientation_cross_quadratic_of_succ_pump
+    (M : StepDuplicatingSchema.CrossTermQuadraticMeasure ko7Schema)
+    (h_succ_bias : 1 ≤ M.succ_bias) (h_succ_scale : 1 ≤ M.succ_scale)
+    (hbounded : StepDuplicatingSchema.CrossTermBoundedAtBase M) :
+    ¬ StepDuplicatingSchema.GlobalOrients ko7System M.eval (· < ·) := by
+  exact
+    StepDuplicatingSchema.no_global_orients_cross_quadratic_of_succ_pump
+      (Sys := ko7System) M h_succ_bias h_succ_scale hbounded
+
+/-- KO7 wrap-pump specialization of the bounded cross-term quadratic barrier. -/
+theorem no_global_step_orientation_cross_quadratic_of_wrap_pump
+    (M : StepDuplicatingSchema.CrossTermQuadraticMeasure ko7Schema)
+    (h_wrap_bias : 1 ≤ M.wrap_const + M.wrap_right * M.c_base)
+    (hbounded : StepDuplicatingSchema.CrossTermBoundedAtBase M) :
+    ¬ StepDuplicatingSchema.GlobalOrients ko7System M.eval (· < ·) := by
+  exact
+    StepDuplicatingSchema.no_global_orients_cross_quadratic_of_wrap_pump
+      (Sys := ko7System) M h_wrap_bias hbounded
+
+end OperatorKO7.QuadraticCrossTermBarrier
+```
+
+---
+
 ## OperatorKO7/Meta/RecCore.lean
 
 **Lines:** 269
@@ -8301,6 +9402,57 @@ theorem transparency_is_essential_for_tier2 :
   exact ⟨quadraticWitness, quadraticWitness_exhibits_transparency_gap⟩
 
 end OperatorKO7.RecCore
+```
+
+---
+
+## OperatorKO7/Meta/SafeStep_Complexity.lean
+
+**Lines:** 42
+
+```lean
+import OperatorKO7.Meta.ContextClosed_SN_Full
+
+/-!
+Concrete derivational-complexity bounds for KO7.
+
+This file deliberately avoids any claim of a generic ordinal-extraction framework. Instead it
+derives a direct step-count bound from the already mechanized global polynomial witness `W`:
+every context-closed reduction in the full unguarded system has length strictly less than the
+`W`-value of its source term.
+-/
+
+open OperatorKO7 Trace
+open OperatorKO7.PolyInterpretation
+
+namespace MetaSN_KO7
+
+/-- Exact-length reflexive-transitive closure of the full contextual relation. -/
+inductive StepCtxFullPow : Trace → Nat → Trace → Prop
+| refl (t : Trace) : StepCtxFullPow t 0 t
+| tail {a b c : Trace} (hab : StepCtxFull a b) (hbc : StepCtxFullPow b n c) :
+    StepCtxFullPow a (n + 1) c
+
+/-- Every counted full-context derivation has length bounded by the drop in `W`. -/
+theorem stepCtxFullPow_length_le_W :
+    ∀ {a b : Trace} {n : Nat}, StepCtxFullPow a n b → n + W b ≤ W a
+  | _, _, _, StepCtxFullPow.refl t => by
+      omega
+  | _, _, _, StepCtxFullPow.tail (b := b) hab hbc => by
+      have hdec : W b < W _ := W_orients_stepCtxFull hab
+      have hstep : W b + 1 ≤ W _ := Nat.succ_le_of_lt hdec
+      have htail := stepCtxFullPow_length_le_W hbc
+      omega
+
+/-- In particular, every full-context derivation has length strictly below the source weight. -/
+theorem stepCtxFullPow_length_lt_W :
+    ∀ {a b : Trace} {n : Nat}, StepCtxFullPow a n b → n < W a
+  | _, b, _, hpow => by
+      have hle := stepCtxFullPow_length_le_W hpow
+      have hpos : 1 ≤ W b := W_pos b
+      omega
+
+end MetaSN_KO7
 ```
 
 ---
@@ -9026,6 +10178,141 @@ end MetaSN_KO7
 
 ---
 
+## OperatorKO7/Meta/StandardPumpLemmas.lean
+
+**Lines:** 126
+
+```lean
+import OperatorKO7.Meta.PumpedBarrierClasses
+
+/-!
+# Standard Pump Lemmas
+
+This module factors out the growth lemmas that connect the current conditional barrier
+theorems to the explicit positive-growth subclasses already formalized in the artifact.
+
+Why this file exists:
+- Exposes reusable unboundedness lemmas for the current affine, restricted-quadratic,
+  and tracked-primary pair families.
+- Packages the corresponding positive-growth hypotheses into the pumped subclasses as
+  explicit constructors, rather than leaving that bridge implicit in barrier corollaries.
+- Keeps the scope honest: this is a bridge for the standard constructor-local families
+  already formalized here, not a theorem about every external tool format or heuristic.
+-/
+
+namespace OperatorKO7.StepDuplicating
+
+namespace StepDuplicatingSchema
+
+/-- Positive affine successor drift yields an explicit unbounded-range witness. -/
+theorem affine_hasUnboundedRange_of_succ_pump
+    {S : StepDuplicatingSchema} (M : AffineMeasure S)
+    (h_succ_bias : 1 ≤ M.succ_bias) (h_succ_scale : 1 ≤ M.succ_scale) :
+    HasUnboundedRange M := by
+  intro k
+  refine ⟨succIter S k, ?_⟩
+  simpa using eval_succIter_ge M h_succ_bias h_succ_scale k
+
+/-- Positive affine wrap/base drift yields an explicit unbounded-range witness. -/
+theorem affine_hasUnboundedRange_of_wrap_pump
+    {S : StepDuplicatingSchema} (M : AffineMeasure S)
+    (h_wrap_bias : 1 ≤ M.wrap_const + M.wrap_right * M.c_base) :
+    HasUnboundedRange M := by
+  intro k
+  refine ⟨wrapIter S k, ?_⟩
+  simpa using eval_wrapIter_ge_affine M h_wrap_bias k
+
+/-- Promote an affine measure with positive successor drift to the pumped subclass. -/
+def AffineMeasure.withSuccPump {S : StepDuplicatingSchema}
+    (M : AffineMeasure S)
+    (h_succ_bias : 1 ≤ M.succ_bias) (h_succ_scale : 1 ≤ M.succ_scale) :
+    AffineMeasureWithPump S where
+  toAffineMeasure := M
+  has_pump := Or.inl ⟨h_succ_bias, h_succ_scale⟩
+
+/-- Promote an affine measure with positive wrap/base drift to the pumped subclass. -/
+def AffineMeasure.withWrapPump {S : StepDuplicatingSchema}
+    (M : AffineMeasure S)
+    (h_wrap_bias : 1 ≤ M.wrap_const + M.wrap_right * M.c_base) :
+    AffineMeasureWithPump S where
+  toAffineMeasure := M
+  has_pump := Or.inr h_wrap_bias
+
+/-- Positive restricted-quadratic successor drift yields explicit unbounded range. -/
+theorem quadratic_hasUnboundedRange_of_succ_pump
+    {S : StepDuplicatingSchema} (M : QuadraticCounterMeasure S)
+    (h_succ_bias : 1 ≤ M.succ_bias) (h_succ_scale : 1 ≤ M.succ_scale) :
+    HasUnboundedRangeQ M := by
+  intro k
+  refine ⟨succIter S k, ?_⟩
+  simpa using eval_succIter_ge_quadratic (M := M) h_succ_bias h_succ_scale k
+
+/-- Positive restricted-quadratic wrap/base drift yields explicit unbounded range. -/
+theorem quadratic_hasUnboundedRange_of_wrap_pump
+    {S : StepDuplicatingSchema} (M : QuadraticCounterMeasure S)
+    (h_wrap_bias : 1 ≤ M.wrap_const + M.wrap_right * M.c_base) :
+    HasUnboundedRangeQ M := by
+  intro k
+  refine ⟨wrapIter S k, ?_⟩
+  simpa using eval_wrapIter_ge_quadratic (M := M) h_wrap_bias k
+
+/-- Promote a restricted-quadratic measure with successor drift to the pumped subclass. -/
+def QuadraticCounterMeasure.withSuccPump {S : StepDuplicatingSchema}
+    (M : QuadraticCounterMeasure S)
+    (h_succ_bias : 1 ≤ M.succ_bias) (h_succ_scale : 1 ≤ M.succ_scale) :
+    QuadraticCounterMeasureWithPump S where
+  toQuadraticCounterMeasure := M
+  has_pump := Or.inl ⟨h_succ_bias, h_succ_scale⟩
+
+/-- Promote a restricted-quadratic measure with wrap/base drift to the pumped subclass. -/
+def QuadraticCounterMeasure.withWrapPump {S : StepDuplicatingSchema}
+    (M : QuadraticCounterMeasure S)
+    (h_wrap_bias : 1 ≤ M.wrap_const + M.wrap_right * M.c_base) :
+    QuadraticCounterMeasureWithPump S where
+  toQuadraticCounterMeasure := M
+  has_pump := Or.inr h_wrap_bias
+
+/-- Positive successor drift in the tracked first component yields explicit unbounded range. -/
+theorem matrix2_hasUnboundedRange1_of_succ_pump
+    {S : StepDuplicatingSchema} (M : MatrixMeasure2 S)
+    (h_succ_bias : 1 ≤ M.succ_bias1) (h_succ_scale : 1 ≤ M.succ_scale1) :
+    HasUnboundedRange1 M := by
+  intro k
+  refine ⟨succIter S k, ?_⟩
+  simpa using eval_succIter_ge M.fstAffine h_succ_bias h_succ_scale k
+
+/-- Positive wrap/base drift in the tracked first component yields explicit unbounded range. -/
+theorem matrix2_hasUnboundedRange1_of_wrap_pump
+    {S : StepDuplicatingSchema} (M : MatrixMeasure2 S)
+    (h_wrap_bias : 1 ≤ M.wrap_const1 + M.wrap_right1 * M.c_base1) :
+    HasUnboundedRange1 M := by
+  intro k
+  refine ⟨wrapIter S k, ?_⟩
+  simpa using eval_wrapIter_ge_affine M.fstAffine h_wrap_bias k
+
+/-- Promote a tracked-primary pair measure with successor drift to the pumped subclass. -/
+def MatrixMeasure2.withPrimarySuccPump {S : StepDuplicatingSchema}
+    (M : MatrixMeasure2 S)
+    (h_succ_bias : 1 ≤ M.succ_bias1) (h_succ_scale : 1 ≤ M.succ_scale1) :
+    MatrixMeasure2WithPrimaryPump S where
+  toMatrixMeasure2 := M
+  has_primary_pump := Or.inl ⟨h_succ_bias, h_succ_scale⟩
+
+/-- Promote a tracked-primary pair measure with wrap/base drift to the pumped subclass. -/
+def MatrixMeasure2.withPrimaryWrapPump {S : StepDuplicatingSchema}
+    (M : MatrixMeasure2 S)
+    (h_wrap_bias : 1 ≤ M.wrap_const1 + M.wrap_right1 * M.c_base1) :
+    MatrixMeasure2WithPrimaryPump S where
+  toMatrixMeasure2 := M
+  has_primary_pump := Or.inr h_wrap_bias
+
+end StepDuplicatingSchema
+
+end OperatorKO7.StepDuplicating
+```
+
+---
+
 ## OperatorKO7/Meta/StepDuplicatingSchema.lean
 
 **Lines:** 364
@@ -9399,6 +10686,132 @@ end OperatorKO7.StepDuplicating
 
 ---
 
+## OperatorKO7/Meta/TPDB_Export.lean
+
+**Lines:** 117
+
+```lean
+import OperatorKO7.Kernel
+
+namespace OperatorKO7
+
+/-!
+Lean-side export of the full KO7 root TRS to the concrete TPDB / TTT2 syntax
+used by the checked external artifact in `Artifacts/ttt2/KO7_full_step.trs`.
+
+Why this file exists:
+- Provides a minimal audited bridge from the Lean kernel presentation of KO7 to
+  the exact first-order TRS submitted to TTT2 / CeTA.
+- Keeps the bridge intentionally small: one concrete exporter for KO7, not a
+  generic TPDB library.
+- Proves that the generated text matches the checked artifact text byte-for-byte
+  modulo Lean's exact string literal.
+- Makes the external tool input part of the reviewed formal artifact rather than
+  a manually maintained side file only.
+-/
+
+/-- Minimal first-order TPDB term syntax for the exported KO7 problem. -/
+inductive TpdbTerm : Type
+| var : String → TpdbTerm
+| app : String → List TpdbTerm → TpdbTerm
+
+/-- A TPDB rewrite rule. -/
+structure TpdbRule where
+  lhs : TpdbTerm
+  rhs : TpdbTerm
+
+namespace TpdbTerm
+
+mutual
+  /-- Render a TPDB term in the concrete syntax used by `KO7_full_step.trs`. -/
+  def render : TpdbTerm → String
+  | .var x => x
+  | .app f [] => f
+  | .app f (a :: as) => f ++ "(" ++ render a ++ renderTail as ++ ")"
+
+  /-- Render the remaining arguments of a TPDB function application. -/
+  def renderTail : List TpdbTerm → String
+  | [] => ""
+  | a :: as => ", " ++ render a ++ renderTail as
+end
+
+end TpdbTerm
+
+namespace TpdbRule
+
+/-- Render one TPDB rule line, with the indentation used in the artifact file. -/
+def render (r : TpdbRule) : String :=
+  "  " ++ TpdbTerm.render r.lhs ++ " -> " ++ TpdbTerm.render r.rhs
+
+end TpdbRule
+
+/-- Render a block of TPDB rules, one per line. -/
+def renderRuleBlock : List TpdbRule → String
+| [] => ""
+| [r] => TpdbRule.render r ++ "\n"
+| r :: rs => TpdbRule.render r ++ "\n" ++ renderRuleBlock rs
+
+/-- Variable shorthands for the exported full-step TRS. -/
+def tx : TpdbTerm := .var "x"
+def ty : TpdbTerm := .var "y"
+def tz : TpdbTerm := .var "z"
+
+/-- Constructor / function shorthands with the external names used by TTT2. -/
+def tvoid : TpdbTerm := .app "void" []
+def tdelta (t : TpdbTerm) : TpdbTerm := .app "delta" [t]
+def tintegrate (t : TpdbTerm) : TpdbTerm := .app "integrate" [t]
+def tmerge (a b : TpdbTerm) : TpdbTerm := .app "merge" [a, b]
+def tapp (a b : TpdbTerm) : TpdbTerm := .app "app" [a, b]
+def trecD (b s n : TpdbTerm) : TpdbTerm := .app "recD" [b, s, n]
+def teqW (a b : TpdbTerm) : TpdbTerm := .app "eqW" [a, b]
+
+/-- The eight full-step KO7 rules in the exported TRS order. -/
+def ko7FullStepTpdbRules : List TpdbRule :=
+  [ ⟨tintegrate (tdelta tx), tvoid⟩
+  , ⟨tmerge tvoid tx, tx⟩
+  , ⟨tmerge tx tvoid, tx⟩
+  , ⟨tmerge tx tx, tx⟩
+  , ⟨trecD tx ty tvoid, tx⟩
+  , ⟨trecD tx ty (tdelta tz), tapp ty (trecD tx ty tz)⟩
+  , ⟨teqW tx tx, tvoid⟩
+  , ⟨teqW tx ty, tintegrate (tmerge tx ty)⟩
+  ]
+
+/-- The exact TPDB / TTT2 text for the full KO7 root TRS. -/
+def ko7_full_step_tpdb : String :=
+  "(VAR x y z)\n" ++
+  "(RULES\n" ++
+  renderRuleBlock ko7FullStepTpdbRules ++
+  ")\n"
+
+/-- Checked artifact text for `Artifacts/ttt2/KO7_full_step.trs`. -/
+def ko7_full_step_tpdb_artifact_text : String :=
+  "(VAR x y z)\n" ++
+  "(RULES\n" ++
+  "  integrate(delta(x)) -> void\n" ++
+  "  merge(void, x) -> x\n" ++
+  "  merge(x, void) -> x\n" ++
+  "  merge(x, x) -> x\n" ++
+  "  recD(x, y, void) -> x\n" ++
+  "  recD(x, y, delta(z)) -> app(y, recD(x, y, z))\n" ++
+  "  eqW(x, x) -> void\n" ++
+  "  eqW(x, y) -> integrate(merge(x, y))\n" ++
+  ")\n"
+
+/-- The Lean-side exporter matches the checked artifact text exactly. -/
+theorem ko7_full_step_tpdb_matches_artifact_text :
+    ko7_full_step_tpdb = ko7_full_step_tpdb_artifact_text := by
+  native_decide
+
+/-- The exported TPDB problem contains exactly the eight full-step kernel rules. -/
+theorem ko7_full_step_tpdb_rule_count :
+    ko7FullStepTpdbRules.length = 8 := rfl
+
+end OperatorKO7
+```
+
+---
+
 ## OperatorKO7/Test/Sanity.lean
 
 **Lines:** 11
@@ -9415,6 +10828,30 @@ Why this file exists:
 
 #eval (1 + 1)
 #check Prod.Lex
+```
+
+---
+
+## OperatorKO7/Test/TPDB_Export.lean
+
+**Lines:** 15
+
+```lean
+import OperatorKO7.Meta.TPDB_Export
+
+/-!
+Tiny smoke test for the KO7 TPDB exporter.
+
+Why this file exists:
+- Prints the exported full-step TRS so reviewers can regenerate the external
+  TTT2 input directly from Lean.
+- Checks the exact-match theorem on the generated text.
+- Like `Test/Sanity.lean`, this is lightweight and does not contribute to the
+  theorem development itself.
+-/
+
+#eval IO.println OperatorKO7.ko7_full_step_tpdb
+#check OperatorKO7.ko7_full_step_tpdb_matches_artifact_text
 ```
 
 ---

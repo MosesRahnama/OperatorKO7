@@ -95,6 +95,28 @@ open OperatorKO7.MetaConjectureBoundary
 open OperatorKO7.DepthBarrier
 open OperatorKO7.PrecedenceBarrier
 
+/-- An explicit KO7 direct-orienter universe covering the current scalar families and the
+tracked-primary pair families. -/
+inductive KO7DirectOrienter where
+  | nat (μ : Trace → Nat)
+  | pairComponentwise (μ : Trace → StepDuplicatingSchema.Vec2)
+  | pairLex (μ : Trace → StepDuplicatingSchema.Vec2)
+
+/-- The tracked primary scalar exposed by an orienter in the explicit KO7 direct universe. -/
+def KO7DirectOrienter.primaryScalar : KO7DirectOrienter → Trace → Nat
+  | .nat μ => μ
+  | .pairComponentwise μ => fun t => (μ t).1
+  | .pairLex μ => fun t => (μ t).1
+
+/-- Orientation predicate for the explicit KO7 direct-orienter universe. -/
+def KO7DirectOrienter.Orients : KO7DirectOrienter → Prop
+  | .nat μ =>
+      MetaConjectureBoundary.GlobalOrients μ (· < ·)
+  | .pairComponentwise μ =>
+      StepDuplicatingSchema.GlobalOrients ko7System μ StepDuplicatingSchema.PairLt
+  | .pairLex μ =>
+      StepDuplicatingSchema.GlobalOrients ko7System μ StepDuplicatingSchema.PairLexLt
+
 /-- KO7-specific extension of the Nat-valued direct universe used by the escape
 trichotomy theorem. It adds the theorem-level depth and pure-precedence families
 to the generic additive / transparent-compositional / pumped affine / pumped
@@ -109,6 +131,29 @@ inductive KO7NatDirectBarrierRepresentable (μ : Trace → Nat) : Prop
       (heval : ∀ t : Trace, M.eval t = μ t)
   | depth (M : MaxDepthMeasure) (heval : M.eval = μ)
   | precedence (M : HeadPrecedenceFamily) (heval : M.eval = μ)
+
+/-- Extended KO7 direct universe adding the tracked-primary pair families to the previous
+Nat-valued direct families. -/
+inductive KO7DirectBarrierRepresentable : KO7DirectOrienter → Prop
+  | additive (M : AdditiveCompositionalMeasure) :
+      KO7DirectBarrierRepresentable (.nat M.eval)
+  | compositionalTransparent (CM : CompositionalMeasure)
+      (htransparent : CM.c_delta CM.c_void = CM.c_void) :
+      KO7DirectBarrierRepresentable (.nat CM.eval)
+  | affineWithPump (M : StepDuplicatingSchema.AffineMeasureWithPump ko7Schema) :
+      KO7DirectBarrierRepresentable (.nat M.eval)
+  | quadraticWithPump (M : StepDuplicatingSchema.QuadraticCounterMeasureWithPump ko7Schema) :
+      KO7DirectBarrierRepresentable (.nat M.eval)
+  | depth (M : MaxDepthMeasure) :
+      KO7DirectBarrierRepresentable (.nat M.eval)
+  | precedence (M : HeadPrecedenceFamily) :
+      KO7DirectBarrierRepresentable (.nat M.eval)
+  | matrix2ComponentwiseWithPrimaryPump
+      (M : StepDuplicatingSchema.MatrixMeasure2WithPrimaryPump ko7Schema) :
+      KO7DirectBarrierRepresentable (.pairComponentwise M.eval)
+  | matrix2LexWithPrimaryPump
+      (M : StepDuplicatingSchema.MatrixMeasure2WithPrimaryPump ko7Schema) :
+      KO7DirectBarrierRepresentable (.pairLex M.eval)
 
 /-- KO7 escape trichotomy for the explicit Nat-valued direct universe formalized
 in the artifact. Any successful Nat-valued root-step orienter must fail wrapper
@@ -153,6 +198,45 @@ theorem ko7_nat_direct_escape_trichotomy
       | precedence M heval =>
           subst heval
           exact (no_global_step_orientation_headPrecedenceFamily M) horient
+    · right
+      left
+      exact htrans
+  · left
+    exact hsub
+
+/-- Extended KO7 escape trichotomy for the explicit direct universe formalized in the
+artifact, now including the tracked-primary componentwise and lexicographic pair families.
+The failure modes are stated on the tracked primary scalar exposed by the orienter. -/
+theorem ko7_direct_escape_trichotomy_extended
+    {O : KO7DirectOrienter}
+    (horient : O.Orients) :
+    ¬ StepDuplicatingSchema.WrapSubtermSensitive ko7Schema O.primaryScalar ∨
+      ¬ StepDuplicatingSchema.TransparentAtBase ko7Schema O.primaryScalar ∨
+      ¬ KO7DirectBarrierRepresentable O := by
+  classical
+  by_cases hsub : StepDuplicatingSchema.WrapSubtermSensitive ko7Schema O.primaryScalar
+  · by_cases htrans : StepDuplicatingSchema.TransparentAtBase ko7Schema O.primaryScalar
+    · right
+      right
+      intro hrepr
+      cases hrepr with
+      | additive M =>
+          exact (no_global_step_orientation_additive_compositional M) horient
+      | compositionalTransparent CM htransparent =>
+          exact
+            (no_global_step_orientation_compositional_transparent_delta CM htransparent) horient
+      | affineWithPump M =>
+          exact (PumpedBarrierClasses.no_global_step_orientation_affine_with_pump M) horient
+      | quadraticWithPump M =>
+          exact (PumpedBarrierClasses.no_global_step_orientation_quadratic_with_pump M) horient
+      | depth M =>
+          exact (no_global_step_orientation_maxDepth M) horient
+      | precedence M =>
+          exact (no_global_step_orientation_headPrecedenceFamily M) horient
+      | matrix2ComponentwiseWithPrimaryPump M =>
+          exact (PumpedBarrierClasses.no_global_step_orientation_matrix2_with_primary_pump M) horient
+      | matrix2LexWithPrimaryPump M =>
+          exact (PumpedBarrierClasses.no_global_step_orientation_matrix2_lex_with_primary_pump M) horient
     · right
       left
       exact htrans
