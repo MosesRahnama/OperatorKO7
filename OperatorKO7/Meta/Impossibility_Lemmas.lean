@@ -1,4 +1,3 @@
-import OperatorKO7.Meta.Operational_Incompleteness
 import OperatorKO7.Kernel
 import Mathlib.Order.Basic
 import Mathlib.Tactic.Linarith
@@ -10,10 +9,10 @@ import OperatorKO7.Meta.ComputableMeasure
 
 Goal
 - Keep and enrich the centralized failure witnesses so they fully represent
-  the failure taxonomy and chronology notes described in the repository `README.md`.
+  the failure taxonomy and chronology notes described in the project documentation.
 
 What’s inside (all self‑contained, kernel unchanged)
-- P1/P2/P3 probes: re‑anchored pointers and small runnable examples.
+- Small runnable branch and duplication witnesses aligned with the failure catalog.
 - κ+ k counterexample on KO7 traces (R_rec_succ): ties by rfl branchwise.
 - Flag‑only outer discriminator failure: concrete Step raises the flag.
 - Duplication stress identity (toy calculus): additive counter non‑drop, plus
@@ -25,7 +24,6 @@ Note
 - This file may include commented, intentionally failing fragments to preserve
   the “dead ends” catalog; keep them commented to preserve green builds.
 - Live theorems/examples compile and can be cited in the paper/docs.
-- See also: `OperatorKO7/Meta/Operational_Incompleteness.lean` (namespace `OperatorKO7.OpIncomp`) for the P1–P3 probes.
 -/
 
 
@@ -36,10 +34,9 @@ namespace Impossibility
  open OperatorKO7 Trace
  open Prod (Lex)
 
-/-! See namespace `OpIncomp` inside `Operational_Incompleteness.lean` for concrete P1–P3
-  statements (`P2`, `P2DM`, `P2MPO`) and proofs. This module collects small,
-  kernel‑native witnesses and commentary aligned with fails_central sections
-  A–M. This is a documentation mirror; no kernel changes. -/
+/-! This module collects small, kernel‑native witnesses and commentary aligned
+  with fails_central sections A–M. This is a documentation mirror; no kernel
+  changes. -/
 
 end Impossibility
 end OperatorKO7
@@ -153,29 +150,10 @@ commented to keep the build green; they illustrate the bad shapes. -/
 -- The bad shape `p < q → p + s < q + s` fails on ordinals in general.
 -- This dead end is documented; no code is needed.
 
-/-! ## P2 duplication realism - references and examples (fails_central §G)
-
-We reuse the toy calculus from `OpIncomp`:
-* `r4_size_after_eq_before_plus_piece` gives the exact additive non‑drop identity.
-* `r4_no_strict_drop_additive` forbids strict decrease for the additive `size`.
-* `R4DM.dm_orient` and `R4MPO.mpo_orient_r4` show robust structural fixes.
--/
-namespace DuplicationRefs
-open OpIncomp
-
--- Pointers (elaboration-checked, editor-quiet):
-example (x y : Term) := OpIncomp.r4_size_after_eq_before_plus_piece x y  -- additive identity
-example (x y : Term) := OpIncomp.r4_no_strict_drop_additive x y          -- no strict drop
-example (x y : Term) := OpIncomp.R4DM.dm_orient x y                      -- DM orientation
-example (x y : Term) := OpIncomp.R4MPO.mpo_orient_r4 x y                 -- MPO orientation
-
-end DuplicationRefs
-
 /-! ## P1 rfl-gate (branch realism) - explicit per-branch check (fails_central §B)
 
 For any pattern-matched `f`, check rfl per clause and avoid asserting a single
-global equation unless all branches agree. The full P1 probe lives in
-`Operational_Incompleteness.lean`; we include a tiny exemplar here. -/
+global equation unless all branches agree. We include a tiny exemplar here. -/
 namespace RflGate
 
 inductive Two where | A | B deriving DecidableEq, Repr
@@ -366,11 +344,6 @@ theorem full_step_permits_barrier :
 example : WellFounded MetaSN_KO7.SafeStepRev := OperatorKO7.MetaCM.wf_SafeStepRev_c
 
 end UncheckedRecursionFailure
-
-/-! ## Pointers to toy cores for witnesses/examples
-
-For duplication flavor and base-change shape without touching KO7,
-see `Meta/HydraCore.lean` and `Meta/GoodsteinCore.lean` (examples only). -/
 
 end Impossibility
 end OperatorKO7

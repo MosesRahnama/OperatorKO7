@@ -293,4 +293,34 @@ theorem eval_ofLtOpowOmegaUncond
 
 end CNFωω
 
+/-! ### Order-type isomorphism: (Multiset Nat, DM) ≅ₒ (Iio ω^ω, <) -/
+
+/-- Complete order-type characterization of the DM ordering on `Multiset Nat`.
+The embedding `dmOrdEmbed` is an order isomorphism from `(Multiset Nat, DM)` to
+`({α : Ordinal | α < ω^ω}, <)`:
+1. **Bi-directional order**: `DM m₁ m₂ ↔ dmOrdEmbed m₁ < dmOrdEmbed m₂`
+2. **Boundedness**: `dmOrdEmbed m < ω^ω` for all `m`
+3. **Surjectivity**: every ordinal below `ω^ω` is hit
+
+Together these imply the order type of `(Multiset Nat, DM)` is exactly `ω^ω`. -/
+theorem dm_order_type_omega_omega :
+    (∀ m₁ m₂ : Multiset Nat, DM m₁ m₂ ↔ dmOrdEmbed m₁ < dmOrdEmbed m₂) ∧
+    (∀ m : Multiset Nat, dmOrdEmbed m < (ω : Ordinal) ^ (ω : Ordinal)) ∧
+    (∀ α < (ω : Ordinal) ^ (ω : Ordinal), ∃ m : Multiset Nat, dmOrdEmbed m = α) :=
+  ⟨fun _ _ => ⟨dmOrdEmbed_strictMono, dmOrdEmbed_reflects⟩,
+   dmOrdEmbed_lt_opow_omega,
+   CNFωω.dmOrdEmbed_surjective_lt_opow_omega⟩
+
+/-- `deltaFlag` is at most 1 for any trace (it is a binary phase indicator). -/
+private lemma deltaFlag_le_one (t : Trace) : MetaSN_KO7.deltaFlag t ≤ 1 := by
+  unfold MetaSN_KO7.deltaFlag
+  split <;> omega
+
+/-- The triple-lexicographic measure `Lex3c` for any `Trace` is bounded by `ω^ω · 2`.
+This follows from the binary first component (`deltaFlag ≤ 1`) giving two blocks. -/
+theorem lex3c_order_type_bound (t : Trace) :
+    lex3cToOrd (mu3c t) < ((ω : Ordinal) ^ (ω : Ordinal)) * (2 : Nat) := by
+  apply lex3cToOrd_lt_opow_omega_mul_two
+  exact deltaFlag_le_one t
+
 end OperatorKO7.MetaDM

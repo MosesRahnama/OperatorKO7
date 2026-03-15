@@ -10,7 +10,7 @@ Why this file exists:
 
 Notes for readers:
 - This is configuration, not part of the KO7 mathematics.
-- See `README.md` for the high-level theory summary and file-by-file map.
+- See the referee-facing documentation bundle for the high-level theory summary and file-by-file map.
 - See `OperatorKO7/Kernel.lean` for the kernel (`Trace`, `Step`).
 - See `OperatorKO7/Meta/` for the certified safe fragment (`SafeStep`) and proofs.
 -/

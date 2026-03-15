@@ -67,16 +67,12 @@ Toolchain/dependency pins are in:
   DM-to-ordinal embedding; ε₀ bridge; per-step strictness; upper-bound calibration.
 - `OperatorKO7/Meta/DM_OrderType_LowerBound.lean`:
   `CNFωω` canonical carrier; surjectivity below ω^ω, reflection, rank bridge.
-- `OperatorKO7/Meta/Operational_Incompleteness.lean`:
-  probe predicates (P1–P3), `InternallyDefinableMeasure`.
 - `OperatorKO7/Meta/LinearRec_Ablation.lean`:
   linear recursor variant; `simpleSize` orientation (ablation).
 - `OperatorKO7/Meta/MPO_FullStep.lean`:
-  MPO orientation of all 8 full-kernel rules (`mpo_orients_step`).
-- `OperatorKO7/Meta/HydraCore.lean`:
-  toy hydra duplication relation; stress-test encoding for `Operational_Incompleteness`.
-- `OperatorKO7/Meta/GoodsteinCore.lean`:
-  toy Goodstein base-change relation; stress-test encoding for `Operational_Incompleteness`.
+  KO7-specialized MPO orientation and well-foundedness on the full root relation.
+- `OperatorKO7/Meta/PolyInterpretation_FullStep.lean`:
+  nonlinear polynomial orientation and well-foundedness on the full root relation.
 
 ### Tests
 

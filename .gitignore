@@ -31,7 +31,7 @@ Alignment_Report.md
 # Legacy and docs folders
 OperatorKO7/Ignore_Legacy/
 Docs/
-
+Archive/
 # Temporary Lean scratch files
 
 _tmp_sublist.lean
@@ -45,3 +45,4 @@ OperatorKO7/Ignore_Meta_md/
 _tmp_ctx2.lean
 _tmp_ctx3.lean
 _tmp_ctx4.lean
+generate_docs.py

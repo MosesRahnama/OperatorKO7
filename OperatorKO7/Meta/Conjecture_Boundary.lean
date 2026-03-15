@@ -1,5 +1,4 @@
 import OperatorKO7.Meta.Impossibility_Lemmas
-import OperatorKO7.Meta.Operational_Incompleteness
 
 /-!
 # Conjecture Boundary (Theorem-Level No-Go Statements)
@@ -158,36 +157,6 @@ theorem no_global_step_orientation_simpleSize_strictMono
       f (UncheckedRecursionFailure.simpleSize (app void (recΔ void void void))) :=
     hf.monotone hge
   exact Nat.not_lt_of_ge hmono hlt
-
-/-! ## Bridge wrappers to `OpIncomp.InternallyDefinableMeasure` -/
-
-/-- Any internal witness must include the explicit duplication non-drop barrier (r4). -/
-theorem internal_measure_records_duplication_barrier
-    (M : OperatorKO7.OpIncomp.InternallyDefinableMeasure)
-    (x y : OperatorKO7.OpIncomp.Term) :
-    ¬ OperatorKO7.OpIncomp.size (OperatorKO7.OpIncomp.R4_after x y) <
-      OperatorKO7.OpIncomp.size (OperatorKO7.OpIncomp.R4_before x y) :=
-  M.dup_additive_nodrop_r4 x y
-
-/-- Any internal witness must provide per-piece orientation for every rule instance. -/
-theorem internal_measure_requires_per_piece_lt
-    (M : OperatorKO7.OpIncomp.InternallyDefinableMeasure)
-    {l r : OperatorKO7.OpIncomp.Term}
-    (hr : OperatorKO7.OpIncomp.Rule l r)
-    {t : OperatorKO7.OpIncomp.Term}
-    (ht : t ∈ OperatorKO7.OpIncomp.rhsPiecesLHS l) :
-    M.base t l :=
-  M.per_piece_base_lt hr t ht
-
-/-- Exposes the lex/orientation gate encoded in `InternallyDefinableMeasure`. -/
-theorem internal_measure_lex_gate
-    (M : OperatorKO7.OpIncomp.InternallyDefinableMeasure)
-    {l r : OperatorKO7.OpIncomp.Term}
-    (hr : OperatorKO7.OpIncomp.Rule l r) :
-    (M.flag r = false ∧ M.flag l = true) ∨
-      (∃ t, t ∈ OperatorKO7.OpIncomp.rhsPiecesLHS l ∧ M.base t l) ∨
-      M.base r l :=
-  M.lex_ok hr
 
 /-! ## Flag barrier (GlobalOrients form) -/
 

@@ -202,4 +202,30 @@ theorem normalizeSafe_eq_of_star
     normalizeSafe a = normalizeSafe b :=
   normalizeSafe_eq_of_star_of_loc locAll_safe h
 
+/-! ### Reachability decidability -/
+
+/-- Reachability to a safe normal form is equivalent to normalization equality. -/
+theorem safeStepStar_to_nf_iff_normalize_eq
+    {t c : Trace} (hnf : NormalFormSafe c) :
+    SafeStepStar t c ↔ normalizeSafe t = c := by
+  constructor
+  · intro hreach
+    have := normalizeSafe_unique hreach hnf
+    exact this.symm
+  · intro heq
+    have hstar := to_norm_safe t
+    rw [heq] at hstar
+    exact hstar
+
+/-- Reachability to a safe normal-form target is decidable.
+Given `c` in safe normal form, the predicate `fun t => SafeStepStar t c` is decidable:
+compute `normalizeSafe t` and compare with `c` using `DecidableEq Trace`. -/
+instance reachability_decidable (c : Trace) (hnf : NormalFormSafe c) :
+    DecidablePred (fun t => SafeStepStar t c) :=
+  fun t =>
+    if heq : normalizeSafe t = c then
+      isTrue ((safeStepStar_to_nf_iff_normalize_eq hnf).mpr heq)
+    else
+      isFalse (fun hreach => heq ((safeStepStar_to_nf_iff_normalize_eq hnf).mp hreach))
+
 end MetaSN_KO7
