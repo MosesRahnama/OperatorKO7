@@ -13,6 +13,7 @@ The theorem universe is intentionally narrow and reviewable:
 - transparent compositional measures
 - pumped affine constructor-local measures
 - pumped restricted-quadratic constructor-local measures
+- pumped bounded-cross-term constructor-local measures
 - KO7-specific max-depth families
 - KO7-specific pure head-precedence families
 
@@ -45,6 +46,7 @@ inductive NatDirectBarrierRepresentable (S : StepDuplicatingSchema) (μ : S.T �
       (htransparent : CM.c_succ CM.c_base = CM.c_base) (heval : CM.eval = μ)
   | affineWithPump (M : AffineMeasureWithPump S) (heval : M.eval = μ)
   | quadraticWithPump (M : QuadraticCounterMeasureWithPump S) (heval : M.eval = μ)
+  | crossQuadraticWithPump (M : CrossTermQuadraticMeasureWithPump S) (heval : M.eval = μ)
 
 /-- Escape trichotomy for the explicit Nat-valued direct universe:
 any successful orienter must fail wrapper sensitivity, fail base-level transparency,
@@ -75,6 +77,9 @@ theorem nat_direct_escape_trichotomy
       | quadraticWithPump M heval =>
           subst heval
           exact (no_global_orients_quadratic_with_pump (Sys := Sys) M) horient
+      | crossQuadraticWithPump M heval =>
+          subst heval
+          exact (no_global_orients_cross_quadratic_with_pump (Sys := Sys) M) horient
     · right
       left
       exact htrans
@@ -129,6 +134,9 @@ inductive KO7NatDirectBarrierRepresentable (μ : Trace → Nat) : Prop
       (heval : ∀ t : Trace, M.eval t = μ t)
   | quadraticWithPump (M : StepDuplicatingSchema.QuadraticCounterMeasureWithPump ko7Schema)
       (heval : ∀ t : Trace, M.eval t = μ t)
+  | crossQuadraticWithPump
+      (M : StepDuplicatingSchema.CrossTermQuadraticMeasureWithPump ko7Schema)
+      (heval : ∀ t : Trace, M.eval t = μ t)
   | depth (M : MaxDepthMeasure) (heval : M.eval = μ)
   | precedence (M : HeadPrecedenceFamily) (heval : M.eval = μ)
 
@@ -143,6 +151,9 @@ inductive KO7DirectBarrierRepresentable : KO7DirectOrienter → Prop
   | affineWithPump (M : StepDuplicatingSchema.AffineMeasureWithPump ko7Schema) :
       KO7DirectBarrierRepresentable (.nat M.eval)
   | quadraticWithPump (M : StepDuplicatingSchema.QuadraticCounterMeasureWithPump ko7Schema) :
+      KO7DirectBarrierRepresentable (.nat M.eval)
+  | crossQuadraticWithPump
+      (M : StepDuplicatingSchema.CrossTermQuadraticMeasureWithPump ko7Schema) :
       KO7DirectBarrierRepresentable (.nat M.eval)
   | depth (M : MaxDepthMeasure) :
       KO7DirectBarrierRepresentable (.nat M.eval)
@@ -192,6 +203,13 @@ theorem ko7_nat_direct_escape_trichotomy
             exact heval t
           subst hrepr
           exact (PumpedBarrierClasses.no_global_step_orientation_quadratic_with_pump M) horient
+      | crossQuadraticWithPump M heval =>
+          have hrepr :
+              M.eval = μ := by
+            funext t
+            exact heval t
+          subst hrepr
+          exact (PumpedBarrierClasses.no_global_step_orientation_cross_quadratic_with_pump M) horient
       | depth M heval =>
           subst heval
           exact (no_global_step_orientation_maxDepth M) horient
@@ -229,6 +247,8 @@ theorem ko7_direct_escape_trichotomy_extended
           exact (PumpedBarrierClasses.no_global_step_orientation_affine_with_pump M) horient
       | quadraticWithPump M =>
           exact (PumpedBarrierClasses.no_global_step_orientation_quadratic_with_pump M) horient
+      | crossQuadraticWithPump M =>
+          exact (PumpedBarrierClasses.no_global_step_orientation_cross_quadratic_with_pump M) horient
       | depth M =>
           exact (no_global_step_orientation_maxDepth M) horient
       | precedence M =>

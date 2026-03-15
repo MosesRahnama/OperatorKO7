@@ -1,4 +1,5 @@
 import OperatorKO7.Meta.QuadraticBarrier
+import OperatorKO7.Meta.QuadraticCrossTermBarrier
 import OperatorKO7.Meta.MatrixBarrierLex
 
 /-!
@@ -26,6 +27,14 @@ structure QuadraticCounterMeasureWithPump (S : StepDuplicatingSchema)
   has_pump :
     (1 ≤ succ_bias ∧ 1 ≤ succ_scale) ∨
       1 ≤ wrap_const + wrap_right * c_base
+
+/-- Bounded cross-term quadratic measures with an internal successor or wrapper pump. -/
+structure CrossTermQuadraticMeasureWithPump (S : StepDuplicatingSchema)
+    extends CrossTermQuadraticMeasure S where
+  has_pump :
+    (1 ≤ succ_bias ∧ 1 ≤ succ_scale) ∨
+      1 ≤ wrap_const + wrap_right * c_base
+  h_bounded : CrossTermBoundedAtBase toCrossTermQuadraticMeasure
 
 /-- Dimension-2 tracked pair measures whose primary component has an internal pump. -/
 structure MatrixMeasure2WithPrimaryPump (S : StepDuplicatingSchema) extends MatrixMeasure2 S where
@@ -58,6 +67,19 @@ theorem no_quadratic_with_pump_orients_dup_step
   · exact
       no_quadratic_counter_orients_dup_step_of_wrap_pump
         (S := S) M.toQuadraticCounterMeasure hwrap
+
+/-- Unconditional bounded cross-term quadratic barrier for the strengthened pumped subclass. -/
+theorem no_cross_quadratic_with_pump_orients_dup_step
+    {S : StepDuplicatingSchema} (M : CrossTermQuadraticMeasureWithPump S) :
+    ¬ (∀ (b s n : S.T),
+      M.eval (S.wrap s (S.recur b s n)) < M.eval (S.recur b s (S.succ n))) := by
+  rcases M.has_pump with hsucc | hwrap
+  · exact
+      no_cross_quadratic_orients_dup_step_of_succ_pump
+        (S := S) M.toCrossTermQuadraticMeasure hsucc.1 hsucc.2 M.h_bounded
+  · exact
+      no_cross_quadratic_orients_dup_step_of_wrap_pump
+        (S := S) M.toCrossTermQuadraticMeasure hwrap M.h_bounded
 
 /-- Unconditional componentwise pair barrier for the strengthened tracked-primary subclass. -/
 theorem no_matrix2_with_primary_pump_componentwise_orients_dup_step
@@ -111,6 +133,19 @@ theorem no_global_orients_quadratic_with_pump
   · exact
       no_global_orients_quadratic_of_wrap_pump
         (Sys := Sys) M.toQuadraticCounterMeasure hwrap
+
+/-- The strengthened pumped bounded cross-term subclass also fails globally. -/
+theorem no_global_orients_cross_quadratic_with_pump
+    {Sys : StepDuplicatingSystem}
+    (M : CrossTermQuadraticMeasureWithPump Sys.toStepDuplicatingSchema) :
+    ¬ GlobalOrients Sys M.eval (· < ·) := by
+  rcases M.has_pump with hsucc | hwrap
+  · exact
+      no_global_orients_cross_quadratic_of_succ_pump
+        (Sys := Sys) M.toCrossTermQuadraticMeasure hsucc.1 hsucc.2 M.h_bounded
+  · exact
+      no_global_orients_cross_quadratic_of_wrap_pump
+        (Sys := Sys) M.toCrossTermQuadraticMeasure hwrap M.h_bounded
 
 /-- The strengthened tracked-primary componentwise pair subclass also fails globally. -/
 theorem no_global_orients_matrix2_with_primary_pump
@@ -191,6 +226,14 @@ theorem no_global_step_orientation_quadratic_with_pump
     ¬ StepDuplicatingSchema.GlobalOrients ko7System M.eval (· < ·) := by
   exact
     StepDuplicatingSchema.no_global_orients_quadratic_with_pump
+      (Sys := ko7System) M
+
+/-- KO7 bounded-cross-term-with-pump specialization. -/
+theorem no_global_step_orientation_cross_quadratic_with_pump
+    (M : StepDuplicatingSchema.CrossTermQuadraticMeasureWithPump ko7Schema) :
+    ¬ StepDuplicatingSchema.GlobalOrients ko7System M.eval (· < ·) := by
+  exact
+    StepDuplicatingSchema.no_global_orients_cross_quadratic_with_pump
       (Sys := ko7System) M
 
 /-- KO7 tracked-primary componentwise pair specialization. -/

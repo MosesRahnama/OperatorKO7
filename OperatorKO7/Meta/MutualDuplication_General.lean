@@ -1,11 +1,13 @@
 import OperatorKO7.Meta.StepDuplicatingSchema
 
 /-!
-# Bounded SCC-Level Delayed Duplication
+# Bounded SCC-Level Composite Duplication
 
 This module lifts the concrete alternating two-recursors example to a bounded theorem-level
-generalization. No single root rule duplicates the payload. Duplication appears only after
-one cycle through a fixed two-node mutually recursive SCC.
+generalization. Each root rule already duplicates the payload once. The point of the result
+is different: a fixed two-node mutually recursive SCC yields a stable two-step composite
+profile and an induced minimal context relation on which the additive and affine barrier
+arguments still go through.
 -/
 
 namespace OperatorKO7.MutualDuplicationGeneral
