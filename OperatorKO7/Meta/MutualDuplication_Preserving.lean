@@ -1,4 +1,5 @@
 import OperatorKO7.Meta.StepDuplicatingSchema
+import OperatorKO7.Meta.DependencyPairs_Fragment
 
 /-!
 # Multiplicity-Preserving SCC Synchronization
@@ -14,6 +15,8 @@ theorem rather than as an affine extension of the older coefficient-growth argum
 -/
 
 namespace OperatorKO7.MutualDuplicationPreserving
+
+open OperatorKO7.DependencyPairsFragment
 
 /-- Syntax for a small two-node SCC with two latent payload channels. -/
 inductive SyncTerm : Type
@@ -168,8 +171,16 @@ theorem no_global_orients_ctx_additive (M : AdditiveMeasure) :
     ¬ GlobalOrientsCtx M.eval := by
   intro h
   rcases synchronized_cycle_realized base payload with ⟨u, h₁, h₂⟩
+  have horient : DependencyPairsFragment.GlobalOrients StepCtx M.eval (· < ·) := by
+    intro a b hstep
+    exact h hstep
+  have hpath :
+      Relation.TransGen StepCtx (syncSource base payload) (syncTarget base payload) :=
+    Relation.TransGen.tail (Relation.TransGen.single h₁) h₂
   have hcomp : M.eval (syncTarget base payload) < M.eval (syncSource base payload) := by
-    exact Nat.lt_trans (h h₂) (h h₁)
+    exact
+      DependencyPairsFragment.transGen_drop
+        (R := StepCtx) (m := M.eval) horient hpath
   have hgt : M.eval (syncSource base payload) < M.eval (syncTarget base payload) := by
     exact syncTarget_eval_gt M base payload
   exact Nat.lt_asymm hcomp hgt

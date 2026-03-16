@@ -1,7 +1,7 @@
 # OperatorKO7
 
-This README is a repository map.  
-It is intentionally file-descriptive and does not present theorem or benchmark claims.
+This README is a repository map with a short set of entry points.
+It stays file-descriptive and does not restate theorem or benchmark claims.
 
 ## Build
 
@@ -18,14 +18,30 @@ Toolchain/dependency pins are in:
 - `lakefile.lean`
 - `lake-manifest.json`
 
+## Recommended Entry Points
+
+- `OperatorKO7/Kernel.lean`:
+  start here for the core syntax and root rewrite relation.
+- `OperatorKO7/Meta/StepDuplicatingSchema.lean`:
+  generic direct-measure impossibility framework.
+- `OperatorKO7/Meta/Newman_Safe.lean`:
+  guarded-fragment confluence, normalization, and reachability.
+- `OperatorKO7/Meta/ContextClosed_SN_Full.lean`:
+  full unguarded context-closed strong normalization in Lean.
+- `OperatorKO7/Meta/PolyInterpretation_FullStep.lean` and `OperatorKO7/Meta/MPO_FullStep.lean`:
+  the two internal full root-step orientation proofs.
+- `OperatorKO7_Complete_Documentation.md`:
+  full generated file-by-file map.
+
 ## Top-Level Layout
 
 - `OperatorKO7.lean`: library entrypoint imports.
 - `OperatorKO7/`: Lean source tree.
 - `Artifacts/`: external tool artifacts.
-- `Paper/`: manuscript source and paper-related material.
-- `Comments/`: notes, review logs, and working records.
-- `Docs/`: supplemental documentation files.
+- `Archive/`: archived or superseded working material.
+- `.github/`: workflow and repository metadata.
+- `VerifyTpdbExport.lean`: runnable TPDB exporter/file verifier.
+- `generate_docs.py`: documentation-generation script.
 - `OperatorKO7_Complete_Documentation.md`: extended file-level map.
 
 ## Lean Source Layout
@@ -36,6 +52,8 @@ Toolchain/dependency pins are in:
   core term syntax (`Trace`), kernel root relation (`Step`), and closures (`StepStar`).
 
 ### Meta Modules
+
+#### Safe fragment and certification
 
 - `OperatorKO7/Meta/SafeStep_Core.lean`:
   `weight`, `kappaM`, `deltaFlag`, guarded `SafeStep` relation.
@@ -49,47 +67,111 @@ Toolchain/dependency pins are in:
   partial context closure `SafeStepCtx` and star lifting lemmas.
 - `OperatorKO7/Meta/ContextClosed_SN.lean`:
   `ctxFuel` exponential-weight measure; `wf_SafeStepCtxRev` (unconditional SN).
+- `OperatorKO7/Meta/ContextClosed_SN_Full.lean`:
+  full unguarded context-closed SN via the polynomial witness.
 - `OperatorKO7/Meta/Confluence_Safe.lean`:
   local-join lemmas; `localJoin_all_safe`.
 - `OperatorKO7/Meta/Newman_Safe.lean`:
-  Newman instantiation; `confluentSafe`, unique normal forms.
+  Newman instantiation; `confluentSafe`, unique normal forms, reachability decidability.
+- `OperatorKO7/Meta/NormalizeSafe_LowerBound.lean`:
+  exact-cost lower-bound family for the certified normalizer.
+- `OperatorKO7/Meta/SafeStep_Complexity.lean`:
+  contextual derivation-length bounds for the guarded fragment.
+- `OperatorKO7/Meta/EqW_Guard_Barrier.lean`:
+  full-step `eqW` overlap obstruction and guard-necessity results.
+
+#### Barrier stack and direct-measure impossibility
+
+- `OperatorKO7/Meta/StepDuplicatingSchema.lean`:
+  parametric four-role schema; generic additive / transparent-compositional / affine barriers.
+- `OperatorKO7/Meta/BarrierWitness.lean`:
+  constructive counterexample extractors (`BarrierCertificate`-style witnesses).
 - `OperatorKO7/Meta/Impossibility_Lemmas.lean`:
   machine-checked failed-measure catalog.
 - `OperatorKO7/Meta/Conjecture_Boundary.lean`:
   no-go theorems, `GlobalOrients` framework.
 - `OperatorKO7/Meta/CompositionalMeasure_Impossibility.lean`:
   impossibility theorems (Tier 1 and Tier 2), DP escape clause, `GlobalOrients` bridge.
+- `OperatorKO7/Meta/QuadraticBarrier.lean`:
+  restricted degree-2 barrier without step-counter coupling.
+- `OperatorKO7/Meta/QuadraticCrossTermBarrier.lean`:
+  bounded step-counter cross-term barrier.
+- `OperatorKO7/Meta/PumpedBarrierClasses.lean`:
+  strengthened pumped subclasses for conditional barriers.
+- `OperatorKO7/Meta/StandardPumpLemmas.lean`:
+  reusable successor-/wrapper-growth lemmas and subclass constructors.
+- `OperatorKO7/Meta/AffineThresholdSharpness.lean`:
+  canonical affine sharpness family for the generic affine contradiction bound.
+- `OperatorKO7/Meta/DepthBarrier.lean`:
+  KO7-specific max-depth family and corresponding barrier.
+- `OperatorKO7/Meta/PrecedenceBarrier.lean`:
+  KO7-specific pure head-precedence family and corresponding barrier.
+- `OperatorKO7/Meta/TypedBarrierSurvival.lean`:
+  simply-typed first-order recursor fragment; typed additive and affine barrier-survival results.
+
+#### Matrix, SCC, and escape extensions
+
 - `OperatorKO7/Meta/RecCore.lean`:
   RecΔ-core (4 constructors); impossibility restated on minimal sub-signature.
+- `OperatorKO7/Meta/MatrixBarrier2.lean`:
+  tracked dimension-2 componentwise barrier and symmetric second-component lemmas.
+- `OperatorKO7/Meta/MatrixBarrierD.lean`:
+  tracked fixed-dimension componentwise barrier.
+- `OperatorKO7/Meta/MatrixBarrierLex.lean`:
+  tracked dimension-2 lexicographic barrier.
+- `OperatorKO7/Meta/MatrixBarrierMix2.lean`:
+  balanced mixed-coordinate dimension-2 barrier via aggregate-sum projection.
+- `OperatorKO7/Meta/MutualDuplication_Case.lean`:
+  concrete alternating worked instance.
+- `OperatorKO7/Meta/MutualDuplication_General.lean`:
+  bounded two-node SCC composite-duplication theorems.
+- `OperatorKO7/Meta/MutualDuplication_Preserving.lean`:
+  multiplicity-preserving synchronized SCC barrier.
+- `OperatorKO7/Meta/EscapeTrichotomy.lean`:
+  explicit direct-universe escape trichotomy.
+
+#### Dependency pairs, ordinal calibration, and full-step orienters
+
+- `OperatorKO7/Meta/DependencyPairs_Fragment.lean`:
+  reusable narrow DP layer (`DPProjection`, `SCCCycle`).
 - `OperatorKO7/Meta/DependencyPairs_Works.lean`:
   extracted DP pair for `rec_succ`; projection decrease and DP-chain well-foundedness (`wf_DPPairRev`).
 - `OperatorKO7/Meta/DM_OrderType.lean`:
   DM-to-ordinal embedding; ε₀ bridge; per-step strictness; upper-bound calibration.
 - `OperatorKO7/Meta/DM_OrderType_LowerBound.lean`:
   `CNFωω` canonical carrier; surjectivity below ω^ω, reflection, rank bridge.
-- `OperatorKO7/Meta/LinearRec_Ablation.lean`:
-  linear recursor variant; `simpleSize` orientation (ablation).
 - `OperatorKO7/Meta/MPO_FullStep.lean`:
   KO7-specialized MPO orientation and well-foundedness on the full root relation.
+- `OperatorKO7/Meta/MPO_Precedence_Barrier.lean`:
+  explicit bad-precedence obstruction for the KO7 MPO shape.
 - `OperatorKO7/Meta/PolyInterpretation_FullStep.lean`:
   nonlinear polynomial orientation and well-foundedness on the full root relation.
+- `OperatorKO7/Meta/LinearRec_Ablation.lean`:
+  linear recursor variant; `simpleSize` orientation (ablation).
+- `OperatorKO7/Meta/ObjectAxiom_Ablation.lean`:
+  directed wrapper-collapse surrogate and preserved direct barriers.
+
+#### Artifact and tooling support
+
+- `OperatorKO7/Meta/BarrierClass_Classifier.lean`:
+  coefficient-table classifier for the formalized barrier families.
+- `OperatorKO7/Meta/SynthesisOracle.lean`:
+  small certified oracle layer around barrier witnesses.
+- `OperatorKO7/Meta/TPDB_Export.lean`:
+  Lean-side TPDB export for the full KO7 root TRS.
 
 ### Tests
 
 - `OperatorKO7/Test/Sanity.lean`:
   basic compilation/evaluation checks.
 
-### Legacy
-
-- `OperatorKO7/Legacy/`:
-  archived Lean files retained for reference.
-
 ## Artifact Folders
 
 - `Artifacts/ttt2/`:
   TRS input, CPF outputs, and certification logs.
 
-## Paper Folder
+## Notes
 
-- `Paper/Rahnama_KO7_Submission.tex`: manuscript source.
-- `Paper/references.bib`: bibliography source.
+- `VerifyTpdbExport.lean` plus `lake exe verifyTpdbExport` check that the Lean-side TPDB export matches the checked on-disk `.trs` artifact.
+- `lake build` checks the full artifact; `lake build OperatorKO7` checks the library only.
+- `OperatorKO7_Complete_Documentation.md` is the large generated file-by-file reference if you need more than this repository map.

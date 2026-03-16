@@ -9,7 +9,7 @@ import OperatorKO7.Meta.ComputableMeasure
 
 Goal
 - Keep and enrich the centralized failure witnesses so they fully represent
-  the failure taxonomy and chronology notes described in the project documentation.
+  the failure taxonomy described in the project documentation.
 
 What’s inside (all self‑contained, kernel unchanged)
 - Small runnable branch and duplication witnesses aligned with the failure catalog.
@@ -17,13 +17,12 @@ What’s inside (all self‑contained, kernel unchanged)
 - Flag‑only outer discriminator failure: concrete Step raises the flag.
 - Duplication stress identity (toy calculus): additive counter non‑drop, plus
   DM and MPO orientation witnesses.
-- Right‑add hazard and “quick ≤ patch” are documented with intentionally
-  non‑admitted, commented examples (uncomment to see failures).
+- Historical dead-end notes are recorded separately in
+  `Notes/Impossibility_DeadEnds.md`.
 
 Note
-- This file may include commented, intentionally failing fragments to preserve
-  the “dead ends” catalog; keep them commented to preserve green builds.
 - Live theorems/examples compile and can be cited in the paper/docs.
+- Historical dead-end commentary is kept out of this theorem file.
 -/
 
 
@@ -139,16 +138,6 @@ theorem merge_void_raises_flag :
     simp [deltaFlagTop, ht]
 
 end FlagFailure
-
-/-! ## Right-add hazard and “quick ≤ patch” (fails_central §H)
-
-Commentary-only: transporting strict inequalities to the left over arbitrary
-ordinal right-addends is invalid. Attempted patches that relax `=` to `≤` do
-not fix the nested-δ counterexample. The following fragments are intentionally
-commented to keep the build green; they illustrate the bad shapes. -/
--- RightAddHazard (dead end): ordinal right-addition is not strictly monotone.
--- The bad shape `p < q → p + s < q + s` fails on ordinals in general.
--- This dead end is documented; no code is needed.
 
 /-! ## P1 rfl-gate (branch realism) - explicit per-branch check (fails_central §B)
 

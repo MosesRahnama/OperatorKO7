@@ -14,13 +14,17 @@ import OperatorKO7.Meta.MutualDuplication_Preserving
 import OperatorKO7.Meta.MatrixBarrier2
 import OperatorKO7.Meta.MatrixBarrierD
 import OperatorKO7.Meta.MatrixBarrierLex
+import OperatorKO7.Meta.MatrixBarrierMix2
 import OperatorKO7.Meta.BarrierClass_Classifier
+import OperatorKO7.Meta.SynthesisOracle
 import OperatorKO7.Meta.PumpedBarrierClasses
 import OperatorKO7.Meta.StandardPumpLemmas
 import OperatorKO7.Meta.EscapeTrichotomy
 import OperatorKO7.Meta.DepthBarrier
 import OperatorKO7.Meta.PrecedenceBarrier
+import OperatorKO7.Meta.TypedBarrierSurvival
 import OperatorKO7.Meta.TPDB_Export
+import OperatorKO7.Meta.DependencyPairs_Fragment
 import OperatorKO7.Meta.DependencyPairs_Works
 import OperatorKO7.Meta.ContextClosed_SN
 import OperatorKO7.Meta.NormalizeSafe_LowerBound

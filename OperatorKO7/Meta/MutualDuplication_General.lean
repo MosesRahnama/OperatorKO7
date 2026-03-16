@@ -1,4 +1,5 @@
 import OperatorKO7.Meta.StepDuplicatingSchema
+import OperatorKO7.Meta.DependencyPairs_Fragment
 
 /-!
 # Bounded SCC-Level Composite Duplication
@@ -13,6 +14,7 @@ arguments still go through.
 namespace OperatorKO7.MutualDuplicationGeneral
 
 open OperatorKO7.StepDuplicating
+open OperatorKO7.DependencyPairsFragment
 
 /-- Shared constructor interface for a bounded two-node mutually recursive SCC. -/
 structure AlternatingDupSchema where
@@ -225,7 +227,17 @@ theorem no_global_orients_ctx_additive
           M.eval (Sys.recurA b s (Sys.succ (Sys.succ n))) := by
     intro b s n
     rcases alternating_dup2_realized Sys b s n with ⟨u, h₁, h₂⟩
-    exact Nat.lt_trans (h h₂) (h h₁)
+    have horient : DependencyPairsFragment.GlobalOrients (StepCtx Sys) M.eval (· < ·) := by
+      intro a b hstep
+      exact h hstep
+    have hpath :
+        Relation.TransGen (StepCtx Sys)
+          (Sys.recurA b s (Sys.succ (Sys.succ n)))
+          (Sys.wrap s (Sys.wrap s (Sys.recurA b s n))) :=
+      Relation.TransGen.tail (Relation.TransGen.single h₁) h₂
+    exact
+      DependencyPairsFragment.transGen_drop
+        (R := StepCtx Sys) (m := M.eval) horient hpath
   exact no_additive_orients_alternating_dup2_composite (S := Sys.toAlternatingDupSchema) M hcomp
 
 /-- The bounded SCC theorem also rules out any affine orientation of the whole
@@ -242,7 +254,17 @@ theorem no_global_orients_ctx_affine_of_unbounded
           M.eval (Sys.recurA b s (Sys.succ (Sys.succ n))) := by
     intro b s n
     rcases alternating_dup2_realized Sys b s n with ⟨u, h₁, h₂⟩
-    exact Nat.lt_trans (h h₂) (h h₁)
+    have horient : DependencyPairsFragment.GlobalOrients (StepCtx Sys) M.eval (· < ·) := by
+      intro a b hstep
+      exact h hstep
+    have hpath :
+        Relation.TransGen (StepCtx Sys)
+          (Sys.recurA b s (Sys.succ (Sys.succ n)))
+          (Sys.wrap s (Sys.wrap s (Sys.recurA b s n))) :=
+      Relation.TransGen.tail (Relation.TransGen.single h₁) h₂
+    exact
+      DependencyPairsFragment.transGen_drop
+        (R := StepCtx Sys) (m := M.eval) horient hpath
   exact
     no_affine_orients_alternating_dup2_composite_of_unbounded
       (S := Sys.toAlternatingDupSchema) M hunbounded hcomp

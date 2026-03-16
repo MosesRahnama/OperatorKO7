@@ -46,3 +46,5 @@ _tmp_ctx2.lean
 _tmp_ctx3.lean
 _tmp_ctx4.lean
 generate_docs.py
+TmpInspect.lean
+TmpCheck_FixEq.lean
