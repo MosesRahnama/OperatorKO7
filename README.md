@@ -96,6 +96,10 @@ Toolchain/dependency pins are in:
   restricted degree-2 barrier without step-counter coupling.
 - `OperatorKO7/Meta/QuadraticCrossTermBarrier.lean`:
   bounded step-counter cross-term barrier.
+- `OperatorKO7/Meta/MultilinearBarrier.lean`:
+  bounded multilinear barrier with frozen-coefficient dominance at base.
+- `OperatorKO7/Meta/MaxBarrier.lean`:
+  schema-level max-plus constructor-local barrier.
 - `OperatorKO7/Meta/PumpedBarrierClasses.lean`:
   strengthened pumped subclasses for conditional barriers.
 - `OperatorKO7/Meta/StandardPumpLemmas.lean`:
@@ -121,6 +125,10 @@ Toolchain/dependency pins are in:
   tracked dimension-2 lexicographic barrier.
 - `OperatorKO7/Meta/MatrixBarrierMix2.lean`:
   balanced mixed-coordinate dimension-2 barrier via aggregate-sum projection.
+- `OperatorKO7/Meta/MatrixBarrierFunctional.lean`:
+  weighted scalar-projection componentwise barrier unifying tracked-coordinate and aggregate-sum projection arguments.
+- `OperatorKO7/Meta/ScalarProjectionBarrier.lean`:
+  scalar-projection lift theorem rederiving blocked vector and pair families from scalar barriers.
 - `OperatorKO7/Meta/MutualDuplication_Case.lean`:
   concrete alternating worked instance.
 - `OperatorKO7/Meta/MutualDuplication_General.lean`:
@@ -129,6 +137,8 @@ Toolchain/dependency pins are in:
   multiplicity-preserving synchronized SCC barrier.
 - `OperatorKO7/Meta/EscapeTrichotomy.lean`:
   explicit direct-universe escape trichotomy.
+- `OperatorKO7/Meta/SymbolicComparatorBarrier.lean`:
+  symbolic variable-condition barrier for direct duplication-sensitive comparators.
 
 #### Dependency pairs, ordinal calibration, and full-step orienters
 

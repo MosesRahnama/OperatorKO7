@@ -15,6 +15,11 @@ import OperatorKO7.Meta.MatrixBarrier2
 import OperatorKO7.Meta.MatrixBarrierD
 import OperatorKO7.Meta.MatrixBarrierLex
 import OperatorKO7.Meta.MatrixBarrierMix2
+import OperatorKO7.Meta.MatrixBarrierFunctional
+import OperatorKO7.Meta.MultilinearBarrier
+import OperatorKO7.Meta.MaxBarrier
+import OperatorKO7.Meta.SymbolicComparatorBarrier
+import OperatorKO7.Meta.ScalarProjectionBarrier
 import OperatorKO7.Meta.BarrierClass_Classifier
 import OperatorKO7.Meta.SynthesisOracle
 import OperatorKO7.Meta.PumpedBarrierClasses
