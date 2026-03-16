@@ -264,63 +264,34 @@ theorem no_affine_orients_synchronized_cycle_of_wrapper_dominance
     ¬ (∀ (ctx payloadTerm : SyncTerm),
       M.eval (syncTarget ctx payloadTerm) < M.eval (syncSource ctx payloadTerm)) := by
   intro h
-  -- The orientation hypothesis says target < source for ALL (ctx, payloadTerm).
-  -- We show this fails for some payloadTerm with eval(payloadTerm) large enough.
-  -- Let K be the source constant minus the target constant (when it's positive).
-  -- Source at (base, p) = S_const + S_coeff * eval(p)
-  -- Target at (base, p) = T_const + T_coeff * eval(p)
-  -- where T_coeff > S_coeff by wrapper dominance.
-  -- For eval(p) ≥ (S_const + 1) (a safe upper bound), T_coeff * eval(p) > S_coeff * eval(p) + S_const,
-  -- so target > source even ignoring T_const ≥ 0.
-  let threshold := M.recurA_const + M.recurA_ctx * M.c_base + 1
-  obtain ⟨p, hp⟩ := hunbounded threshold
+  obtain ⟨p, hp⟩ := hunbounded (M.recurA_const + M.recurA_ctx * M.c_base + 1)
   have hspec := h base p
-  -- Expand source
-  have hsrc := syncSource_affine_eval M p
-  -- Expand target
-  have htgt := syncTarget_affine_eval M p
-  rw [hsrc, htgt] at hspec
-  -- Now we have:
-  -- wrap_const + wrap_left * eval(p) + wrap_right * (wrap_const + wrap_left * eval(p) + wrap_right * K)
-  --   < recurA_const + recurA_ctx * c_base + (recurA_p + recurA_q) * eval(p)
-  -- The LHS has coefficient (wrap_left + wrap_right * wrap_left) on eval(p)
-  -- The RHS has coefficient (recurA_p + recurA_q) on eval(p)
-  -- By hdom, wrap_left + wrap_right * wrap_left > recurA_p + recurA_q
-  -- So LHS ≥ (recurA_p + recurA_q + 1) * eval(p) ≥ (recurA_p + recurA_q) * eval(p) + eval(p)
-  -- And eval(p) ≥ threshold = recurA_const + recurA_ctx * c_base + 1
-  -- So LHS ≥ (recurA_p + recurA_q) * eval(p) + recurA_const + recurA_ctx * c_base + 1
-  --        > (recurA_p + recurA_q) * eval(p) + recurA_const + recurA_ctx * c_base = RHS
-  -- Contradiction with hspec.
-  have hdom' := hdom
-  unfold WrapperDominance at hdom'
-  -- The target's payload term is at least (wrap_left + wrap_right * wrap_left) * eval(p)
-  have htgt_payload_bound :
+  simp only [syncSource, syncTarget, M.eval_wrap, M.eval_recurA,
+    M.eval_left, M.eval_right, M.eval_base] at hspec
+  unfold WrapperDominance at hdom
+  have h_inner : M.wrap_left * M.eval p ≤
       M.wrap_const + M.wrap_left * M.eval p +
-        M.wrap_right * (M.wrap_const + M.wrap_left * M.eval p +
-          M.wrap_right * (M.recurA_const + M.recurA_ctx * M.c_base +
-            (M.recurA_p + M.recurA_q) * M.c_base)) ≥
-      (M.wrap_left + M.wrap_right * M.wrap_left) * M.eval p := by
-    have : M.wrap_right * (M.wrap_const + M.wrap_left * M.eval p +
-          M.wrap_right * (M.recurA_const + M.recurA_ctx * M.c_base +
-            (M.recurA_p + M.recurA_q) * M.c_base)) ≥
-        M.wrap_right * M.wrap_left * M.eval p := by
-      apply Nat.mul_le_mul_left
-      omega
+        M.wrap_right * (M.recurA_const + M.recurA_ctx * M.c_base +
+          M.recurA_p * M.c_base + M.recurA_q * M.c_base) := by omega
+  have h_scaled := Nat.mul_le_mul_left M.wrap_right h_inner
+  have h_tgt_lb : M.wrap_const + M.wrap_left * M.eval p +
+      M.wrap_right * (M.wrap_const + M.wrap_left * M.eval p +
+        M.wrap_right * (M.recurA_const + M.recurA_ctx * M.c_base +
+          M.recurA_p * M.c_base + M.recurA_q * M.c_base)) ≥
+      M.wrap_left * M.eval p + M.wrap_right * M.wrap_left * M.eval p := by
+    rw [← Nat.mul_assoc] at h_scaled; omega
+  have h_coeff : (M.recurA_p + M.recurA_q + 1) * M.eval p ≤
+      M.wrap_left * M.eval p + M.wrap_right * M.wrap_left * M.eval p := by
+    have hfactor : (M.wrap_left + M.wrap_right * M.wrap_left) * M.eval p =
+        M.wrap_left * M.eval p + M.wrap_right * M.wrap_left * M.eval p := by ring
+    rw [← hfactor]
+    exact Nat.mul_le_mul_right (M.eval p) hdom
+  have h_src_lt : M.recurA_const + M.recurA_ctx * M.c_base +
+      M.recurA_p * M.eval p + M.recurA_q * M.eval p <
+      (M.recurA_p + M.recurA_q + 1) * M.eval p := by
+    have : (M.recurA_p + M.recurA_q + 1) * M.eval p =
+        M.recurA_p * M.eval p + M.recurA_q * M.eval p + M.eval p := by ring
     omega
-  -- The source is exactly recurA_const + recurA_ctx * c_base + (recurA_p + recurA_q) * eval(p)
-  -- We need: target ≥ source + 1, i.e., target > source, contradicting hspec (target < source)
-  have hsrc_bound :
-      M.recurA_const + M.recurA_ctx * M.c_base + (M.recurA_p + M.recurA_q) * M.eval p <
-      (M.wrap_left + M.wrap_right * M.wrap_left) * M.eval p := by
-    -- (W - P) * eval(p) > recurA_const + recurA_ctx * c_base
-    -- Since W ≥ P + 1 (by hdom'), (W - P) * eval(p) ≥ eval(p) ≥ threshold = recurA_const + recurA_ctx * c_base + 1
-    have hcoeff : M.recurA_p + M.recurA_q + 1 ≤ M.wrap_left + M.wrap_right * M.wrap_left := hdom'
-    have heval : M.eval p ≥ M.recurA_const + M.recurA_ctx * M.c_base + 1 := hp
-    calc M.recurA_const + M.recurA_ctx * M.c_base + (M.recurA_p + M.recurA_q) * M.eval p
-        < M.eval p + (M.recurA_p + M.recurA_q) * M.eval p := by omega
-      _ = (M.recurA_p + M.recurA_q + 1) * M.eval p := by ring
-      _ ≤ (M.wrap_left + M.wrap_right * M.wrap_left) * M.eval p := by
-          exact Nat.mul_le_mul_right (M.eval p) hcoeff
   omega
 
 end OperatorKO7.MutualDuplicationPreserving
