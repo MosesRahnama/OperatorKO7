@@ -46,6 +46,15 @@ Toolchain/dependency pins are in:
 
 ## Lean Source Layout
 
+### Top-Level Lean and Build Files
+
+- `lakefile.lean`:
+  Lake package configuration; declares the `OperatorKO7` library root and the `verifyTpdbExport` executable target.
+- `OperatorKO7.lean`:
+  public library import surface; collects the canonical modules built by `lake build OperatorKO7`.
+- `VerifyTpdbExport.lean`:
+  executable root for `lake exe verifyTpdbExport`; checks the embedded TPDB text against the on-disk `.trs` artifact.
+
 ### Core
 
 - `OperatorKO7/Kernel.lean`:
@@ -69,14 +78,22 @@ Toolchain/dependency pins are in:
   `ctxFuel` exponential-weight measure; `wf_SafeStepCtxRev` (unconditional SN).
 - `OperatorKO7/Meta/ContextClosed_SN_Full.lean`:
   full unguarded context-closed SN via the polynomial witness.
+- `OperatorKO7/Meta/ContextClosedBarrier.lean`:
+  root-to-context corollaries lifting the direct barrier stack to `StepCtxFull`.
 - `OperatorKO7/Meta/Confluence_Safe.lean`:
   local-join lemmas; `localJoin_all_safe`.
 - `OperatorKO7/Meta/Newman_Safe.lean`:
   Newman instantiation; `confluentSafe`, unique normal forms, reachability decidability.
+- `OperatorKO7/Meta/SafeStepCtx_Confluence.lean`:
+  exact Newman layer for `SafeStepCtx`; confluence is equivalent to the remaining global local-join obligation.
 - `OperatorKO7/Meta/NormalizeSafe_LowerBound.lean`:
   exact-cost lower-bound family for the certified normalizer.
 - `OperatorKO7/Meta/SafeStep_Complexity.lean`:
   contextual derivation-length bounds for the guarded fragment.
+- `OperatorKO7/Meta/SafeStep_Complexity_Ordinal.lean`:
+  size-indexed tower-exponential derivation-length bound for `SafeStepCtx` via `ctxFuel`.
+- `OperatorKO7/Meta/SafeRoot_Complexity.lean`:
+  exact-length root-normalizer realizations and upper envelope via `ctxFuel` / `complexity_bound`.
 - `OperatorKO7/Meta/EqW_Guard_Barrier.lean`:
   full-step `eqW` overlap obstruction and guard-necessity results.
 
@@ -98,10 +115,14 @@ Toolchain/dependency pins are in:
   bounded step-counter cross-term barrier.
 - `OperatorKO7/Meta/MultilinearBarrier.lean`:
   bounded multilinear barrier with frozen-coefficient dominance at base.
+- `OperatorKO7/Meta/PolynomialBarrierGeneral.lean`:
+  generalized bounded polynomial barrier with repeated variables and a base-dominance failure condition.
 - `OperatorKO7/Meta/MaxBarrier.lean`:
   schema-level max-plus constructor-local barrier.
+- `OperatorKO7/Meta/ArcticBarrier.lean`:
+  arctic-style primary-projection corollary of the max barrier for tool-facing direct interpretations.
 - `OperatorKO7/Meta/PumpedBarrierClasses.lean`:
-  strengthened pumped subclasses for conditional barriers.
+  strengthened pumped subclasses for affine, quadratic, multilinear, max-plus, and projection-based conditional barriers.
 - `OperatorKO7/Meta/StandardPumpLemmas.lean`:
   reusable successor-/wrapper-growth lemmas and subclass constructors.
 - `OperatorKO7/Meta/AffineThresholdSharpness.lean`:
@@ -136,9 +157,11 @@ Toolchain/dependency pins are in:
 - `OperatorKO7/Meta/MutualDuplication_Preserving.lean`:
   multiplicity-preserving synchronized SCC barrier.
 - `OperatorKO7/Meta/EscapeTrichotomy.lean`:
-  explicit direct-universe escape trichotomy.
+  explicit direct-universe escape trichotomy, plus the projection-based extension for weighted functional and balanced mixed-coordinate matrix families.
 - `OperatorKO7/Meta/SymbolicComparatorBarrier.lean`:
   symbolic variable-condition barrier for direct duplication-sensitive comparators.
+- `OperatorKO7/Meta/KBO_Impossible.lean`:
+  explicit KO7 KBO-style impossibility corollary extracted from the symbolic barrier.
 
 #### Dependency pairs, ordinal calibration, and full-step orienters
 
@@ -146,6 +169,8 @@ Toolchain/dependency pins are in:
   reusable narrow DP layer (`DPProjection`, `SCCCycle`).
 - `OperatorKO7/Meta/DependencyPairs_Works.lean`:
   extracted DP pair for `rec_succ`; projection decrease and DP-chain well-foundedness (`wf_DPPairRev`).
+- `OperatorKO7/Meta/DP_BaseOrder_Boundary.lean`:
+  boundary result showing the extracted DP pair already admits a simple linear polynomial-style base order.
 - `OperatorKO7/Meta/DM_OrderType.lean`:
   DM-to-ordinal embedding; ε₀ bridge; per-step strictness; upper-bound calibration.
 - `OperatorKO7/Meta/DM_OrderType_LowerBound.lean`:
@@ -174,6 +199,8 @@ Toolchain/dependency pins are in:
 
 - `OperatorKO7/Test/Sanity.lean`:
   basic compilation/evaluation checks.
+- `OperatorKO7/Test/TPDB_Export.lean`:
+  smoke tests for TPDB export text generation and related verifier-facing declarations.
 
 ## Artifact Folders
 
@@ -182,6 +209,5 @@ Toolchain/dependency pins are in:
 
 ## Notes
 
-- `VerifyTpdbExport.lean` plus `lake exe verifyTpdbExport` check that the Lean-side TPDB export matches the checked on-disk `.trs` artifact.
 - `lake build` checks the full artifact; `lake build OperatorKO7` checks the library only.
 - `OperatorKO7_Complete_Documentation.md` is the large generated file-by-file reference if you need more than this repository map.

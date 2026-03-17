@@ -14,16 +14,21 @@ The theorem universe is intentionally narrow and reviewable:
 - pumped affine constructor-local measures
 - pumped restricted-quadratic constructor-local measures
 - pumped bounded-cross-term constructor-local measures
+- pumped bounded-multilinear constructor-local measures
+- pumped max-plus constructor-local measures
 - KO7-specific max-depth families
 - KO7-specific pure head-precedence families
+- tracked-primary componentwise pair families
+- tracked-primary lexicographic pair families
 
 Within this universe, any successful root-step orienter must fail at least one of:
 - wrapper-subterm sensitivity
 - base-level successor transparency
 - representability by the formalized Nat-valued direct families above
 
-Pair-valued tracked barriers, dependency-pair frameworks, and path orders remain
-outside this theorem universe.
+Dependency-pair frameworks and path orders remain outside this theorem universe.
+Broader projection-based matrix extensions are handled later in this file through
+their scalar representability layer rather than by these base constructors alone.
 -/
 
 namespace OperatorKO7.StepDuplicating
@@ -47,6 +52,8 @@ inductive NatDirectBarrierRepresentable (S : StepDuplicatingSchema) (μ : S.T �
   | affineWithPump (M : AffineMeasureWithPump S) (heval : M.eval = μ)
   | quadraticWithPump (M : QuadraticCounterMeasureWithPump S) (heval : M.eval = μ)
   | crossQuadraticWithPump (M : CrossTermQuadraticMeasureWithPump S) (heval : M.eval = μ)
+  | multilinearWithPump (M : MultilinearMeasureWithPump S) (heval : M.eval = μ)
+  | maxWithPump (M : MaxMeasureWithPump S) (heval : M.eval = μ)
 
 /-- Escape trichotomy for the explicit Nat-valued direct universe:
 any successful orienter must fail wrapper sensitivity, fail base-level transparency,
@@ -80,6 +87,12 @@ theorem nat_direct_escape_trichotomy
       | crossQuadraticWithPump M heval =>
           subst heval
           exact (no_global_orients_cross_quadratic_with_pump (Sys := Sys) M) horient
+      | multilinearWithPump M heval =>
+          subst heval
+          exact (no_global_orients_multilinear_with_pump (Sys := Sys) M) horient
+      | maxWithPump M heval =>
+          subst heval
+          exact (no_global_orients_max_with_pump (Sys := Sys) M) horient
     · right
       left
       exact htrans
@@ -137,6 +150,12 @@ inductive KO7NatDirectBarrierRepresentable (μ : Trace → Nat) : Prop
   | crossQuadraticWithPump
       (M : StepDuplicatingSchema.CrossTermQuadraticMeasureWithPump ko7Schema)
       (heval : ∀ t : Trace, M.eval t = μ t)
+  | multilinearWithPump
+      (M : StepDuplicatingSchema.MultilinearMeasureWithPump ko7Schema)
+      (heval : ∀ t : Trace, M.eval t = μ t)
+  | maxWithPump
+      (M : StepDuplicatingSchema.MaxMeasureWithPump ko7Schema)
+      (heval : ∀ t : Trace, M.eval t = μ t)
   | depth (M : MaxDepthMeasure) (heval : M.eval = μ)
   | precedence (M : HeadPrecedenceFamily) (heval : M.eval = μ)
 
@@ -154,6 +173,12 @@ inductive KO7DirectBarrierRepresentable : KO7DirectOrienter → Prop
       KO7DirectBarrierRepresentable (.nat M.eval)
   | crossQuadraticWithPump
       (M : StepDuplicatingSchema.CrossTermQuadraticMeasureWithPump ko7Schema) :
+      KO7DirectBarrierRepresentable (.nat M.eval)
+  | multilinearWithPump
+      (M : StepDuplicatingSchema.MultilinearMeasureWithPump ko7Schema) :
+      KO7DirectBarrierRepresentable (.nat M.eval)
+  | maxWithPump
+      (M : StepDuplicatingSchema.MaxMeasureWithPump ko7Schema) :
       KO7DirectBarrierRepresentable (.nat M.eval)
   | depth (M : MaxDepthMeasure) :
       KO7DirectBarrierRepresentable (.nat M.eval)
@@ -210,6 +235,20 @@ theorem ko7_nat_direct_escape_trichotomy
             exact heval t
           subst hrepr
           exact (PumpedBarrierClasses.no_global_step_orientation_cross_quadratic_with_pump M) horient
+      | multilinearWithPump M heval =>
+          have hrepr :
+              M.eval = μ := by
+            funext t
+            exact heval t
+          subst hrepr
+          exact (PumpedBarrierClasses.no_global_step_orientation_multilinear_with_pump M) horient
+      | maxWithPump M heval =>
+          have hrepr :
+              M.eval = μ := by
+            funext t
+            exact heval t
+          subst hrepr
+          exact (PumpedBarrierClasses.no_global_step_orientation_max_with_pump M) horient
       | depth M heval =>
           subst heval
           exact (no_global_step_orientation_maxDepth M) horient
@@ -249,6 +288,10 @@ theorem ko7_direct_escape_trichotomy_extended
           exact (PumpedBarrierClasses.no_global_step_orientation_quadratic_with_pump M) horient
       | crossQuadraticWithPump M =>
           exact (PumpedBarrierClasses.no_global_step_orientation_cross_quadratic_with_pump M) horient
+      | multilinearWithPump M =>
+          exact (PumpedBarrierClasses.no_global_step_orientation_multilinear_with_pump M) horient
+      | maxWithPump M =>
+          exact (PumpedBarrierClasses.no_global_step_orientation_max_with_pump M) horient
       | depth M =>
           exact (no_global_step_orientation_maxDepth M) horient
       | precedence M =>
@@ -262,5 +305,119 @@ theorem ko7_direct_escape_trichotomy_extended
       exact htrans
   · left
     exact hsub
+
+/-- Broader projection-based representability layer for direct componentwise orienters:
+if a fixed scalar projection is forced to decrease by the ambient order, and that scalar
+already belongs to the explicit KO7 Nat-valued barrier universe, then the same escape
+trichotomy applies to the projected primary scalar. -/
+structure KO7ProjectionBarrierRepresentable
+    {α : Type} (μ : Trace → α) (R : α → α → Prop) (π : α → Nat) : Prop where
+  projection_strict : ∀ {u v : α}, R u v → π u < π v
+  represented : KO7NatDirectBarrierRepresentable (fun t => π (μ t))
+
+/-- Projection-based extension of the KO7 escape trichotomy. -/
+theorem ko7_projection_escape_trichotomy
+    {α : Type} {μ : Trace → α} {R : α → α → Prop} {π : α → Nat}
+    (horient : StepDuplicatingSchema.GlobalOrients ko7System μ R) :
+    ¬ StepDuplicatingSchema.WrapSubtermSensitive ko7Schema (fun t => π (μ t)) ∨
+      ¬ StepDuplicatingSchema.TransparentAtBase ko7Schema (fun t => π (μ t)) ∨
+      ¬ KO7ProjectionBarrierRepresentable μ R π := by
+  classical
+  by_cases hsub : StepDuplicatingSchema.WrapSubtermSensitive ko7Schema (fun t => π (μ t))
+  · by_cases htrans : StepDuplicatingSchema.TransparentAtBase ko7Schema (fun t => π (μ t))
+    · right
+      right
+      intro hrepr
+      have hscalar : StepDuplicatingSchema.GlobalOrients ko7System (fun t => π (μ t)) (· < ·) := by
+        intro a b hab
+        exact hrepr.projection_strict (horient hab)
+      have htri := ko7_nat_direct_escape_trichotomy (μ := fun t => π (μ t)) hscalar
+      cases htri with
+      | inl hbad =>
+          exact hbad hsub
+      | inr hrest =>
+          cases hrest with
+          | inl hbad =>
+              exact hbad htrans
+          | inr hbad =>
+              exact hbad hrepr.represented
+    · right
+      left
+      exact htrans
+  · left
+    exact hsub
+
+/-- Weighted functional matrix families enter the extended trichotomy through their
+projected scalar affine-with-pump witness. -/
+theorem matrixFunctional_projection_representable
+    {d : Nat}
+    (M : StepDuplicatingSchema.MatrixFunctionalMeasureWithProjectedAffinePump ko7Schema d) :
+    KO7ProjectionBarrierRepresentable
+      M.eval StepDuplicatingSchema.VecLt
+      (fun v => StepDuplicatingSchema.weightedSum M.weight v) := by
+  refine ⟨?_, ?_⟩
+  · intro u v h
+    exact StepDuplicatingSchema.weightedSum_lt_of_vecLt M.h_weight_support h
+  · exact KO7NatDirectBarrierRepresentable.affineWithPump M.projectedAffineWithPump (by intro t; rfl)
+
+/-- Balanced mixed-coordinate matrix families enter the extended trichotomy through the
+aggregate coordinate-sum projection. -/
+theorem matrixMix2_sum_projection_representable
+    (M : StepDuplicatingSchema.MatrixMix2MeasureWithSumPump ko7Schema) :
+    KO7ProjectionBarrierRepresentable
+      M.eval StepDuplicatingSchema.PairLt StepDuplicatingSchema.vecSum := by
+  refine ⟨?_, ?_⟩
+  · intro u v h
+    exact StepDuplicatingSchema.vecSum_lt_of_pairLt h
+  · exact KO7NatDirectBarrierRepresentable.affineWithPump M.sumAffineWithPump (by intro t; rfl)
+
+/-- Weighted functional matrix escape trichotomy corollary. -/
+theorem ko7_matrixFunctional_escape_trichotomy
+    {d : Nat}
+    (M : StepDuplicatingSchema.MatrixFunctionalMeasureWithProjectedAffinePump ko7Schema d)
+    (horient : StepDuplicatingSchema.GlobalOrients ko7System M.eval StepDuplicatingSchema.VecLt) :
+    ¬ StepDuplicatingSchema.WrapSubtermSensitive ko7Schema
+        (fun t => StepDuplicatingSchema.weightedSum M.weight (M.eval t)) ∨
+      ¬ StepDuplicatingSchema.TransparentAtBase ko7Schema
+        (fun t => StepDuplicatingSchema.weightedSum M.weight (M.eval t)) ∨
+      False := by
+  have htri :=
+    ko7_projection_escape_trichotomy
+      (μ := M.eval) (R := StepDuplicatingSchema.VecLt)
+      (π := fun v => StepDuplicatingSchema.weightedSum M.weight v) horient
+  cases htri with
+  | inl hbad =>
+      exact Or.inl hbad
+  | inr hrest =>
+      cases hrest with
+      | inl hbad =>
+          exact Or.inr (Or.inl hbad)
+      | inr hbad =>
+          exfalso
+          exact hbad (matrixFunctional_projection_representable M)
+
+/-- Balanced mixed-coordinate escape trichotomy corollary. -/
+theorem ko7_matrixMix2_escape_trichotomy
+    (M : StepDuplicatingSchema.MatrixMix2MeasureWithSumPump ko7Schema)
+    (horient : StepDuplicatingSchema.GlobalOrients ko7System M.eval StepDuplicatingSchema.PairLt) :
+    ¬ StepDuplicatingSchema.WrapSubtermSensitive ko7Schema
+        (fun t => StepDuplicatingSchema.vecSum (M.eval t)) ∨
+      ¬ StepDuplicatingSchema.TransparentAtBase ko7Schema
+        (fun t => StepDuplicatingSchema.vecSum (M.eval t)) ∨
+      False := by
+  have htri :=
+    ko7_projection_escape_trichotomy
+      (μ := M.eval) (R := StepDuplicatingSchema.PairLt)
+      (π := StepDuplicatingSchema.vecSum) horient
+  cases htri with
+  | inl hbad =>
+      exact Or.inl hbad
+  | inr hrest =>
+      cases hrest with
+      | inl hbad =>
+          exact Or.inr (Or.inl hbad)
+      | inr hbad =>
+          exfalso
+          exact hbad (matrixMix2_sum_projection_representable M)
 
 end OperatorKO7.EscapeTrichotomy
