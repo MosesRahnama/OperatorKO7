@@ -6,7 +6,7 @@ import Mathlib.Tactic.Linarith
 # Nonlinear Polynomial Interpretation for the Full KO7 System
 
 This module defines a nonlinear polynomial interpretation `W : Trace → Nat`
-that strictly orients all 8 KO7 root rules.  This demonstrates that the
+that strictly orients all 8 KO7 root rules.  This shows that the
 full unguarded system is terminating by a direct global measure—provided
 the measure lies outside every formalized barrier class.
 
@@ -30,7 +30,7 @@ namespace OperatorKO7.PolyInterpretation
 open OperatorKO7 Trace
 
 /-- Nonlinear polynomial interpretation over positive integers (≥ 1).
-    The critical feature is the multiplicative recursor combiner:
+    The multiplicative recursor combiner is:
     `(counter + 1) * (payload)`, which absorbs the duplication cost. -/
 @[simp] def W : Trace → Nat
 | void          => 1

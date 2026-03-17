@@ -5,7 +5,7 @@ import OperatorKO7.Meta.Conjecture_Boundary
 
 This module upgrades the standalone tree-depth witness to a theorem-backed family.
 The family is still KO7-specific: constructor-local heights are aggregated by `max`,
-not by addition, and the critical failure is exhibited on the kernel `rec_succ` rule.
+not by addition, and the failure is exhibited on the kernel `rec_succ` rule.
 -/
 
 namespace OperatorKO7.DepthBarrier

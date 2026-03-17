@@ -353,7 +353,7 @@ mathematically forced to rely on the universal Subterm Property (f(t) > t).
 
 The paper argues that importing the Subterm Property (and by extension,
 Kruskal's Tree Theorem) goes beyond the "no imported axioms" structural
-constraint of KO7 (§3). Thus, the code demonstrates the *necessity* of the
+constraint of KO7 (§3). The code shows the *necessity* of the
 external axiom, while the paper critiques its *validity*.
 -/
 

@@ -4,14 +4,14 @@ import OperatorKO7.Meta.DependencyPairs_Fragment
 /-!
 # Multiplicity-Preserving SCC Synchronization
 
-This module isolates a genuinely different SCC mechanism from the existing bounded
+This module isolates a different SCC mechanism from the existing bounded
 composite-duplication theorem. Here each individual root rule preserves an explicit
 payload-counting interface exactly. The obstruction appears only after synchronizing the
 two latent payload channels and following one full SCC cycle, which exposes two visible
 wrapper-carried copies of the same payload.
 
-The current result is additive only. It is intentionally stated as a synchronized-exposure
-theorem rather than as an affine extension of the older coefficient-growth argument.
+The additive barrier is unconditional. The affine barrier requires a wrapper-dominance
+condition on the affine coefficients.
 -/
 
 namespace OperatorKO7.MutualDuplicationPreserving

@@ -180,7 +180,7 @@ theorem dp_projection_violates_subterm2 :
     (StepDuplicatingSchema.projection_violates_wrap_subterm2
       (S := recCoreSchema) dpProjectionRank)
 
-/-- Concrete nonlinear witness showing that Tier-2 transparency is essential. -/
+/-- Concrete nonlinear witness showing that the Tier-2 transparency hypothesis is necessary. -/
 def quadraticWitness : CompositionalRecCoreMeasure where
   c_void := 1
   c_delta := fun x => x + 1
@@ -253,7 +253,7 @@ theorem quadraticWitness_exhibits_transparency_gap :
   intro b s n
   exact quadraticWitness_orients_rec_succ b s n
 
-/-- The Tier-2 transparency hypothesis is essential on RecΔ-core:
+/-- The Tier-2 transparency hypothesis is necessary on RecΔ-core:
 there exists a compositional measure satisfying the wrapper-subterm axioms,
 failing transparency at `void`, and still orienting the duplicating step. -/
 theorem transparency_is_essential_for_tier2 :

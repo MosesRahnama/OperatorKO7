@@ -11,12 +11,12 @@ using the triple-lexicographic measure μ3c = (δ, κᴹ, τ) where:
 - κᴹ (kappaM): Dershowitz-Manna multiset of recursion weights
 - τ (tau): Computable natural number rank (replaces noncomputable ordinal μ)
 
-## Key Properties
-- **Fully Computable Measures**: All measure functions (`deltaFlag`, `kappaM`, `tau`) are computable;
-  classical reasoning is used only in proof terms (Prop-valued well-foundedness arguments)
-- **Complete Coverage**: All 8 SafeStep constructors proven to strictly decrease μ3c
-- **Bulletproof**: Explicit Prod.Lex parameters prevent elaboration issues
-- **Lint-Clean**: No warnings, no sorry, no admit, no unsafe
+## Properties
+- All measure functions (`deltaFlag`, `kappaM`, `tau`) are computable;
+  classical reasoning is used only in proof terms (Prop-valued well-foundedness arguments).
+- All 8 SafeStep constructors are proven to strictly decrease μ3c.
+- Explicit `Prod.Lex` parameters prevent elaboration issues.
+- No `sorry`, no `admit`, no `unsafe`.
 
 ## Technical Approach
 The measure μ3c uses lexicographic ordering Lex3c := Prod.Lex (<) (Prod.Lex DM (<))
@@ -34,7 +34,7 @@ to strictly decrease this measure through either:
 - merge: 2 + sum of arguments
 - app: 1 + sum of arguments
 - recΔ: 3 + sum of all three arguments
-- eqW: 4 + sum of arguments (ensures 1+2+X < 4+X for eq_diff)
+- eqW: 4 + sum of arguments (so that 1+2+X < 4+X for eq_diff)
 
 ## References
 - Dershowitz & Manna (1979): Proving termination with multiset orderings
@@ -56,20 +56,20 @@ open scoped Classical
 
 /-- **Head-weighted structural size (τ)**
 
-A computable Nat-valued rank function with meticulously chosen constants.
+A computable Nat-valued rank function.
 
-### Key Properties:
-1. τ(eqW a b) > τ(integrate (merge a b)) for all a, b (critical for eq_diff)
+### Properties:
+1. τ(eqW a b) > τ(integrate (merge a b)) for all a, b (required by eq_diff)
 2. τ strictly increases under all constructors except delta
-3. All inequalities provable by omega or decide
+3. All inequalities provable by `omega` or `decide`
 
-### Weight Design:
+### Weight design:
 - void: 0 (base case)
 - delta t: τ(t) (transparent wrapper)
 - integrate/app: weight 1
 - merge: weight 2
 - recΔ: weight 3
-- eqW: weight 4 (ensures 1+2+X < 4+X)
+- eqW: weight 4 (so that 1+2+X < 4+X)
 -/
 @[simp] def tau : Trace → Nat
 | void            => 0
@@ -114,11 +114,7 @@ Priority: δ-flag > κᴹ (via DM) > τ
 lemma wf_Lex3c : WellFounded Lex3c := by
   exact WellFounded.prod_lex Nat.lt_wfRel.wf wf_LexDM_c
 
-/-- **Critical lifting lemma**
-
-Lifts a DM decrease on κᴹ to the full inner order, regardless of τ.
-EXPLICIT PARAMETERS prevent all elaboration issues.
--/
+/-- Lifting lemma: a DM decrease on κᴹ lifts to the full inner order, regardless of τ. -/
 lemma dm_to_LexDM_c_left {X Y : Multiset Nat} {τ₁ τ₂ : Nat}
     (h : DM X Y) : LexDM_c (X, τ₁) (Y, τ₂) := by
   -- Use explicit parameters to avoid inference brittleness, mirroring KO7.
@@ -195,8 +191,8 @@ lemma drop_R_int_delta_c (t : Trace) :
 
 /-- **Rule: merge void t → t** (guarded by δ(t) = 0)
 
-Strategy: τ-drop under δ and κ ties
-Key inequality: τ(t) < 2 + τ(t)
+Strategy: τ-drop under δ and κ ties.
+Inequality used: τ(t) < 2 + τ(t).
 -/
 lemma drop_R_merge_void_left_c (t : Trace) (hδ : deltaFlag t = 0) :
     Lex3c (mu3c t) (mu3c (merge void t)) := by
@@ -256,11 +252,8 @@ lemma drop_R_merge_void_right_c (t : Trace) (hδ : deltaFlag t = 0) :
   simp only [hκ, tau]
   exact H
 
-/-- **Rule: eqW a b → integrate (merge a b)**
-
-The critical inequality: 1 + 2 + X < 4 + X
-This is why we chose τ(eqW) = 4.
--/
+/-- Rule: eqW a b → integrate (merge a b).
+The required inequality is 1 + 2 + X < 4 + X, which determines the choice τ(eqW) = 4. -/
 lemma drop_R_eq_diff_c (a b : Trace) :
     Lex3c (mu3c (integrate (merge a b))) (mu3c (eqW a b)) := by
   classical
@@ -323,11 +316,8 @@ lemma drop_R_eq_refl_c (a : Trace) :
       (dm_to_LexDM_c_left (X := 0) (Y := kappaM a ∪ kappaM a)
         (τ₁ := tau void) (τ₂ := tau (eqW a a)) hdm)
 
-/-- **Rule: recΔ b s (delta n) → app s (recΔ b s n)**
-
-THE STAR: δ-drop from 1 to 0.
-This is why we have the δ-flag component.
--/
+/-- Rule: recΔ b s (delta n) → app s (recΔ b s n).
+The δ-flag drops from 1 to 0, giving strict decrease in the first lexicographic component. -/
 lemma drop_R_rec_succ_c (b s n : Trace) :
     Lex3c (mu3c (app s (recΔ b s n))) (mu3c (recΔ b s (delta n))) := by
   -- Outer Nat component drops strictly: 0 < 1

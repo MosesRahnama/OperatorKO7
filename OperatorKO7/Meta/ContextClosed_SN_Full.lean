@@ -6,7 +6,7 @@ import Mathlib.Tactic.Linarith
 Context-closed strong normalization for the full unguarded KO7 system.
 
 This module closes the remaining internal gap between the root-step full-system proofs and
-context-closed termination. The key point is that the nonlinear polynomial witness `W`
+context-closed termination. The nonlinear polynomial witness `W`
 from `Meta/PolyInterpretation_FullStep.lean` is strictly monotone in every constructor
 argument, so every contextual closure of a `Step` contraction still strictly decreases `W`.
 -/

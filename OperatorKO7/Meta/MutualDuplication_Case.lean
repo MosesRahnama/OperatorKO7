@@ -14,7 +14,7 @@ argument of `wrap` yields
 
 `wrap s (wrap s (recurA b s n))`.
 
-The key point is that this effective two-step shape already exhibits the same additive
+This two-step shape already exhibits the same additive
 duplication obstruction directly: the composite target carries three copies of the step
 payload measure against one copy on the source side.
 -/

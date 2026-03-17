@@ -3,8 +3,7 @@ import OperatorKO7.Meta.ComputableMeasure
 /-!
 # Verification Suite for ComputableMeasure
 
-This file provides comprehensive verification that our computable measure
-is bulletproof and handles all edge cases correctly.
+This file verifies that the computable measure handles all cases correctly.
 
 ## Test Categories:
 1. τ monotonicity verification
@@ -46,7 +45,7 @@ example (a b : Trace) : tau b < tau (eqW a b) := by
 -- Verify delta is transparent
 example (t : Trace) : tau (delta t) = tau t := rfl
 
--- Verify the critical inequality for eq_diff
+-- Verify the required inequality for eq_diff
 example (a b : Trace) : tau (integrate (merge a b)) < tau (eqW a b) := by
   simp [tau]; omega
 

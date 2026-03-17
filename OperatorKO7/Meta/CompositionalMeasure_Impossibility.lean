@@ -25,7 +25,7 @@ axioms: it projects to a single argument instead of aggregating all subterm cont
 - **Section 7**: Instance witnesses (simpleSize, tau, nodeCount)
 - **Section 8**: `GlobalOrients` integration
 
-## Key Results
+## Results
 
 - `no_additive_compositional_orients_rec_succ`: No additive compositional measure orients rec_succ
 - `no_compositional_orients_rec_succ_transparent_delta`: No abstract compositional measure
@@ -74,9 +74,9 @@ def appIter : Nat → Trace :=
 /-- An additive compositional measure assigns a fixed base weight to each KO7 constructor.
 The measure of a compound term is the constructor's weight plus the sum of its subterms' measures.
 
-This axiom system captures: `simpleSize`, `tau`, `nodeCount`, `linearWeight`, `treeDepth`,
-and all parameter choices thereof. The single constraint `hw_app_pos` (app adds at least 1)
-ensures the measure grows under the `app` constructor - this is what makes it "see" duplication. -/
+This axiom system captures `simpleSize`, `tau`, `nodeCount`, `linearWeight`, `treeDepth`,
+and all parameter choices thereof. The constraint `hw_app_pos` (app adds at least 1)
+forces the measure to grow under the `app` constructor. -/
 structure AdditiveCompositionalMeasure where
   w_void      : Nat
   w_delta     : Nat
@@ -115,7 +115,7 @@ def AdditiveCompositionalMeasure.toSchemaMeasure
   h_wrap_pos := M.hw_app_pos
 
 /-- The eval of `appIter k` grows at least as fast as `k` for any additive compositional measure
-with `w_app ≥ 1`. This is the key "pump" lemma: we can make `M.eval s` arbitrarily large. -/
+with `w_app ≥ 1`. This is the pump lemma: `M.eval s` can be made arbitrarily large. -/
 lemma eval_appIter_ge (M : AdditiveCompositionalMeasure) (k : Nat) :
     M.eval (appIter k) ≥ k := by
   simpa [appIter, AdditiveCompositionalMeasure.toSchemaMeasure] using
@@ -149,13 +149,12 @@ theorem no_additive_compositional_orients_rec_succ (M : AdditiveCompositionalMea
 Each constructor has a combining function that maps subterm measure values to
 the compound term's measure value.
 
-The key axioms are the **subterm properties** for `c_app`:
-- `app_subterm1`: `c_app(x, y) > x` - app is strictly larger than its first argument
-- `app_subterm2`: `c_app(x, y) > y` - app is strictly larger than its second argument
+The subterm properties for `c_app` are:
+- `app_subterm1`: `c_app(x, y) > x`
+- `app_subterm2`: `c_app(x, y) > y`
 
-These capture the essence of "compositionality": the measure of `app s (recΔ b s n)`
-is built from the measures of BOTH `s` and `recΔ b s n`, and is strictly larger than
-either. This is what makes compositional measures sensitive to duplication. -/
+These force the measure of `app s (recΔ b s n)` to exceed the measures of both
+`s` and `recΔ b s n`, making compositional measures sensitive to duplication. -/
 structure CompositionalMeasure where
   c_void      : Nat
   c_delta     : Nat → Nat
@@ -355,7 +354,7 @@ theorem no_global_step_orientation_compositional_transparent_delta
 
 /-- An affine constructor-local measure over KO7's 7-constructor signature.
 Each constructor computes `const + scale₁ * arg₁ + scale₂ * arg₂ + ...` with no cross terms.
-The key hypotheses are positive wrapper sensitivity: `wrap_left ≥ 1` and `wrap_right ≥ 1`. -/
+The hypotheses require positive wrapper sensitivity: `wrap_left ≥ 1` and `wrap_right ≥ 1`. -/
 structure AffineCompositionalMeasure where
   c_void      : Nat
   succ_bias   : Nat

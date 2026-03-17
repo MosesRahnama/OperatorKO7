@@ -3,7 +3,7 @@ import OperatorKO7.Meta.MatrixBarrier2
 /-!
 # Mixed Coordinate Dimension-2 Matrix Barrier
 
-This module extends the tracked-coordinate matrix barriers to a genuinely mixed
+This module extends the tracked-coordinate matrix barriers to a mixed
 two-dimensional class. Each constructor may mix both coordinates through a full
 `2×2` linear map. The barrier is proved for a balanced regime: the two column
 sums of each map agree, so the aggregate sum of the two coordinates becomes a
@@ -53,7 +53,7 @@ lemma vecSum_act_eq (A : Lin2) (hbal : A.Balanced) (v : Vec2) :
 
 end Lin2
 
-/-- A genuinely mixed dimension-2 affine measure with balanced `2×2` coefficient maps. -/
+/-- A mixed dimension-2 affine measure with balanced `2×2` coefficient maps. -/
 structure MatrixMix2Measure (S : StepDuplicatingSchema) where
   eval : S.T → Vec2
   c_base : Vec2

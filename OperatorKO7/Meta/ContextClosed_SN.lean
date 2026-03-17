@@ -6,7 +6,7 @@ Context-closed strong normalization for the KO7 safe fragment.
 
 This module proves unconditional well-foundedness of `SafeStepCtxRev` (the
 reverse of the partial context closure `SafeStepCtx`) via a direct numeric
-interpretation `ctxFuel` (exponential weights). The key theorem is
+interpretation `ctxFuel` (exponential weights). The main theorem is
 `wf_SafeStepCtxRev : WellFounded (fun a b => SafeStepCtx b a)`.
 
 Infrastructure:
