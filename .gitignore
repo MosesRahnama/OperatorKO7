@@ -48,3 +48,8 @@ _tmp_ctx4.lean
 generate_docs.py
 TmpInspect.lean
 TmpCheck_FixEq.lean
+scripts/__pycache__/stage_tpdb_submission.cpython-313.pyc
+scripts/__pycache__/make_referee_bundle.cpython-313.pyc
+scripts/stage_tpdb_submission.py
+scripts/make_referee_bundle.py
+TmpInspect_Mutual.lean

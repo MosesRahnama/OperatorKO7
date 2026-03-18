@@ -2,6 +2,7 @@ import OperatorKO7.Meta.QuadraticBarrier
 import OperatorKO7.Meta.QuadraticCrossTermBarrier
 import OperatorKO7.Meta.MatrixBarrierLex
 import OperatorKO7.Meta.MultilinearBarrier
+import OperatorKO7.Meta.PolynomialBarrierGeneral
 import OperatorKO7.Meta.MaxBarrier
 import OperatorKO7.Meta.MatrixBarrierFunctional
 import OperatorKO7.Meta.MatrixBarrierMix2
@@ -59,6 +60,15 @@ structure MaxMeasureWithPump (S : StepDuplicatingSchema) extends MaxMeasure S wh
   has_pump :
     (1 ≤ succ_const) ∨
       1 ≤ wrap_const + wrap_left
+
+/-- Generalized bounded-polynomial measures with an internal pump and packaged frozen
+base-dominance witness. -/
+structure PolynomialMeasureWithPump (S : StepDuplicatingSchema)
+    extends BoundedPolynomialMeasure S where
+  has_pump :
+    (1 ≤ succ_bias ∧ 1 ≤ succ_scale) ∨
+      1 ≤ wrap_const + wrap_right * c_base
+  h_dominated : EventuallyDominatedAtBase toBoundedPolynomialMeasure
 
 /-- Weighted functional matrix measures whose chosen scalar projection has an internal
 affine pump. -/
@@ -167,6 +177,20 @@ theorem no_max_with_pump_orients_dup_step
   · exact
       no_max_orients_dup_step_of_wrap_pump
         (S := S) M.toMaxMeasure hwrap
+
+/-- Unconditional generalized bounded-polynomial barrier for the strengthened pumped
+subclass. -/
+theorem no_polynomial_with_pump_orients_dup_step
+    {S : StepDuplicatingSchema} (M : PolynomialMeasureWithPump S) :
+    ¬ (∀ (b s n : S.T),
+      M.eval (S.wrap s (S.recur b s n)) < M.eval (S.recur b s (S.succ n))) := by
+  rcases M.has_pump with hsucc | hwrap
+  · exact
+      no_polynomial_orients_dup_step_of_succ_pump
+        (S := S) M.toBoundedPolynomialMeasure hsucc.1 hsucc.2 M.h_dominated
+  · exact
+      no_polynomial_orients_dup_step_of_wrap_pump
+        (S := S) M.toBoundedPolynomialMeasure hwrap M.h_dominated
 
 /-- The projected scalar induced by a weighted functional matrix family can itself be
 packaged as an affine-with-pump measure. -/
@@ -340,6 +364,25 @@ theorem no_global_orients_max_with_pump
           refine ⟨wrapIter Sys.toStepDuplicatingSchema k, ?_⟩
           simpa using eval_wrapIter_ge_max (M := M.toMaxMeasure) hwrap k)
 
+/-- The strengthened generalized bounded-polynomial subclass also fails globally. -/
+theorem no_global_orients_polynomial_with_pump
+    {Sys : StepDuplicatingSystem}
+    (M : PolynomialMeasureWithPump Sys.toStepDuplicatingSchema) :
+    ¬ GlobalOrients Sys M.eval (· < ·) := by
+  rcases M.has_pump with hsucc | hwrap
+  · exact
+      (fun h =>
+        StepDuplicatingSchema.no_polynomial_orients_dup_step_of_succ_pump
+          (S := Sys.toStepDuplicatingSchema) M.toBoundedPolynomialMeasure
+          hsucc.1 hsucc.2 M.h_dominated
+          (fun b s n => h (Sys.dup_step b s n)))
+  · exact
+      (fun h =>
+        StepDuplicatingSchema.no_polynomial_orients_dup_step_of_wrap_pump
+          (S := Sys.toStepDuplicatingSchema) M.toBoundedPolynomialMeasure
+          hwrap M.h_dominated
+          (fun b s n => h (Sys.dup_step b s n)))
+
 /-- The strengthened weighted functional projection subclass also fails globally. -/
 theorem no_global_orients_matrixFunctional_with_projected_affine_pump
     {Sys : StepDuplicatingSystem} {d : Nat}
@@ -427,6 +470,14 @@ theorem no_global_step_orientation_max_with_pump
     ¬ StepDuplicatingSchema.GlobalOrients ko7System M.eval (· < ·) := by
   exact
     StepDuplicatingSchema.no_global_orients_max_with_pump
+      (Sys := ko7System) M
+
+/-- KO7 generalized-bounded-polynomial-with-pump specialization. -/
+theorem no_global_step_orientation_polynomial_with_pump
+    (M : StepDuplicatingSchema.PolynomialMeasureWithPump ko7Schema) :
+    ¬ StepDuplicatingSchema.GlobalOrients ko7System M.eval (· < ·) := by
+  exact
+    StepDuplicatingSchema.no_global_orients_polynomial_with_pump
       (Sys := ko7System) M
 
 /-- KO7 weighted functional projected-affine pumped specialization. -/

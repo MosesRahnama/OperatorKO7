@@ -311,6 +311,18 @@ theorem dm_order_type_omega_omega :
    dmOrdEmbed_lt_opow_omega,
    CNFωω.dmOrdEmbed_surjective_lt_opow_omega⟩
 
+/-- Phase-B CNF scaffold, stated as the exact `ω^ω` order-type package used in the paper. -/
+theorem phaseB_cnf_scaffold_exact_order_type :
+    (∀ m₁ m₂ : Multiset Nat, DM m₁ m₂ ↔ dmOrdEmbed m₁ < dmOrdEmbed m₂) ∧
+    (∀ m : Multiset Nat, dmOrdEmbed m < (ω : Ordinal) ^ (ω : Ordinal)) ∧
+    (∀ α < (ω : Ordinal) ^ (ω : Ordinal), ∃ m : Multiset Nat, dmOrdEmbed m = α) :=
+  dm_order_type_omega_omega
+
+/-- Phase-B cofinality restated on the reflected `dmRankOrd` image. -/
+theorem phaseB_cnf_scaffold_cofinal :
+    ∀ α < (ω : Ordinal) ^ (ω : Ordinal), ∃ m : Multiset Nat, dmRankOrd m = α :=
+  CNFωω.dmRankOrd_surjective_lt_opow_omega
+
 /-- `deltaFlag` is at most 1 for any trace (it is a binary phase indicator). -/
 private lemma deltaFlag_le_one (t : Trace) : MetaSN_KO7.deltaFlag t ≤ 1 := by
   unfold MetaSN_KO7.deltaFlag

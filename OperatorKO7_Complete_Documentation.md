@@ -1,7 +1,7 @@
 # OperatorKO7 Complete Documentation
-Generated: 2026-03-18 02:14:12 +0330
-Source files: 64
-Total source lines: 14253
+Generated: 2026-03-18 20:53:49 +0330
+Source files: 79
+Total source lines: 16694
 Scope: active `.lean` files in the repository
 
 ## Table of Contents
@@ -12,6 +12,7 @@ Scope: active `.lean` files in the repository
 - [OperatorKO7/Meta/ArcticBarrier.lean](#operatorko7metaarcticbarrierlean)
 - [OperatorKO7/Meta/BarrierClass_Classifier.lean](#operatorko7metabarrierclassclassifierlean)
 - [OperatorKO7/Meta/BarrierWitness.lean](#operatorko7metabarrierwitnesslean)
+- [OperatorKO7/Meta/BarrierWitness_Extended.lean](#operatorko7metabarrierwitnessextendedlean)
 - [OperatorKO7/Meta/CompositionalMeasure_Impossibility.lean](#operatorko7metacompositionalmeasureimpossibilitylean)
 - [OperatorKO7/Meta/ComputableMeasure.lean](#operatorko7metacomputablemeasurelean)
 - [OperatorKO7/Meta/ComputableMeasure_Verification.lean](#operatorko7metacomputablemeasureverificationlean)
@@ -26,6 +27,7 @@ Scope: active `.lean` files in the repository
 - [OperatorKO7/Meta/DM_OrderType.lean](#operatorko7metadmordertypelean)
 - [OperatorKO7/Meta/DM_OrderType_LowerBound.lean](#operatorko7metadmordertypelowerboundlean)
 - [OperatorKO7/Meta/DP_BaseOrder_Boundary.lean](#operatorko7metadpbaseorderboundarylean)
+- [OperatorKO7/Meta/EqGuardedConfluence.lean](#operatorko7metaeqguardedconfluencelean)
 - [OperatorKO7/Meta/EqW_Guard_Barrier.lean](#operatorko7metaeqwguardbarrierlean)
 - [OperatorKO7/Meta/EscapeTrichotomy.lean](#operatorko7metaescapetrichotomylean)
 - [OperatorKO7/Meta/Impossibility_Lemmas.lean](#operatorko7metaimpossibilitylemmaslean)
@@ -36,37 +38,50 @@ Scope: active `.lean` files in the repository
 - [OperatorKO7/Meta/MatrixBarrierFunctional.lean](#operatorko7metamatrixbarrierfunctionallean)
 - [OperatorKO7/Meta/MatrixBarrierLex.lean](#operatorko7metamatrixbarrierlexlean)
 - [OperatorKO7/Meta/MatrixBarrierMix2.lean](#operatorko7metamatrixbarriermix2lean)
+- [OperatorKO7/Meta/MatrixProjectionCoverage.lean](#operatorko7metamatrixprojectioncoveragelean)
 - [OperatorKO7/Meta/MaxBarrier.lean](#operatorko7metamaxbarrierlean)
 - [OperatorKO7/Meta/MPO_FullStep.lean](#operatorko7metampofullsteplean)
 - [OperatorKO7/Meta/MPO_Precedence_Barrier.lean](#operatorko7metampoprecedencebarrierlean)
+- [OperatorKO7/Meta/MPO_ProofTheoreticBound.lean](#operatorko7metampoprooftheoreticboundlean)
 - [OperatorKO7/Meta/MultilinearBarrier.lean](#operatorko7metamultilinearbarrierlean)
 - [OperatorKO7/Meta/MutualDuplication_Case.lean](#operatorko7metamutualduplicationcaselean)
 - [OperatorKO7/Meta/MutualDuplication_General.lean](#operatorko7metamutualduplicationgenerallean)
 - [OperatorKO7/Meta/MutualDuplication_Preserving.lean](#operatorko7metamutualduplicationpreservinglean)
+- [OperatorKO7/Meta/MutualDuplication_Transparent.lean](#operatorko7metamutualduplicationtransparentlean)
 - [OperatorKO7/Meta/Newman_Safe.lean](#operatorko7metanewmansafelean)
 - [OperatorKO7/Meta/Normalize_Safe.lean](#operatorko7metanormalizesafelean)
 - [OperatorKO7/Meta/NormalizeSafe_LowerBound.lean](#operatorko7metanormalizesafelowerboundlean)
 - [OperatorKO7/Meta/ObjectAxiom_Ablation.lean](#operatorko7metaobjectaxiomablationlean)
+- [OperatorKO7/Meta/OrdinalHierarchy.lean](#operatorko7metaordinalhierarchylean)
+- [OperatorKO7/Meta/OrdinalHierarchy_Control.lean](#operatorko7metaordinalhierarchycontrollean)
+- [OperatorKO7/Meta/OrdinalHierarchy_Controlled.lean](#operatorko7metaordinalhierarchycontrolledlean)
 - [OperatorKO7/Meta/PolyInterpretation_FullStep.lean](#operatorko7metapolyinterpretationfullsteplean)
 - [OperatorKO7/Meta/PolynomialBarrierGeneral.lean](#operatorko7metapolynomialbarriergenerallean)
 - [OperatorKO7/Meta/PrecedenceBarrier.lean](#operatorko7metaprecedencebarrierlean)
 - [OperatorKO7/Meta/PumpedBarrierClasses.lean](#operatorko7metapumpedbarrierclasseslean)
 - [OperatorKO7/Meta/QuadraticBarrier.lean](#operatorko7metaquadraticbarrierlean)
 - [OperatorKO7/Meta/QuadraticCrossTermBarrier.lean](#operatorko7metaquadraticcrosstermbarrierlean)
+- [OperatorKO7/Meta/Reachability_Complexity.lean](#operatorko7metareachabilitycomplexitylean)
 - [OperatorKO7/Meta/RecCore.lean](#operatorko7metareccorelean)
 - [OperatorKO7/Meta/SafeRoot_Complexity.lean](#operatorko7metasaferootcomplexitylean)
 - [OperatorKO7/Meta/SafeStep_Complexity.lean](#operatorko7metasafestepcomplexitylean)
+- [OperatorKO7/Meta/SafeStep_Complexity_FastGrowing.lean](#operatorko7metasafestepcomplexityfastgrowinglean)
+- [OperatorKO7/Meta/SafeStep_Complexity_MW_Root.lean](#operatorko7metasafestepcomplexitymwrootlean)
 - [OperatorKO7/Meta/SafeStep_Complexity_Ordinal.lean](#operatorko7metasafestepcomplexityordinallean)
 - [OperatorKO7/Meta/SafeStep_Core.lean](#operatorko7metasafestepcorelean)
 - [OperatorKO7/Meta/SafeStep_Ctx.lean](#operatorko7metasafestepctxlean)
 - [OperatorKO7/Meta/SafeStepCtx_Confluence.lean](#operatorko7metasafestepctxconfluencelean)
 - [OperatorKO7/Meta/ScalarProjectionBarrier.lean](#operatorko7metascalarprojectionbarrierlean)
+- [OperatorKO7/Meta/SharingBarrierLift.lean](#operatorko7metasharingbarrierliftlean)
 - [OperatorKO7/Meta/StandardPumpLemmas.lean](#operatorko7metastandardpumplemmaslean)
 - [OperatorKO7/Meta/StepDuplicatingSchema.lean](#operatorko7metastepduplicatingschemalean)
 - [OperatorKO7/Meta/SymbolicComparatorBarrier.lean](#operatorko7metasymboliccomparatorbarrierlean)
 - [OperatorKO7/Meta/SynthesisOracle.lean](#operatorko7metasynthesisoraclelean)
 - [OperatorKO7/Meta/TPDB_Export.lean](#operatorko7metatpdbexportlean)
+- [OperatorKO7/Meta/TropicalBarrier.lean](#operatorko7metatropicalbarrierlean)
+- [OperatorKO7/Meta/TTT2_CertificateReplay.lean](#operatorko7metattt2certificatereplaylean)
 - [OperatorKO7/Meta/TypedBarrierSurvival.lean](#operatorko7metatypedbarriersurvivallean)
+- [OperatorKO7/SchemaAPI.lean](#operatorko7schemaapilean)
 - [OperatorKO7/Test/Sanity.lean](#operatorko7testsanitylean)
 - [OperatorKO7/Test/TPDB_Export.lean](#operatorko7testtpdbexportlean)
 
@@ -111,9 +126,10 @@ require mathlib from git "https://github.com/leanprover-community/mathlib4.git" 
 
 ## OperatorKO7.lean
 
-**Lines:** 62
+**Lines:** 72
 
 ```lean
+import OperatorKO7.SchemaAPI
 import OperatorKO7.Kernel
 import OperatorKO7.Meta.ComputableMeasure
 import OperatorKO7.Meta.ComputableMeasure_Verification
@@ -127,11 +143,13 @@ import OperatorKO7.Meta.ObjectAxiom_Ablation
 import OperatorKO7.Meta.MutualDuplication_Case
 import OperatorKO7.Meta.MutualDuplication_General
 import OperatorKO7.Meta.MutualDuplication_Preserving
+import OperatorKO7.Meta.MutualDuplication_Transparent
 import OperatorKO7.Meta.MatrixBarrier2
 import OperatorKO7.Meta.MatrixBarrierD
 import OperatorKO7.Meta.MatrixBarrierLex
 import OperatorKO7.Meta.MatrixBarrierMix2
 import OperatorKO7.Meta.MatrixBarrierFunctional
+import OperatorKO7.Meta.MatrixProjectionCoverage
 import OperatorKO7.Meta.MultilinearBarrier
 import OperatorKO7.Meta.PolynomialBarrierGeneral
 import OperatorKO7.Meta.MaxBarrier
@@ -158,11 +176,18 @@ import OperatorKO7.Meta.ContextClosed_SN_Full
 import OperatorKO7.Meta.ContextClosedBarrier
 import OperatorKO7.Meta.SafeStep_Complexity
 import OperatorKO7.Meta.SafeStep_Complexity_Ordinal
+import OperatorKO7.Meta.SafeStep_Complexity_FastGrowing
 import OperatorKO7.Meta.SafeRoot_Complexity
 import OperatorKO7.Meta.SafeStepCtx_Confluence
+import OperatorKO7.Meta.EqGuardedConfluence
+import OperatorKO7.Meta.Reachability_Complexity
 import OperatorKO7.Meta.MPO_FullStep
 import OperatorKO7.Meta.MPO_Precedence_Barrier
+import OperatorKO7.Meta.MPO_ProofTheoreticBound
 import OperatorKO7.Meta.PolyInterpretation_FullStep
+import OperatorKO7.Meta.TTT2_CertificateReplay
+import OperatorKO7.Meta.TropicalBarrier
+import OperatorKO7.Meta.SharingBarrierLift
 
 /-!
 Public entrypoint for the `OperatorKO7` Lean library.
@@ -916,6 +941,325 @@ def affine_witness {S : StepDuplicatingSchema}
         _ ≤ M.wrap_const + M.wrap_left * Sval + M.wrap_right * (A + B) := by
             omega
     exact Nat.not_lt_of_ge this hspec'
+
+end OperatorKO7.StepDuplicating
+```
+
+---
+
+## OperatorKO7/Meta/BarrierWitness_Extended.lean
+
+**Lines:** 310
+
+```lean
+import OperatorKO7.Meta.BarrierWitness
+import OperatorKO7.Meta.PumpedBarrierClasses
+
+/-!
+# Extended computable barrier-witness extractors
+
+This module extends `BarrierWitness.lean` with additional constructive extractors for:
+
+* restricted quadratic counter measures with an internal pump,
+* max-plus measures with an internal pump,
+* weighted functional matrix measures whose chosen scalar projection has an internal
+  affine pump.
+
+The new extractors stay off the root import surface for now so they can be integrated
+later without disturbing the public library entrypoint.
+-/
+
+namespace OperatorKO7.StepDuplicating
+open StepDuplicatingSchema
+
+namespace StepDuplicatingSchema
+
+/-- A bundled counterexample for relations not necessarily valued in `Nat`. -/
+structure RelationBarrierCertificate
+    (S : StepDuplicatingSchema) (α : Type) (eval : S.T → α) (lt : α → α → Prop) where
+  b : S.T
+  s : S.T
+  n : S.T
+  fails : ¬ lt (eval (S.wrap s (S.recur b s n))) (eval (S.recur b s (S.succ n)))
+
+/-- Automatic witness extractor for the strengthened affine pumped subclass. -/
+def affine_with_pump_witness {S : StepDuplicatingSchema}
+    (M : AffineMeasureWithPump S) :
+    BarrierCertificate S M.eval := by
+  classical
+  let t :=
+    M.recur_counter * (M.succ_bias + M.succ_scale * M.c_base)
+  if hsucc : 1 ≤ M.succ_bias ∧ 1 ≤ M.succ_scale then
+    exact
+      affine_witness M.toAffineMeasure (succIter S t)
+        (by
+          simpa [t] using
+            eval_succIter_ge M.toAffineMeasure hsucc.1 hsucc.2 t)
+  else
+    have hwrap : 1 ≤ M.wrap_const + M.wrap_right * M.c_base := by
+      rcases M.has_pump with hsucc' | hwrap
+      · exact False.elim (hsucc hsucc')
+      · exact hwrap
+    exact
+      affine_witness M.toAffineMeasure (wrapIter S t)
+        (by
+          simpa [t] using
+            eval_wrapIter_ge_affine M.toAffineMeasure hwrap t)
+
+@[simp] private def quadraticSuccBase {S : StepDuplicatingSchema}
+    (M : QuadraticCounterMeasure S) : Nat :=
+  M.succ_bias + M.succ_scale * M.c_base
+
+@[simp] private def quadraticThreshold {S : StepDuplicatingSchema}
+    (M : QuadraticCounterMeasure S) : Nat :=
+  M.recur_counter * quadraticSuccBase M +
+    M.recur_quad * quadraticSuccBase M * quadraticSuccBase M
+
+private theorem quadratic_failure_at_base
+    {S : StepDuplicatingSchema} (M : QuadraticCounterMeasure S) (s : S.T)
+    (hs : quadraticThreshold M ≤ M.eval s) :
+    ¬ (M.eval (S.wrap s (S.recur S.base s S.base)) <
+        M.eval (S.recur S.base s (S.succ S.base))) := by
+  intro h
+  let Sval := M.eval s
+  let A := M.recur_const + M.recur_base * M.c_base + M.recur_step * Sval
+  let B := M.recur_counter * M.c_base
+  let Q := M.recur_quad * M.c_base * M.c_base
+  let T := quadraticThreshold M
+  have hspec' :
+      M.wrap_const + M.wrap_left * Sval + M.wrap_right * (A + B + Q) < A + T := by
+    simpa [Sval, A, B, Q, T, quadraticSuccBase, quadraticThreshold,
+      M.eval_base, M.eval_succ, M.eval_wrap, M.eval_recur,
+      Nat.add_assoc, Nat.add_left_comm, Nat.add_comm, Nat.mul_add, Nat.add_mul,
+      Nat.mul_assoc, Nat.mul_left_comm, Nat.mul_comm] using h
+  have hsT : T ≤ Sval := by
+    simpa [T, Sval, quadraticThreshold] using hs
+  have hS : Sval ≤ M.wrap_left * Sval := by
+    calc
+      Sval = 1 * Sval := by simp
+      _ ≤ M.wrap_left * Sval := Nat.mul_le_mul_right Sval M.h_wrap_left_pos
+  have hABQ : A + B + Q ≤ M.wrap_right * (A + B + Q) := by
+    calc
+      A + B + Q = 1 * (A + B + Q) := by simp
+      _ ≤ M.wrap_right * (A + B + Q) := Nat.mul_le_mul_right (A + B + Q) M.h_wrap_right_pos
+  have h_rhs_to_aS : A + T ≤ A + Sval := Nat.add_le_add_left hsT A
+  have h_aS_to_aWS : A + Sval ≤ A + M.wrap_left * Sval := Nat.add_le_add_left hS A
+  have h_aWS_to_sum : A + M.wrap_left * Sval ≤ A + M.wrap_left * Sval + (B + Q) := by
+    exact Nat.le_add_right _ _
+  have h_sum_to_wsum :
+      A + M.wrap_left * Sval + (B + Q) ≤
+        M.wrap_left * Sval + M.wrap_right * (A + B + Q) := by
+    have hABQ' :
+        M.wrap_left * Sval + (A + B + Q) ≤
+          M.wrap_left * Sval + M.wrap_right * (A + B + Q) := by
+      exact Nat.add_le_add_left hABQ (M.wrap_left * Sval)
+    simpa [Nat.add_assoc, Nat.add_left_comm, Nat.add_comm] using hABQ'
+  have h_with_const :
+      M.wrap_left * Sval + M.wrap_right * (A + B + Q) ≤
+        M.wrap_const + M.wrap_left * Sval + M.wrap_right * (A + B + Q) := by
+    calc
+      M.wrap_left * Sval + M.wrap_right * (A + B + Q)
+          ≤ M.wrap_const + (M.wrap_left * Sval + M.wrap_right * (A + B + Q)) := by
+            exact Nat.le_add_left _ _
+      _ = M.wrap_const + M.wrap_left * Sval + M.wrap_right * (A + B + Q) := by
+            simp [Nat.add_assoc]
+  have hge :
+      A + T ≤ M.wrap_const + M.wrap_left * Sval + M.wrap_right * (A + B + Q) := by
+    exact le_trans h_rhs_to_aS <|
+      le_trans h_aS_to_aWS <|
+      le_trans h_aWS_to_sum <|
+      le_trans h_sum_to_wsum h_with_const
+  exact Nat.not_lt_of_ge hge hspec'
+
+/-- Concrete restricted-quadratic witness extracted from a successor pump. -/
+def quadratic_witness_of_succ_pump {S : StepDuplicatingSchema}
+    (M : QuadraticCounterMeasure S)
+    (h_succ_bias : 1 ≤ M.succ_bias) (h_succ_scale : 1 ≤ M.succ_scale) :
+    BarrierCertificate S M.eval where
+  b := S.base
+  s := succIter S (quadraticThreshold M)
+  n := S.base
+  fails :=
+    quadratic_failure_at_base M (succIter S (quadraticThreshold M))
+      (by
+        simpa [quadraticThreshold] using
+          eval_succIter_ge_quadratic (M := M) h_succ_bias h_succ_scale
+            (quadraticThreshold M))
+
+/-- Concrete restricted-quadratic witness extracted from a wrapper pump. -/
+def quadratic_witness_of_wrap_pump {S : StepDuplicatingSchema}
+    (M : QuadraticCounterMeasure S)
+    (h_wrap_bias : 1 ≤ M.wrap_const + M.wrap_right * M.c_base) :
+    BarrierCertificate S M.eval where
+  b := S.base
+  s := wrapIter S (quadraticThreshold M)
+  n := S.base
+  fails :=
+    quadratic_failure_at_base M (wrapIter S (quadraticThreshold M))
+      (by
+        simpa [quadraticThreshold] using
+          eval_wrapIter_ge_quadratic (M := M) h_wrap_bias
+            (quadraticThreshold M))
+
+/-- Automatic witness extractor for the strengthened restricted-quadratic pumped subclass. -/
+def quadratic_with_pump_witness {S : StepDuplicatingSchema}
+    (M : QuadraticCounterMeasureWithPump S) :
+    BarrierCertificate S M.eval := by
+  classical
+  if hsucc : 1 ≤ M.succ_bias ∧ 1 ≤ M.succ_scale then
+    exact quadratic_witness_of_succ_pump M.toQuadraticCounterMeasure hsucc.1 hsucc.2
+  else
+    have hwrap : 1 ≤ M.wrap_const + M.wrap_right * M.c_base := by
+      rcases M.has_pump with hsucc' | hwrap
+      · exact False.elim (hsucc hsucc')
+      · exact hwrap
+    exact quadratic_witness_of_wrap_pump M.toQuadraticCounterMeasure hwrap
+
+@[simp] private def maxSuccBase {S : StepDuplicatingSchema} (M : MaxMeasure S) : Nat :=
+  M.succ_const + M.c_base
+
+@[simp] private def maxThreshold {S : StepDuplicatingSchema} (M : MaxMeasure S) : Nat :=
+  max (M.recur_base + M.c_base) (M.recur_counter + maxSuccBase M)
+
+private theorem max_failure_at_base
+    {S : StepDuplicatingSchema} (M : MaxMeasure S) (s : S.T)
+    (hs : maxThreshold M ≤ M.eval s) :
+    ¬ (M.eval (S.wrap s (S.recur S.base s S.base)) <
+        M.eval (S.recur S.base s (S.succ S.base))) := by
+  intro h
+  let Sval := M.eval s
+  have hs_base : M.recur_base + M.c_base ≤ M.recur_step + Sval := by
+    have h0 : M.recur_base + M.c_base ≤ maxThreshold M := by
+      exact le_max_left _ _
+    have h1 : maxThreshold M ≤ Sval := by
+      simpa [maxThreshold, Sval] using hs
+    exact le_trans h0 <| le_trans h1 (Nat.le_add_left _ _)
+  have hs_ctr_src : M.recur_counter + maxSuccBase M ≤ M.recur_step + Sval := by
+    have h0 : M.recur_counter + maxSuccBase M ≤ maxThreshold M := by
+      exact le_max_right _ _
+    have h1 : maxThreshold M ≤ Sval := by
+      simpa [maxThreshold, Sval] using hs
+    exact le_trans h0 <| le_trans h1 (Nat.le_add_left _ _)
+  have hs_ctr_tgt : M.recur_counter + M.c_base ≤ M.recur_step + Sval := by
+    calc
+      M.recur_counter + M.c_base ≤ M.recur_counter + maxSuccBase M := by
+        simp [maxSuccBase]
+      _ ≤ M.recur_step + Sval := hs_ctr_src
+  have hsrc_eq :
+      M.eval (S.recur S.base s (S.succ S.base)) = M.recur_const + (M.recur_step + Sval) := by
+    rw [M.eval_recur, M.eval_succ, M.eval_base]
+    have hs_base' : M.c_base + M.recur_base ≤ M.recur_step + Sval := by
+      simpa [Nat.add_comm, Nat.add_left_comm, Nat.add_assoc] using hs_base
+    have hs_ctr_src' : M.c_base + (M.succ_const + M.recur_counter) ≤ M.recur_step + Sval := by
+      simpa [maxSuccBase, Nat.add_comm, Nat.add_left_comm, Nat.add_assoc] using hs_ctr_src
+    have hmax :
+        max (M.c_base + M.recur_base)
+            (max (M.recur_step + Sval) (M.c_base + (M.succ_const + M.recur_counter))) =
+          M.recur_step + Sval := by
+      have hinner :
+          max (M.recur_step + Sval) (M.c_base + (M.succ_const + M.recur_counter)) =
+            M.recur_step + Sval := by
+        exact max_eq_left hs_ctr_src'
+      rw [hinner]
+      exact max_eq_right hs_base'
+    simp [Sval, Nat.add_left_comm, Nat.add_comm, hmax]
+  have hinner_eq :
+      M.eval (S.recur S.base s S.base) = M.recur_const + (M.recur_step + Sval) := by
+    rw [M.eval_recur, M.eval_base]
+    have hs_base' : M.c_base + M.recur_base ≤ M.recur_step + Sval := by
+      simpa [Nat.add_comm, Nat.add_left_comm, Nat.add_assoc] using hs_base
+    have hs_ctr_tgt' : M.c_base + M.recur_counter ≤ M.recur_step + Sval := by
+      simpa [Nat.add_comm, Nat.add_left_comm, Nat.add_assoc] using hs_ctr_tgt
+    have hmax :
+        max (M.c_base + M.recur_base)
+            (max (M.recur_step + Sval) (M.c_base + M.recur_counter)) =
+          M.recur_step + Sval := by
+      have hinner :
+          max (M.recur_step + Sval) (M.c_base + M.recur_counter) =
+            M.recur_step + Sval := by
+        exact max_eq_left hs_ctr_tgt'
+      rw [hinner]
+      exact max_eq_right hs_base'
+    simp [Sval, Nat.add_comm, hmax]
+  rw [hsrc_eq, M.eval_wrap, hinner_eq] at h
+  have htarget_ge :
+      M.recur_const + (M.recur_step + Sval) + 1 ≤
+        M.wrap_const +
+          max (M.wrap_left + Sval)
+            (M.wrap_right + (M.recur_const + (M.recur_step + Sval))) := by
+    have hright :
+        M.recur_const + (M.recur_step + Sval) + 1 ≤
+          M.wrap_right + (M.recur_const + (M.recur_step + Sval)) := by
+      nlinarith [M.h_wrap_right_pos]
+    have hmax :
+        M.wrap_right + (M.recur_const + (M.recur_step + Sval)) ≤
+          max (M.wrap_left + Sval)
+            (M.wrap_right + (M.recur_const + (M.recur_step + Sval))) := by
+      exact le_max_right _ _
+    exact le_trans hright <| le_trans hmax (Nat.le_add_left _ _)
+  have hge :
+      M.recur_const + (M.recur_step + Sval) <
+        M.wrap_const +
+          max (M.wrap_left + Sval)
+            (M.wrap_right + (M.recur_const + (M.recur_step + Sval))) := by
+    omega
+  exact Nat.not_lt_of_ge (Nat.le_of_lt hge) h
+
+/-- Concrete max-plus witness extracted from a successor pump. -/
+def max_witness_of_succ_pump {S : StepDuplicatingSchema}
+    (M : MaxMeasure S) (h_succ_const : 1 ≤ M.succ_const) :
+    BarrierCertificate S M.eval where
+  b := S.base
+  s := succIter S (maxThreshold M)
+  n := S.base
+  fails :=
+    max_failure_at_base M (succIter S (maxThreshold M))
+      (by
+        simpa [maxThreshold] using
+          eval_succIter_ge_max (M := M) h_succ_const (maxThreshold M))
+
+/-- Concrete max-plus witness extracted from a wrapper pump. -/
+def max_witness_of_wrap_pump {S : StepDuplicatingSchema}
+    (M : MaxMeasure S) (h_wrap_drift : 1 ≤ M.wrap_const + M.wrap_left) :
+    BarrierCertificate S M.eval where
+  b := S.base
+  s := wrapIter S (maxThreshold M)
+  n := S.base
+  fails :=
+    max_failure_at_base M (wrapIter S (maxThreshold M))
+      (by
+        simpa [maxThreshold] using
+          eval_wrapIter_ge_max (M := M) h_wrap_drift (maxThreshold M))
+
+/-- Automatic witness extractor for the strengthened max-plus pumped subclass. -/
+def max_with_pump_witness {S : StepDuplicatingSchema}
+    (M : MaxMeasureWithPump S) :
+    BarrierCertificate S M.eval := by
+  classical
+  if hsucc : 1 ≤ M.succ_const then
+    exact max_witness_of_succ_pump M.toMaxMeasure hsucc
+  else
+    have hwrap : 1 ≤ M.wrap_const + M.wrap_left := by
+      rcases M.has_pump with hsucc' | hwrap
+      · exact False.elim (hsucc hsucc')
+      · exact hwrap
+    exact max_witness_of_wrap_pump M.toMaxMeasure hwrap
+
+/-- Lift the projected affine witness back to the vector-valued matrix family. -/
+def matrixFunctional_with_projected_affine_pump_witness
+    {S : StepDuplicatingSchema} {d : Nat}
+    (M : MatrixFunctionalMeasureWithProjectedAffinePump S d) :
+    RelationBarrierCertificate S (Fin d → Nat) M.eval VecLt := by
+  let cert := affine_with_pump_witness (S := S) M.projectedAffineWithPump
+  exact
+    { b := cert.b
+      s := cert.s
+      n := cert.n
+      fails := by
+        intro hlt
+        exact cert.fails (weightedSum_lt_of_vecLt M.h_weight_support hlt) }
+
+end StepDuplicatingSchema
 
 end OperatorKO7.StepDuplicating
 ```
@@ -5331,7 +5675,7 @@ end OperatorKO7.MetaDM
 
 ## OperatorKO7/Meta/DM_OrderType_LowerBound.lean
 
-**Lines:** 326
+**Lines:** 338
 
 ```lean
 import OperatorKO7.Meta.DM_OrderType
@@ -5647,6 +5991,18 @@ theorem dm_order_type_omega_omega :
    dmOrdEmbed_lt_opow_omega,
    CNFωω.dmOrdEmbed_surjective_lt_opow_omega⟩
 
+/-- Phase-B CNF scaffold, stated as the exact `ω^ω` order-type package used in the paper. -/
+theorem phaseB_cnf_scaffold_exact_order_type :
+    (∀ m₁ m₂ : Multiset Nat, DM m₁ m₂ ↔ dmOrdEmbed m₁ < dmOrdEmbed m₂) ∧
+    (∀ m : Multiset Nat, dmOrdEmbed m < (ω : Ordinal) ^ (ω : Ordinal)) ∧
+    (∀ α < (ω : Ordinal) ^ (ω : Ordinal), ∃ m : Multiset Nat, dmOrdEmbed m = α) :=
+  dm_order_type_omega_omega
+
+/-- Phase-B cofinality restated on the reflected `dmRankOrd` image. -/
+theorem phaseB_cnf_scaffold_cofinal :
+    ∀ α < (ω : Ordinal) ^ (ω : Ordinal), ∃ m : Multiset Nat, dmRankOrd m = α :=
+  CNFωω.dmRankOrd_surjective_lt_opow_omega
+
 /-- `deltaFlag` is at most 1 for any trace (it is a binary phase indicator). -/
 private lemma deltaFlag_le_one (t : Trace) : MetaSN_KO7.deltaFlag t ≤ 1 := by
   unfold MetaSN_KO7.deltaFlag
@@ -5727,6 +6083,163 @@ end OperatorKO7.DPBaseOrderBoundary
 
 ---
 
+## OperatorKO7/Meta/EqGuardedConfluence.lean
+
+**Lines:** 148
+
+```lean
+import OperatorKO7.Kernel
+import OperatorKO7.Meta.PolyInterpretation_FullStep
+import OperatorKO7.Meta.SafeStep_Core
+
+/-!
+# Root confluence for an intermediate `eqW`-guarded fragment
+
+This module isolates a fragment strictly between the guarded `SafeStep` relation
+and the full unguarded root relation `Step`.
+
+- all full KO7 root rules remain available,
+- only the problematic `eqW` diff branch is guarded by disequality.
+
+This removes the unique full-root confluence obstruction without importing the
+termination-oriented merge / rec-zero guards from `SafeStep`.
+-/
+
+open Classical
+open OperatorKO7 Trace
+
+namespace OperatorKO7.EqGuardedConfluence
+
+/-- Intermediate root relation: full `Step`, except that the `eqW` diff branch
+is available only on distinct arguments. -/
+inductive EqGuardedStep : Trace → Trace → Prop
+| R_int_delta (t) : EqGuardedStep (integrate (delta t)) void
+| R_merge_void_left (t) : EqGuardedStep (merge void t) t
+| R_merge_void_right (t) : EqGuardedStep (merge t void) t
+| R_merge_cancel (t) : EqGuardedStep (merge t t) t
+| R_rec_zero (b s) : EqGuardedStep (recΔ b s void) b
+| R_rec_succ (b s n) : EqGuardedStep (recΔ b s (delta n)) (app s (recΔ b s n))
+| R_eq_refl (a) : EqGuardedStep (eqW a a) void
+| R_eq_diff (a b) (hne : a ≠ b) : EqGuardedStep (eqW a b) (integrate (merge a b))
+
+/-- Reverse relation for well-foundedness / Newman arguments. -/
+def EqGuardedStepRev : Trace → Trace → Prop := fun a b => EqGuardedStep b a
+
+/-- Reflexive-transitive closure of the intermediate fragment. -/
+inductive EqGuardedStepStar : Trace → Trace → Prop
+| refl : ∀ t, EqGuardedStepStar t t
+| tail : ∀ {a b c}, EqGuardedStep a b → EqGuardedStepStar b c → EqGuardedStepStar a c
+
+/-- Local joinability at a fixed source. -/
+def LocalJoinEqGuarded (a : Trace) : Prop :=
+  ∀ {b c}, EqGuardedStep a b → EqGuardedStep a c → ∃ d, EqGuardedStepStar b d ∧ EqGuardedStepStar c d
+
+/-- Church-Rosser for the intermediate fragment. -/
+def ConfluentEqGuarded : Prop :=
+  ∀ a b c, EqGuardedStepStar a b → EqGuardedStepStar a c → ∃ d, EqGuardedStepStar b d ∧ EqGuardedStepStar c d
+
+theorem eqgstar_trans {a b c : Trace}
+    (h₁ : EqGuardedStepStar a b) (h₂ : EqGuardedStepStar b c) : EqGuardedStepStar a c := by
+  induction h₁ with
+  | refl => exact h₂
+  | tail hab _ ih => exact EqGuardedStepStar.tail hab (ih h₂)
+
+theorem eqgstar_destruct {a c : Trace} (h : EqGuardedStepStar a c) :
+    a = c ∨ ∃ b, EqGuardedStep a b ∧ EqGuardedStepStar b c := by
+  cases h with
+  | refl t => exact Or.inl rfl
+  | tail hab hbc => exact Or.inr ⟨_, hab, hbc⟩
+
+/-- The intermediate fragment is a subrelation of the full root relation. -/
+theorem eqGuarded_sub_step : ∀ {a b : Trace}, EqGuardedStep a b → Step a b
+  | _, _, EqGuardedStep.R_int_delta t => Step.R_int_delta t
+  | _, _, EqGuardedStep.R_merge_void_left t => Step.R_merge_void_left t
+  | _, _, EqGuardedStep.R_merge_void_right t => Step.R_merge_void_right t
+  | _, _, EqGuardedStep.R_merge_cancel t => Step.R_merge_cancel t
+  | _, _, EqGuardedStep.R_rec_zero b s => Step.R_rec_zero b s
+  | _, _, EqGuardedStep.R_rec_succ b s n => Step.R_rec_succ b s n
+  | _, _, EqGuardedStep.R_eq_refl a => Step.R_eq_refl a
+  | _, _, EqGuardedStep.R_eq_diff a b _ => Step.R_eq_diff a b
+
+/-- Full-step termination already bounds the intermediate fragment. -/
+theorem wf_EqGuardedStepRev : WellFounded EqGuardedStepRev := by
+  have hsub : Subrelation EqGuardedStepRev (fun a b : Trace => Step b a) := by
+    intro a b hab
+    exact eqGuarded_sub_step hab
+  exact Subrelation.wf hsub OperatorKO7.PolyInterpretation.wf_StepRev_poly
+
+/-- `SafeStep` embeds into the intermediate fragment. -/
+theorem safeStep_sub_eqGuarded : ∀ {a b : Trace}, MetaSN_KO7.SafeStep a b → EqGuardedStep a b
+  | _, _, MetaSN_KO7.SafeStep.R_int_delta t => EqGuardedStep.R_int_delta t
+  | _, _, MetaSN_KO7.SafeStep.R_merge_void_left t _ => EqGuardedStep.R_merge_void_left t
+  | _, _, MetaSN_KO7.SafeStep.R_merge_void_right t _ => EqGuardedStep.R_merge_void_right t
+  | _, _, MetaSN_KO7.SafeStep.R_merge_cancel t _ _ => EqGuardedStep.R_merge_cancel t
+  | _, _, MetaSN_KO7.SafeStep.R_rec_zero b s _ => EqGuardedStep.R_rec_zero b s
+  | _, _, MetaSN_KO7.SafeStep.R_rec_succ b s n => EqGuardedStep.R_rec_succ b s n
+  | _, _, MetaSN_KO7.SafeStep.R_eq_refl a _ => EqGuardedStep.R_eq_refl a
+  | _, _, MetaSN_KO7.SafeStep.R_eq_diff a b hne => EqGuardedStep.R_eq_diff a b hne
+
+/-- The intermediate fragment is strictly larger than `SafeStep`: a blocked merge-void
+step is restored because the extra guard is purely termination-oriented. -/
+theorem eqGuarded_not_subset_safe :
+    EqGuardedStep (merge void (recΔ void void (delta void))) (recΔ void void (delta void)) ∧
+    ¬ MetaSN_KO7.SafeStep (merge void (recΔ void void (delta void))) (recΔ void void (delta void)) := by
+  refine ⟨EqGuardedStep.R_merge_void_left _, ?_⟩
+  intro h
+  cases h with
+  | R_merge_void_left _ hδ =>
+      simp [MetaSN_KO7.deltaFlag] at hδ
+
+/-- The intermediate fragment is root-deterministic up to target equality. -/
+theorem eqGuarded_unique_target {a b c : Trace}
+    (hb : EqGuardedStep a b) (hc : EqGuardedStep a c) : b = c := by
+  cases hb <;> cases hc <;> simp at *
+
+/-- Local joinability is immediate from unique targets. -/
+theorem localJoin_all_eqGuarded : ∀ a : Trace, LocalJoinEqGuarded a := by
+  intro a b c hb hc
+  refine ⟨b, EqGuardedStepStar.refl b, ?_⟩
+  simpa [eqGuarded_unique_target hb hc] using (EqGuardedStepStar.refl b : EqGuardedStepStar b b)
+
+private theorem join_star_star_at
+    (locAll : ∀ a, LocalJoinEqGuarded a) :
+    ∀ x, Acc EqGuardedStepRev x →
+      ∀ {y z : Trace}, EqGuardedStepStar x y → EqGuardedStepStar x z →
+        ∃ d, EqGuardedStepStar y d ∧ EqGuardedStepStar z d := by
+  intro x hx
+  induction hx with
+  | intro x _ ih =>
+      intro y z hxy hxz
+      have HY := eqgstar_destruct hxy
+      have HZ := eqgstar_destruct hxz
+      cases HY with
+      | inl hEq =>
+          cases hEq
+          exact ⟨z, hxz, EqGuardedStepStar.refl z⟩
+      | inr hy =>
+          rcases hy with ⟨b1, hxb1, hb1y⟩
+          cases HZ with
+          | inl hEq2 =>
+              cases hEq2
+              exact ⟨y, EqGuardedStepStar.refl y, EqGuardedStepStar.tail hxb1 hb1y⟩
+          | inr hz =>
+              rcases hz with ⟨c1, hxc1, hc1z⟩
+              rcases locAll x hxb1 hxc1 with ⟨e, hb1e, hc1e⟩
+              rcases ih c1 hxc1 hc1e hc1z with ⟨d₁, hed₁, hzd₁⟩
+              have hb1d₁ : EqGuardedStepStar b1 d₁ := eqgstar_trans hb1e hed₁
+              rcases ih b1 hxb1 hb1y hb1d₁ with ⟨d, hyd, hd₁d⟩
+              exact ⟨d, hyd, eqgstar_trans hzd₁ hd₁d⟩
+
+/-- Newman specialization for the intermediate fragment. -/
+theorem confluentEqGuarded : ConfluentEqGuarded := by
+  intro a b c hab hac
+  exact join_star_star_at localJoin_all_eqGuarded a (wf_EqGuardedStepRev.apply a) hab hac
+
+end OperatorKO7.EqGuardedConfluence
+```
+
+---
+
 ## OperatorKO7/Meta/EqW_Guard_Barrier.lean
 
 **Lines:** 50
@@ -5788,7 +6301,7 @@ end MetaSN_KO7
 
 ## OperatorKO7/Meta/EscapeTrichotomy.lean
 
-**Lines:** 423
+**Lines:** 443
 
 ```lean
 import OperatorKO7.Meta.PumpedBarrierClasses
@@ -5808,6 +6321,7 @@ The theorem universe is intentionally narrow and reviewable:
 - pumped restricted-quadratic constructor-local measures
 - pumped bounded-cross-term constructor-local measures
 - pumped bounded-multilinear constructor-local measures
+- pumped generalized bounded-polynomial constructor-local measures
 - pumped max-plus constructor-local measures
 - KO7-specific max-depth families
 - KO7-specific pure head-precedence families
@@ -5846,6 +6360,7 @@ inductive NatDirectBarrierRepresentable (S : StepDuplicatingSchema) (μ : S.T �
   | quadraticWithPump (M : QuadraticCounterMeasureWithPump S) (heval : M.eval = μ)
   | crossQuadraticWithPump (M : CrossTermQuadraticMeasureWithPump S) (heval : M.eval = μ)
   | multilinearWithPump (M : MultilinearMeasureWithPump S) (heval : M.eval = μ)
+  | polynomialWithPump (M : PolynomialMeasureWithPump S) (heval : M.eval = μ)
   | maxWithPump (M : MaxMeasureWithPump S) (heval : M.eval = μ)
 
 /-- Escape trichotomy for the explicit Nat-valued direct universe:
@@ -5883,6 +6398,9 @@ theorem nat_direct_escape_trichotomy
       | multilinearWithPump M heval =>
           subst heval
           exact (no_global_orients_multilinear_with_pump (Sys := Sys) M) horient
+      | polynomialWithPump M heval =>
+          subst heval
+          exact (no_global_orients_polynomial_with_pump (Sys := Sys) M) horient
       | maxWithPump M heval =>
           subst heval
           exact (no_global_orients_max_with_pump (Sys := Sys) M) horient
@@ -5946,6 +6464,9 @@ inductive KO7NatDirectBarrierRepresentable (μ : Trace → Nat) : Prop
   | multilinearWithPump
       (M : StepDuplicatingSchema.MultilinearMeasureWithPump ko7Schema)
       (heval : ∀ t : Trace, M.eval t = μ t)
+  | polynomialWithPump
+      (M : StepDuplicatingSchema.PolynomialMeasureWithPump ko7Schema)
+      (heval : ∀ t : Trace, M.eval t = μ t)
   | maxWithPump
       (M : StepDuplicatingSchema.MaxMeasureWithPump ko7Schema)
       (heval : ∀ t : Trace, M.eval t = μ t)
@@ -5969,6 +6490,9 @@ inductive KO7DirectBarrierRepresentable : KO7DirectOrienter → Prop
       KO7DirectBarrierRepresentable (.nat M.eval)
   | multilinearWithPump
       (M : StepDuplicatingSchema.MultilinearMeasureWithPump ko7Schema) :
+      KO7DirectBarrierRepresentable (.nat M.eval)
+  | polynomialWithPump
+      (M : StepDuplicatingSchema.PolynomialMeasureWithPump ko7Schema) :
       KO7DirectBarrierRepresentable (.nat M.eval)
   | maxWithPump
       (M : StepDuplicatingSchema.MaxMeasureWithPump ko7Schema) :
@@ -6035,6 +6559,13 @@ theorem ko7_nat_direct_escape_trichotomy
             exact heval t
           subst hrepr
           exact (PumpedBarrierClasses.no_global_step_orientation_multilinear_with_pump M) horient
+      | polynomialWithPump M heval =>
+          have hrepr :
+              M.eval = μ := by
+            funext t
+            exact heval t
+          subst hrepr
+          exact (PumpedBarrierClasses.no_global_step_orientation_polynomial_with_pump M) horient
       | maxWithPump M heval =>
           have hrepr :
               M.eval = μ := by
@@ -6083,6 +6614,8 @@ theorem ko7_direct_escape_trichotomy_extended
           exact (PumpedBarrierClasses.no_global_step_orientation_cross_quadratic_with_pump M) horient
       | multilinearWithPump M =>
           exact (PumpedBarrierClasses.no_global_step_orientation_multilinear_with_pump M) horient
+      | polynomialWithPump M =>
+          exact (PumpedBarrierClasses.no_global_step_orientation_polynomial_with_pump M) horient
       | maxWithPump M =>
           exact (PumpedBarrierClasses.no_global_step_orientation_max_with_pump M) horient
       | depth M =>
@@ -7957,6 +8490,108 @@ end OperatorKO7.MatrixBarrierMix2
 
 ---
 
+## OperatorKO7/Meta/MatrixProjectionCoverage.lean
+
+**Lines:** 93
+
+```lean
+import OperatorKO7.Meta.MatrixBarrierD
+import OperatorKO7.Meta.MatrixBarrierFunctional
+
+/-!
+# Explicit Matrix Projection Coverage
+
+This module does not add a new obstruction mechanism. It names the two matrix-side
+coverage patterns that matter operationally for automated tools:
+
+- a fixed tracked row (already covered by `MatrixBarrierD`);
+- a row-sum / all-ones projection (already covered by `MatrixBarrierFunctional`).
+
+The purpose is to make those coverage points explicit in the artifact and in the paper's
+TTT2 discussion, rather than leaving them implicit across several files.
+-/
+
+namespace OperatorKO7.StepDuplicating
+
+namespace StepDuplicatingSchema
+
+/-- All-ones projection used for row-sum coverage on `Fin d → Nat`. -/
+def rowSumWeight {d : Nat} : Fin d → Nat := fun _ => 1
+
+theorem rowSumWeight_support {d : Nat} (i : Fin d) :
+    0 < rowSumWeight i := by
+  simp [rowSumWeight]
+
+/-- Fixed-row phrasing of the dimension-parametric tracked-component barrier. -/
+theorem no_matrix_orients_dup_step_of_fixed_row_pump
+    {S : StepDuplicatingSchema} {d : Nat} {tracked : Fin d}
+    (M : MatrixMeasureD S d tracked)
+    (hunbounded : HasUnboundedRangeTracked M) :
+    ¬ (∀ (b s n : S.T),
+      VecLt (M.eval (S.wrap s (S.recur b s n))) (M.eval (S.recur b s (S.succ n)))) := by
+  exact no_matrixD_orients_dup_step_of_componentwise_pump M hunbounded
+
+/-- Successor-pump fixed-row corollary. -/
+theorem no_matrix_orients_dup_step_of_fixed_row_succ_pump
+    {S : StepDuplicatingSchema} {d : Nat} {tracked : Fin d}
+    (M : MatrixMeasureD S d tracked)
+    (h_succ_bias : 1 ≤ M.succ_bias) (h_succ_scale : 1 ≤ M.succ_scale) :
+    ¬ (∀ (b s n : S.T),
+      VecLt (M.eval (S.wrap s (S.recur b s n))) (M.eval (S.recur b s (S.succ n)))) := by
+  exact no_matrixD_orients_dup_step_of_succ_pump M h_succ_bias h_succ_scale
+
+/-- Row-sum phrasing of the weighted functional barrier. The theorem is just the all-ones
+instance of the general projection-based componentwise barrier. -/
+theorem no_matrixFunctional_orients_dup_step_of_row_sum_pump
+    {S : StepDuplicatingSchema} {d : Nat}
+    (M : MatrixFunctionalMeasure S d)
+    (hweight : M.weight = rowSumWeight)
+    (hunbounded : HasUnboundedWeightedRange M) :
+    ¬ (∀ (b s n : S.T),
+      VecLt (M.eval (S.wrap s (S.recur b s n))) (M.eval (S.recur b s (S.succ n)))) := by
+  have hM : M.weight = rowSumWeight := hweight
+  exact no_matrixFunctional_orients_dup_step_of_componentwise_pump M (by
+    simpa [hM] using hunbounded)
+
+end StepDuplicatingSchema
+
+end OperatorKO7.StepDuplicating
+
+namespace OperatorKO7.MatrixProjectionCoverage
+
+open OperatorKO7
+open OperatorKO7.Trace
+open OperatorKO7.StepDuplicating
+open OperatorKO7.CompositionalImpossibility
+
+/-- KO7-facing fixed-row corollary: the dimension-parametric tracked-row barrier already
+covers any componentwise matrix interpretation whose chosen row satisfies the affine pump
+interface. -/
+theorem no_global_step_orientation_matrix_fixed_row_of_componentwise_pump
+    {d : Nat} (tracked : Fin d)
+    (M : StepDuplicatingSchema.MatrixMeasureD ko7Schema d tracked)
+    (hunbounded : StepDuplicatingSchema.HasUnboundedRangeTracked M) :
+    ¬ StepDuplicatingSchema.GlobalOrients ko7System M.eval StepDuplicatingSchema.VecLt := by
+  exact OperatorKO7.MatrixBarrierD.no_global_step_orientation_matrixD_of_componentwise_pump tracked M hunbounded
+
+/-- KO7-facing row-sum corollary: the all-ones projection is a concrete instance of the
+weighted functional barrier. -/
+theorem no_global_step_orientation_matrix_row_sum_of_componentwise_pump
+    {d : Nat}
+    (M : StepDuplicatingSchema.MatrixFunctionalMeasure ko7Schema d)
+    (hweight : M.weight = StepDuplicatingSchema.rowSumWeight)
+    (hunbounded : StepDuplicatingSchema.HasUnboundedWeightedRange M) :
+    ¬ StepDuplicatingSchema.GlobalOrients ko7System M.eval StepDuplicatingSchema.VecLt := by
+  have hM : M.weight = StepDuplicatingSchema.rowSumWeight := hweight
+  simpa using
+    OperatorKO7.MatrixBarrierFunctional.no_global_step_orientation_matrixFunctional_of_componentwise_pump M (by
+      simpa [hM] using hunbounded)
+
+end OperatorKO7.MatrixProjectionCoverage
+```
+
+---
+
 ## OperatorKO7/Meta/MaxBarrier.lean
 
 **Lines:** 247
@@ -8880,6 +9515,161 @@ theorem no_global_step_orientation_mpo_bad_prec :
       (h (Step.R_rec_succ void void void))
 
 end OperatorKO7.MPOPrecedenceBarrier
+```
+
+---
+
+## OperatorKO7/Meta/MPO_ProofTheoreticBound.lean
+
+**Lines:** 146
+
+```lean
+import OperatorKO7.Meta.MPO_FullStep
+
+/-!
+# Proof-theoretic upper bound for the KO7-specialized MPO proof
+
+This file does not change the MPO development. It packages an explicit ordinal
+envelope for the existing fixed-signature ranking from `Meta/MPO_FullStep.lean`.
+
+The point is reviewability: the KO7-specialized MPO proof is a direct ordinal
+ranking argument on a fixed 7-constructor signature, and its rank lands below
+`veblen 7 0`. This gives a concrete upper bound for the proof-strength row in
+the paper without claiming a metatheoretic classification for generic path
+orders.
+-/
+
+namespace OperatorKO7.MPOProofTheoreticBound
+
+open scoped Ordinal
+open OperatorKO7.Trace
+open OperatorKO7.MetaMPO
+
+/-- Explicit ordinal envelope for the KO7-specialized MPO ranking. -/
+@[simp] noncomputable def mpoVeblenBound : Ordinal.{0} := Ordinal.veblen 7 0
+
+lemma mpoVeblenBound_gt_one : (1 : Ordinal.{0}) < mpoVeblenBound := by
+  simpa [mpoVeblenBound] using
+    (veblen_gt_one_of_pos (k := (7 : Ordinal.{0})) (x := 0)
+      (by exact_mod_cast (show 0 < (7 : Nat) by decide)))
+
+lemma mpoVeblenBound_fixed :
+    (ω : Ordinal.{0}) ^ mpoVeblenBound = mpoVeblenBound := by
+  simpa [mpoVeblenBound] using
+    (veblen_fixed_of_pos (k := (7 : Ordinal.{0})) (x := 0)
+      (by exact_mod_cast (show 0 < (7 : Nat) by decide)))
+
+lemma mpoVeblenBound_isSuccLimit :
+    Order.IsSuccLimit mpoVeblenBound := by
+  simpa [mpoVeblenBound] using
+    (veblen_isSuccLimit_of_pos (k := (7 : Ordinal.{0})) (x := 0)
+      (by exact_mod_cast (show 0 < (7 : Nat) by decide)))
+
+lemma rank_lt_seven (s : Sym) : rank s < 7 := by
+  cases s <;> decide
+
+lemma rank_lt_seven_ord (s : Sym) : ((rank s : Nat) : Ordinal.{0}) < (7 : Ordinal.{0}) := by
+  exact_mod_cast rank_lt_seven s
+
+lemma veblen_lt_mpoVeblenBound_of_rank_lt
+    {k p : Ordinal.{0}} (hk : k < 7) (hp : p < mpoVeblenBound) :
+    Ordinal.veblen k p < mpoVeblenBound := by
+  dsimp [mpoVeblenBound]
+  exact (Ordinal.veblen_lt_veblen_iff).2
+    (Or.inr (Or.inl ⟨hk, by simpa [mpoVeblenBound] using hp⟩))
+
+/-- Every KO7-specialized MPO ordinal rank lies below the fixed envelope
+`veblen 7 0`. -/
+theorem mpoOrd_lt_mpoVeblenBound : ∀ t : Trace, mpoOrd t < mpoVeblenBound
+  | void => by
+      have hzero : (0 : Ordinal.{0}) < mpoVeblenBound := by
+        have h0 : (0 : Ordinal.{0}) < 1 := by
+          exact_mod_cast (show 0 < (1 : Nat) by decide)
+        exact h0.trans mpoVeblenBound_gt_one
+      have hk : ((rank (sym void)) : Ordinal.{0}) < (7 : Ordinal.{0}) := by
+        change ((rank Sym.void : Nat) : Ordinal.{0}) < (7 : Ordinal.{0})
+        exact rank_lt_seven_ord Sym.void
+      simpa [mpoOrd, payloadOrd, mpoVeblenBound, sym, rank] using
+        (veblen_lt_mpoVeblenBound_of_rank_lt hk hzero)
+  | delta t => by
+      have hpayload : Order.succ (mpoOrd t) < mpoVeblenBound := by
+        exact mpoVeblenBound_isSuccLimit.succ_lt (mpoOrd_lt_mpoVeblenBound t)
+      have hk : ((rank (sym (delta t))) : Ordinal.{0}) < (7 : Ordinal.{0}) := by
+        change ((rank Sym.delta : Nat) : Ordinal.{0}) < (7 : Ordinal.{0})
+        exact rank_lt_seven_ord Sym.delta
+      simpa [mpoOrd, payloadOrd, mpoVeblenBound, sym, rank] using
+        (veblen_lt_mpoVeblenBound_of_rank_lt hk hpayload)
+  | integrate t => by
+      have hpayload : Order.succ (mpoOrd t) < mpoVeblenBound := by
+        exact mpoVeblenBound_isSuccLimit.succ_lt (mpoOrd_lt_mpoVeblenBound t)
+      have hk : ((rank (sym (integrate t))) : Ordinal.{0}) < (7 : Ordinal.{0}) := by
+        change ((rank Sym.integrate : Nat) : Ordinal.{0}) < (7 : Ordinal.{0})
+        exact rank_lt_seven_ord Sym.integrate
+      simpa [mpoOrd, payloadOrd, mpoVeblenBound, sym, rank] using
+        (veblen_lt_mpoVeblenBound_of_rank_lt hk hpayload)
+  | merge a b => by
+      have hpayload :
+          pairPayload (mpoOrd a) (mpoOrd b) < mpoVeblenBound := by
+        exact pairPayload_lt_of_lt
+          (mpoOrd_lt_mpoVeblenBound a)
+          (mpoOrd_lt_mpoVeblenBound b)
+          mpoVeblenBound_isSuccLimit mpoVeblenBound_fixed
+      have hk : ((rank (sym (merge a b))) : Ordinal.{0}) < (7 : Ordinal.{0}) := by
+        change ((rank Sym.merge : Nat) : Ordinal.{0}) < (7 : Ordinal.{0})
+        exact rank_lt_seven_ord Sym.merge
+      simpa [mpoOrd, payloadOrd, mpoVeblenBound, sym, rank] using
+        (veblen_lt_mpoVeblenBound_of_rank_lt hk hpayload)
+  | app a b => by
+      have hpayload :
+          pairPayload (mpoOrd a) (mpoOrd b) < mpoVeblenBound := by
+        exact pairPayload_lt_of_lt
+          (mpoOrd_lt_mpoVeblenBound a)
+          (mpoOrd_lt_mpoVeblenBound b)
+          mpoVeblenBound_isSuccLimit mpoVeblenBound_fixed
+      have hk : ((rank (sym (app a b))) : Ordinal.{0}) < (7 : Ordinal.{0}) := by
+        change ((rank Sym.app : Nat) : Ordinal.{0}) < (7 : Ordinal.{0})
+        exact rank_lt_seven_ord Sym.app
+      simpa [mpoOrd, payloadOrd, mpoVeblenBound, sym, rank] using
+        (veblen_lt_mpoVeblenBound_of_rank_lt hk hpayload)
+  | recΔ b s n => by
+      have hpayload :
+          triplePayload (mpoOrd b) (mpoOrd s) (mpoOrd n) < mpoVeblenBound := by
+        exact triplePayload_lt_of_lt
+          (mpoOrd_lt_mpoVeblenBound b)
+          (mpoOrd_lt_mpoVeblenBound s)
+          (mpoOrd_lt_mpoVeblenBound n)
+          mpoVeblenBound_isSuccLimit mpoVeblenBound_fixed
+      have hk : ((rank (sym (recΔ b s n))) : Ordinal.{0}) < (7 : Ordinal.{0}) := by
+        change ((rank Sym.recΔ : Nat) : Ordinal.{0}) < (7 : Ordinal.{0})
+        exact rank_lt_seven_ord Sym.recΔ
+      simpa [mpoOrd, payloadOrd, mpoVeblenBound, sym, rank] using
+        (veblen_lt_mpoVeblenBound_of_rank_lt hk hpayload)
+  | eqW a b => by
+      have hpayload :
+          pairPayload (mpoOrd a) (mpoOrd b) < mpoVeblenBound := by
+        exact pairPayload_lt_of_lt
+          (mpoOrd_lt_mpoVeblenBound a)
+          (mpoOrd_lt_mpoVeblenBound b)
+          mpoVeblenBound_isSuccLimit mpoVeblenBound_fixed
+      have hk : ((rank (sym (eqW a b))) : Ordinal.{0}) < (7 : Ordinal.{0}) := by
+        change ((rank Sym.eqW : Nat) : Ordinal.{0}) < (7 : Ordinal.{0})
+        exact rank_lt_seven_ord Sym.eqW
+      simpa [mpoOrd, payloadOrd, mpoVeblenBound, sym, rank] using
+        (veblen_lt_mpoVeblenBound_of_rank_lt hk hpayload)
+
+/-- The fixed-signature MPO proof is witnessed by an ordinal ranking into the
+initial segment below `veblen 7 0`. -/
+theorem wf_StepRev_mpo_below_veblen7 :
+    ∃ ρ : Trace → Ordinal.{0},
+      (∀ t, ρ t < mpoVeblenBound) ∧
+      (∀ {a b : Trace}, Step a b → ρ b < ρ a) := by
+  refine ⟨mpoOrd, ?_, ?_⟩
+  · intro t
+    exact mpoOrd_lt_mpoVeblenBound t
+  · intro a b hstep
+    exact mpoOrd_strict_of_mpo (mpo_orients_step hstep)
+
+end OperatorKO7.MPOProofTheoreticBound
 ```
 
 ---
@@ -9957,6 +10747,182 @@ end OperatorKO7.MutualDuplicationPreserving
 
 ---
 
+## OperatorKO7/Meta/MutualDuplication_Transparent.lean
+
+**Lines:** 167
+
+```lean
+import OperatorKO7.Meta.MutualDuplication_General
+import OperatorKO7.Meta.ScalarProjectionBarrier
+
+/-!
+# Transparent-Compositional and Projection SCC Extensions
+
+This module extends the bounded SCC program in two staged directions:
+
+- a Tier-2 transparent-compositional composite barrier;
+- a projection-based matrix-style corollary for the same alternating composite profile.
+
+The point is not to cover arbitrary matrix orders. The matrix extension is deliberately
+restricted to subclasses whose chosen scalar projection is already blocked by the affine
+barrier on the derived two-step schema.
+-/
+
+namespace OperatorKO7.MutualDuplicationTransparent
+
+open OperatorKO7.DependencyPairsFragment
+open OperatorKO7.StepDuplicating
+open OperatorKO7.MutualDuplicationGeneral
+
+namespace AlternatingDupSchema
+
+/-- Transparent-compositional measures on the alternating SCC schema. Both recursors share one
+abstract compositional profile. -/
+structure CompositionalMeasure (S : AlternatingDupSchema) where
+  eval : S.T → Nat
+  c_base : Nat
+  c_succ : Nat → Nat
+  c_wrap : Nat → Nat → Nat
+  c_recur : Nat → Nat → Nat → Nat
+  eval_base : eval S.base = c_base
+  eval_succ : ∀ t, eval (S.succ t) = c_succ (eval t)
+  eval_wrap : ∀ x y, eval (S.wrap x y) = c_wrap (eval x) (eval y)
+  eval_recurA : ∀ b s n, eval (S.recurA b s n) = c_recur (eval b) (eval s) (eval n)
+  eval_recurB : ∀ b s n, eval (S.recurB b s n) = c_recur (eval b) (eval s) (eval n)
+  wrap_subterm1 : ∀ x y, c_wrap x y > x
+  wrap_subterm2 : ∀ x y, c_wrap x y > y
+
+/-- View the alternating transparent-compositional profile as a compositional measure for the
+derived two-step schema. -/
+def CompositionalMeasure.toDup2Measure {S : AlternatingDupSchema}
+    (CM : CompositionalMeasure S) :
+    StepDuplicatingSchema.CompositionalMeasure S.toDup2Schema where
+  eval := CM.eval
+  c_base := CM.c_base
+  c_succ := fun x => CM.c_succ (CM.c_succ x)
+  c_wrap := fun x y => CM.c_wrap x (CM.c_wrap x y)
+  c_recur := CM.c_recur
+  eval_base := CM.eval_base
+  eval_succ := by
+    intro t
+    rw [show S.toDup2Schema.succ t = S.succ (S.succ t) by rfl]
+    rw [CM.eval_succ, CM.eval_succ]
+  eval_wrap := by
+    intro x y
+    rw [show S.toDup2Schema.wrap x y = S.wrap x (S.wrap x y) by rfl]
+    rw [CM.eval_wrap, CM.eval_wrap]
+  eval_recur := by
+    intro b s n
+    simpa [AlternatingDupSchema.toDup2Schema] using CM.eval_recurA b s n
+  wrap_subterm1 := by
+    intro x y
+    exact CM.wrap_subterm1 x (CM.c_wrap x y)
+  wrap_subterm2 := by
+    intro x y
+    exact lt_trans (CM.wrap_subterm2 x y) (CM.wrap_subterm2 x (CM.c_wrap x y))
+
+/-- The derived two-step schema preserves transparency at the base point. -/
+lemma succ_transparent_at_base_twice {S : AlternatingDupSchema}
+    (CM : CompositionalMeasure S)
+    (htrans : CM.c_succ CM.c_base = CM.c_base) :
+    CM.toDup2Measure.c_succ CM.toDup2Measure.c_base = CM.toDup2Measure.c_base := by
+  simp [CompositionalMeasure.toDup2Measure, htrans]
+
+/-- No transparent-compositional measure can orient the bounded SCC composite profile. -/
+theorem no_compositional_orients_alternating_dup2_composite_transparent
+    {S : AlternatingDupSchema} (CM : CompositionalMeasure S)
+    (htrans : CM.c_succ CM.c_base = CM.c_base) :
+    ¬ (∀ (b s n : S.T),
+      CM.eval (S.wrap s (S.wrap s (S.recurA b s n))) <
+        CM.eval (S.recurA b s (S.succ (S.succ n)))) := by
+  simpa [AlternatingDupSchema.toDup2Schema, CompositionalMeasure.toDup2Measure] using
+    (StepDuplicatingSchema.no_compositional_orients_dup_step_transparent_succ
+      (S := S.toDup2Schema) (CM := CM.toDup2Measure)
+      (succ_transparent_at_base_twice CM htrans))
+
+/-- Consequently no transparent-compositional measure globally orients the minimal SCC context
+relation when successor is transparent at the base point. -/
+theorem no_global_orients_ctx_compositional_transparent
+    {Sys : AlternatingDupSchema.AlternatingDupSystem}
+    (CM : CompositionalMeasure (AlternatingDupSchema.AlternatingDupSystem.toAlternatingDupSchema Sys))
+    (htrans : CM.c_succ CM.c_base = CM.c_base) :
+    ¬ AlternatingDupSchema.GlobalOrientsCtx Sys CM.eval (· < ·) := by
+  intro h
+  have hcomp :
+      ∀ (b s n : Sys.T),
+        CM.eval (Sys.wrap s (Sys.wrap s (Sys.recurA b s n))) <
+          CM.eval (Sys.recurA b s (Sys.succ (Sys.succ n))) := by
+    intro b s n
+    rcases AlternatingDupSchema.alternating_dup2_realized Sys b s n with ⟨u, h₁, h₂⟩
+    have horient : DependencyPairsFragment.GlobalOrients (AlternatingDupSchema.StepCtx Sys) CM.eval (· < ·) := by
+      intro a b hstep
+      exact h hstep
+    have hpath :
+        Relation.TransGen (AlternatingDupSchema.StepCtx Sys)
+          (Sys.recurA b s (Sys.succ (Sys.succ n)))
+          (Sys.wrap s (Sys.wrap s (Sys.recurA b s n))) :=
+      Relation.TransGen.tail (Relation.TransGen.single h₁) h₂
+    exact
+      DependencyPairsFragment.transGen_drop
+        (R := AlternatingDupSchema.StepCtx Sys) (m := CM.eval) horient hpath
+  exact
+    no_compositional_orients_alternating_dup2_composite_transparent
+      (S := AlternatingDupSchema.AlternatingDupSystem.toAlternatingDupSchema Sys) CM htrans hcomp
+
+/-- Projection-based matrix extension of the bounded SCC barrier.
+
+This is the staged matrix-style deliverable: any alternating SCC orienter whose chosen
+weighted scalar projection falls under the affine barrier on the derived two-step schema
+is blocked. -/
+theorem no_global_orients_ctx_matrixFunctional_of_projected_unbounded
+    {Sys : AlternatingDupSchema.AlternatingDupSystem} {d : Nat}
+    (M : StepDuplicatingSchema.MatrixFunctionalMeasure
+      (AlternatingDupSchema.toDup2Schema
+        (AlternatingDupSchema.AlternatingDupSystem.toAlternatingDupSchema Sys)) d)
+    (hunbounded : StepDuplicatingSchema.HasUnboundedWeightedRange M) :
+    ¬ DependencyPairsFragment.GlobalOrients
+        (AlternatingDupSchema.StepCtx Sys) M.eval (fun u v => StepDuplicatingSchema.VecLt u v) := by
+  intro h
+  have hcomp :
+      ∀ (b s n : Sys.T),
+        StepDuplicatingSchema.weightedSum M.weight
+            (M.eval (Sys.wrap s (Sys.wrap s (Sys.recurA b s n)))) <
+          StepDuplicatingSchema.weightedSum M.weight
+            (M.eval (Sys.recurA b s (Sys.succ (Sys.succ n)))) := by
+    intro b s n
+    rcases AlternatingDupSchema.alternating_dup2_realized Sys b s n with ⟨u, h₁, h₂⟩
+    have horientScalar :
+        DependencyPairsFragment.GlobalOrients
+          (AlternatingDupSchema.StepCtx Sys)
+          (fun t => StepDuplicatingSchema.weightedSum M.weight (M.eval t))
+          (· < ·) := by
+      intro x y hxy
+      exact
+        StepDuplicatingSchema.weightedSum_lt_of_vecLt
+          M.h_weight_support (h hxy)
+    have hpath :
+        Relation.TransGen (AlternatingDupSchema.StepCtx Sys)
+          (Sys.recurA b s (Sys.succ (Sys.succ n)))
+          (Sys.wrap s (Sys.wrap s (Sys.recurA b s n))) :=
+      Relation.TransGen.tail (Relation.TransGen.single h₁) h₂
+    exact
+      DependencyPairsFragment.transGen_drop
+        (R := AlternatingDupSchema.StepCtx Sys)
+        (m := fun t => StepDuplicatingSchema.weightedSum M.weight (M.eval t))
+        horientScalar hpath
+  exact
+    StepDuplicatingSchema.no_affine_orients_dup_step_of_unbounded
+      (S := AlternatingDupSchema.toDup2Schema
+        (AlternatingDupSchema.AlternatingDupSystem.toAlternatingDupSchema Sys))
+      (M := M.projectedAffine) hunbounded hcomp
+
+end AlternatingDupSchema
+
+end OperatorKO7.MutualDuplicationTransparent
+```
+
+---
+
 ## OperatorKO7/Meta/Newman_Safe.lean
 
 **Lines:** 231
@@ -10806,6 +11772,289 @@ end OperatorKO7.ObjectAxiomAblation
 
 ---
 
+## OperatorKO7/Meta/OrdinalHierarchy.lean
+
+**Lines:** 119
+
+```lean
+import Mathlib.SetTheory.Ordinal.Notation
+
+/-!
+# Ordinal hierarchy prelude
+
+This file provides the hierarchy definitions needed for a genuine
+Moser--Weiermann-style extraction below `ε₀`. It is intentionally generic and
+does not yet connect the hierarchies to the KO7 relations.
+-/
+
+namespace OperatorKO7.OrdinalHierarchy
+
+open ONote
+
+/-- Slow-growing hierarchy on ordinal notations below `ε₀`. -/
+def slowGrowing : ONote → ℕ → ℕ
+  | o =>
+    match fundamentalSequence o, fundamentalSequence_has_prop o with
+    | Sum.inl none, _ => fun _ => 0
+    | Sum.inl (some a), h =>
+      have : a < o := by
+        rw [lt_def, h.1]
+        exact Order.lt_succ (ONote.repr a)
+      fun i => slowGrowing a i + 1
+    | Sum.inr f, h => fun i =>
+      have : f i < o := (h.2.1 i).2.1
+      slowGrowing (f i) i
+  termination_by o => o
+
+@[nolint unusedHavesSuffices]
+theorem slowGrowing_def {o : ONote} {x} (e : fundamentalSequence o = x) :
+    slowGrowing o =
+      match
+        (motive := (x : Option ONote ⊕ (ℕ → ONote)) → FundamentalSequenceProp o x → ℕ → ℕ)
+        x, e ▸ fundamentalSequence_has_prop o with
+      | Sum.inl none, _ => fun _ => 0
+      | Sum.inl (some a), _ => fun i => slowGrowing a i + 1
+      | Sum.inr f, _ => fun i => slowGrowing (f i) i := by
+  subst x
+  rw [slowGrowing]
+
+theorem slowGrowing_zero' (o : ONote) (h : fundamentalSequence o = Sum.inl none) :
+    slowGrowing o = fun _ => 0 := by
+  rw [slowGrowing_def h]
+
+theorem slowGrowing_succ (o : ONote) {a} (h : fundamentalSequence o = Sum.inl (some a)) :
+    slowGrowing o = fun i => slowGrowing a i + 1 := by
+  rw [slowGrowing_def h]
+
+theorem slowGrowing_limit (o : ONote) {f} (h : fundamentalSequence o = Sum.inr f) :
+    slowGrowing o = fun i => slowGrowing (f i) i := by
+  rw [slowGrowing_def h]
+
+@[simp] theorem slowGrowing_zero : slowGrowing 0 = fun _ => 0 :=
+  slowGrowing_zero' _ rfl
+
+@[simp] theorem slowGrowing_one : slowGrowing 1 = fun _ => 1 := by
+  rw [@slowGrowing_succ 1 0 rfl]
+  funext i
+  simp
+
+@[simp] theorem slowGrowing_two : slowGrowing 2 = fun _ => 2 := by
+  rw [@slowGrowing_succ 2 1 rfl]
+  funext i
+  simp
+
+/-- Cichon hierarchy on ordinal notations below `ε₀`. -/
+def cichon : ONote → ℕ → ℕ
+  | o =>
+    match fundamentalSequence o, fundamentalSequence_has_prop o with
+    | Sum.inl none, _ => fun _ => 0
+    | Sum.inl (some a), h =>
+      have : a < o := by
+        rw [lt_def, h.1]
+        exact Order.lt_succ (ONote.repr a)
+      fun i => Nat.succ (cichon a (i + 1))
+    | Sum.inr f, h => fun i =>
+      have : f i < o := (h.2.1 i).2.1
+      Nat.succ (cichon (f i) (i + 1))
+  termination_by o => o
+
+@[nolint unusedHavesSuffices]
+theorem cichon_def {o : ONote} {x} (e : fundamentalSequence o = x) :
+    cichon o =
+      match
+        (motive := (x : Option ONote ⊕ (ℕ → ONote)) → FundamentalSequenceProp o x → ℕ → ℕ)
+        x, e ▸ fundamentalSequence_has_prop o with
+      | Sum.inl none, _ => fun _ => 0
+      | Sum.inl (some a), _ => fun i => Nat.succ (cichon a (i + 1))
+      | Sum.inr f, _ => fun i => Nat.succ (cichon (f i) (i + 1)) := by
+  subst x
+  rw [cichon]
+
+theorem cichon_zero' (o : ONote) (h : fundamentalSequence o = Sum.inl none) :
+    cichon o = fun _ => 0 := by
+  rw [cichon_def h]
+
+theorem cichon_succ (o : ONote) {a} (h : fundamentalSequence o = Sum.inl (some a)) :
+    cichon o = fun i => Nat.succ (cichon a (i + 1)) := by
+  rw [cichon_def h]
+
+theorem cichon_limit (o : ONote) {f} (h : fundamentalSequence o = Sum.inr f) :
+    cichon o = fun i => Nat.succ (cichon (f i) (i + 1)) := by
+  rw [cichon_def h]
+
+@[simp] theorem cichon_zero : cichon 0 = fun _ => 0 :=
+  cichon_zero' _ rfl
+
+@[simp] theorem cichon_one : cichon 1 = fun _ => 1 := by
+  rw [@cichon_succ 1 0 rfl]
+  funext i
+  simp
+
+@[simp] theorem cichon_two : cichon 2 = fun _ => 2 := by
+  rw [@cichon_succ 2 1 rfl]
+  funext i
+  simp
+
+end OperatorKO7.OrdinalHierarchy
+```
+
+---
+
+## OperatorKO7/Meta/OrdinalHierarchy_Control.lean
+
+**Lines:** 56
+
+```lean
+import OperatorKO7.Meta.OrdinalHierarchy
+
+/-!
+# Exact controlled descent for ordinal notations
+
+This module packages the generic theorem behind the strict S142 roadmap:
+an exact fundamental-sequence descent chain has length bounded by the
+corresponding `cichon` value.
+
+The relation here is intentionally exact. It does not yet allow arbitrary
+smaller descendants beneath the chosen fundamental-sequence approximation.
+That stronger abstraction is the remaining proof-engineering gap for a full
+Moser--Weiermann-style extraction on the KO7 relations.
+-/
+
+open ONote
+
+namespace OperatorKO7.OrdinalHierarchy
+
+/-- Exact controlled descent with an explicit endpoint. -/
+inductive ExactControlledPow : ONote → Nat → Nat → ONote → Nat → Prop
+  | refl (o : ONote) (k : Nat) : ExactControlledPow o k 0 o k
+  | succ {o a r : ONote} {k k' n : Nat}
+      (hfs : fundamentalSequence o = Sum.inl (some a))
+      (hrest : ExactControlledPow a (k + 1) n r k') :
+      ExactControlledPow o k (n + 1) r k'
+  | limit {o r : ONote} {f : Nat → ONote} {k k' n : Nat}
+      (hfs : fundamentalSequence o = Sum.inr f)
+      (hrest : ExactControlledPow (f k) (k + 1) n r k') :
+      ExactControlledPow o k (n + 1) r k'
+
+/-- Length-only projection of the endpoint-tracking relation. -/
+abbrev ExactControlledPath (o : ONote) (k n : Nat) : Prop :=
+  ∃ r k', ExactControlledPow o k n r k'
+
+/-- Generic Cichon bound for exact fundamental-sequence descent. -/
+theorem exactControlledPow_length_le_cichon :
+    ∀ {o r : ONote} {k k' n : Nat}, ExactControlledPow o k n r k' → n ≤ cichon o k
+  | _, _, _, _, _, ExactControlledPow.refl _ _ => by
+      simp
+  | _, _, _, _, _, ExactControlledPow.succ hfs hrest => by
+      have ih := exactControlledPow_length_le_cichon hrest
+      rw [cichon_succ _ hfs]
+      exact Nat.succ_le_succ ih
+  | _, _, _, _, _, ExactControlledPow.limit hfs hrest => by
+      have ih := exactControlledPow_length_le_cichon hrest
+      rw [cichon_limit _ hfs]
+      exact Nat.succ_le_succ ih
+
+theorem exactControlledPath_length_le_cichon
+    {o : ONote} {k n : Nat} (h : ExactControlledPath o k n) :
+    n ≤ cichon o k := by
+  rcases h with ⟨r, k', hp⟩
+  exact exactControlledPow_length_le_cichon hp
+
+end OperatorKO7.OrdinalHierarchy
+```
+
+---
+
+## OperatorKO7/Meta/OrdinalHierarchy_Controlled.lean
+
+**Lines:** 81
+
+```lean
+import OperatorKO7.Meta.OrdinalHierarchy
+
+/-!
+# Invalid relaxed-control route for strict S142
+
+This file records a failed route that looked plausible but is not sound:
+allowing one-step descent to *any* smaller notation beneath the chosen
+fundamental-sequence approximation and trying to bound the resulting path
+length by `cichon o k` via same-control ordinal monotonicity.
+
+That monotonicity principle is false. A concrete counterexample is:
+
+- `cichon 5 1 = 5`
+- `cichon ω 1 = 3`
+
+even though `5 < ω`.
+
+So a generic theorem of the form
+
+```lean
+a.repr ≤ b.repr → cichon a k ≤ cichon b k
+```
+
+cannot be used to justify the relaxed-below-approximant relation. The
+correct strict-S142 route must instead use either:
+
+- a norm-bounded control theorem, or
+- a more specialized KO7 root comparison that avoids this false monotonicity.
+
+This file is intentionally limited to the counterexample and the exploratory
+relation definition; it does **not** provide a valid derivation-length bound.
+-/
+
+open ONote
+
+namespace OperatorKO7.OrdinalHierarchy
+
+def omegaNote : ONote := ONote.oadd 1 1 0
+
+example : cichon (ONote.ofNat 5) 1 = 5 := by native_decide
+
+example : cichon omegaNote 1 = 3 := by native_decide
+
+theorem not_cichon_mono_repr :
+    ¬ ∀ a b : ONote, ∀ k : Nat, a.repr ≤ b.repr → cichon a k ≤ cichon b k := by
+  intro hmono
+  have hle : (ONote.ofNat 5).repr ≤ omegaNote.repr := by
+    simpa [omegaNote] using (Ordinal.nat_lt_omega0 5).le
+  have hbad := hmono (ONote.ofNat 5) omegaNote 1 hle
+  have hcontra : ¬ cichon (ONote.ofNat 5) 1 ≤ cichon omegaNote 1 := by
+    native_decide
+  exact hcontra hbad
+
+/-! ## Relaxed controlled descent relation -/
+
+/-- Relaxed controlled descent: at each step, the path may jump to any
+    notation whose `repr` is at most the fundamental-sequence approximation
+    (predecessor for successors, `f(k)` for limits).
+
+    This subsumes exact descent (landing exactly at the approximation)
+    and below-descent (landing strictly below it). The KO7 `rec_succ`
+    rule requires the below-descent case because its ordinal drop can
+    skip past the canonical approximant. -/
+inductive ControlledPow : ONote → Nat → Nat → Prop
+  | refl (o : ONote) (k : Nat) : ControlledPow o k 0
+  | succ {o a t : ONote} {k n : Nat}
+      (hfs : fundamentalSequence o = Sum.inl (some a))
+      (hle : t.repr ≤ a.repr)
+      (hrest : ControlledPow t (k + 1) n) :
+      ControlledPow o k (n + 1)
+  | limit {o t : ONote} {f : Nat → ONote} {k n : Nat}
+      (hfs : fundamentalSequence o = Sum.inr f)
+      (hle : t.repr ≤ (f k).repr)
+      (hrest : ControlledPow t (k + 1) n) :
+      ControlledPow o k (n + 1)
+
+/-- Length-only existential projection. -/
+abbrev ControlledPath (o : ONote) (k n : Nat) : Prop :=
+  ControlledPow o k n
+
+end OperatorKO7.OrdinalHierarchy
+```
+
+---
+
 ## OperatorKO7/Meta/PolyInterpretation_FullStep.lean
 
 **Lines:** 142
@@ -11259,13 +12508,14 @@ end OperatorKO7.PrecedenceBarrier
 
 ## OperatorKO7/Meta/PumpedBarrierClasses.lean
 
-**Lines:** 448
+**Lines:** 499
 
 ```lean
 import OperatorKO7.Meta.QuadraticBarrier
 import OperatorKO7.Meta.QuadraticCrossTermBarrier
 import OperatorKO7.Meta.MatrixBarrierLex
 import OperatorKO7.Meta.MultilinearBarrier
+import OperatorKO7.Meta.PolynomialBarrierGeneral
 import OperatorKO7.Meta.MaxBarrier
 import OperatorKO7.Meta.MatrixBarrierFunctional
 import OperatorKO7.Meta.MatrixBarrierMix2
@@ -11323,6 +12573,15 @@ structure MaxMeasureWithPump (S : StepDuplicatingSchema) extends MaxMeasure S wh
   has_pump :
     (1 ≤ succ_const) ∨
       1 ≤ wrap_const + wrap_left
+
+/-- Generalized bounded-polynomial measures with an internal pump and packaged frozen
+base-dominance witness. -/
+structure PolynomialMeasureWithPump (S : StepDuplicatingSchema)
+    extends BoundedPolynomialMeasure S where
+  has_pump :
+    (1 ≤ succ_bias ∧ 1 ≤ succ_scale) ∨
+      1 ≤ wrap_const + wrap_right * c_base
+  h_dominated : EventuallyDominatedAtBase toBoundedPolynomialMeasure
 
 /-- Weighted functional matrix measures whose chosen scalar projection has an internal
 affine pump. -/
@@ -11431,6 +12690,20 @@ theorem no_max_with_pump_orients_dup_step
   · exact
       no_max_orients_dup_step_of_wrap_pump
         (S := S) M.toMaxMeasure hwrap
+
+/-- Unconditional generalized bounded-polynomial barrier for the strengthened pumped
+subclass. -/
+theorem no_polynomial_with_pump_orients_dup_step
+    {S : StepDuplicatingSchema} (M : PolynomialMeasureWithPump S) :
+    ¬ (∀ (b s n : S.T),
+      M.eval (S.wrap s (S.recur b s n)) < M.eval (S.recur b s (S.succ n))) := by
+  rcases M.has_pump with hsucc | hwrap
+  · exact
+      no_polynomial_orients_dup_step_of_succ_pump
+        (S := S) M.toBoundedPolynomialMeasure hsucc.1 hsucc.2 M.h_dominated
+  · exact
+      no_polynomial_orients_dup_step_of_wrap_pump
+        (S := S) M.toBoundedPolynomialMeasure hwrap M.h_dominated
 
 /-- The projected scalar induced by a weighted functional matrix family can itself be
 packaged as an affine-with-pump measure. -/
@@ -11604,6 +12877,25 @@ theorem no_global_orients_max_with_pump
           refine ⟨wrapIter Sys.toStepDuplicatingSchema k, ?_⟩
           simpa using eval_wrapIter_ge_max (M := M.toMaxMeasure) hwrap k)
 
+/-- The strengthened generalized bounded-polynomial subclass also fails globally. -/
+theorem no_global_orients_polynomial_with_pump
+    {Sys : StepDuplicatingSystem}
+    (M : PolynomialMeasureWithPump Sys.toStepDuplicatingSchema) :
+    ¬ GlobalOrients Sys M.eval (· < ·) := by
+  rcases M.has_pump with hsucc | hwrap
+  · exact
+      (fun h =>
+        StepDuplicatingSchema.no_polynomial_orients_dup_step_of_succ_pump
+          (S := Sys.toStepDuplicatingSchema) M.toBoundedPolynomialMeasure
+          hsucc.1 hsucc.2 M.h_dominated
+          (fun b s n => h (Sys.dup_step b s n)))
+  · exact
+      (fun h =>
+        StepDuplicatingSchema.no_polynomial_orients_dup_step_of_wrap_pump
+          (S := Sys.toStepDuplicatingSchema) M.toBoundedPolynomialMeasure
+          hwrap M.h_dominated
+          (fun b s n => h (Sys.dup_step b s n)))
+
 /-- The strengthened weighted functional projection subclass also fails globally. -/
 theorem no_global_orients_matrixFunctional_with_projected_affine_pump
     {Sys : StepDuplicatingSystem} {d : Nat}
@@ -11691,6 +12983,14 @@ theorem no_global_step_orientation_max_with_pump
     ¬ StepDuplicatingSchema.GlobalOrients ko7System M.eval (· < ·) := by
   exact
     StepDuplicatingSchema.no_global_orients_max_with_pump
+      (Sys := ko7System) M
+
+/-- KO7 generalized-bounded-polynomial-with-pump specialization. -/
+theorem no_global_step_orientation_polynomial_with_pump
+    (M : StepDuplicatingSchema.PolynomialMeasureWithPump ko7Schema) :
+    ¬ StepDuplicatingSchema.GlobalOrients ko7System M.eval (· < ·) := by
+  exact
+    StepDuplicatingSchema.no_global_orients_polynomial_with_pump
       (Sys := ko7System) M
 
 /-- KO7 weighted functional projected-affine pumped specialization. -/
@@ -12218,6 +13518,75 @@ end OperatorKO7.QuadraticCrossTermBarrier
 
 ---
 
+## OperatorKO7/Meta/Reachability_Complexity.lean
+
+**Lines:** 60
+
+```lean
+import OperatorKO7.Meta.Newman_Safe
+import OperatorKO7.Meta.SafeRoot_Complexity
+
+/-!
+# Guarded Reachability Complexity Envelope
+
+This file packages the existing guarded normalizer-cost results into an explicit
+decision-cost statement for reachability to safe normal-form targets.
+
+The decision procedure is the one already used in `reachability_decidable`:
+compute `normalizeSafe t` and compare with the target `c`.
+We model its cost as:
+- the exact counted root-normalization length `normalizeSafeSteps t`, plus
+- one final equality check.
+
+This yields a theorem-backed upper/lower envelope without claiming an exact
+machine model or complexity class.
+-/
+
+open OperatorKO7 Trace
+
+namespace MetaSN_KO7
+
+/-- Cost model for deciding reachability to a safe normal-form target:
+run the certified root normalizer, then perform one equality check. -/
+@[simp] def reachabilityDecisionCost (t : Trace) (_c : Trace) : Nat :=
+  normalizeSafeSteps t + 1
+
+/-- The guarded reachability test is extensionally the normalizer-equality test already
+formalized in `reachability_decidable`. -/
+theorem reachability_decision_spec {t c : Trace} (hnf : NormalFormSafe c) :
+    SafeStepStar t c ↔ normalizeSafe t = c :=
+  safeStepStar_to_nf_iff_normalize_eq hnf
+
+/-- The decision cost inherits the explicit certified upper envelope from the root
+normalizer. -/
+theorem reachabilityDecisionCost_le_complexity_bound (t : Trace) (_c : Trace) :
+    reachabilityDecisionCost t _c ≤ complexity_bound (termSize t) + 1 := by
+  unfold reachabilityDecisionCost
+  have h := normalizeSafeSteps_le_complexity_bound t
+  omega
+
+/-- The merge-void chain gives a matching linear lower family for the guarded
+reachability decision procedure when the target is the safe normal form `void`. -/
+theorem reachabilityDecision_has_linear_lower_family (n : Nat) :
+    ∃ t c : Trace,
+      NormalFormSafe c ∧
+      SafeStepStar t c ∧
+      reachabilityDecisionCost t c = n + 1 ∧
+      n + 1 ≤ reachabilityDecisionCost t c ∧
+      reachabilityDecisionCost t c ≤ complexity_bound (termSize t) + 1 := by
+  refine ⟨mergeVoidChain n, void, ?_, ?_, ?_, ?_, ?_⟩
+  · simpa using (norm_nf_safe void)
+  · exact mergeVoidChain_star_void n
+  · simp [reachabilityDecisionCost, normalizeSafeSteps_mergeVoidChain]
+  · simp [reachabilityDecisionCost, normalizeSafeSteps_mergeVoidChain]
+  · simpa [reachabilityDecisionCost, normalizeSafeSteps_mergeVoidChain] using
+      reachabilityDecisionCost_le_complexity_bound (mergeVoidChain n) void
+
+end MetaSN_KO7
+```
+
+---
+
 ## OperatorKO7/Meta/RecCore.lean
 
 **Lines:** 269
@@ -12625,6 +13994,429 @@ theorem stepCtxFullPow_length_lt_W :
       have hle := stepCtxFullPow_length_le_W hpow
       have hpos : 1 ≤ W b := W_pos b
       omega
+
+end MetaSN_KO7
+```
+
+---
+
+## OperatorKO7/Meta/SafeStep_Complexity_FastGrowing.lean
+
+**Lines:** 186
+
+```lean
+import Mathlib
+import OperatorKO7.Meta.SafeStep_Complexity_Ordinal
+
+/-!
+# Fast-Growing Envelope for `SafeStepCtx`
+
+This module packages the existing `ctxFuel` / `towerBound` derivation-length bound
+for `SafeStepCtx` inside an explicit finite-level fast-growing hierarchy envelope.
+It does not attempt a full slow-growing / Moser--Weiermann extraction from the
+ordinal embedding. Instead, it provides a theorem-backed `F_ω`-style majorant whose
+level rises with the structural size parameter.
+-/
+
+open Function
+open OperatorKO7 Trace
+
+namespace MetaSN_KO7
+
+/-- Finite fast-growing hierarchy on naturals. -/
+def fastGrow : Nat → Nat → Nat
+  | 0, n => n + 1
+  | k + 1, n => (fastGrow k)^[n + 1] n
+
+@[simp] theorem fastGrow_zero (n : Nat) : fastGrow 0 n = n + 1 := rfl
+
+private theorem iterate_mono {f : Nat → Nat} (hf : Monotone f) :
+    ∀ n : Nat, Monotone (fun x => (f^[n]) x)
+  | 0 => by
+      intro a b hab
+      simpa using hab
+  | n + 1 => by
+      intro a b hab
+      simpa [Function.iterate_succ_apply] using (iterate_mono hf n) (hf hab)
+
+private theorem iterate_count_mono {f : Nat → Nat} (hf : ∀ x, x ≤ f x) (hmono : Monotone f)
+    {m n x : Nat} (h : m ≤ n) : (f^[m]) x ≤ (f^[n]) x := by
+  induction h with
+  | refl =>
+      exact le_rfl
+  | @step n h ih =>
+      exact le_trans ih (by
+        rw [Function.iterate_succ_apply]
+        exact (iterate_mono hmono n) (hf x))
+
+private theorem fastGrow_mono_infl :
+    ∀ k : Nat, Monotone (fastGrow k) ∧ (∀ n : Nat, n ≤ fastGrow k n)
+  | 0 => by
+      refine ⟨?_, ?_⟩
+      · intro a b hab
+        simp [fastGrow]
+        omega
+      · intro n
+        simp [fastGrow]
+  | k + 1 => by
+      rcases fastGrow_mono_infl k with ⟨hmono, hinfl⟩
+      refine ⟨?_, ?_⟩
+      · intro a b hab
+        have hstart : ((fastGrow k)^[a + 1]) a ≤ ((fastGrow k)^[a + 1]) b := by
+          exact (iterate_mono hmono (a + 1)) hab
+        have hcount : ((fastGrow k)^[a + 1]) b ≤ ((fastGrow k)^[b + 1]) b := by
+          exact iterate_count_mono (f := fastGrow k) hinfl hmono (x := b) (by omega)
+        simpa [fastGrow] using le_trans hstart hcount
+      · intro n
+        simpa [fastGrow] using
+          (iterate_count_mono (f := fastGrow k) hinfl hmono (x := n) (by omega : 0 ≤ n + 1))
+
+theorem fastGrow_mono_arg (k : Nat) : Monotone (fastGrow k) :=
+  (fastGrow_mono_infl k).1
+
+theorem fastGrow_inflationary (k n : Nat) : n ≤ fastGrow k n :=
+  (fastGrow_mono_infl k).2 n
+
+theorem fastGrow_level_step (k n : Nat) : fastGrow k n ≤ fastGrow (k + 1) n := by
+  have hiter : ((fastGrow k)^[1]) n ≤ ((fastGrow k)^[n + 1]) n := by
+    exact iterate_count_mono (f := fastGrow k) (fun x => fastGrow_inflationary k x) (fastGrow_mono_arg k) (x := n) (by omega)
+  simpa [fastGrow] using hiter
+
+theorem fastGrow_level_mono {k l n : Nat} (h : k ≤ l) : fastGrow k n ≤ fastGrow l n := by
+  induction h with
+  | refl =>
+      exact le_rfl
+  | @step l h ih =>
+      exact le_trans ih (fastGrow_level_step l n)
+
+private theorem iterate_succ_eq_add (r x : Nat) : (Nat.succ^[r]) x = x + r := by
+  induction r generalizing x with
+  | zero =>
+      simp
+  | succ r ih =>
+      rw [Function.iterate_succ_apply, ih]
+      omega
+
+@[simp] theorem fastGrow_one (n : Nat) : fastGrow 1 n = 2 * n + 1 := by
+  have hzero : fastGrow 0 = Nat.succ := by
+    funext x
+    simp [fastGrow]
+  rw [fastGrow, hzero, iterate_succ_eq_add]
+  omega
+
+private theorem iter_double_add_one_plus_one (r x : Nat) :
+    ((fun z : Nat => 2 * z + 1)^[r]) x + 1 = 2 ^ r * (x + 1) := by
+  induction r generalizing x with
+  | zero =>
+      simp
+  | succ r ih =>
+      rw [Function.iterate_succ_apply, ih]
+      rw [pow_succ]
+      ring_nf
+
+theorem fastGrow_two_plus_one (n : Nat) :
+    fastGrow 2 n + 1 = 2 ^ (n + 1) * (n + 1) := by
+  rw [fastGrow]
+  have hfun : fastGrow 1 = fun z => 2 * z + 1 := by
+    funext z
+    exact fastGrow_one z
+  rw [hfun]
+  exact iter_double_add_one_plus_one (n + 1) n
+
+private theorem fastGrow_two_dominates_pow_add (n x : Nat) (hx : x ≤ n) :
+    2 ^ n + x + 1 ≤ fastGrow 2 (n + 1) := by
+  have hone : 1 ≤ 2 ^ n := Nat.one_le_pow n 2 (by omega)
+  have hmain : 2 ^ n + x + 2 ≤ 2 ^ (n + 2) * (n + 2) := by
+    calc
+      2 ^ n + x + 2 ≤ 2 ^ n + n + 2 := by omega
+      _ ≤ 2 ^ n + 2 ^ n * (n + 2) := by
+            have : n + 2 ≤ 2 ^ n * (n + 2) := by
+              exact le_trans (by omega) (Nat.mul_le_mul_right (n + 2) hone)
+            omega
+      _ = 2 ^ n * (n + 3) := by ring_nf
+      _ ≤ 2 ^ n * (4 * (n + 2)) := by
+            have : n + 3 ≤ 4 * (n + 2) := by omega
+            exact Nat.mul_le_mul_left (2 ^ n) this
+      _ = 2 ^ (n + 2) * (n + 2) := by
+            rw [pow_succ, pow_succ]
+            ring_nf
+  have hclosed := fastGrow_two_plus_one (n + 1)
+  have : 2 ^ n + x + 2 ≤ fastGrow 2 (n + 1) + 1 := by
+    simpa [hclosed] using hmain
+  omega
+
+/-- A size-indexed fast-growing-hierarchy-style envelope for `SafeStepCtx`. -/
+def fgOmegaEnvelope : Nat → Nat
+  | 0 => 6
+  | n + 1 => fastGrow (n + 2) (2 * fgOmegaEnvelope n + 6)
+
+theorem towerBound_le_fgOmegaEnvelope : ∀ n : Nat, towerBound n ≤ fgOmegaEnvelope n
+  | 0 => by
+      simp [towerBound, fgOmegaEnvelope]
+  | n + 1 => by
+      have ih := towerBound_le_fgOmegaEnvelope n
+      have hdom :
+          2 ^ (2 * towerBound n + 5) + towerBound n + 1 ≤
+            fastGrow 2 (2 * fgOmegaEnvelope n + 6) := by
+        have hlin : towerBound n ≤ 2 * fgOmegaEnvelope n + 5 := by omega
+        have hpow :
+            2 ^ (2 * towerBound n + 5) + towerBound n + 1 ≤
+              2 ^ (2 * fgOmegaEnvelope n + 5) + (2 * fgOmegaEnvelope n + 5) + 1 := by
+          have hp :
+              2 ^ (2 * towerBound n + 5) ≤ 2 ^ (2 * fgOmegaEnvelope n + 5) := by
+            exact Nat.pow_le_pow_right (by omega) (by omega)
+          omega
+        have hfg :
+            2 ^ (2 * fgOmegaEnvelope n + 5) + (2 * fgOmegaEnvelope n + 5) + 1 ≤
+              fastGrow 2 (2 * fgOmegaEnvelope n + 6) := by
+          have hraw :=
+            fastGrow_two_dominates_pow_add (2 * fgOmegaEnvelope n + 5) (2 * fgOmegaEnvelope n + 5) (le_rfl)
+          convert hraw using 1
+        exact le_trans hpow hfg
+      calc
+        towerBound (n + 1)
+            = 2 ^ (2 * towerBound n + 5) + towerBound n + 1 := by
+                simp [towerBound]
+        _ ≤ fastGrow 2 (2 * fgOmegaEnvelope n + 6) := hdom
+        _ ≤ fastGrow (n + 2) (2 * fgOmegaEnvelope n + 6) := by
+              exact fastGrow_level_mono (n := 2 * fgOmegaEnvelope n + 6) (show 2 ≤ n + 2 by omega)
+        _ = fgOmegaEnvelope (n + 1) := by
+              simp [fgOmegaEnvelope]
+
+/-- The existing contextual derivation-length bound is subsumed by the explicit
+finite-level fast-growing envelope `fgOmegaEnvelope`. -/
+theorem safestep_length_bounded_by_fgOmegaEnvelope (t u : Trace) (n : Nat)
+    (h : SafeStepCtxPow n t u) :
+    n ≤ fgOmegaEnvelope (termSize t) := by
+  exact le_trans (safestep_length_bounded_by_size t u n h) (towerBound_le_fgOmegaEnvelope _)
+
+end MetaSN_KO7
+```
+
+---
+
+## OperatorKO7/Meta/SafeStep_Complexity_MW_Root.lean
+
+**Lines:** 219
+
+```lean
+import OperatorKO7.Meta.NormalizeSafe_LowerBound
+import OperatorKO7.Meta.SafeStep_Complexity_Ordinal
+import OperatorKO7.Meta.DM_OrderType
+import OperatorKO7.Meta.DM_OrderType_LowerBound
+import OperatorKO7.Meta.ContextClosed_SN
+import OperatorKO7.Meta.OrdinalHierarchy
+import OperatorKO7.Meta.OrdinalHierarchy_Control
+import Mathlib.SetTheory.Ordinal.Arithmetic
+import Mathlib.Data.Multiset.Sort
+
+/-!
+# Root ordinal-notation bridge for strict S142
+
+This file builds the notation-level bridge from the existing ordinal calibration
+`lex3cToOrd` to `ONote`/`NONote`. It does not yet contain the final Moser--Weiermann
+descent theorem, but it provides the exact `NONote.repr` equalities needed to state
+such a theorem in terms of Mathlib's ordinal-notation machinery.
+-/
+
+open OperatorKO7
+open OperatorKO7.Trace
+open scoped Classical
+open Ordinal
+
+namespace MetaSN_KO7
+
+open OperatorKO7.MetaCM
+open OperatorKO7.MetaDM
+open OperatorKO7.OrdinalHierarchy
+open ONote
+open NONote
+
+private noncomputable def dmAddOpOrd (n : Nat) (acc : Ordinal) : Ordinal :=
+  (ω : Ordinal) ^ (n : Ordinal) + acc
+
+@[simp] theorem repr_NONote_ofNat (n : Nat) :
+    NONote.repr (NONote.ofNat n) = (n : Ordinal) := by
+  change (ONote.ofNat n).repr = (n : Ordinal)
+  exact ONote.repr_ofNat n
+
+/-- A normal-form notation for `ω`. -/
+def omegaNote : NONote :=
+  ⟨ONote.oadd 1 1 0, by infer_instance⟩
+
+/-- A normal-form notation for `ω^ω`. -/
+def omegaPowOmegaNote : NONote :=
+  NONote.opow omegaNote omegaNote
+
+@[simp] theorem repr_omegaNote :
+    NONote.repr omegaNote = (ω : Ordinal) := by
+  change (ONote.oadd 1 1 0).repr = (ω : Ordinal)
+  simp [ONote.repr]
+
+@[simp] theorem repr_omegaPowOmegaNote :
+    NONote.repr omegaPowOmegaNote = (ω : Ordinal) ^ (ω : Ordinal) := by
+  unfold omegaPowOmegaNote
+  rw [NONote.repr_opow, repr_omegaNote]
+
+/-- Sorted-list notation for the DM multiset ordinal payload. -/
+def dmNoteList : List Nat → NONote
+  | [] => 0
+  | n :: ns => NONote.opow omegaNote (NONote.ofNat n) + dmNoteList ns
+
+/-- Canonical notation for the DM multiset payload. -/
+def dmNote (m : Multiset Nat) : NONote :=
+  dmNoteList (Multiset.sort (· ≥ ·) m)
+
+@[simp] theorem repr_dmNoteList : ∀ l : List Nat,
+    NONote.repr (dmNoteList l) = l.foldr dmAddOpOrd 0
+  | [] => by
+      rfl
+  | n :: ns => by
+      simp [dmNoteList, repr_dmNoteList ns, dmAddOpOrd, NONote.repr_add, NONote.repr_opow,
+        repr_omegaNote, repr_NONote_ofNat]
+
+theorem repr_dmNote (m : Multiset Nat) :
+    NONote.repr (dmNote m) = dmOrdEmbed m := by
+  let l : List Nat := Multiset.sort (fun x y : Nat => x ≥ y) m
+  unfold dmNote
+  rw [repr_dmNoteList]
+  unfold MetaDM.dmOrdEmbed
+  change List.foldr dmAddOpOrd 0 l =
+    List.foldr (fun (n : Nat) (acc : Ordinal) => (ω : Ordinal) ^ (n : Ordinal) + acc) 0 l
+  induction l with
+  | nil =>
+      rfl
+  | cons n ns ih =>
+      simp [dmAddOpOrd, ih]
+
+/-- Notation for the middle lexicographic layer `ω * dmOrdEmbed κ + τ`. -/
+def lexDMNote (p : Multiset Nat × Nat) : NONote :=
+  omegaNote * dmNote p.1 + NONote.ofNat p.2
+
+theorem repr_lexDMNote (p : Multiset Nat × Nat) :
+    NONote.repr (lexDMNote p) = lexDMToOrd p := by
+  rcases p with ⟨κ, τ⟩
+  simp [lexDMNote, lexDMToOrd, repr_dmNote, NONote.repr_add, NONote.repr_mul,
+    repr_NONote_ofNat, repr_omegaNote]
+
+/-- Notation for the full triple-lex ordinal `ω^ω * δ + lexDM`. -/
+def lex3Note (x : Nat × (Multiset Nat × Nat)) : NONote :=
+  omegaPowOmegaNote * NONote.ofNat x.1 + lexDMNote x.2
+
+theorem repr_lex3Note (x : Nat × (Multiset Nat × Nat)) :
+    NONote.repr (lex3Note x) = lex3cToOrd x := by
+  rcases x with ⟨δ, p⟩
+  simp [lex3Note, lex3cToOrd, repr_lexDMNote, NONote.repr_add, NONote.repr_mul,
+    repr_NONote_ofNat, repr_omegaPowOmegaNote]
+
+/-- If a normal-form note denotes a successor ordinal, its fundamental sequence exposes
+    the corresponding predecessor note. -/
+private theorem fundamentalSequence_eq_succ_of_repr_succ {o a : ONote}
+    (ho : o.NF) (ha : a.NF) (h : o.repr = Order.succ a.repr) :
+    fundamentalSequence o = Sum.inl (some a) := by
+  cases hfs : fundamentalSequence o with
+  | inl opt =>
+      cases opt with
+      | none =>
+          exfalso
+          have hprop := fundamentalSequence_has_prop o
+          rw [hfs, fundamentalSequenceProp_inl_none] at hprop
+          subst hprop
+          exact Ordinal.succ_ne_zero _ h.symm
+      | some b =>
+          have hprop := fundamentalSequence_has_prop o
+          rw [hfs, fundamentalSequenceProp_inl_some] at hprop
+          rcases hprop with ⟨hb, hbNF⟩
+          have hEqRepr : b.repr = a.repr := by
+            apply Order.succ_injective
+            simpa [h] using hb.symm
+          have hbNF' : b.NF := hbNF ho
+          have hb' : b = a := (ONote.repr_inj (a := b) (b := a)).1 hEqRepr
+          cases hb'
+          rfl
+  | inr f =>
+      exfalso
+      have hprop := fundamentalSequence_has_prop o
+      rw [hfs, fundamentalSequenceProp_inr] at hprop
+      exact hprop.1.succ_ne _ h.symm
+
+/-- The finite `τ` payload makes every note in the `lex3Note` family with tail `τ+1`
+    a successor ordinal with predecessor obtained by decreasing that tail by one. -/
+theorem fundamentalSequence_lex3Note_succ (δ τ : Nat) (κ : Multiset Nat) :
+    fundamentalSequence (lex3Note (δ, (κ, τ + 1))).1 =
+      Sum.inl (some (lex3Note (δ, (κ, τ))).1) := by
+  apply fundamentalSequence_eq_succ_of_repr_succ
+  · infer_instance
+  · infer_instance
+  · change NONote.repr (lex3Note (δ, (κ, τ + 1))) =
+        Order.succ (NONote.repr (lex3Note (δ, (κ, τ))))
+    rw [repr_lex3Note, repr_lex3Note]
+    simp [lex3cToOrd, lexDMToOrd, Ordinal.add_succ]
+
+/-- Every `SafeStep` source has positive finite `τ` payload. -/
+theorem tau_pos_of_safeStep_source {a b : Trace} (h : SafeStep a b) : 0 < tau a := by
+  cases h <;> simp [tau]
+
+/-- The note attached to any guarded root source is a successor note whose predecessor
+    is obtained by decreasing the `τ` tail by one. -/
+theorem safeStep_source_fundamentalSequence {a b : Trace} (h : SafeStep a b) :
+    fundamentalSequence (lex3Note (mu3c a)).1 =
+      Sum.inl (some (lex3Note (deltaFlag a, (MetaSN_DM.kappaM a, tau a - 1))).1) := by
+  have hτ : 0 < tau a := tau_pos_of_safeStep_source h
+  have hs : tau a = (tau a - 1) + 1 := by
+    simpa [Nat.succ_eq_add_one] using (Nat.succ_pred_eq_of_pos hτ).symm
+  change fundamentalSequence (lex3Note (deltaFlag a, (MetaSN_DM.kappaM a, tau a))).1 =
+    Sum.inl (some (lex3Note (deltaFlag a, (MetaSN_DM.kappaM a, tau a - 1))).1)
+  rw [hs]
+  simpa using
+    fundamentalSequence_lex3Note_succ (deltaFlag a) (tau a - 1) (MetaSN_DM.kappaM a)
+
+/-- One exact controlled-descent step from a guarded root source to its explicit predecessor. -/
+theorem safeStep_source_exact_pred_step {a b : Trace} (h : SafeStep a b) :
+    ExactControlledPow (lex3Note (mu3c a)).1 (ctxFuel a) 1
+      (lex3Note (deltaFlag a, (MetaSN_DM.kappaM a, tau a - 1))).1 (ctxFuel a + 1) := by
+  refine ExactControlledPow.succ (hfs := safeStep_source_fundamentalSequence h) ?_
+  simpa using
+    ExactControlledPow.refl (lex3Note (deltaFlag a, (MetaSN_DM.kappaM a, tau a - 1))).1 (ctxFuel a + 1)
+
+/-- Every guarded root target lies at or below the explicit predecessor note of its source. -/
+theorem safeStep_target_repr_le_source_pred {a b : Trace} (h : SafeStep a b) :
+    NONote.repr (lex3Note (mu3c b)) ≤
+      NONote.repr (lex3Note (deltaFlag a, (MetaSN_DM.kappaM a, tau a - 1))) := by
+  have hτ : 0 < tau a := tau_pos_of_safeStep_source h
+  have hs : NONote.repr (lex3Note (mu3c a)) =
+      Order.succ (NONote.repr (lex3Note (deltaFlag a, (MetaSN_DM.kappaM a, tau a - 1)))) := by
+    change NONote.repr (lex3Note (deltaFlag a, (MetaSN_DM.kappaM a, tau a))) =
+      Order.succ (NONote.repr (lex3Note (deltaFlag a, (MetaSN_DM.kappaM a, tau a - 1))))
+    have htau : tau a = (tau a - 1) + 1 := by
+      simpa [Nat.succ_eq_add_one] using (Nat.succ_pred_eq_of_pos hτ).symm
+    rw [htau, repr_lex3Note, repr_lex3Note]
+    simp [lex3cToOrd, lexDMToOrd, Ordinal.add_succ]
+  have hlt : NONote.repr (lex3Note (mu3c b)) < NONote.repr (lex3Note (mu3c a)) := by
+    rw [repr_lex3Note, repr_lex3Note]
+    exact safeMeasure_strictMono_explicit h
+  rw [hs] at hlt
+  exact (Order.lt_succ_iff).mp hlt
+
+/-- Repeated exact predecessor descent through the finite `τ` tail of a `lex3Note`. -/
+theorem exactControlledPow_tau_drop (δ τ m k : Nat) (κ : Multiset Nat) :
+    ExactControlledPow (lex3Note (δ, (κ, τ + m))).1 k m
+      (lex3Note (δ, (κ, τ))).1 (k + m) := by
+  induction m generalizing k with
+  | zero =>
+      simpa using ExactControlledPow.refl (lex3Note (δ, (κ, τ))).1 k
+  | succ m ih =>
+      have hfs :
+          fundamentalSequence (lex3Note (δ, (κ, τ + m + 1))).1 =
+            Sum.inl (some (lex3Note (δ, (κ, τ + m))).1) := by
+        simpa [Nat.add_assoc, Nat.add_comm, Nat.add_left_comm] using
+          fundamentalSequence_lex3Note_succ δ (τ + m) κ
+      refine ExactControlledPow.succ (hfs := hfs) ?_
+      simpa [Nat.add_assoc, Nat.add_comm, Nat.add_left_comm] using ih (k := k + 1)
+
+/-- The notation-level root bound candidate for the strict MW extraction. -/
+def mwRootBound (t : Trace) : Nat :=
+  OperatorKO7.OrdinalHierarchy.cichon (lex3Note (mu3c t)).1 (ctxFuel t)
 
 end MetaSN_KO7
 ```
@@ -13555,10 +15347,11 @@ end MetaSN_KO7
 
 ## OperatorKO7/Meta/SafeStepCtx_Confluence.lean
 
-**Lines:** 92
+**Lines:** 511
 
 ```lean
 import OperatorKO7.Meta.ContextClosed_SN
+import OperatorKO7.Meta.Confluence_Safe
 import OperatorKO7.Meta.SafeStep_Ctx
 
 /-!
@@ -13586,6 +15379,154 @@ def LocalJoinCtxAt (a : Trace) : Prop :=
 /-- Confluence for the reflexive-transitive closure of `SafeStepCtx`. -/
 def ConfluentSafeCtx : Prop :=
   ∀ a b c, SafeStepCtxStar a b → SafeStepCtxStar a c → ∃ d, SafeStepCtxStar b d ∧ SafeStepCtxStar c d
+
+/-- `SafeStepCtx`-normal forms. -/
+def NormalFormSafeCtx (t : Trace) : Prop := ¬ ∃ u, SafeStepCtx t u
+
+private theorem union_eq_zero_left {X Y : Multiset Nat} (h : X ∪ Y = 0) : X = 0 := by
+  ext a
+  have hc : max (X.count a) (Y.count a) = 0 := by
+    simpa [Multiset.count_union] using congrArg (fun m => m.count a) h
+  exact (Nat.max_eq_zero_iff.mp hc).1
+
+private theorem union_eq_zero_right {X Y : Multiset Nat} (h : X ∪ Y = 0) : Y = 0 := by
+  ext a
+  have hc : max (X.count a) (Y.count a) = 0 := by
+    simpa [Multiset.count_union] using congrArg (fun m => m.count a) h
+  exact (Nat.max_eq_zero_iff.mp hc).2
+
+private theorem ctx_nf_exists_of_acc :
+    ∀ t : Trace, Acc SafeStepCtxRev t → ∃ n, SafeStepCtxStar t n ∧ NormalFormSafeCtx n := by
+  intro t ht
+  induction ht with
+  | intro x hx ih =>
+      by_cases hstep : ∃ y, SafeStepCtx x y
+      · rcases hstep with ⟨y, hxy⟩
+        rcases ih y hxy with ⟨n, hyn, hnf⟩
+        exact ⟨n, SafeStepCtxStar.tail hxy hyn, hnf⟩
+      · exact ⟨x, SafeStepCtxStar.refl x, hstep⟩
+
+/-- Every term admits a `SafeStepCtx` normal form. -/
+theorem ctx_nf_exists (t : Trace) : ∃ n, SafeStepCtxStar t n ∧ NormalFormSafeCtx n :=
+  ctx_nf_exists_of_acc t (acc_ctx_all t)
+
+/-- Any `SafeStepCtx`-normal form has `deltaFlag = 0`. -/
+theorem ctx_nf_deltaFlag_zero {t : Trace} (hnf : NormalFormSafeCtx t) : deltaFlag t = 0 := by
+  cases t with
+  | void => simp [deltaFlag]
+  | delta u => simp [deltaFlag]
+  | integrate u => simp [deltaFlag]
+  | merge a b => simp [deltaFlag]
+  | app a b => simp [deltaFlag]
+  | eqW a b => simp [deltaFlag]
+  | recΔ b s n =>
+      cases n with
+      | void => simp [deltaFlag]
+      | delta n =>
+          exfalso
+          apply hnf
+          refine ⟨app s (recΔ b s n), SafeStepCtx.root (SafeStep.R_rec_succ b s n)⟩
+      | integrate u => simp [deltaFlag]
+      | merge a b => simp [deltaFlag]
+      | app a b => simp [deltaFlag]
+      | recΔ b s n => simp [deltaFlag]
+      | eqW a b => simp [deltaFlag]
+
+/-- A contextual safe step preserves the zero-`kappaM` property. -/
+theorem ctx_step_preserves_kappa_zero {a b : Trace}
+    (h : SafeStepCtx a b) (hk : MetaSN_DM.kappaM a = 0) :
+    MetaSN_DM.kappaM b = 0 := by
+  induction h with
+  | root hs =>
+      cases hs with
+      | R_int_delta t =>
+          simp [MetaSN_DM.kappaM] at hk ⊢
+      | R_merge_void_left t hδ =>
+          simp at hk ⊢; exact hk
+      | R_merge_void_right t hδ =>
+          simp at hk ⊢; exact hk
+      | R_merge_cancel t hδ h0 =>
+          exact h0
+      | R_rec_zero b s hδ =>
+          simp [MetaSN_DM.kappaM] at hk
+      | R_rec_succ b s n =>
+          simp [MetaSN_DM.kappaM] at hk
+      | R_eq_refl a h0 =>
+          simp [MetaSN_DM.kappaM]
+      | R_eq_diff a b hne =>
+          simp at hk ⊢; exact hk
+  | integrate h ih =>
+      simp [MetaSN_DM.kappaM] at hk ⊢; exact ih hk
+  | mergeL h ih =>
+      have ha : MetaSN_DM.kappaM _ = 0 := union_eq_zero_left (by simp [MetaSN_DM.kappaM] at hk; exact hk)
+      have ha' := ih ha
+      have hb : MetaSN_DM.kappaM _ = 0 := union_eq_zero_right (by simp [MetaSN_DM.kappaM] at hk; exact hk)
+      simp [MetaSN_DM.kappaM, ha', hb]
+  | mergeR h ih =>
+      have ha : MetaSN_DM.kappaM _ = 0 := union_eq_zero_left (by simp [MetaSN_DM.kappaM] at hk; exact hk)
+      have hb : MetaSN_DM.kappaM _ = 0 := union_eq_zero_right (by simp [MetaSN_DM.kappaM] at hk; exact hk)
+      have hb' := ih hb
+      simp [MetaSN_DM.kappaM, ha, hb']
+  | appL h ih =>
+      have ha : MetaSN_DM.kappaM _ = 0 := union_eq_zero_left (by simp [MetaSN_DM.kappaM] at hk; exact hk)
+      have ha' := ih ha
+      have hb : MetaSN_DM.kappaM _ = 0 := union_eq_zero_right (by simp [MetaSN_DM.kappaM] at hk; exact hk)
+      simp [MetaSN_DM.kappaM, ha', hb]
+  | appR h ih =>
+      have ha : MetaSN_DM.kappaM _ = 0 := union_eq_zero_left (by simp [MetaSN_DM.kappaM] at hk; exact hk)
+      have hb : MetaSN_DM.kappaM _ = 0 := union_eq_zero_right (by simp [MetaSN_DM.kappaM] at hk; exact hk)
+      have hb' := ih hb
+      simp [MetaSN_DM.kappaM, ha, hb']
+  | recB h _ =>
+      simp [MetaSN_DM.kappaM] at hk
+  | recS h _ =>
+      simp [MetaSN_DM.kappaM] at hk
+  | recN h _ =>
+      simp [MetaSN_DM.kappaM] at hk
+
+/-- Zero-`kappaM` is preserved along contextual multi-step reduction. -/
+theorem ctxstar_preserves_kappa_zero {a b : Trace}
+    (h : SafeStepCtxStar a b) (hk : MetaSN_DM.kappaM a = 0) :
+    MetaSN_DM.kappaM b = 0 := by
+  induction h with
+  | refl t =>
+      exact hk
+  | tail hab hbc ih =>
+      exact ih (ctx_step_preserves_kappa_zero hab hk)
+
+private theorem ctx_shadow_merge_void_left (t : Trace) :
+    ∃ d, SafeStepCtxStar t d ∧ SafeStepCtxStar (merge void t) d := by
+  rcases ctx_nf_exists t with ⟨n, htn, hnf⟩
+  have hδn : deltaFlag n = 0 := ctx_nf_deltaFlag_zero hnf
+  refine ⟨n, htn, ?_⟩
+  exact ctxstar_trans (ctxstar_mergeR htn)
+    (ctxstar_of_root (SafeStep.R_merge_void_left n hδn))
+
+private theorem ctx_shadow_merge_void_right (t : Trace) :
+    ∃ d, SafeStepCtxStar t d ∧ SafeStepCtxStar (merge t void) d := by
+  rcases ctx_nf_exists t with ⟨n, htn, hnf⟩
+  have hδn : deltaFlag n = 0 := ctx_nf_deltaFlag_zero hnf
+  refine ⟨n, htn, ?_⟩
+  exact ctxstar_trans (ctxstar_mergeL htn)
+    (ctxstar_of_root (SafeStep.R_merge_void_right n hδn))
+
+private theorem ctx_shadow_merge_diag_of_kappa_zero (t : Trace)
+    (hk : MetaSN_DM.kappaM t = 0) :
+    ∃ d, SafeStepCtxStar t d ∧ SafeStepCtxStar (merge t t) d := by
+  rcases ctx_nf_exists t with ⟨n, htn, hnf⟩
+  have hk_n : MetaSN_DM.kappaM n = 0 := ctxstar_preserves_kappa_zero htn hk
+  have hδn : deltaFlag n = 0 := ctx_nf_deltaFlag_zero hnf
+  refine ⟨n, htn, ?_⟩
+  exact ctxstar_trans (ctxstar_mergeLR htn htn)
+    (ctxstar_of_root (SafeStep.R_merge_cancel n hδn hk_n))
+
+private theorem ctx_shadow_rec_zero (b s : Trace) :
+    ∃ d, SafeStepCtxStar b d ∧ SafeStepCtxStar (recΔ b s void) d := by
+  rcases ctx_nf_exists b with ⟨n, hbn, hnf⟩
+  have hδn : deltaFlag n = 0 := ctx_nf_deltaFlag_zero hnf
+  refine ⟨n, hbn, ?_⟩
+  exact ctxstar_trans (ctxstar_recB hbn)
+    (ctxstar_of_root (SafeStep.R_rec_zero n s hδn))
 
 private theorem ctxstar_destruct {a c : Trace} (h : SafeStepCtxStar a c) :
     a = c ∨ ∃ b, SafeStepCtx a b ∧ SafeStepCtxStar b c := by
@@ -13622,6 +15563,272 @@ private theorem join_ctxstar_at
               rcases ih b1 hxb1 hb1y hb1d₁ with ⟨d, hyd, hd₁d⟩
               exact ⟨d, hyd, ctxstar_trans hzd₁ hd₁d⟩
 
+/-- Global local-joinability for the contextual safe fragment. -/
+theorem localJoinAll_safeCtx : ∀ a, LocalJoinCtxAt a := by
+  intro a
+  induction a with
+  | void =>
+      intro b c hb hc
+      cases hb with
+      | root hs => cases hs
+  | delta t =>
+      intro b c hb hc
+      cases hb with
+      | root hs => cases hs
+  | integrate t iht =>
+      intro b c hb hc
+      cases hb with
+      | root hs1 =>
+          cases hc with
+          | root hs2 =>
+              exact (localJoin_ctx_of_localJoin (integrate t) (localJoin_all_safe (integrate t))) hs1 hs2
+          | integrate h2 =>
+              cases hs1 with
+              | R_int_delta t' => cases h2 with | root hs => cases hs
+      | integrate h1 =>
+          cases hc with
+          | root hs2 =>
+              cases hs2 with
+              | R_int_delta t' => cases h1 with | root hs => cases hs
+          | integrate h2 =>
+              rcases iht h1 h2 with ⟨d, h1d, h2d⟩
+              exact ⟨integrate d, ctxstar_integrate h1d, ctxstar_integrate h2d⟩
+  | merge x y ihx ihy =>
+      intro b c hb hc
+      cases hb with
+      | root hs1 =>
+          cases hc with
+          | root hs2 =>
+              exact (localJoin_ctx_of_localJoin (merge x y) (localJoin_all_safe (merge x y))) hs1 hs2
+          | mergeL h2 =>
+              cases hs1 with
+              | R_merge_void_left t hδ =>
+                  cases h2 with
+                  | root hs => cases hs
+              | R_merge_void_right t hδ =>
+                  rcases ctx_shadow_merge_void_right _ with ⟨d, htd, hmd⟩
+                  exact ⟨d, SafeStepCtxStar.tail h2 htd, hmd⟩
+              | R_merge_cancel _ hδ h0 =>
+                  rcases ctx_nf_exists _ with ⟨n, ht'n, hnf⟩
+                  have hk_t' : MetaSN_DM.kappaM _ = 0 := ctx_step_preserves_kappa_zero h2 h0
+                  have hk_n : MetaSN_DM.kappaM n = 0 := ctxstar_preserves_kappa_zero ht'n hk_t'
+                  have hδn : deltaFlag n = 0 := ctx_nf_deltaFlag_zero hnf
+                  have hroot_n := SafeStepCtxStar.tail h2 ht'n
+                  refine ⟨n, hroot_n, ?_⟩
+                  exact ctxstar_trans
+                    (ctxstar_trans (ctxstar_mergeL ht'n) (ctxstar_mergeR hroot_n))
+                    (ctxstar_of_root (SafeStep.R_merge_cancel n hδn hk_n))
+          | mergeR h2 =>
+              cases hs1 with
+              | R_merge_void_left t hδ =>
+                  rcases ctx_shadow_merge_void_left _ with ⟨d, htd, hmd⟩
+                  exact ⟨d, SafeStepCtxStar.tail h2 htd, hmd⟩
+              | R_merge_void_right t hδ =>
+                  cases h2 with
+                  | root hs => cases hs
+              | R_merge_cancel _ hδ h0 =>
+                  rcases ctx_nf_exists _ with ⟨n, ht'n, hnf⟩
+                  have hk_t' : MetaSN_DM.kappaM _ = 0 := ctx_step_preserves_kappa_zero h2 h0
+                  have hk_n : MetaSN_DM.kappaM n = 0 := ctxstar_preserves_kappa_zero ht'n hk_t'
+                  have hδn : deltaFlag n = 0 := ctx_nf_deltaFlag_zero hnf
+                  have hroot_n := SafeStepCtxStar.tail h2 ht'n
+                  refine ⟨n, hroot_n, ?_⟩
+                  exact ctxstar_trans
+                    (ctxstar_trans (ctxstar_mergeR ht'n) (ctxstar_mergeL hroot_n))
+                    (ctxstar_of_root (SafeStep.R_merge_cancel n hδn hk_n))
+      | mergeL h1 =>
+          cases hc with
+          | root hs2 =>
+              cases hs2 with
+              | R_merge_void_left t hδ =>
+                  cases h1 with
+                  | root hs => cases hs
+              | R_merge_void_right t hδ =>
+                  rcases ctx_shadow_merge_void_right _ with ⟨d, htd, hmd⟩
+                  exact ⟨d, hmd, SafeStepCtxStar.tail h1 htd⟩
+              | R_merge_cancel _ hδ h0 =>
+                  rcases ctx_nf_exists _ with ⟨n, ht'n, hnf⟩
+                  have hk_t' : MetaSN_DM.kappaM _ = 0 := ctx_step_preserves_kappa_zero h1 h0
+                  have hk_n : MetaSN_DM.kappaM n = 0 := ctxstar_preserves_kappa_zero ht'n hk_t'
+                  have hδn : deltaFlag n = 0 := ctx_nf_deltaFlag_zero hnf
+                  have hroot_n := SafeStepCtxStar.tail h1 ht'n
+                  refine ⟨n, ?_, hroot_n⟩
+                  exact ctxstar_trans
+                    (ctxstar_trans (ctxstar_mergeL ht'n) (ctxstar_mergeR hroot_n))
+                    (ctxstar_of_root (SafeStep.R_merge_cancel n hδn hk_n))
+          | mergeL h2 =>
+              rcases ihx h1 h2 with ⟨d, h1d, h2d⟩
+              exact ⟨merge d y, ctxstar_mergeL h1d, ctxstar_mergeL h2d⟩
+          | mergeR h2 =>
+              exact ⟨merge _ _, SafeStepCtxStar.tail (SafeStepCtx.mergeR h2) (SafeStepCtxStar.refl _),
+                SafeStepCtxStar.tail (SafeStepCtx.mergeL h1) (SafeStepCtxStar.refl _)⟩
+      | mergeR h1 =>
+          cases hc with
+          | root hs2 =>
+              cases hs2 with
+              | R_merge_void_left t hδ =>
+                  rcases ctx_shadow_merge_void_left _ with ⟨d, htd, hmd⟩
+                  exact ⟨d, hmd, SafeStepCtxStar.tail h1 htd⟩
+              | R_merge_void_right t hδ =>
+                  cases h1 with
+                  | root hs => cases hs
+              | R_merge_cancel _ hδ h0 =>
+                  rcases ctx_nf_exists _ with ⟨n, ht'n, hnf⟩
+                  have hk_t' : MetaSN_DM.kappaM _ = 0 := ctx_step_preserves_kappa_zero h1 h0
+                  have hk_n : MetaSN_DM.kappaM n = 0 := ctxstar_preserves_kappa_zero ht'n hk_t'
+                  have hδn : deltaFlag n = 0 := ctx_nf_deltaFlag_zero hnf
+                  have hroot_n := SafeStepCtxStar.tail h1 ht'n
+                  refine ⟨n, ?_, hroot_n⟩
+                  exact ctxstar_trans
+                    (ctxstar_trans (ctxstar_mergeR ht'n) (ctxstar_mergeL hroot_n))
+                    (ctxstar_of_root (SafeStep.R_merge_cancel n hδn hk_n))
+          | mergeL h2 =>
+              exact ⟨merge _ _, SafeStepCtxStar.tail (SafeStepCtx.mergeL h2) (SafeStepCtxStar.refl _),
+                SafeStepCtxStar.tail (SafeStepCtx.mergeR h1) (SafeStepCtxStar.refl _)⟩
+          | mergeR h2 =>
+              rcases ihy h1 h2 with ⟨d, h1d, h2d⟩
+              exact ⟨merge x d, ctxstar_mergeR h1d, ctxstar_mergeR h2d⟩
+  | app x y ihx ihy =>
+      intro b c hb hc
+      cases hb with
+      | root hs =>
+          cases hs
+      | appL h1 =>
+          cases hc with
+          | root hs =>
+              cases hs
+          | appL h2 =>
+              rcases ihx h1 h2 with ⟨d, h1d, h2d⟩
+              exact ⟨app d y, ctxstar_appL h1d, ctxstar_appL h2d⟩
+          | appR h2 =>
+              exact ⟨app _ _, SafeStepCtxStar.tail (SafeStepCtx.appR h2) (SafeStepCtxStar.refl _),
+                SafeStepCtxStar.tail (SafeStepCtx.appL h1) (SafeStepCtxStar.refl _)⟩
+      | appR h1 =>
+          cases hc with
+          | root hs =>
+              cases hs
+          | appL h2 =>
+              exact ⟨app _ _, SafeStepCtxStar.tail (SafeStepCtx.appL h2) (SafeStepCtxStar.refl _),
+                SafeStepCtxStar.tail (SafeStepCtx.appR h1) (SafeStepCtxStar.refl _)⟩
+          | appR h2 =>
+              rcases ihy h1 h2 with ⟨d, h1d, h2d⟩
+              exact ⟨app x d, ctxstar_appR h1d, ctxstar_appR h2d⟩
+  | recΔ b s n ihb ihs ihn =>
+      intro u v hu hv
+      cases hu with
+      | root hs1 =>
+          cases hv with
+          | root hs2 =>
+              exact (localJoin_ctx_of_localJoin (recΔ b s n) (localJoin_all_safe (recΔ b s n))) hs1 hs2
+          | recB hb =>
+              cases hs1 with
+              | R_rec_zero b s hδ =>
+                  rcases ctx_nf_exists _ with ⟨d, hbd, hnf⟩
+                  have hδd : deltaFlag d = 0 := ctx_nf_deltaFlag_zero hnf
+                  exact ⟨d, SafeStepCtxStar.tail hb hbd,
+                    ctxstar_trans (ctxstar_recB hbd)
+                      (ctxstar_of_root (SafeStep.R_rec_zero d s hδd))⟩
+              | R_rec_succ b s n =>
+                  exact ⟨app s (recΔ _ s n),
+                    SafeStepCtxStar.tail (SafeStepCtx.appR (SafeStepCtx.recB hb)) (SafeStepCtxStar.refl _),
+                    ctxstar_of_root (SafeStep.R_rec_succ _ s n)⟩
+          | recS hs' =>
+              cases hs1 with
+              | R_rec_zero b s hδ =>
+                  exact ⟨b, SafeStepCtxStar.refl _,
+                    ctxstar_of_root (SafeStep.R_rec_zero b _ hδ)⟩
+              | R_rec_succ b s n =>
+                  exact ⟨_,
+                    ctxstar_trans
+                      (SafeStepCtxStar.tail (SafeStepCtx.appL hs') (SafeStepCtxStar.refl _))
+                      (SafeStepCtxStar.tail (SafeStepCtx.appR (SafeStepCtx.recS hs')) (SafeStepCtxStar.refl _)),
+                    ctxstar_of_root (SafeStep.R_rec_succ _ _ _)⟩
+          | recN hn =>
+              cases hs1 with
+              | R_rec_zero b s hδ =>
+                  cases hn with
+                  | root hs => cases hs
+              | R_rec_succ b s n =>
+                  cases hn with
+                  | root hs => cases hs
+      | recB hb =>
+          cases hv with
+          | root hs2 =>
+              cases hs2 with
+              | R_rec_zero b s hδ =>
+                  rcases ctx_nf_exists _ with ⟨d, hbd, hnf⟩
+                  have hδd : deltaFlag d = 0 := ctx_nf_deltaFlag_zero hnf
+                  exact ⟨d,
+                    ctxstar_trans (ctxstar_recB hbd)
+                      (ctxstar_of_root (SafeStep.R_rec_zero d s hδd)),
+                    SafeStepCtxStar.tail hb hbd⟩
+              | R_rec_succ b s n =>
+                  exact ⟨app s (recΔ _ s n),
+                    ctxstar_of_root (SafeStep.R_rec_succ _ s n),
+                    SafeStepCtxStar.tail (SafeStepCtx.appR (SafeStepCtx.recB hb)) (SafeStepCtxStar.refl _)⟩
+          | recB hb' =>
+              rcases ihb hb hb' with ⟨d, h₁, h₂⟩
+              exact ⟨recΔ d s n, ctxstar_recB h₁, ctxstar_recB h₂⟩
+          | recS hs' =>
+              exact ⟨recΔ _ _ n,
+                SafeStepCtxStar.tail (SafeStepCtx.recS hs') (SafeStepCtxStar.refl _),
+                SafeStepCtxStar.tail (SafeStepCtx.recB hb) (SafeStepCtxStar.refl _)⟩
+          | recN hn =>
+              exact ⟨recΔ _ s _, SafeStepCtxStar.tail (SafeStepCtx.recN hn) (SafeStepCtxStar.refl _),
+                SafeStepCtxStar.tail (SafeStepCtx.recB hb) (SafeStepCtxStar.refl _)⟩
+      | recS hs' =>
+          cases hv with
+          | root hs2 =>
+              cases hs2 with
+              | R_rec_zero b s hδ =>
+                  exact ⟨b, ctxstar_of_root (SafeStep.R_rec_zero b _ hδ), SafeStepCtxStar.refl _⟩
+              | R_rec_succ b s n =>
+                  exact ⟨_,
+                    ctxstar_of_root (SafeStep.R_rec_succ _ _ _),
+                    ctxstar_trans
+                      (SafeStepCtxStar.tail (SafeStepCtx.appL hs') (SafeStepCtxStar.refl _))
+                      (SafeStepCtxStar.tail (SafeStepCtx.appR (SafeStepCtx.recS hs')) (SafeStepCtxStar.refl _))⟩
+          | recB hb =>
+              exact ⟨recΔ _ _ n,
+                SafeStepCtxStar.tail (SafeStepCtx.recB hb) (SafeStepCtxStar.refl _),
+                SafeStepCtxStar.tail (SafeStepCtx.recS hs') (SafeStepCtxStar.refl _)⟩
+          | recS hs'' =>
+              rcases ihs hs' hs'' with ⟨d, h₁, h₂⟩
+              exact ⟨recΔ b d n, ctxstar_recS h₁, ctxstar_recS h₂⟩
+          | recN hn =>
+              exact ⟨recΔ b _ _, SafeStepCtxStar.tail (SafeStepCtx.recN hn) (SafeStepCtxStar.refl _),
+                SafeStepCtxStar.tail (SafeStepCtx.recS hs') (SafeStepCtxStar.refl _)⟩
+      | recN hn =>
+          cases hv with
+          | root hs2 =>
+              cases hs2 with
+              | R_rec_zero b s hδ =>
+                  cases hn with
+                  | root hs => cases hs
+              | R_rec_succ b s n =>
+                  cases hn with
+                  | root hs => cases hs
+          | recB hb =>
+              exact ⟨recΔ _ s _, SafeStepCtxStar.tail (SafeStepCtx.recB hb) (SafeStepCtxStar.refl _),
+                SafeStepCtxStar.tail (SafeStepCtx.recN hn) (SafeStepCtxStar.refl _)⟩
+          | recS hs' =>
+              exact ⟨recΔ b _ _, SafeStepCtxStar.tail (SafeStepCtx.recS hs') (SafeStepCtxStar.refl _),
+                SafeStepCtxStar.tail (SafeStepCtx.recN hn) (SafeStepCtxStar.refl _)⟩
+          | recN hn' =>
+              rcases ihn hn hn' with ⟨d, h₁, h₂⟩
+              exact ⟨recΔ b s d, ctxstar_recN h₁, ctxstar_recN h₂⟩
+  | eqW x y =>
+      intro b c hb hc
+      cases hb with
+      | root hs1 =>
+          cases hc with
+          | root hs2 =>
+              exact (localJoin_ctx_of_localJoin (eqW x y) (localJoin_all_safe (eqW x y))) hs1 hs2
+
+/-- The contextual safe fragment is locally joinable everywhere. -/
+theorem localJoinAll_ctx : ∀ a, LocalJoinCtxAt a :=
+  localJoinAll_safeCtx
+
 /-- Newman's lemma specialized to `SafeStepCtx`. -/
 theorem newman_safeCtx (locAll : ∀ a, LocalJoinCtxAt a) : ConfluentSafeCtx := by
   intro a b c hab hac
@@ -13648,6 +15855,10 @@ theorem confluentSafeCtx_iff_localJoinAll :
   constructor
   · exact localJoinCtx_of_confluent
   · exact confluentSafeCtx_of_localJoinAt
+
+/-- Unconditional confluence of the partial context closure `SafeStepCtx`. -/
+theorem confluentSafeCtx : ConfluentSafeCtx :=
+  newman_safeCtx localJoinAll_ctx
 
 end MetaSN_KO7
 ```
@@ -13762,6 +15973,80 @@ theorem no_matrixMix2_orients_dup_step_of_sum_pump_via_projection
 end StepDuplicatingSchema
 
 end OperatorKO7.StepDuplicating
+```
+
+---
+
+## OperatorKO7/Meta/SharingBarrierLift.lean
+
+**Lines:** 65
+
+```lean
+import Mathlib.Order.WellFounded
+
+/-!
+# Sharing-aware lift of the duplication story
+
+This file formalizes a minimal sharing-aware surrogate of the duplicating recursor.
+The point is not to rebuild graph rewriting. It is to make one structural fact from
+the paper precise inside Lean:
+
+- the tree/no-sharing assumption is load-bearing,
+- once the step payload is shared rather than copied syntactically, the direct
+  additive obstruction can disappear.
+
+The surrogate keeps only the successor/recursor shape and a shared application node.
+-/
+
+namespace OperatorKO7.SharingBarrierLift
+
+/-- Minimal sharing-aware syntax. -/
+inductive SharedTerm : Type
+| base : SharedTerm
+| succ : SharedTerm → SharedTerm
+| shareApp : SharedTerm → SharedTerm → SharedTerm
+| recur : SharedTerm → SharedTerm → SharedTerm → SharedTerm
+deriving DecidableEq, Repr
+
+open SharedTerm
+
+/-- Sharing-aware recursive step: the payload is referenced once under `shareApp`
+rather than counted as two tree copies. -/
+inductive SharedStep : SharedTerm → SharedTerm → Prop
+| rec_succ : ∀ b s n, SharedStep (recur b s (succ n)) (shareApp s (recur b s n))
+
+/-- A simple counter depth for the shared recursor. The shared application counts only the
+recursive continuation, making the load-bearing role of tree semantics explicit. -/
+@[simp] def sharedCounter : SharedTerm → Nat
+| base => 0
+| succ t => sharedCounter t + 1
+| shareApp _ r => sharedCounter r
+| recur _ _ n => sharedCounter n
+
+/-- The sharing-aware direct counter strictly decreases on the duplicating step. -/
+theorem sharedCounter_orients_step :
+    ∀ {a b : SharedTerm}, SharedStep a b → sharedCounter b < sharedCounter a
+  | _, _, SharedStep.rec_succ _ _ _ => by
+      simp [sharedCounter]
+
+/-- Reverse sharing-aware step relation is well-founded. -/
+theorem wf_SharedStepRev : WellFounded (fun a b : SharedTerm => SharedStep b a) := by
+  have hsub : Subrelation (fun a b : SharedTerm => SharedStep b a)
+      (fun x y : SharedTerm => sharedCounter x < sharedCounter y) := by
+    intro x y hxy
+    exact sharedCounter_orients_step hxy
+  exact Subrelation.wf hsub (InvImage.wf (f := sharedCounter) Nat.lt_wfRel.wf)
+
+/-- A simple additive-style direct counter succeeds in the sharing-aware surrogate.
+This is the formal witness that the tree/no-sharing assumption in the paper is genuine. -/
+theorem sharing_breaks_tree_barrier :
+    ∀ b s n : SharedTerm,
+      sharedCounter (shareApp s (recur b s n)) <
+        sharedCounter (recur b s (succ n)) := by
+  intro b s n
+  simp
+
+end OperatorKO7.SharingBarrierLift
 ```
 
 ---
@@ -14641,6 +16926,215 @@ end OperatorKO7
 
 ---
 
+## OperatorKO7/Meta/TropicalBarrier.lean
+
+**Lines:** 119
+
+```lean
+import OperatorKO7.Meta.MaxBarrier
+
+/-!
+# Tropical primary-projection barrier
+
+This file extends the max/arctic line one step further. We still do not formalize
+generic tropical semiring algebra. Instead, we isolate the abstract ingredient
+used by the existing proofs:
+
+- a distinguished finite primary projection to `Nat`,
+- strict decrease in the ambient carrier reflected by strict decrease of that
+  projection,
+- and a projected scalar interface already blocked by the max barrier.
+
+This covers a broader tropical-family envelope than the arctic-specific file
+without claiming full semiring metatheory.
+-/
+
+namespace OperatorKO7.StepDuplicating
+
+namespace StepDuplicatingSchema
+
+/-- A broad tropical-family primary projection: the carrier is abstract, but every
+strict comparison must force strict decrease of the tracked finite primary scalar. -/
+structure TropicalPrimaryMeasure (S : StepDuplicatingSchema) (β : Type) where
+  eval : S.T → β
+  lt : β → β → Prop
+  primary : β → Nat
+  projectedMax : MaxMeasure S
+  primary_eq : ∀ t, primary (eval t) = projectedMax.eval t
+  lt_strict_primary : ∀ {x y : β}, lt x y → primary x < primary y
+
+/-- Unbounded-pump tropical barrier via the finite primary projection. -/
+theorem no_tropical_primary_orients_dup_step_of_unbounded
+    {S : StepDuplicatingSchema} {β : Type}
+    (M : TropicalPrimaryMeasure S β)
+    (hunbounded : HasUnboundedRangeMax M.projectedMax) :
+    ¬ (∀ (b s n : S.T),
+      M.lt (M.eval (S.wrap s (S.recur b s n)))
+        (M.eval (S.recur b s (S.succ n)))) := by
+  intro h
+  have hmax :
+      ∀ b s n : S.T,
+        M.projectedMax.eval (S.wrap s (S.recur b s n)) <
+          M.projectedMax.eval (S.recur b s (S.succ n)) := by
+    intro b s n
+    have hlt := h b s n
+    have hproj := M.lt_strict_primary hlt
+    simpa [M.primary_eq] using hproj
+  exact no_max_orients_dup_step_of_unbounded (S := S) M.projectedMax hunbounded hmax
+
+/-- Successor-pump tropical barrier via the finite primary projection. -/
+theorem no_tropical_primary_orients_dup_step_of_succ_pump
+    {S : StepDuplicatingSchema} {β : Type}
+    (M : TropicalPrimaryMeasure S β)
+    (h_succ_const : 1 ≤ M.projectedMax.succ_const) :
+    ¬ (∀ (b s n : S.T),
+      M.lt (M.eval (S.wrap s (S.recur b s n)))
+        (M.eval (S.recur b s (S.succ n)))) := by
+  intro h
+  have hmax :
+      ∀ b s n : S.T,
+        M.projectedMax.eval (S.wrap s (S.recur b s n)) <
+          M.projectedMax.eval (S.recur b s (S.succ n)) := by
+    intro b s n
+    have hlt := h b s n
+    have hproj := M.lt_strict_primary hlt
+    simpa [M.primary_eq] using hproj
+  exact no_max_orients_dup_step_of_succ_pump (S := S) M.projectedMax h_succ_const hmax
+
+/-- Wrap-pump tropical barrier via the finite primary projection. -/
+theorem no_tropical_primary_orients_dup_step_of_wrap_pump
+    {S : StepDuplicatingSchema} {β : Type}
+    (M : TropicalPrimaryMeasure S β)
+    (h_wrap_drift : 1 ≤ M.projectedMax.wrap_const + M.projectedMax.wrap_left) :
+    ¬ (∀ (b s n : S.T),
+      M.lt (M.eval (S.wrap s (S.recur b s n)))
+        (M.eval (S.recur b s (S.succ n)))) := by
+  intro h
+  have hmax :
+      ∀ b s n : S.T,
+        M.projectedMax.eval (S.wrap s (S.recur b s n)) <
+          M.projectedMax.eval (S.recur b s (S.succ n)) := by
+    intro b s n
+    have hlt := h b s n
+    have hproj := M.lt_strict_primary hlt
+    simpa [M.primary_eq] using hproj
+  exact no_max_orients_dup_step_of_wrap_pump (S := S) M.projectedMax h_wrap_drift hmax
+
+end StepDuplicatingSchema
+
+end OperatorKO7.StepDuplicating
+
+namespace OperatorKO7.TropicalBarrier
+
+open OperatorKO7
+open OperatorKO7.Trace
+open OperatorKO7.StepDuplicating
+open OperatorKO7.CompositionalImpossibility
+
+/-- KO7 specialization of the tropical primary-projection barrier. -/
+theorem no_global_step_orientation_tropical_primary_of_unbounded
+    {β : Type}
+    (M : StepDuplicatingSchema.TropicalPrimaryMeasure ko7Schema β)
+    (hunbounded : StepDuplicatingSchema.HasUnboundedRangeMax M.projectedMax) :
+    ¬ StepDuplicatingSchema.GlobalOrients ko7System M.eval M.lt := by
+  intro h
+  have hdup :
+      ∀ b s n : Trace,
+        M.lt
+          (M.eval (ko7Schema.wrap s (ko7Schema.recur b s n)))
+          (M.eval (ko7Schema.recur b s (ko7Schema.succ n))) := by
+    intro b s n
+    exact h (ko7System.dup_step b s n)
+  exact
+    StepDuplicatingSchema.no_tropical_primary_orients_dup_step_of_unbounded
+      (S := ko7Schema) M hunbounded hdup
+
+end OperatorKO7.TropicalBarrier
+```
+
+---
+
+## OperatorKO7/Meta/TTT2_CertificateReplay.lean
+
+**Lines:** 72
+
+```lean
+import OperatorKO7.Meta.DependencyPairs_Works
+
+/-!
+# Narrow Lean-side replay of the FAST TTT2 certificate core
+
+This file does not parse CPF. It replays the mathematically substantive core of
+the external FAST certificate inside Lean:
+
+- the extracted recursive dependency pair,
+- the singleton real SCC,
+- the subterm projection on the recursion-counter argument.
+
+That is exactly the fragment reported by `Artifacts/ttt2/KO7_FAST.cpf` and
+`KO7_full_step_TTT2_results_FAST.txt`.
+-/
+
+open OperatorKO7 Trace
+
+namespace OperatorKO7.TTT2CertificateReplay
+
+open OperatorKO7.DependencyPairsFragment
+open OperatorKO7.MetaDependencyPairs
+
+/-- Minimal replay object for the FAST certificate fragment. -/
+structure FastDPReplay where
+  projectionIndexTool : Nat
+  projectionIndexPaper : Nat
+  pairCount : Nat
+  singletonRealSccCount : Nat
+  projectionProblem : DPProjection Trace
+
+/-- Lean-side replay of the mathematical core of the FAST certificate. -/
+def ko7FastReplay : FastDPReplay where
+  projectionIndexTool := 2
+  projectionIndexPaper := 3
+  pairCount := 1
+  singletonRealSccCount := 1
+  projectionProblem := ko7ProjectionProblem
+
+theorem ko7FastReplay_indices :
+    ko7FastReplay.projectionIndexTool + 1 = ko7FastReplay.projectionIndexPaper := by
+  decide
+
+theorem ko7FastReplay_pairCount :
+    ko7FastReplay.pairCount = 1 := rfl
+
+theorem ko7FastReplay_singletonRealScc :
+    ko7FastReplay.singletonRealSccCount = 1 := rfl
+
+/-- The Lean replay uses the same extracted recursive pair as the external FAST proof. -/
+theorem ko7FastReplay_uses_recSucc_pair :
+    ko7FastReplay.projectionProblem.Pair = DPPair := rfl
+
+/-- The Lean replay uses the same projection-rank drop as the external FAST proof. -/
+theorem ko7FastReplay_subterm_drop :
+    ∀ {a b : Trace}, ko7FastReplay.projectionProblem.Pair a b →
+      ko7FastReplay.projectionProblem.rank b < ko7FastReplay.projectionProblem.rank a := by
+  intro a b h
+  exact ko7FastReplay.projectionProblem.decreases h
+
+/-- Narrow internal replay soundness: the FAST certificate core certifies the reverse
+dependency-pair relation as well-founded inside Lean. -/
+theorem ko7FastReplay_sound :
+    WellFounded ko7FastReplay.projectionProblem.Rev := by
+  simpa [ko7FastReplay] using ko7ProjectionProblem.wfRev
+
+/-- The replayed FAST certificate core proves the extracted KO7 pair problem
+terminating inside Lean. -/
+theorem wf_DPPairRev_replayed : WellFounded DPPairRev := by
+  simpa [DPPairRev, ko7FastReplay] using ko7FastReplay_sound
+
+end OperatorKO7.TTT2CertificateReplay
+```
+
+---
+
 ## OperatorKO7/Meta/TypedBarrierSurvival.lean
 
 **Lines:** 205
@@ -14851,6 +17345,103 @@ theorem no_affine_orients_typed_recSucc_of_stepPump (M : AffineMeasure)
   exact Nat.not_lt_of_ge hge hspec
 
 end OperatorKO7.TypedBarrierSurvival
+```
+
+---
+
+## OperatorKO7/SchemaAPI.lean
+
+**Lines:** 88
+
+```lean
+-- Core schema and barrier theorems
+import OperatorKO7.Meta.StepDuplicatingSchema
+
+-- Nonlinear scalar barrier extensions
+import OperatorKO7.Meta.QuadraticBarrier
+import OperatorKO7.Meta.QuadraticCrossTermBarrier
+import OperatorKO7.Meta.MultilinearBarrier
+import OperatorKO7.Meta.PolynomialBarrierGeneral
+import OperatorKO7.Meta.MaxBarrier
+import OperatorKO7.Meta.ArcticBarrier
+
+-- Vector / matrix-side barriers
+import OperatorKO7.Meta.MatrixBarrier2
+import OperatorKO7.Meta.MatrixBarrierD
+import OperatorKO7.Meta.MatrixBarrierLex
+import OperatorKO7.Meta.MatrixBarrierMix2
+import OperatorKO7.Meta.MatrixBarrierFunctional
+import OperatorKO7.Meta.ScalarProjectionBarrier
+
+-- Symbolic comparator barriers
+import OperatorKO7.Meta.SymbolicComparatorBarrier
+import OperatorKO7.Meta.KBO_Impossible
+
+-- Strengthened subclasses and pump infrastructure
+import OperatorKO7.Meta.PumpedBarrierClasses
+import OperatorKO7.Meta.StandardPumpLemmas
+
+-- Executable boundary tooling
+import OperatorKO7.Meta.BarrierWitness
+import OperatorKO7.Meta.BarrierWitness_Extended
+import OperatorKO7.Meta.SynthesisOracle
+import OperatorKO7.Meta.BarrierClass_Classifier
+
+/-!
+# Public Schema API — Reusable Barrier Theory for Step-Duplicating Recursors
+
+This module is the **stable public entry point** for the reusable schema-level
+barrier theory. It re-exports the generic impossibility theorems, escape
+characterization infrastructure, and executable boundary tooling that apply to
+**any** step-duplicating schema, not only to KO7.
+
+## What this module provides
+
+### Core schema definition
+- `StepDuplicatingSchema` — the four-role schema (base/succ/wrap/recur)
+- `StepDuplicatingSystem` — schema + a step relation containing the dup rule
+- `GlobalOrients` — the property that a measure globally orients a relation
+
+### Barrier theorems (schema-level)
+- Additive and transparent-compositional impossibility
+- Affine / linear constructor-local barrier
+- Restricted quadratic, bounded cross-term quadratic barriers
+- Bounded multilinear barrier
+- Generalized degree-bounded polynomial barrier
+- Max-plus barrier and arctic primary-projection corollary
+- Fixed-dimension tracked componentwise vector barrier
+- Dimension-2 lexicographic pair barrier
+- Balanced mixed-coordinate dimension-2 barrier
+- Weighted scalar-projection componentwise barrier
+- Scalar-projection meta-theorem
+- Symbolic variable-condition barrier (KBO-style) and KBO corollary
+
+### Strengthened subclasses and pump infrastructure
+- Pumped subclasses with internalized growth conditions
+- Reusable successor-pump and wrap-pump lemmas
+
+### Executable boundary tooling
+- Computable barrier-witness extractors (`additive_witness`, etc.)
+- Extended witness extractors for quadratic, max-plus, and projected matrix families
+- Synthesis-oracle interface
+- Decidable coefficient-table classifier
+
+## What this module does NOT provide
+
+KO7-specific results (kernel definitions, KO7 instantiations, the certified
+normalizer, confluence, ordinal calibration, MPO/polynomial full-step proofs,
+TTT2/CeTA validation, SCC theorems, ablations) live in the main
+`OperatorKO7` import path. This module is for users who want **only** the
+reusable barrier theory for their own step-duplicating systems.
+
+## Usage
+
+```lean
+import OperatorKO7.SchemaAPI
+
+-- Define your own schema instance and apply any barrier theorem directly.
+```
+-/
 ```
 
 ---

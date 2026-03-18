@@ -1,3 +1,4 @@
+import OperatorKO7.SchemaAPI
 import OperatorKO7.Kernel
 import OperatorKO7.Meta.ComputableMeasure
 import OperatorKO7.Meta.ComputableMeasure_Verification
@@ -11,11 +12,13 @@ import OperatorKO7.Meta.ObjectAxiom_Ablation
 import OperatorKO7.Meta.MutualDuplication_Case
 import OperatorKO7.Meta.MutualDuplication_General
 import OperatorKO7.Meta.MutualDuplication_Preserving
+import OperatorKO7.Meta.MutualDuplication_Transparent
 import OperatorKO7.Meta.MatrixBarrier2
 import OperatorKO7.Meta.MatrixBarrierD
 import OperatorKO7.Meta.MatrixBarrierLex
 import OperatorKO7.Meta.MatrixBarrierMix2
 import OperatorKO7.Meta.MatrixBarrierFunctional
+import OperatorKO7.Meta.MatrixProjectionCoverage
 import OperatorKO7.Meta.MultilinearBarrier
 import OperatorKO7.Meta.PolynomialBarrierGeneral
 import OperatorKO7.Meta.MaxBarrier
@@ -42,11 +45,18 @@ import OperatorKO7.Meta.ContextClosed_SN_Full
 import OperatorKO7.Meta.ContextClosedBarrier
 import OperatorKO7.Meta.SafeStep_Complexity
 import OperatorKO7.Meta.SafeStep_Complexity_Ordinal
+import OperatorKO7.Meta.SafeStep_Complexity_FastGrowing
 import OperatorKO7.Meta.SafeRoot_Complexity
 import OperatorKO7.Meta.SafeStepCtx_Confluence
+import OperatorKO7.Meta.EqGuardedConfluence
+import OperatorKO7.Meta.Reachability_Complexity
 import OperatorKO7.Meta.MPO_FullStep
 import OperatorKO7.Meta.MPO_Precedence_Barrier
+import OperatorKO7.Meta.MPO_ProofTheoreticBound
 import OperatorKO7.Meta.PolyInterpretation_FullStep
+import OperatorKO7.Meta.TTT2_CertificateReplay
+import OperatorKO7.Meta.TropicalBarrier
+import OperatorKO7.Meta.SharingBarrierLift
 
 /-!
 Public entrypoint for the `OperatorKO7` Lean library.

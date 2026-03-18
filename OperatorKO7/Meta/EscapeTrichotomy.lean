@@ -15,6 +15,7 @@ The theorem universe is intentionally narrow and reviewable:
 - pumped restricted-quadratic constructor-local measures
 - pumped bounded-cross-term constructor-local measures
 - pumped bounded-multilinear constructor-local measures
+- pumped generalized bounded-polynomial constructor-local measures
 - pumped max-plus constructor-local measures
 - KO7-specific max-depth families
 - KO7-specific pure head-precedence families
@@ -53,6 +54,7 @@ inductive NatDirectBarrierRepresentable (S : StepDuplicatingSchema) (μ : S.T �
   | quadraticWithPump (M : QuadraticCounterMeasureWithPump S) (heval : M.eval = μ)
   | crossQuadraticWithPump (M : CrossTermQuadraticMeasureWithPump S) (heval : M.eval = μ)
   | multilinearWithPump (M : MultilinearMeasureWithPump S) (heval : M.eval = μ)
+  | polynomialWithPump (M : PolynomialMeasureWithPump S) (heval : M.eval = μ)
   | maxWithPump (M : MaxMeasureWithPump S) (heval : M.eval = μ)
 
 /-- Escape trichotomy for the explicit Nat-valued direct universe:
@@ -90,6 +92,9 @@ theorem nat_direct_escape_trichotomy
       | multilinearWithPump M heval =>
           subst heval
           exact (no_global_orients_multilinear_with_pump (Sys := Sys) M) horient
+      | polynomialWithPump M heval =>
+          subst heval
+          exact (no_global_orients_polynomial_with_pump (Sys := Sys) M) horient
       | maxWithPump M heval =>
           subst heval
           exact (no_global_orients_max_with_pump (Sys := Sys) M) horient
@@ -153,6 +158,9 @@ inductive KO7NatDirectBarrierRepresentable (μ : Trace → Nat) : Prop
   | multilinearWithPump
       (M : StepDuplicatingSchema.MultilinearMeasureWithPump ko7Schema)
       (heval : ∀ t : Trace, M.eval t = μ t)
+  | polynomialWithPump
+      (M : StepDuplicatingSchema.PolynomialMeasureWithPump ko7Schema)
+      (heval : ∀ t : Trace, M.eval t = μ t)
   | maxWithPump
       (M : StepDuplicatingSchema.MaxMeasureWithPump ko7Schema)
       (heval : ∀ t : Trace, M.eval t = μ t)
@@ -176,6 +184,9 @@ inductive KO7DirectBarrierRepresentable : KO7DirectOrienter → Prop
       KO7DirectBarrierRepresentable (.nat M.eval)
   | multilinearWithPump
       (M : StepDuplicatingSchema.MultilinearMeasureWithPump ko7Schema) :
+      KO7DirectBarrierRepresentable (.nat M.eval)
+  | polynomialWithPump
+      (M : StepDuplicatingSchema.PolynomialMeasureWithPump ko7Schema) :
       KO7DirectBarrierRepresentable (.nat M.eval)
   | maxWithPump
       (M : StepDuplicatingSchema.MaxMeasureWithPump ko7Schema) :
@@ -242,6 +253,13 @@ theorem ko7_nat_direct_escape_trichotomy
             exact heval t
           subst hrepr
           exact (PumpedBarrierClasses.no_global_step_orientation_multilinear_with_pump M) horient
+      | polynomialWithPump M heval =>
+          have hrepr :
+              M.eval = μ := by
+            funext t
+            exact heval t
+          subst hrepr
+          exact (PumpedBarrierClasses.no_global_step_orientation_polynomial_with_pump M) horient
       | maxWithPump M heval =>
           have hrepr :
               M.eval = μ := by
@@ -290,6 +308,8 @@ theorem ko7_direct_escape_trichotomy_extended
           exact (PumpedBarrierClasses.no_global_step_orientation_cross_quadratic_with_pump M) horient
       | multilinearWithPump M =>
           exact (PumpedBarrierClasses.no_global_step_orientation_multilinear_with_pump M) horient
+      | polynomialWithPump M =>
+          exact (PumpedBarrierClasses.no_global_step_orientation_polynomial_with_pump M) horient
       | maxWithPump M =>
           exact (PumpedBarrierClasses.no_global_step_orientation_max_with_pump M) horient
       | depth M =>

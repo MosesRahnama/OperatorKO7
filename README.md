@@ -18,8 +18,48 @@ Toolchain/dependency pins are in:
 - `lakefile.lean`
 - `lake-manifest.json`
 
+## Reproducibility Pins
+
+- Lean toolchain: `leanprover/lean4:v4.22.0-rc4`
+- Pinned `mathlib4` commit: `632465e4b02cb70a5dfa4cfe15468e8a62c2bd85`
+- Full transitive dependency lockfile: `lake-manifest.json`
+
+These pins are part of the artifact story, not just build metadata. The project uses
+Mathlib automation heavily enough that the exact Lean toolchain and `mathlib` revision
+should be treated as review-facing inputs.
+
+## Artifact Replay
+
+Minimal local replay:
+
+```bash
+lake update
+lake exe cache get
+lake build
+lake exe verifyTpdbExport
+```
+
+Referee-bundle and TPDB-prep support:
+
+```bash
+python scripts/make_referee_bundle.py
+python scripts/stage_tpdb_submission.py
+```
+
+Artifact-facing docs:
+- `artifact/REPRODUCIBILITY.md`:
+  exact toolchain pins, local replay path, and referee-bundle generation.
+- `artifact/TPDB_SUBMISSION_PREP.md`:
+  staged prep notes for a future TPDB submission; not the submission itself.
+- `Artifacts/ttt2/README.md`:
+  archived TTT2/CeTA trail and source files already stored in the repository.
+- `.github/workflows/build.yml`:
+  repository CI build path.
+
 ## Recommended Entry Points
 
+- `OperatorKO7/SchemaAPI.lean`:
+  single-import public API for the reusable schema-level barrier theory, separate from KO7-specific certification and artifact plumbing.
 - `OperatorKO7/Kernel.lean`:
   start here for the core syntax and root rewrite relation.
 - `OperatorKO7/Meta/StepDuplicatingSchema.lean`:
@@ -38,11 +78,21 @@ Toolchain/dependency pins are in:
 - `OperatorKO7.lean`: library entrypoint imports.
 - `OperatorKO7/`: Lean source tree.
 - `Artifacts/`: external tool artifacts.
+- `artifact/`: artifact-facing reproducibility notes and generated bundle staging area.
 - `Archive/`: archived or superseded working material.
 - `.github/`: workflow and repository metadata.
+- `scripts/`: small helper scripts for referee-bundle generation and TPDB-prep staging.
+- `scripts/make_referee_bundle.py`:
+  builds a review-facing source/artifact bundle, including generated docs and the
+  archived external validation trail; if the sibling private paper tree is present,
+  it also bundles the current manuscript source and PDF under `paper/`.
+- `scripts/stage_tpdb_submission.py`:
+  stages a local TPDB-prep directory from the archived KO7 `.trs` artifact and
+  writes metadata/provenance templates; it does not perform the upstream submission.
 - `VerifyTpdbExport.lean`: runnable TPDB exporter/file verifier.
 - `generate_docs.py`: documentation-generation script.
 - `OperatorKO7_Complete_Documentation.md`: extended file-level map.
+- `OperatorKO7-private/Docs/KO7_BLUEPRINT.md` and `OperatorKO7-private/Docs/ko7_blueprint.json`: proof-dependency map from paper labels to Lean declarations and back.
 
 ## Lean Source Layout
 
@@ -52,6 +102,8 @@ Toolchain/dependency pins are in:
   Lake package configuration; declares the `OperatorKO7` library root and the `verifyTpdbExport` executable target.
 - `OperatorKO7.lean`:
   public library import surface; collects the canonical modules built by `lake build OperatorKO7`.
+- `OperatorKO7/SchemaAPI.lean`:
+  stable public API surface for downstream users who want only the reusable schema-level barrier theory and executable boundary tooling.
 - `VerifyTpdbExport.lean`:
   executable root for `lake exe verifyTpdbExport`; checks the embedded TPDB text against the on-disk `.trs` artifact.
 
@@ -85,15 +137,23 @@ Toolchain/dependency pins are in:
 - `OperatorKO7/Meta/Newman_Safe.lean`:
   Newman instantiation; `confluentSafe`, unique normal forms, reachability decidability.
 - `OperatorKO7/Meta/SafeStepCtx_Confluence.lean`:
-  exact Newman layer for `SafeStepCtx`; confluence is equivalent to the remaining global local-join obligation.
+  unconditional confluence for `SafeStepCtx`, together with the exact Newman obstruction equivalence and the discharged global contextual local-join theorem.
+- `OperatorKO7/Meta/EqGuardedConfluence.lean`:
+  intermediate root fragment keeping the full rule set except the bad `eqW` diff overlap on reflexive inputs; proves root confluence for that wider fragment.
 - `OperatorKO7/Meta/NormalizeSafe_LowerBound.lean`:
   exact-cost lower-bound family for the certified normalizer.
 - `OperatorKO7/Meta/SafeStep_Complexity.lean`:
   contextual derivation-length bounds for the guarded fragment.
 - `OperatorKO7/Meta/SafeStep_Complexity_Ordinal.lean`:
   size-indexed tower-exponential derivation-length bound for `SafeStepCtx` via `ctxFuel`.
+- `OperatorKO7/Meta/SafeStep_Complexity_FastGrowing.lean`:
+  explicit fast-growing-hierarchy-style envelope for the same `SafeStepCtx` derivation-length bound, majorizing the `towerBound` estimate by a size-indexed finite-level `fastGrow` family.
+- `OperatorKO7/Meta/OrdinalHierarchy.lean`:
+  generic `slowGrowing` and `cichon` hierarchies on Mathlib ordinal notations below `ε₀`; this is the hierarchy foundation for a future exact Moser–Weiermann-style extraction.
 - `OperatorKO7/Meta/SafeRoot_Complexity.lean`:
   exact-length root-normalizer realizations and upper envelope via `ctxFuel` / `complexity_bound`.
+- `OperatorKO7/Meta/Reachability_Complexity.lean`:
+  explicit certified cost envelope for guarded reachability-to-safe-normal-form decisions, plus a linear lower-bound family.
 - `OperatorKO7/Meta/EqW_Guard_Barrier.lean`:
   full-step `eqW` overlap obstruction and guard-necessity results.
 
@@ -103,6 +163,9 @@ Toolchain/dependency pins are in:
   parametric four-role schema; generic additive / transparent-compositional / affine barriers.
 - `OperatorKO7/Meta/BarrierWitness.lean`:
   constructive counterexample extractors (`BarrierCertificate`-style witnesses).
+- `OperatorKO7/Meta/BarrierWitness_Extended.lean`:
+  extended witness extractors for restricted quadratic, max-plus, and projected
+  matrix-side families, with bundled failure certificates.
 - `OperatorKO7/Meta/Impossibility_Lemmas.lean`:
   machine-checked failed-measure catalog.
 - `OperatorKO7/Meta/Conjecture_Boundary.lean`:
@@ -121,8 +184,10 @@ Toolchain/dependency pins are in:
   schema-level max-plus constructor-local barrier.
 - `OperatorKO7/Meta/ArcticBarrier.lean`:
   arctic-style primary-projection corollary of the max barrier for tool-facing direct interpretations.
+- `OperatorKO7/Meta/TropicalBarrier.lean`:
+  broader tropical primary-projection barrier lifting the max-style obstruction to finite primary projections with a strict natural shadow.
 - `OperatorKO7/Meta/PumpedBarrierClasses.lean`:
-  strengthened pumped subclasses for affine, quadratic, multilinear, max-plus, and projection-based conditional barriers.
+  strengthened pumped subclasses for affine, quadratic, generalized bounded-polynomial, multilinear, max-plus, and projection-based conditional barriers.
 - `OperatorKO7/Meta/StandardPumpLemmas.lean`:
   reusable successor-/wrapper-growth lemmas and subclass constructors.
 - `OperatorKO7/Meta/AffineThresholdSharpness.lean`:
@@ -148,6 +213,8 @@ Toolchain/dependency pins are in:
   balanced mixed-coordinate dimension-2 barrier via aggregate-sum projection.
 - `OperatorKO7/Meta/MatrixBarrierFunctional.lean`:
   weighted scalar-projection componentwise barrier unifying tracked-coordinate and aggregate-sum projection arguments.
+- `OperatorKO7/Meta/MatrixProjectionCoverage.lean`:
+  explicit fixed-row and row-sum corollaries making the matrix-side projection coverage visible for tool-facing discussion.
 - `OperatorKO7/Meta/ScalarProjectionBarrier.lean`:
   scalar-projection lift theorem rederiving blocked vector and pair families from scalar barriers.
 - `OperatorKO7/Meta/MutualDuplication_Case.lean`:
@@ -156,8 +223,10 @@ Toolchain/dependency pins are in:
   bounded two-node SCC composite-duplication theorems.
 - `OperatorKO7/Meta/MutualDuplication_Preserving.lean`:
   multiplicity-preserving synchronized SCC barrier.
+- `OperatorKO7/Meta/MutualDuplication_Transparent.lean`:
+  transparent-compositional and projected matrix-style extensions of the bounded two-node SCC barrier.
 - `OperatorKO7/Meta/EscapeTrichotomy.lean`:
-  explicit direct-universe escape trichotomy, plus the projection-based extension for weighted functional and balanced mixed-coordinate matrix families.
+  explicit direct-universe escape trichotomy, now including the generalized bounded-polynomial family, plus the projection-based extension for weighted functional and balanced mixed-coordinate matrix families.
 - `OperatorKO7/Meta/SymbolicComparatorBarrier.lean`:
   symbolic variable-condition barrier for direct duplication-sensitive comparators.
 - `OperatorKO7/Meta/KBO_Impossible.lean`:
@@ -174,11 +243,13 @@ Toolchain/dependency pins are in:
 - `OperatorKO7/Meta/DM_OrderType.lean`:
   DM-to-ordinal embedding; ε₀ bridge; per-step strictness; upper-bound calibration.
 - `OperatorKO7/Meta/DM_OrderType_LowerBound.lean`:
-  `CNFωω` canonical carrier; surjectivity below ω^ω, reflection, rank bridge.
+  `CNFωω` canonical carrier; surjectivity below ω^ω, reflection, rank bridge, and exact DM-component order-type calibration.
 - `OperatorKO7/Meta/MPO_FullStep.lean`:
   KO7-specialized MPO orientation and well-foundedness on the full root relation.
 - `OperatorKO7/Meta/MPO_Precedence_Barrier.lean`:
   explicit bad-precedence obstruction for the KO7 MPO shape.
+- `OperatorKO7/Meta/MPO_ProofTheoreticBound.lean`:
+  explicit ordinal envelope for the fixed-signature KO7 MPO ranking, below `Ordinal.veblen 7 0`.
 - `OperatorKO7/Meta/PolyInterpretation_FullStep.lean`:
   nonlinear polynomial orientation and well-foundedness on the full root relation.
 - `OperatorKO7/Meta/LinearRec_Ablation.lean`:
@@ -191,9 +262,13 @@ Toolchain/dependency pins are in:
 - `OperatorKO7/Meta/BarrierClass_Classifier.lean`:
   coefficient-table classifier for the formalized barrier families.
 - `OperatorKO7/Meta/SynthesisOracle.lean`:
-  small certified oracle layer around barrier witnesses.
+  small certified oracle layer around the basic and extended barrier witnesses.
 - `OperatorKO7/Meta/TPDB_Export.lean`:
   Lean-side TPDB export for the full KO7 root TRS.
+- `OperatorKO7/Meta/TTT2_CertificateReplay.lean`:
+  narrow Lean-side replay of the mathematical core of the FAST DP/subterm certificate.
+- `OperatorKO7/Meta/SharingBarrierLift.lean`:
+  sharing-aware surrogate showing the tree-style direct barrier can fail once payload sharing is admitted.
 
 ### Tests
 
@@ -210,4 +285,6 @@ Toolchain/dependency pins are in:
 ## Notes
 
 - `lake build` checks the full artifact; `lake build OperatorKO7` checks the library only.
+- `lake exe verifyTpdbExport` checks the Lean exporter against both the embedded text literal and the on-disk `Artifacts/ttt2/KO7_full_step.trs` file.
+- `python scripts/make_referee_bundle.py` assembles a reviewer-facing snapshot with a manifest, replay note, and archived external validation trail.
 - `OperatorKO7_Complete_Documentation.md` is the large generated file-by-file reference if you need more than this repository map.
