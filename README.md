@@ -209,6 +209,8 @@ Artifact-facing docs:
   KO7-specific pure head-precedence family and corresponding barrier.
 - `OperatorKO7/Meta/TypedBarrierSurvival.lean`:
   simply-typed first-order recursor fragment; typed additive and affine barrier-survival results.
+- `OperatorKO7/Meta/ManySortedBarrierSurvival.lean`:
+  specialized many-sorted first-order repackaging of the typed recursor fragment; additive and affine barrier-survival results carry over unchanged.
 
 #### Matrix, SCC, and escape extensions
 

@@ -1,7 +1,7 @@
 # OperatorKO7 Complete Documentation
-Generated: 2026-03-20 22:13:32 +0330
-Source files: 81
-Total source lines: 17123
+Generated: 2026-03-21 01:37:26 +0330
+Source files: 83
+Total source lines: 17285
 Scope: active `.lean` files in the repository
 
 ## Table of Contents
@@ -33,6 +33,7 @@ Scope: active `.lean` files in the repository
 - [OperatorKO7/Meta/Impossibility_Lemmas.lean](#operatorko7metaimpossibilitylemmaslean)
 - [OperatorKO7/Meta/KBO_Impossible.lean](#operatorko7metakboimpossiblelean)
 - [OperatorKO7/Meta/LinearRec_Ablation.lean](#operatorko7metalinearrecablationlean)
+- [OperatorKO7/Meta/ManySortedBarrierSurvival.lean](#operatorko7metamanysortedbarriersurvivallean)
 - [OperatorKO7/Meta/MatrixBarrier2.lean](#operatorko7metamatrixbarrier2lean)
 - [OperatorKO7/Meta/MatrixBarrierD.lean](#operatorko7metamatrixbarrierdlean)
 - [OperatorKO7/Meta/MatrixBarrierFunctional.lean](#operatorko7metamatrixbarrierfunctionallean)
@@ -79,6 +80,7 @@ Scope: active `.lean` files in the repository
 - [OperatorKO7/Meta/StepDuplicatingSchema.lean](#operatorko7metastepduplicatingschemalean)
 - [OperatorKO7/Meta/SymbolicComparatorBarrier.lean](#operatorko7metasymboliccomparatorbarrierlean)
 - [OperatorKO7/Meta/SynthesisOracle.lean](#operatorko7metasynthesisoraclelean)
+- [OperatorKO7/Meta/TextbookDupInstance.lean](#operatorko7metatextbookdupinstancelean)
 - [OperatorKO7/Meta/TPDB_Export.lean](#operatorko7metatpdbexportlean)
 - [OperatorKO7/Meta/TropicalBarrier.lean](#operatorko7metatropicalbarrierlean)
 - [OperatorKO7/Meta/TTT2_CertificateReplay.lean](#operatorko7metattt2certificatereplaylean)
@@ -128,7 +130,7 @@ require mathlib from git "https://github.com/leanprover-community/mathlib4.git" 
 
 ## OperatorKO7.lean
 
-**Lines:** 74
+**Lines:** 76
 
 ```lean
 import OperatorKO7.SchemaAPI
@@ -167,6 +169,8 @@ import OperatorKO7.Meta.EscapeTrichotomy
 import OperatorKO7.Meta.DepthBarrier
 import OperatorKO7.Meta.PrecedenceBarrier
 import OperatorKO7.Meta.TypedBarrierSurvival
+import OperatorKO7.Meta.ManySortedBarrierSurvival
+import OperatorKO7.Meta.TextbookDupInstance
 import OperatorKO7.Meta.TPDB_Export
 import OperatorKO7.Meta.DependencyPairs_Fragment
 import OperatorKO7.Meta.DependencyPairs_Works
@@ -836,7 +840,7 @@ compositional, or affine), the extractors produce a concrete instantiation
 
     M.eval (S.wrap s (S.recur b s n)) ≥ M.eval (S.recur b s (S.succ n))
 
-## Main definitions
+Main definitions:
 
 * `additive_witness`       — Tier 1 counterexample extractor
 * `compositional_witness`  — Tier 2 counterexample extractor (with transparency)
@@ -848,7 +852,7 @@ Each returns a bundled triple with a proof that orientation fails on that triple
 namespace OperatorKO7.StepDuplicating
 open StepDuplicatingSchema
 
-/-! ### Tier 1: Additive barrier witness -/
+/-! Tier 1: Additive barrier witness -/
 
 /-- Bundled counterexample: a triple `(b, s, n)` on which orientation provably fails. -/
 structure BarrierCertificate (S : StepDuplicatingSchema) (eval : S.T → Nat) where
@@ -876,7 +880,7 @@ def additive_witness {S : StepDuplicatingSchema} (M : AdditiveMeasure S) :
 theorem additive_witness_computable {S : StepDuplicatingSchema} (M : AdditiveMeasure S) :
     (additive_witness M).s = wrapIter S M.w_succ := rfl
 
-/-! ### Tier 2: Compositional barrier witness (with transparency) -/
+/-! Tier 2: Compositional barrier witness (with transparency) -/
 
 /-- Counterexample extractor for the Tier 2 (compositional) barrier.
 Given a compositional measure with base-level successor transparency,
@@ -902,7 +906,7 @@ theorem compositional_witness_is_base {S : StepDuplicatingSchema}
     (compositional_witness CM h_transparent).s = S.base ∧
     (compositional_witness CM h_transparent).n = S.base := ⟨rfl, rfl, rfl⟩
 
-/-! ### Affine barrier witness -/
+/-! Affine barrier witness -/
 
 /-- Counterexample extractor for the affine/linear barrier.
 Given an affine measure and a pump term `s₀` with `eval s₀ ≥ threshold`,
@@ -1272,7 +1276,7 @@ end OperatorKO7.StepDuplicating
 
 ## OperatorKO7/Meta/CompositionalMeasure_Impossibility.lean
 
-**Lines:** 474
+**Lines:** 480
 
 ```lean
 import OperatorKO7.Kernel
@@ -1291,7 +1295,7 @@ The module then shows that the Dependency Pair framework (TTT2's subterm criteri
 projection π(recD#) = 3) escapes the impossibility by violating the compositionality
 axioms: it projects to a single argument instead of aggregating all subterm contributions.
 
-## Structure
+Structure:
 
 - **Section 1**: Helper: iterated `app` constructor (the "pump" for making μ(s) large)
 - **Section 2**: `AdditiveCompositionalMeasure` - concrete Nat-weighted structure
@@ -1302,7 +1306,7 @@ axioms: it projects to a single argument instead of aggregating all subterm cont
 - **Section 7**: Instance witnesses (simpleSize, tau, nodeCount)
 - **Section 8**: `GlobalOrients` integration
 
-## Results
+Results:
 
 - `no_additive_compositional_orients_rec_succ`: No additive compositional measure orients rec_succ
 - `no_compositional_orients_rec_succ_transparent_delta`: No abstract compositional measure
@@ -1312,7 +1316,7 @@ axioms: it projects to a single argument instead of aggregating all subterm cont
 - `dp_projection_orients_rec_succ`: DP projection DOES orient rec_succ
 - `dp_projection_violates_sensitivity`: DP projection violates the subterm/sensitivity axiom
 
-## References
+References:
 
 - Dershowitz (1987): duplication defeats additive measures
 - Arts-Giesl (2000): dependency pairs with argument filtering
@@ -1339,14 +1343,14 @@ def ko7System : StepDuplicatingSchema.StepDuplicatingSystem where
   Step := Step
   dup_step := Step.R_rec_succ
 
-/-! ## Section 1: Iterated App Constructor -/
+/-! Section 1: Iterated App Constructor -/
 
 /-- Build `app(app(...(void)...), void)` with `k` nestings.
 This is the "pump" that makes `μ(s)` arbitrarily large for any compositional measure. -/
 def appIter : Nat → Trace :=
   StepDuplicatingSchema.wrapIter ko7Schema
 
-/-! ## Section 2: Additive Compositional Measure (Tier 1) -/
+/-! Section 2: Additive Compositional Measure (Tier 1) -/
 
 /-- An additive compositional measure assigns a fixed base weight to each KO7 constructor.
 The measure of a compound term is the constructor's weight plus the sum of its subterms' measures.
@@ -1399,7 +1403,7 @@ lemma eval_appIter_ge (M : AdditiveCompositionalMeasure) (k : Nat) :
     (StepDuplicatingSchema.eval_wrapIter_ge
       (S := ko7Schema) (M := M.toSchemaMeasure) k)
 
-/-! ## Section 3: Tier 1 Impossibility Theorem -/
+/-! Section 3: Tier 1 Impossibility Theorem -/
 
 /-- **IMPOSSIBILITY THEOREM (Additive Measures)**
 
@@ -1420,7 +1424,7 @@ theorem no_additive_compositional_orients_rec_succ (M : AdditiveCompositionalMea
     (StepDuplicatingSchema.no_additive_orients_dup_step
       (S := ko7Schema) (M := M.toSchemaMeasure))
 
-/-! ## Section 4: Abstract Compositional Measure (Tier 2) -/
+/-! Section 4: Abstract Compositional Measure (Tier 2) -/
 
 /-- An abstract compositional measure over KO7 traces.
 Each constructor has a combining function that maps subterm measure values to
@@ -1469,7 +1473,7 @@ def CompositionalMeasure.toSchemaMeasure
   wrap_subterm1 := CM.app_subterm1
   wrap_subterm2 := CM.app_subterm2
 
-/-! ## Section 5: Tier 2 Impossibility (Transparent Delta) -/
+/-! Section 5: Tier 2 Impossibility (Transparent Delta) -/
 
 /-- **IMPOSSIBILITY THEOREM (Abstract Compositional, Transparent Delta)**
 
@@ -1491,7 +1495,7 @@ theorem no_compositional_orients_rec_succ_transparent_delta
     (StepDuplicatingSchema.no_compositional_orients_dup_step_transparent_succ
       (S := ko7Schema) (CM := CM.toSchemaMeasure) h_transparent)
 
-/-! ## Section 6: DP Projection Escape -/
+/-! Section 6: DP Projection Escape -/
 
 /-- A projection-based measure that tracks only delta-nesting depth.
 This is the measure implicitly used by TTT2's subterm criterion with π(recD#) = 3.
@@ -1579,7 +1583,13 @@ def nodeCount_ACM : AdditiveCompositionalMeasure where
   w_eq        := 1
   hw_app_pos  := by omega
 
-/-- `treeDepth` assigns weight 1 per constructor except void. -/
+/-- Additive constructor-count surrogate sometimes used as a "depth-like" witness.
+
+This is intentionally *not* the standard max-based tree depth used elsewhere in the
+artifact: every non-`void` constructor contributes `1`, so the value adds across
+siblings instead of taking a maximum. The historical name is retained here only for
+backward compatibility with the surrounding no-go catalog.
+-/
 def treeDepth_ACM : AdditiveCompositionalMeasure where
   w_void      := 0
   w_delta     := 1
@@ -1771,14 +1781,14 @@ using the triple-lexicographic measure μ3c = (δ, κᴹ, τ) where:
 - κᴹ (kappaM): Dershowitz-Manna multiset of recursion weights
 - τ (tau): Computable natural number rank (replaces noncomputable ordinal μ)
 
-## Properties
+Properties:
 - All measure functions (`deltaFlag`, `kappaM`, `tau`) are computable;
   classical reasoning is used only in proof terms (Prop-valued well-foundedness arguments).
 - All 8 SafeStep constructors are proven to strictly decrease μ3c.
 - Explicit `Prod.Lex` parameters prevent elaboration issues.
 - No `sorry`, no `admit`, no `unsafe`.
 
-## Technical Approach
+Technical approach:
 The measure μ3c uses lexicographic ordering Lex3c := Prod.Lex (<) (Prod.Lex DM (<))
 where DM is Mathlib's Dershowitz-Manna multiset order. Each SafeStep rule is proven
 to strictly decrease this measure through either:
@@ -1786,7 +1796,7 @@ to strictly decrease this measure through either:
 2. κᴹ-drop: Via DM order for rules that modify recursion structure
 3. τ-drop: When δ and κᴹ tie, using carefully chosen head weights
 
-## Constants
+Constants:
 τ assigns head weights ensuring strict inequalities:
 - void: 0
 - delta: transparent (preserves inner term's weight)
@@ -1796,7 +1806,7 @@ to strictly decrease this measure through either:
 - recΔ: 3 + sum of all three arguments
 - eqW: 4 + sum of arguments (so that 1+2+X < 4+X for eq_diff)
 
-## References
+References:
 - Dershowitz & Manna (1979): Proving termination with multiset orderings
 - Baader & Nipkow: Term Rewriting and All That
 - Newman's Lemma: Local confluence + termination → confluence
@@ -1818,12 +1828,12 @@ open scoped Classical
 
 A computable Nat-valued rank function.
 
-### Properties:
+Properties:
 1. τ(eqW a b) > τ(integrate (merge a b)) for all a, b (required by eq_diff)
 2. τ strictly increases under all constructors except delta
 3. All inequalities provable by `omega` or `decide`
 
-### Weight design:
+Weight design:
 - void: 0 (base case)
 - delta t: τ(t) (transparent wrapper)
 - integrate/app: weight 1
@@ -2198,7 +2208,7 @@ theorem wellFounded_of_measure_decreases_R_c
 Well-foundedness of SafeStepRev proves termination.
 Fully computable, no axioms, no noncomputables.
 
-### Implications:
+Implications:
 - No infinite SafeStep chains
 - Normalizer always terminates
 - Confluence + SN = decidable equality
@@ -2224,7 +2234,7 @@ import OperatorKO7.Meta.ComputableMeasure
 
 This file verifies that the computable measure handles all cases correctly.
 
-## Test Categories:
+Test categories:
 1. τ monotonicity verification
 2. DM order properties
 3. Measure decrease for each rule
@@ -7241,6 +7251,73 @@ theorem simpleSize_fails_on_duplicating_rec_succ :
   simp [simpleSize] at this
 
 end OperatorKO7
+```
+
+---
+
+## OperatorKO7/Meta/ManySortedBarrierSurvival.lean
+
+**Lines:** 58
+
+```lean
+import OperatorKO7.Meta.TypedBarrierSurvival
+
+/-!
+# Many-Sorted Barrier Survival
+
+This module repackages `TypedBarrierSurvival` as a many-sorted first-order
+presentation. We do **not** formalize the full general Aoto-Yamada translation
+theorem here. Instead we record the specialized consequence needed for KO7's
+recursor fragment:
+
+- the already-formalized sort-indexed first-order syntax can be read directly as
+  a many-sorted TRS presentation;
+- under that reading, the additive barrier and the affine barrier with a step-pump
+  survive unchanged.
+
+The result is therefore a theorem-backed many-sorted extension of the existing
+typed fragment, while staying honest about the scope of the formalization.
+-/
+
+namespace OperatorKO7.ManySortedBarrierSurvival
+
+open OperatorKO7.TypedBarrierSurvival
+
+/-- Sorts of the specialized many-sorted first-order recursor fragment. -/
+abbrev MSort := Ty
+
+/-- Terms of the specialized many-sorted first-order recursor fragment. -/
+abbrev Term := TypedBarrierSurvival.Term
+
+/-- Many-sorted step-sort iterator. -/
+abbrev stepIter := TypedBarrierSurvival.stepIter
+
+/-- Additive constructor-local measures on the many-sorted presentation. -/
+abbrev AdditiveMeasure := TypedBarrierSurvival.AdditiveMeasure
+
+/-- Affine constructor-local measures on the many-sorted presentation. -/
+abbrev AffineMeasure := TypedBarrierSurvival.AffineMeasure
+
+/-- Explicit many-sorted step-pump hypothesis. -/
+abbrev HasManySortedStepPump := TypedBarrierSurvival.HasTypedStepPump
+
+/-- The additive barrier survives in the many-sorted first-order presentation. -/
+theorem no_additive_orients_manySorted_recSucc (M : AdditiveMeasure) :
+    ¬ (∀ (b : Term .res) (s : Term .step) (n : Term .cnt),
+      M.evalRes (TypedBarrierSurvival.Term.wrap s (TypedBarrierSurvival.Term.recur b s n)) <
+        M.evalRes (TypedBarrierSurvival.Term.recur b s (TypedBarrierSurvival.Term.succ n))) :=
+  no_additive_orients_typed_recSucc M
+
+/-- The affine barrier also survives once the many-sorted step sort still admits
+an unbounded closed pump family. -/
+theorem no_affine_orients_manySorted_recSucc_of_stepPump (M : AffineMeasure)
+    (hpump : HasManySortedStepPump M) :
+    ¬ (∀ (b : Term .res) (s : Term .step) (n : Term .cnt),
+      M.evalRes (TypedBarrierSurvival.Term.wrap s (TypedBarrierSurvival.Term.recur b s n)) <
+        M.evalRes (TypedBarrierSurvival.Term.recur b s (TypedBarrierSurvival.Term.succ n))) :=
+  no_affine_orients_typed_recSucc_of_stepPump M hpump
+
+end OperatorKO7.ManySortedBarrierSurvival
 ```
 
 ---
@@ -14886,14 +14963,14 @@ This module extracts concrete derivation-length bounds from the existing
 well-foundedness infrastructure. The `ctxFuel` measure provides a computable
 numeric bound on the length of any `SafeStepCtx` reduction chain.
 
-## Main Results
+Main results:
 
 - `SafeStepCtxPow n t u`: there is an `n`-step `SafeStepCtx` chain from `t` to `u`
 - `safeStepCtx_length_le_ctxFuel`: any `n`-step chain satisfies `n ≤ ctxFuel t`
 - `termSize`: structural size of a `Trace` term (≥ 1 for all terms)
 - `complexity_bound`: combines `ctxFuel` with `termSize` for a Nat→Nat bound
 
-## Complexity Class
+Complexity class:
 
 The ordinal calibration of the triple-lex measure at ω^ω · 2 (proved in
 `DM_OrderType.lean` and `DM_OrderType_LowerBound.lean`) places the derivational
@@ -17249,6 +17326,111 @@ end OperatorKO7.StepDuplicating
 
 ---
 
+## OperatorKO7/Meta/TextbookDupInstance.lean
+
+**Lines:** 96
+
+```lean
+import OperatorKO7.Meta.BarrierWitness
+
+/-!
+# Textbook Step-Duplicating TRS Instance
+
+This module instantiates the generic step-duplicating schema on the standard
+first-order rule
+
+`f(x, s(y)) -> g(x, f(x, y))`.
+
+To fit the four-role schema, we use a dummy `base` argument that the recursor
+projection ignores:
+
+- `succ := s`
+- `wrap := g`
+- `recur b x y := f x y`
+
+The resulting duplicating step is exactly the textbook rule above.
+-/
+
+namespace OperatorKO7.TextbookDupInstance
+
+open OperatorKO7.StepDuplicating
+open StepDuplicatingSchema
+
+/-- Minimal syntax for the textbook duplicating rule `f(x, s(y)) -> g(x, f(x, y))`. -/
+inductive TextbookTerm
+  | zero
+  | succ : TextbookTerm → TextbookTerm
+  | g : TextbookTerm → TextbookTerm → TextbookTerm
+  | f : TextbookTerm → TextbookTerm → TextbookTerm
+  deriving DecidableEq, Repr
+
+open TextbookTerm
+
+/-- Schema view of the textbook system. The schema's dummy base parameter is ignored by `recur`,
+so `recur b x y` is the textbook constructor `f x y`. -/
+def textbookSchema : StepDuplicatingSchema where
+  T := TextbookTerm
+  base := zero
+  succ := succ
+  wrap := g
+  recur := fun _ x y => f x y
+
+/-- Root rewrite relation for the textbook duplicating rule. -/
+inductive TextbookStep : TextbookTerm → TextbookTerm → Prop
+  | dup (x y : TextbookTerm) : TextbookStep (f x (succ y)) (g x (f x y))
+
+/-- The textbook TRS packaged as a step-duplicating system. -/
+def textbookSystem : StepDuplicatingSystem where
+  toStepDuplicatingSchema := textbookSchema
+  Step := TextbookStep
+  dup_step := by
+    intro _ x y
+    exact TextbookStep.dup x y
+
+/-- Textbook additive barrier corollary. -/
+theorem no_global_textbook_orientation_additive
+    (M : AdditiveMeasure textbookSchema) :
+    ¬ GlobalOrients textbookSystem M.eval (· < ·) := by
+  exact no_global_orients_additive (Sys := textbookSystem) M
+
+/-- Textbook affine barrier corollary under the usual unbounded-range hypothesis. -/
+theorem no_global_textbook_orientation_affine_of_unbounded
+    (M : AffineMeasure textbookSchema) (hunbounded : HasUnboundedRange M) :
+    ¬ GlobalOrients textbookSystem M.eval (· < ·) := by
+  exact no_global_orients_affine_of_unbounded (Sys := textbookSystem) M hunbounded
+
+/-- Textbook compositional barrier corollary under base-level successor transparency. -/
+theorem no_global_textbook_orientation_compositional_transparent_succ
+    (M : CompositionalMeasure textbookSchema)
+    (h_transparent : M.c_succ M.c_base = M.c_base) :
+    ¬ GlobalOrients textbookSystem M.eval (· < ·) := by
+  exact no_global_orients_compositional_transparent_succ (Sys := textbookSystem) M h_transparent
+
+/-- The generic additive witness extractor specializes directly to the textbook system. -/
+def textbook_additive_witness (M : AdditiveMeasure textbookSchema) :
+    BarrierCertificate textbookSchema M.eval :=
+  additive_witness M
+
+/-- The generic compositional witness extractor specializes directly to the textbook system. -/
+def textbook_compositional_witness
+    (M : CompositionalMeasure textbookSchema)
+    (h_transparent : M.c_succ M.c_base = M.c_base) :
+    BarrierCertificate textbookSchema M.eval :=
+  compositional_witness M h_transparent
+
+/-- The affine witness extractor also specializes directly once a pump term is supplied. -/
+def textbook_affine_witness
+    (M : AffineMeasure textbookSchema)
+    (s₀ : textbookSchema.T)
+    (hs : M.recur_counter * (M.succ_bias + M.succ_scale * M.c_base) ≤ M.eval s₀) :
+    BarrierCertificate textbookSchema M.eval :=
+  affine_witness M s₀ hs
+
+end OperatorKO7.TextbookDupInstance
+```
+
+---
+
 ## OperatorKO7/Meta/TPDB_Export.lean
 
 **Lines:** 117
@@ -17844,14 +18026,14 @@ barrier theory. It re-exports the generic impossibility theorems, escape
 characterization infrastructure, and executable boundary tooling that apply to
 **any** step-duplicating schema, not only to KO7.
 
-## What this module provides
+What this module provides:
 
-### Core schema definition
+Core schema definition:
 - `StepDuplicatingSchema` — the four-role schema (base/succ/wrap/recur)
 - `StepDuplicatingSystem` — schema + a step relation containing the dup rule
 - `GlobalOrients` — the property that a measure globally orients a relation
 
-### Barrier theorems (schema-level)
+Barrier theorems (schema-level):
 - Additive and transparent-compositional impossibility
 - Affine / linear constructor-local barrier
 - Restricted quadratic, bounded cross-term quadratic barriers
@@ -17865,17 +18047,17 @@ characterization infrastructure, and executable boundary tooling that apply to
 - Scalar-projection meta-theorem
 - Symbolic variable-condition barrier (KBO-style) and KBO corollary
 
-### Strengthened subclasses and pump infrastructure
+Strengthened subclasses and pump infrastructure:
 - Pumped subclasses with internalized growth conditions
 - Reusable successor-pump and wrap-pump lemmas
 
-### Executable boundary tooling
+Executable boundary tooling:
 - Computable barrier-witness extractors (`additive_witness`, etc.)
 - Extended witness extractors for quadratic, max-plus, and projected matrix families
 - Synthesis-oracle interface
 - Decidable coefficient-table classifier
 
-## What this module does NOT provide
+What this module does NOT provide:
 
 KO7-specific results (kernel definitions, KO7 instantiations, the certified
 normalizer, confluence, ordinal calibration, MPO/polynomial full-step proofs,
@@ -17883,7 +18065,7 @@ TTT2/CeTA validation, SCC theorems, ablations) live in the main
 `OperatorKO7` import path. This module is for users who want **only** the
 reusable barrier theory for their own step-duplicating systems.
 
-## Usage
+Usage:
 
 ```lean
 import OperatorKO7.SchemaAPI
