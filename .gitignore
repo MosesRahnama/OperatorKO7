@@ -3,6 +3,7 @@ Paper/
 Comments/
 # Lake build artifacts
 .lake/
+.claude/
 lake-packages/
 
 # OS files
@@ -30,7 +31,9 @@ Alignment_Report.md
 
 # Legacy and docs folders
 OperatorKO7/Ignore_Legacy/
-Docs/
+Docs/*
+!Docs/KO7_BLUEPRINT.md
+!Docs/ko7_blueprint.json
 Archive/
 # Temporary Lean scratch files
 
@@ -53,3 +56,6 @@ scripts/__pycache__/make_referee_bundle.cpython-313.pyc
 scripts/stage_tpdb_submission.py
 scripts/make_referee_bundle.py
 TmpInspect_Mutual.lean
+.claude/settings.json
+OperatorKO7/Meta/S142_Exploration.lean
+Docs/KO7_BLUEPRINT.md

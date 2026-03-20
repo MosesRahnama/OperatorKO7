@@ -9,12 +9,11 @@ import Mathlib.SetTheory.Ordinal.Arithmetic
 import Mathlib.Data.Multiset.Sort
 
 /-!
-# Root ordinal-notation bridge for strict S142
+# Root ordinal-notation bridge and Cichon bound for strict S142
 
 This file builds the notation-level bridge from the existing ordinal calibration
-`lex3cToOrd` to `ONote`/`NONote`. It does not yet contain the final Moser--Weiermann
-descent theorem, but it provides the exact `NONote.repr` equalities needed to state
-such a theorem in terms of Mathlib's ordinal-notation machinery.
+`lex3cToOrd` to `ONote`/`NONote`, then closes the guarded root side with a genuine
+`cichon` theorem on that note family.
 -/
 
 open OperatorKO7
@@ -106,6 +105,22 @@ theorem repr_lex3Note (x : Nat × (Multiset Nat × Nat)) :
   rcases x with ⟨δ, p⟩
   simp [lex3Note, lex3cToOrd, repr_lexDMNote, NONote.repr_add, NONote.repr_mul,
     repr_NONote_ofNat, repr_omegaPowOmegaNote]
+
+/-- Root-side note used by the guarded MW extraction. -/
+def mwRootNote (t : Trace) : NONote :=
+  lex3Note (mu3c t)
+
+theorem repr_mwRootNote (t : Trace) :
+    NONote.repr (mwRootNote t) = lex3cToOrd (mu3c t) := by
+  simp [mwRootNote, repr_lex3Note]
+
+/-- The guarded root note remains inside the calibrated `ω^ω * 2` block. -/
+theorem mwRootNote_lt_opow_omega_mul_two (t : Trace) :
+    NONote.repr (mwRootNote t) < ((ω : Ordinal) ^ (ω : Ordinal)) * (2 : Nat) := by
+  rw [repr_mwRootNote]
+  have hδ : deltaFlag t ≤ 1 := by
+    rcases deltaFlag_range t with h0 | h1 <;> omega
+  exact lex3cToOrd_lt_opow_omega_mul_two hδ
 
 /-- If a normal-form note denotes a successor ordinal, its fundamental sequence exposes
     the corresponding predecessor note. -/
@@ -214,6 +229,79 @@ theorem exactControlledPow_tau_drop (δ τ m k : Nat) (κ : Multiset Nat) :
 
 /-- The notation-level root bound candidate for the strict MW extraction. -/
 def mwRootBound (t : Trace) : Nat :=
-  OperatorKO7.OrdinalHierarchy.cichon (lex3Note (mu3c t)).1 (ctxFuel t)
+  OperatorKO7.OrdinalHierarchy.cichon (mwRootNote t).1 (ctxFuel t)
+
+/-- Any exact-length root chain is bounded by the computable tail measure `τ`.
+
+For root reduction, the only constructor that can increase `τ` is `rec_succ`,
+but its target is an `app` term, and `app` admits no further root reduction.
+All other constructors either end immediately or strictly decrease `τ`. -/
+theorem safeStepPow_length_le_tau :
+    ∀ {t u : Trace} {n : Nat}, SafeStepPow t n u → n ≤ tau t
+  | _, _, _, SafeStepPow.refl t => by
+      simp
+  | _, _, _, SafeStepPow.tail hab hbc => by
+      cases hab with
+      | R_int_delta t =>
+          cases hbc with
+          | refl _ =>
+              simp [tau]
+          | tail hnext _ =>
+              cases hnext
+      | R_merge_void_left t hδ =>
+          have ih := safeStepPow_length_le_tau hbc
+          simp [tau] at ih ⊢
+          omega
+      | R_merge_void_right t hδ =>
+          have ih := safeStepPow_length_le_tau hbc
+          simp [tau] at ih ⊢
+          omega
+      | R_merge_cancel t hδ h0 =>
+          have ih := safeStepPow_length_le_tau hbc
+          simp [tau] at ih ⊢
+          omega
+      | R_rec_zero b s hδ =>
+          have ih := safeStepPow_length_le_tau hbc
+          simp [tau] at ih ⊢
+          omega
+      | R_rec_succ b s n =>
+          cases hbc with
+          | refl _ =>
+              simp [tau]
+              omega
+          | tail hnext _ =>
+              cases hnext
+      | R_eq_refl a h0 =>
+          cases hbc with
+          | refl _ =>
+              simp [tau]
+              omega
+          | tail hnext _ =>
+              cases hnext
+      | R_eq_diff a b hne =>
+          cases hbc with
+          | refl _ =>
+              simp [tau]
+              omega
+          | tail hnext _ =>
+              cases hnext
+
+/-- The finite `τ` tail already furnishes an exact controlled descent of length `τ`. -/
+theorem tau_le_mwRootBound (t : Trace) :
+    tau t ≤ mwRootBound t := by
+  unfold mwRootBound
+  simpa [mu3c, Nat.add_comm, Nat.add_left_comm, Nat.add_assoc] using
+    (OperatorKO7.OrdinalHierarchy.exactControlledPow_length_le_cichon
+      (exactControlledPow_tau_drop
+        (δ := deltaFlag t) (τ := 0) (m := tau t) (k := ctxFuel t) (κ := MetaSN_DM.kappaM t)))
+
+/-- Root derivation lengths are bounded by the notation-level MW candidate already in the repo.
+
+This does not solve the full strict S142 route for the context-closed relation, but it does
+close the root side with a genuine `cichon` theorem. -/
+theorem safeStepPow_length_le_mwRootBound {t u : Trace} {n : Nat}
+    (h : SafeStepPow t n u) :
+    n ≤ mwRootBound t := by
+  exact le_trans (safeStepPow_length_le_tau h) (tau_le_mwRootBound t)
 
 end MetaSN_KO7

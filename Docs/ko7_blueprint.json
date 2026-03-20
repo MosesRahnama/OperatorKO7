@@ -1,0 +1,379 @@
+{
+  "artifact": "OperatorKO7",
+  "paper": "Rahnama_KO7_Restructured.tex",
+  "updated": "2026-03-18",
+  "paper_to_lean": [
+    {
+      "label": "thm:schema-barrier",
+      "module": "OperatorKO7/Meta/CompositionalMeasure_Impossibility.lean",
+      "declarations": [
+        "no_additive_orients_dup_step",
+        "no_compositional_orients_dup_step_transparent_succ"
+      ],
+      "depends_on": []
+    },
+    {
+      "label": "thm:affine-barrier",
+      "module": "OperatorKO7/Meta/AffineThresholdSharpness.lean",
+      "declarations": [
+        "no_affine_orients_dup_step_of_unbounded",
+        "no_affine_orients_dup_step_of_succ_pump",
+        "no_affine_orients_dup_step_of_wrap_pump"
+      ],
+      "depends_on": [
+        "thm:schema-barrier"
+      ]
+    },
+    {
+      "label": "thm:quadratic-barrier",
+      "module": "OperatorKO7/Meta/QuadraticBarrier.lean",
+      "declarations": [
+        "no_quadratic_counter_orients_dup_step_of_unbounded"
+      ],
+      "depends_on": [
+        "thm:affine-barrier"
+      ]
+    },
+    {
+      "label": "thm:quadratic-cross-barrier",
+      "module": "OperatorKO7/Meta/QuadraticCrossTermBarrier.lean",
+      "declarations": [
+        "CrossTermBoundedAtBase",
+        "no_cross_quadratic_orients_dup_step_of_unbounded"
+      ],
+      "depends_on": [
+        "thm:quadratic-barrier"
+      ]
+    },
+    {
+      "label": "thm:multilinear-barrier",
+      "module": "OperatorKO7/Meta/MultilinearBarrier.lean",
+      "declarations": [
+        "MultilinearDominatedAtBase",
+        "no_multilinear_orients_dup_step_of_unbounded"
+      ],
+      "depends_on": [
+        "thm:affine-barrier"
+      ]
+    },
+    {
+      "label": "thm:polynomial-general-barrier",
+      "module": "OperatorKO7/Meta/PolynomialBarrierGeneral.lean",
+      "declarations": [
+        "no_polynomial_orients_dup_step_of_unbounded",
+        "polynomial_escape_requires_failure_of_base_dominance"
+      ],
+      "depends_on": [
+        "thm:multilinear-barrier"
+      ]
+    },
+    {
+      "label": "thm:max-barrier",
+      "module": "OperatorKO7/Meta/MaxBarrier.lean",
+      "declarations": [
+        "no_max_orients_dup_step_of_unbounded",
+        "no_global_step_orientation_max_of_succ_pump"
+      ],
+      "depends_on": [
+        "thm:affine-barrier"
+      ]
+    },
+    {
+      "label": "cor:arctic-barrier",
+      "module": "OperatorKO7/Meta/ArcticBarrier.lean",
+      "declarations": [
+        "no_arctic_primary_orients_dup_step_of_unbounded",
+        "no_global_step_orientation_arctic_primary_of_unbounded"
+      ],
+      "depends_on": [
+        "thm:max-barrier"
+      ]
+    },
+    {
+      "label": "thm:matrix2-barrier",
+      "module": "OperatorKO7/Meta/MatrixBarrierD.lean",
+      "declarations": [
+        "no_matrixD_orients_dup_step_of_componentwise_pump",
+        "no_global_step_orientation_matrixD_of_componentwise_pump"
+      ],
+      "depends_on": [
+        "thm:affine-barrier"
+      ]
+    },
+    {
+      "label": "thm:matrix2-lex-barrier",
+      "module": "OperatorKO7/Meta/MatrixBarrierLex.lean",
+      "declarations": [
+        "no_matrix2_lex_orients_dup_step_of_unbounded_primary",
+        "no_global_step_orientation_matrix2_lex_of_componentwise_pump"
+      ],
+      "depends_on": [
+        "thm:matrix2-barrier"
+      ]
+    },
+    {
+      "label": "thm:matrix2-mix-barrier",
+      "module": "OperatorKO7/Meta/MatrixBarrierMix2.lean",
+      "declarations": [
+        "no_matrixMix2_orients_dup_step_of_sum_pump",
+        "no_global_step_orientation_matrixMix2_of_sum_pump"
+      ],
+      "depends_on": [
+        "thm:affine-barrier"
+      ]
+    },
+    {
+      "label": "thm:matrix-functional-barrier",
+      "module": "OperatorKO7/Meta/MatrixBarrierFunctional.lean",
+      "declarations": [
+        "no_matrixFunctional_orients_dup_step_of_componentwise_pump",
+        "no_global_step_orientation_matrixFunctional_of_componentwise_pump"
+      ],
+      "depends_on": [
+        "thm:scalar-projection-barrier"
+      ]
+    },
+    {
+      "label": "thm:scalar-projection-barrier",
+      "module": "OperatorKO7/Meta/ScalarProjectionBarrier.lean",
+      "declarations": [
+        "no_orients_dup_step_of_scalar_projection",
+        "no_matrixMix2_orients_dup_step_of_sum_pump_via_projection"
+      ],
+      "depends_on": [
+        "thm:affine-barrier"
+      ]
+    },
+    {
+      "label": "cor:pumped-subclasses",
+      "module": "OperatorKO7/Meta/PumpedBarrierClasses.lean",
+      "declarations": [
+        "PolynomialMeasureWithPump",
+        "no_global_step_orientation_polynomial_with_pump"
+      ],
+      "depends_on": [
+        "thm:affine-barrier",
+        "thm:polynomial-general-barrier",
+        "thm:max-barrier",
+        "thm:matrix-functional-barrier"
+      ]
+    },
+    {
+      "label": "thm:escape-trichotomy",
+      "module": "OperatorKO7/Meta/EscapeTrichotomy.lean",
+      "declarations": [
+        "ko7_nat_direct_escape_trichotomy",
+        "ko7_direct_escape_trichotomy_extended",
+        "ko7_projection_escape_trichotomy"
+      ],
+      "depends_on": [
+        "cor:pumped-subclasses",
+        "thm:scalar-projection-barrier",
+        "cor:kbo-impossible"
+      ]
+    },
+    {
+      "label": "cor:kbo-impossible",
+      "module": "OperatorKO7/Meta/KBO_Impossible.lean",
+      "declarations": [
+        "no_kbo_orients_ko7_rec_succ"
+      ],
+      "depends_on": [
+        "thm:symbolic-variable-barrier"
+      ]
+    },
+    {
+      "label": "thm:symbolic-variable-barrier",
+      "module": "OperatorKO7/Meta/SymbolicComparatorBarrier.lean",
+      "declarations": [
+        "not_orients_dup_rule",
+        "no_symbolic_variable_condition_orients_dup_step"
+      ],
+      "depends_on": []
+    },
+    {
+      "label": "thm:transparency-essential",
+      "module": "OperatorKO7/Meta/RecCore.lean",
+      "declarations": [
+        "transparency_is_essential_for_tier2"
+      ],
+      "depends_on": [
+        "thm:schema-barrier"
+      ]
+    },
+    {
+      "label": "thm:dp-escape",
+      "module": "OperatorKO7/Meta/DependencyPairs_Works.lean",
+      "declarations": [
+        "dp_projection_orients_rec_succ",
+        "dp_projection_violates_sensitivity"
+      ],
+      "depends_on": []
+    },
+    {
+      "label": "prop:dp-base-order-boundary",
+      "module": "OperatorKO7/Meta/DP_BaseOrder_Boundary.lean",
+      "declarations": [
+        "counterHeight_orients_dpPair",
+        "extracted_dp_problem_has_linear_base_order",
+        "no_blanket_dp_poly_base_barrier"
+      ],
+      "depends_on": [
+        "thm:dp-escape"
+      ]
+    },
+    {
+      "label": "thm:delayed-duplication",
+      "module": "OperatorKO7/Meta/MutualDuplication_General.lean",
+      "declarations": [
+        "alternating_dup2_realized",
+        "no_additive_orients_alternating_dup2_composite",
+        "no_affine_orients_alternating_dup2_composite_of_unbounded"
+      ],
+      "depends_on": [
+        "thm:schema-barrier",
+        "thm:affine-barrier"
+      ]
+    },
+    {
+      "label": "thm:preserving-scc",
+      "module": "OperatorKO7/Meta/MutualDuplication_Preserving.lean",
+      "declarations": [
+        "step_preserves_payloadCount",
+        "synchronized_cycle_realized",
+        "synchronized_cycle_exposes_payload",
+        "no_additive_orients_synchronized_cycle",
+        "no_affine_orients_synchronized_cycle_of_wrapper_dominance"
+      ],
+      "depends_on": [
+        "thm:delayed-duplication"
+      ]
+    },
+    {
+      "label": "thm:stepdrop",
+      "module": "OperatorKO7/Meta/SafeStep_Complexity.lean",
+      "declarations": [
+        "measure_decreases_safe_c"
+      ],
+      "depends_on": []
+    },
+    {
+      "label": "cor:sn",
+      "module": "OperatorKO7/Meta/SafeStep_Complexity.lean",
+      "declarations": [
+        "wf_SafeStepRev_c"
+      ],
+      "depends_on": [
+        "thm:stepdrop"
+      ]
+    },
+    {
+      "label": "thm:confluence",
+      "module": "OperatorKO7/Meta/Confluence_Safe.lean",
+      "declarations": [
+        "localJoin_all_safe",
+        "confluentSafe"
+      ],
+      "depends_on": [
+        "cor:sn"
+      ]
+    },
+    {
+      "label": "prop:safestepctx-obstruction",
+      "module": "OperatorKO7/Meta/SafeStepCtx_Confluence.lean",
+      "declarations": [
+        "confluentSafeCtx_iff_localJoinAll",
+        "newman_safeCtx"
+      ],
+      "depends_on": [
+        "cor:sn"
+      ]
+    },
+    {
+      "label": "thm:full-context-closed-sn",
+      "module": "OperatorKO7/Meta/ContextClosed_SN_Full.lean",
+      "declarations": [
+        "wf_StepCtxFullRev_poly"
+      ],
+      "depends_on": [
+        "prop:poly-full-step"
+      ]
+    },
+    {
+      "label": "thm:ordinal-calibration",
+      "module": "OperatorKO7/Meta/DM_OrderType.lean",
+      "declarations": [
+        "dmOrdEmbed_lt_opow_omega",
+        "safeMeasure_strictMono_explicit",
+        "safeMeasure_below_epsilon0"
+      ],
+      "depends_on": [
+        "cor:sn"
+      ]
+    },
+    {
+      "label": "thm:phase-b-cnf-scaffold",
+      "module": "OperatorKO7/Meta/DM_OrderType_LowerBound.lean",
+      "declarations": [
+        "phaseB_cnf_scaffold_exact_order_type",
+        "phaseB_cnf_scaffold_cofinal",
+        "dmOrdEmbed_eq_dmRankOrd",
+        "lex3c_order_type_bound"
+      ],
+      "depends_on": [
+        "thm:ordinal-calibration"
+      ]
+    },
+    {
+      "label": "prop:safestep-complexity",
+      "module": "OperatorKO7/Meta/SafeStep_Complexity_Ordinal.lean",
+      "declarations": [
+        "safestep_length_bounded_by_size"
+      ],
+      "depends_on": [
+        "thm:ordinal-calibration",
+        "thm:phase-b-cnf-scaffold"
+      ]
+    },
+    {
+      "label": "prop:poly-full-step",
+      "module": "OperatorKO7/Meta/PolyInterpretation_FullStep.lean",
+      "declarations": [
+        "W_orients_step",
+        "wf_StepRev_poly"
+      ],
+      "depends_on": []
+    },
+    {
+      "label": "prop:mpo-full-step",
+      "module": "OperatorKO7/Meta/MPO_FullStep.lean",
+      "declarations": [
+        "wf_MPORev",
+        "wf_StepRev_mpo"
+      ],
+      "depends_on": []
+    },
+    {
+      "label": "prop:mpo-proof-theoretic-bound",
+      "module": "OperatorKO7/Meta/MPO_ProofTheoreticBound.lean",
+      "declarations": [
+        "mpoOrd_lt_mpoVeblenBound",
+        "wf_StepRev_mpo_below_veblen7"
+      ],
+      "depends_on": [
+        "prop:mpo-full-step"
+      ]
+    },
+    {
+      "label": "prop:mpo-bad-precedence",
+      "module": "OperatorKO7/Meta/MPO_Precedence_Barrier.lean",
+      "declarations": [
+        "not_mpoBad_rec_succ_instance",
+        "no_global_step_orientation_mpo_bad_prec"
+      ],
+      "depends_on": [
+        "prop:mpo-full-step"
+      ]
+    }
+  ]
+}

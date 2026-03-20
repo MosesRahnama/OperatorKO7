@@ -1,5 +1,6 @@
 import OperatorKO7.Meta.NormalizeSafe_LowerBound
 import OperatorKO7.Meta.SafeStep_Complexity_Ordinal
+import OperatorKO7.Meta.SafeStep_Complexity_MW_Root
 
 /-!
 # Root-Normalizer Complexity Bounds
@@ -58,6 +59,12 @@ theorem normalizeSafeSteps_le_ctxFuel (t : Trace) :
 theorem normalizeSafeSteps_le_complexity_bound (t : Trace) :
     normalizeSafeSteps t ≤ complexity_bound (termSize t) := by
   exact le_trans (normalizeSafeSteps_le_ctxFuel t) (ctxFuel_le_towerBound t)
+
+/-- The certified root normalizer also inherits the notation-level MW root bound. -/
+theorem normalizeSafeSteps_le_mwRootBound (t : Trace) :
+    normalizeSafeSteps t ≤ mwRootBound t := by
+  rcases normalizeSafeSteps_realized t with ⟨u, hu⟩
+  exact safeStepPow_length_le_mwRootBound hu
 
 /-- The merge-void chain gives the matching exact lower-bound family already proved in
 `NormalizeSafe_LowerBound.lean`, restated here with the new root upper bound. -/

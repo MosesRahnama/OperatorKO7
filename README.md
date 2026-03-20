@@ -92,7 +92,7 @@ Artifact-facing docs:
 - `VerifyTpdbExport.lean`: runnable TPDB exporter/file verifier.
 - `generate_docs.py`: documentation-generation script.
 - `OperatorKO7_Complete_Documentation.md`: extended file-level map.
-- `OperatorKO7-private/Docs/KO7_BLUEPRINT.md` and `OperatorKO7-private/Docs/ko7_blueprint.json`: proof-dependency map from paper labels to Lean declarations and back.
+- `Docs/KO7_BLUEPRINT.md` and `Docs/ko7_blueprint.json`: proof-dependency map from paper labels to Lean declarations and back.
 
 ## Lean Source Layout
 
@@ -149,9 +149,13 @@ Artifact-facing docs:
 - `OperatorKO7/Meta/SafeStep_Complexity_FastGrowing.lean`:
   explicit fast-growing-hierarchy-style envelope for the same `SafeStepCtx` derivation-length bound, majorizing the `towerBound` estimate by a size-indexed finite-level `fastGrow` family.
 - `OperatorKO7/Meta/OrdinalHierarchy.lean`:
-  generic `slowGrowing` and `cichon` hierarchies on Mathlib ordinal notations below `ε₀`; this is the hierarchy foundation for a future exact Moser–Weiermann-style extraction.
+  generic `slowGrowing` and `cichon` hierarchies on Mathlib ordinal notations below `ε₀`.
+- `OperatorKO7/Meta/SafeStep_Complexity_MW_Root.lean`:
+  notation bridge from the calibrated `μ3c` ordinal to `ONote` / `NONote`, plus the root Cichon bound `safeStepPow_length_le_mwRootBound`.
+- `OperatorKO7/Meta/SafeStep_Complexity_MW_Ctx.lean`:
+  conservative context-closed Moser-Weiermann lift `mwCtxNote` / `mwCtxBound`, with `safeStepCtx_length_le_mwCtxBound`, the `ω^ω·2` calibration lemma `mwCtxNote_lt_opow_omega_mul_two`, and explicit obstruction theorems showing the root-side calibrated note does not directly descend along all `SafeStepCtx` steps.
 - `OperatorKO7/Meta/SafeRoot_Complexity.lean`:
-  exact-length root-normalizer realizations and upper envelope via `ctxFuel` / `complexity_bound`.
+  exact-length root-normalizer realizations and upper envelopes via `ctxFuel` / `complexity_bound` and `normalizeSafeSteps_le_mwRootBound`.
 - `OperatorKO7/Meta/Reachability_Complexity.lean`:
   explicit certified cost envelope for guarded reachability-to-safe-normal-form decisions, plus a linear lower-bound family.
 - `OperatorKO7/Meta/EqW_Guard_Barrier.lean`:
