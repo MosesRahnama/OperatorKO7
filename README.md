@@ -154,6 +154,8 @@ Artifact-facing docs:
   notation bridge from the calibrated `μ3c` ordinal to `ONote` / `NONote`, plus the root Cichon bound `safeStepPow_length_le_mwRootBound`.
 - `OperatorKO7/Meta/SafeStep_Complexity_MW_Ctx.lean`:
   conservative context-closed Moser-Weiermann lift `mwCtxNote` / `mwCtxBound`, with `safeStepCtx_length_le_mwCtxBound`, the `ω^ω·2` calibration lemma `mwCtxNote_lt_opow_omega_mul_two`, and explicit obstruction theorems showing the root-side calibrated note does not directly descend along all `SafeStepCtx` steps.
+- `OperatorKO7/Meta/SafeStep_Complexity_MW_CtxExact.lean`:
+  direct exact controlled-descent package for `SafeStepCtx` on a fresh contextual note family `ctxExactNote`, with `safeStepCtx_length_le_ctxExactBound`.
 - `OperatorKO7/Meta/SafeRoot_Complexity.lean`:
   exact-length root-normalizer realizations and upper envelopes via `ctxFuel` / `complexity_bound` and `normalizeSafeSteps_le_mwRootBound`.
 - `OperatorKO7/Meta/Reachability_Complexity.lean`:

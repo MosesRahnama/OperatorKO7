@@ -1,7 +1,7 @@
 # OperatorKO7 Complete Documentation
-Generated: 2026-03-18 20:53:49 +0330
-Source files: 79
-Total source lines: 16694
+Generated: 2026-03-20 20:36:52 +0330
+Source files: 80
+Total source lines: 16964
 Scope: active `.lean` files in the repository
 
 ## Table of Contents
@@ -66,6 +66,7 @@ Scope: active `.lean` files in the repository
 - [OperatorKO7/Meta/SafeRoot_Complexity.lean](#operatorko7metasaferootcomplexitylean)
 - [OperatorKO7/Meta/SafeStep_Complexity.lean](#operatorko7metasafestepcomplexitylean)
 - [OperatorKO7/Meta/SafeStep_Complexity_FastGrowing.lean](#operatorko7metasafestepcomplexityfastgrowinglean)
+- [OperatorKO7/Meta/SafeStep_Complexity_MW_Ctx.lean](#operatorko7metasafestepcomplexitymwctxlean)
 - [OperatorKO7/Meta/SafeStep_Complexity_MW_Root.lean](#operatorko7metasafestepcomplexitymwrootlean)
 - [OperatorKO7/Meta/SafeStep_Complexity_Ordinal.lean](#operatorko7metasafestepcomplexityordinallean)
 - [OperatorKO7/Meta/SafeStep_Core.lean](#operatorko7metasafestepcorelean)
@@ -126,7 +127,7 @@ require mathlib from git "https://github.com/leanprover-community/mathlib4.git" 
 
 ## OperatorKO7.lean
 
-**Lines:** 72
+**Lines:** 73
 
 ```lean
 import OperatorKO7.SchemaAPI
@@ -177,6 +178,7 @@ import OperatorKO7.Meta.ContextClosedBarrier
 import OperatorKO7.Meta.SafeStep_Complexity
 import OperatorKO7.Meta.SafeStep_Complexity_Ordinal
 import OperatorKO7.Meta.SafeStep_Complexity_FastGrowing
+import OperatorKO7.Meta.SafeStep_Complexity_MW_Ctx
 import OperatorKO7.Meta.SafeRoot_Complexity
 import OperatorKO7.Meta.SafeStepCtx_Confluence
 import OperatorKO7.Meta.EqGuardedConfluence
@@ -13867,11 +13869,12 @@ end OperatorKO7.RecCore
 
 ## OperatorKO7/Meta/SafeRoot_Complexity.lean
 
-**Lines:** 75
+**Lines:** 82
 
 ```lean
 import OperatorKO7.Meta.NormalizeSafe_LowerBound
 import OperatorKO7.Meta.SafeStep_Complexity_Ordinal
+import OperatorKO7.Meta.SafeStep_Complexity_MW_Root
 
 /-!
 # Root-Normalizer Complexity Bounds
@@ -13930,6 +13933,12 @@ theorem normalizeSafeSteps_le_ctxFuel (t : Trace) :
 theorem normalizeSafeSteps_le_complexity_bound (t : Trace) :
     normalizeSafeSteps t ≤ complexity_bound (termSize t) := by
   exact le_trans (normalizeSafeSteps_le_ctxFuel t) (ctxFuel_le_towerBound t)
+
+/-- The certified root normalizer also inherits the notation-level MW root bound. -/
+theorem normalizeSafeSteps_le_mwRootBound (t : Trace) :
+    normalizeSafeSteps t ≤ mwRootBound t := by
+  rcases normalizeSafeSteps_realized t with ⟨u, hu⟩
+  exact safeStepPow_length_le_mwRootBound hu
 
 /-- The merge-void chain gives the matching exact lower-bound family already proved in
 `NormalizeSafe_LowerBound.lean`, restated here with the new root upper bound. -/
@@ -14195,9 +14204,192 @@ end MetaSN_KO7
 
 ---
 
+## OperatorKO7/Meta/SafeStep_Complexity_MW_Ctx.lean
+
+**Lines:** 174
+
+```lean
+import OperatorKO7.Meta.SafeStep_Complexity_MW_Root
+import OperatorKO7.Meta.SafeStep_Complexity_Ordinal
+
+/-!
+# Context-closed MW-style complexity bound
+
+This module packages the existing contextual derivation-length theorem
+`safeStepCtx_length_le_ctxFuel` into the same `lex3Note` / `cichon` hierarchy family
+used on the root side.
+
+The contextual relation does not reuse the exact root-side ordinal descent directly:
+congruence steps can move below the current root while preserving the outer `lex3`
+payload. Instead, we lift the already-certified contextual fuel `ctxFuel` into the
+finite tail of the same notation family. The resulting bound remains below `ω^ω * 2`
+and is expressed by the genuine Cichon hierarchy on `ONote`.
+-/
+
+open OperatorKO7
+open OperatorKO7.Trace
+open scoped Classical
+open Ordinal
+
+namespace MetaSN_KO7
+
+open OperatorKO7.MetaCM
+open OperatorKO7.MetaDM
+open OperatorKO7.OrdinalHierarchy
+open ONote
+open NONote
+
+/-- Contextual MW note: keep the calibrated `δ` / `κᴹ` payload and replace the finite tail by
+    the already-certified contextual fuel. -/
+def mwCtxNote (t : Trace) : NONote :=
+  lex3Note (deltaFlag t, (MetaSN_DM.kappaM t, ctxFuel t))
+
+/-- Contextual MW bound expressed by the Cichon hierarchy on the contextual note. -/
+def mwCtxBound (t : Trace) : Nat :=
+  OperatorKO7.OrdinalHierarchy.cichon (mwCtxNote t).1 0
+
+theorem repr_mwCtxNote (t : Trace) :
+    NONote.repr (mwCtxNote t) =
+      lex3cToOrd (deltaFlag t, (MetaSN_DM.kappaM t, ctxFuel t)) := by
+  simp [mwCtxNote, repr_lex3Note]
+
+/-- The contextual MW note still lives below the same `ω^ω * 2` calibration block. -/
+theorem mwCtxNote_lt_opow_omega_mul_two (t : Trace) :
+    NONote.repr (mwCtxNote t) < ((ω : Ordinal) ^ (ω : Ordinal)) * (2 : Nat) := by
+  rw [repr_mwCtxNote]
+  have hδ : deltaFlag t ≤ 1 := by
+    rcases deltaFlag_range t with h0 | h1 <;> omega
+  exact lex3cToOrd_lt_opow_omega_mul_two hδ
+
+/-- A concrete contextual counterexample showing that the root-side calibrated `μ3c`
+    measure does not itself decrease on every `SafeStepCtx` step. -/
+def ctxOrdinalObstructionSeed : Trace :=
+  recΔ void void void
+
+/-- Source of the contextual obstruction: perform `rec_succ` under `integrate`. -/
+def ctxOrdinalObstructionSource : Trace :=
+  integrate (recΔ void void (delta ctxOrdinalObstructionSeed))
+
+/-- Target of the contextual obstruction: the inner `rec_succ` step duplicates the
+    recursive payload and increases the outer calibrated root note. -/
+def ctxOrdinalObstructionTarget : Trace :=
+  integrate (app void (recΔ void void ctxOrdinalObstructionSeed))
+
+theorem ctxOrdinalObstruction_step :
+    SafeStepCtx ctxOrdinalObstructionSource ctxOrdinalObstructionTarget := by
+  exact SafeStepCtx.integrate
+    (SafeStepCtx.root (SafeStep.R_rec_succ void void ctxOrdinalObstructionSeed))
+
+private theorem ctxOrdinalObstruction_dm :
+    DM (MetaSN_DM.kappaM ctxOrdinalObstructionSource)
+      (MetaSN_DM.kappaM ctxOrdinalObstructionTarget) := by
+  refine ⟨(1 ::ₘ 0), (1 ::ₘ 0), (2 ::ₘ 0), by simp, ?_, ?_, ?_⟩
+  · simp [ctxOrdinalObstructionSource, ctxOrdinalObstructionSeed, MetaSN_DM.kappaM,
+      MetaSN_DM.weight]
+  · ext x
+    by_cases h1 : x = 1
+    · subst h1
+      simp [ctxOrdinalObstructionTarget, ctxOrdinalObstructionSeed, MetaSN_DM.kappaM,
+        MetaSN_DM.weight]
+    · by_cases h2 : x = 2
+      · subst h2
+        simp [ctxOrdinalObstructionTarget, ctxOrdinalObstructionSeed, MetaSN_DM.kappaM,
+          MetaSN_DM.weight]
+      · simp [ctxOrdinalObstructionTarget, ctxOrdinalObstructionSeed, MetaSN_DM.kappaM,
+          MetaSN_DM.weight, h1, h2]
+  · intro y hy
+    have hy1 : y = 1 := by simpa using hy
+    subst hy1
+    exact ⟨2, by simp, by decide⟩
+
+/-- The contextual obstruction strictly increases the calibrated root-side triple-lex
+    measure, so no direct `μ3c` descent theorem can extend from `SafeStep` to
+    `SafeStepCtx`. -/
+theorem ctxOrdinalObstruction_measure_increases :
+    Lex3c (mu3c ctxOrdinalObstructionSource) (mu3c ctxOrdinalObstructionTarget) := by
+  have hinner :
+      LexDM_c (MetaSN_DM.kappaM ctxOrdinalObstructionSource, tau ctxOrdinalObstructionSource)
+        (MetaSN_DM.kappaM ctxOrdinalObstructionTarget, tau ctxOrdinalObstructionTarget) := by
+    exact dm_to_LexDM_c_left
+      (τ₁ := tau ctxOrdinalObstructionSource)
+      (τ₂ := tau ctxOrdinalObstructionTarget)
+      ctxOrdinalObstruction_dm
+  have hcore :
+      Lex3c (0, (MetaSN_DM.kappaM ctxOrdinalObstructionSource, tau ctxOrdinalObstructionSource))
+        (0, (MetaSN_DM.kappaM ctxOrdinalObstructionTarget, tau ctxOrdinalObstructionTarget)) :=
+    Prod.Lex.right (a := (0 : Nat)) hinner
+  simpa [ctxOrdinalObstructionSource, ctxOrdinalObstructionTarget, mu3c]
+    using hcore
+
+theorem ctxOrdinalObstruction_ord_increases :
+    lex3cToOrd (mu3c ctxOrdinalObstructionSource) <
+      lex3cToOrd (mu3c ctxOrdinalObstructionTarget) :=
+  lex3cToOrd_strictMono ctxOrdinalObstruction_measure_increases
+
+theorem ctxOrdinalObstruction_rootNote_increases :
+    NONote.repr (mwRootNote ctxOrdinalObstructionSource) <
+      NONote.repr (mwRootNote ctxOrdinalObstructionTarget) := by
+  rw [repr_mwRootNote, repr_mwRootNote]
+  exact ctxOrdinalObstruction_ord_increases
+
+theorem not_ctxOrdinalObstruction_measure_drop :
+    ¬ Lex3c (mu3c ctxOrdinalObstructionTarget) (mu3c ctxOrdinalObstructionSource) := by
+  intro hdrop
+  have hlt₁ := ctxOrdinalObstruction_ord_increases
+  have hlt₂ := lex3cToOrd_strictMono hdrop
+  exact lt_asymm hlt₁ hlt₂
+
+theorem not_all_safeStepCtx_rootNote_drop :
+    ¬ ∀ {a b : Trace}, SafeStepCtx a b →
+        NONote.repr (mwRootNote b) < NONote.repr (mwRootNote a) := by
+  intro hall
+  have hlt₁ := ctxOrdinalObstruction_rootNote_increases
+  have hlt₂ := hall ctxOrdinalObstruction_step
+  exact lt_asymm hlt₁ hlt₂
+
+/-- The calibrated root-side `μ3c` / `lex3Note` descent cannot by itself certify the
+    full contextual relation. This is why the present file packages `ctxFuel` into the
+    same note family instead of claiming a direct contextual fundamental-sequence descent. -/
+theorem not_all_safeStepCtx_measure_drop :
+    ¬ ∀ {a b : Trace}, SafeStepCtx a b → Lex3c (mu3c b) (mu3c a) := by
+  intro hall
+  exact not_ctxOrdinalObstruction_measure_drop (hall ctxOrdinalObstruction_step)
+
+/-- The finite contextual tail already yields an exact controlled descent of length `ctxFuel t`. -/
+theorem ctxFuel_le_mwCtxBound (t : Trace) :
+    ctxFuel t ≤ mwCtxBound t := by
+  unfold mwCtxBound mwCtxNote
+  simpa [Nat.add_comm, Nat.add_left_comm, Nat.add_assoc] using
+    (OperatorKO7.OrdinalHierarchy.exactControlledPow_length_le_cichon
+      (exactControlledPow_tau_drop
+        (δ := deltaFlag t) (τ := 0) (m := ctxFuel t) (k := 0) (κ := MetaSN_DM.kappaM t)))
+
+/-- Context-closed derivation lengths are bounded by the contextual MW Cichon value. -/
+theorem safeStepCtx_length_le_mwCtxBound (t u : Trace) (n : Nat)
+    (h : SafeStepCtxPow n t u) :
+    n ≤ mwCtxBound t := by
+  exact le_trans (safeStepCtx_length_le_ctxFuel t u n h) (ctxFuel_le_mwCtxBound t)
+
+/-- Alias matching the paper/roadmap naming convention. -/
+theorem safestepctx_length_le_mwCtxBound (t u : Trace) (n : Nat)
+    (h : SafeStepCtxPow n t u) :
+    n ≤ mwCtxBound t := by
+  exact safeStepCtx_length_le_mwCtxBound t u n h
+
+/-- Convenience corollary in the same style as the older size-based theorem. -/
+theorem safestep_length_bounded_by_mwCtxBound (t u : Trace) (n : Nat)
+    (h : SafeStepCtxPow n t u) :
+    n ≤ mwCtxBound t := by
+  exact safeStepCtx_length_le_mwCtxBound t u n h
+
+end MetaSN_KO7
+```
+
+---
+
 ## OperatorKO7/Meta/SafeStep_Complexity_MW_Root.lean
 
-**Lines:** 219
+**Lines:** 307
 
 ```lean
 import OperatorKO7.Meta.NormalizeSafe_LowerBound
@@ -14211,12 +14403,11 @@ import Mathlib.SetTheory.Ordinal.Arithmetic
 import Mathlib.Data.Multiset.Sort
 
 /-!
-# Root ordinal-notation bridge for strict S142
+# Root ordinal-notation bridge and Cichon bound for strict S142
 
 This file builds the notation-level bridge from the existing ordinal calibration
-`lex3cToOrd` to `ONote`/`NONote`. It does not yet contain the final Moser--Weiermann
-descent theorem, but it provides the exact `NONote.repr` equalities needed to state
-such a theorem in terms of Mathlib's ordinal-notation machinery.
+`lex3cToOrd` to `ONote`/`NONote`, then closes the guarded root side with a genuine
+`cichon` theorem on that note family.
 -/
 
 open OperatorKO7
@@ -14308,6 +14499,22 @@ theorem repr_lex3Note (x : Nat × (Multiset Nat × Nat)) :
   rcases x with ⟨δ, p⟩
   simp [lex3Note, lex3cToOrd, repr_lexDMNote, NONote.repr_add, NONote.repr_mul,
     repr_NONote_ofNat, repr_omegaPowOmegaNote]
+
+/-- Root-side note used by the guarded MW extraction. -/
+def mwRootNote (t : Trace) : NONote :=
+  lex3Note (mu3c t)
+
+theorem repr_mwRootNote (t : Trace) :
+    NONote.repr (mwRootNote t) = lex3cToOrd (mu3c t) := by
+  simp [mwRootNote, repr_lex3Note]
+
+/-- The guarded root note remains inside the calibrated `ω^ω * 2` block. -/
+theorem mwRootNote_lt_opow_omega_mul_two (t : Trace) :
+    NONote.repr (mwRootNote t) < ((ω : Ordinal) ^ (ω : Ordinal)) * (2 : Nat) := by
+  rw [repr_mwRootNote]
+  have hδ : deltaFlag t ≤ 1 := by
+    rcases deltaFlag_range t with h0 | h1 <;> omega
+  exact lex3cToOrd_lt_opow_omega_mul_two hδ
 
 /-- If a normal-form note denotes a successor ordinal, its fundamental sequence exposes
     the corresponding predecessor note. -/
@@ -14416,7 +14623,80 @@ theorem exactControlledPow_tau_drop (δ τ m k : Nat) (κ : Multiset Nat) :
 
 /-- The notation-level root bound candidate for the strict MW extraction. -/
 def mwRootBound (t : Trace) : Nat :=
-  OperatorKO7.OrdinalHierarchy.cichon (lex3Note (mu3c t)).1 (ctxFuel t)
+  OperatorKO7.OrdinalHierarchy.cichon (mwRootNote t).1 (ctxFuel t)
+
+/-- Any exact-length root chain is bounded by the computable tail measure `τ`.
+
+For root reduction, the only constructor that can increase `τ` is `rec_succ`,
+but its target is an `app` term, and `app` admits no further root reduction.
+All other constructors either end immediately or strictly decrease `τ`. -/
+theorem safeStepPow_length_le_tau :
+    ∀ {t u : Trace} {n : Nat}, SafeStepPow t n u → n ≤ tau t
+  | _, _, _, SafeStepPow.refl t => by
+      simp
+  | _, _, _, SafeStepPow.tail hab hbc => by
+      cases hab with
+      | R_int_delta t =>
+          cases hbc with
+          | refl _ =>
+              simp [tau]
+          | tail hnext _ =>
+              cases hnext
+      | R_merge_void_left t hδ =>
+          have ih := safeStepPow_length_le_tau hbc
+          simp [tau] at ih ⊢
+          omega
+      | R_merge_void_right t hδ =>
+          have ih := safeStepPow_length_le_tau hbc
+          simp [tau] at ih ⊢
+          omega
+      | R_merge_cancel t hδ h0 =>
+          have ih := safeStepPow_length_le_tau hbc
+          simp [tau] at ih ⊢
+          omega
+      | R_rec_zero b s hδ =>
+          have ih := safeStepPow_length_le_tau hbc
+          simp [tau] at ih ⊢
+          omega
+      | R_rec_succ b s n =>
+          cases hbc with
+          | refl _ =>
+              simp [tau]
+              omega
+          | tail hnext _ =>
+              cases hnext
+      | R_eq_refl a h0 =>
+          cases hbc with
+          | refl _ =>
+              simp [tau]
+              omega
+          | tail hnext _ =>
+              cases hnext
+      | R_eq_diff a b hne =>
+          cases hbc with
+          | refl _ =>
+              simp [tau]
+              omega
+          | tail hnext _ =>
+              cases hnext
+
+/-- The finite `τ` tail already furnishes an exact controlled descent of length `τ`. -/
+theorem tau_le_mwRootBound (t : Trace) :
+    tau t ≤ mwRootBound t := by
+  unfold mwRootBound
+  simpa [mu3c, Nat.add_comm, Nat.add_left_comm, Nat.add_assoc] using
+    (OperatorKO7.OrdinalHierarchy.exactControlledPow_length_le_cichon
+      (exactControlledPow_tau_drop
+        (δ := deltaFlag t) (τ := 0) (m := tau t) (k := ctxFuel t) (κ := MetaSN_DM.kappaM t)))
+
+/-- Root derivation lengths are bounded by the notation-level MW candidate already in the repo.
+
+This does not solve the full strict S142 route for the context-closed relation, but it does
+close the root side with a genuine `cichon` theorem. -/
+theorem safeStepPow_length_le_mwRootBound {t u : Trace} {n : Nat}
+    (h : SafeStepPow t n u) :
+    n ≤ mwRootBound t := by
+  exact le_trans (safeStepPow_length_le_tau h) (tau_le_mwRootBound t)
 
 end MetaSN_KO7
 ```

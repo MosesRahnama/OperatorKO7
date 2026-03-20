@@ -47,6 +47,7 @@ import OperatorKO7.Meta.SafeStep_Complexity
 import OperatorKO7.Meta.SafeStep_Complexity_Ordinal
 import OperatorKO7.Meta.SafeStep_Complexity_FastGrowing
 import OperatorKO7.Meta.SafeStep_Complexity_MW_Ctx
+import OperatorKO7.Meta.SafeStep_Complexity_MW_CtxExact
 import OperatorKO7.Meta.SafeRoot_Complexity
 import OperatorKO7.Meta.SafeStepCtx_Confluence
 import OperatorKO7.Meta.EqGuardedConfluence
