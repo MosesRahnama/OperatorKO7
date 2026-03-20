@@ -40,6 +40,13 @@ theorem reachabilityDecisionCost_le_complexity_bound (t : Trace) (_c : Trace) :
   have h := normalizeSafeSteps_le_complexity_bound t
   omega
 
+/-- The guarded reachability decision procedure is linearly bounded in the source size. -/
+theorem reachabilityDecisionCost_le_linear_termSize (t : Trace) (_c : Trace) :
+    reachabilityDecisionCost t _c + 1 ≤ 2 * termSize t := by
+  unfold reachabilityDecisionCost
+  have h := normalizeSafeSteps_le_linear_termSize t
+  omega
+
 /-- The merge-void chain gives a matching linear lower family for the guarded
 reachability decision procedure when the target is the safe normal form `void`. -/
 theorem reachabilityDecision_has_linear_lower_family (n : Nat) :
@@ -56,5 +63,21 @@ theorem reachabilityDecision_has_linear_lower_family (n : Nat) :
   · simp [reachabilityDecisionCost, normalizeSafeSteps_mergeVoidChain]
   · simpa [reachabilityDecisionCost, normalizeSafeSteps_mergeVoidChain] using
       reachabilityDecisionCost_le_complexity_bound (mergeVoidChain n) void
+
+/-- The merge-void chain also realizes the linear-size runtime envelope exactly up to constants. -/
+theorem reachabilityDecision_has_linear_size_family (n : Nat) :
+    ∃ t c : Trace,
+      NormalFormSafe c ∧
+      SafeStepStar t c ∧
+      termSize t = 2 * n + 1 ∧
+      reachabilityDecisionCost t c = n + 1 ∧
+      reachabilityDecisionCost t c + 1 ≤ 2 * termSize t := by
+  refine ⟨mergeVoidChain n, void, ?_, ?_, ?_, ?_, ?_⟩
+  · simpa using (norm_nf_safe void)
+  · exact mergeVoidChain_star_void n
+  · exact termSize_mergeVoidChain n
+  · simp [reachabilityDecisionCost, normalizeSafeSteps_mergeVoidChain]
+  · simpa [reachabilityDecisionCost, normalizeSafeSteps_mergeVoidChain] using
+      reachabilityDecisionCost_le_linear_termSize (mergeVoidChain n) void
 
 end MetaSN_KO7

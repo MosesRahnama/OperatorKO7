@@ -162,9 +162,9 @@ Artifact-facing docs:
 - `OperatorKO7/Meta/SafeStep_Complexity_MW_CtxExact.lean`:
   direct exact controlled-descent package for `SafeStepCtx` on a fresh contextual note family `ctxExactNote`, with `safeStepCtx_length_le_ctxExactBound`.
 - `OperatorKO7/Meta/SafeRoot_Complexity.lean`:
-  exact-length root-normalizer realizations and upper envelopes via `ctxFuel` / `complexity_bound` and `normalizeSafeSteps_le_mwRootBound`.
+  exact-length root-normalizer realizations, a linear size bound via `normalizeSafeSteps_le_linear_termSize`, and the coarser `ctxFuel` / `complexity_bound` / `mwRootBound` envelopes.
 - `OperatorKO7/Meta/Reachability_Complexity.lean`:
-  explicit certified cost envelope for guarded reachability-to-safe-normal-form decisions, plus a linear lower-bound family.
+  explicit certified cost envelope for guarded reachability-to-safe-normal-form decisions, including a linear size upper bound and matching linear families.
 - `OperatorKO7/Meta/EqW_Guard_Barrier.lean`:
   full-step `eqW` overlap obstruction and guard-necessity results.
 
@@ -257,6 +257,8 @@ Artifact-facing docs:
   DM-to-ordinal embedding; ε₀ bridge; per-step strictness; upper-bound calibration.
 - `OperatorKO7/Meta/DM_OrderType_LowerBound.lean`:
   `CNFωω` canonical carrier; surjectivity below ω^ω, reflection, rank bridge, and exact DM-component order-type calibration.
+- `OperatorKO7/Meta/Mu3c_Image_LowerBound.lean`:
+  explicit realized lower-bound families for the full `mu3c` image, witnessing arbitrarily high ordinals in both the `δ = 0` and `δ = 1` blocks below the `ω^ω · 2` cap.
 - `OperatorKO7/Meta/MPO_FullStep.lean`:
   KO7-specialized MPO orientation and well-foundedness on the full root relation.
 - `OperatorKO7/Meta/MPO_Precedence_Barrier.lean`:

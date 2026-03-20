@@ -24,6 +24,39 @@ open MetaSN_DM
 
 namespace MetaSN_KO7
 
+/-- The root-side tail measure `τ` is linear in the structural term size. -/
+theorem tau_add_two_le_two_mul_termSize (t : Trace) :
+    tau t + 2 ≤ 2 * termSize t := by
+  induction t with
+  | void =>
+      simp [tau, termSize]
+  | delta t ih =>
+      simp [tau, termSize]
+      omega
+  | integrate t ih =>
+      simp [tau, termSize] at ih ⊢
+      omega
+  | merge a b iha ihb =>
+      simp [tau, termSize] at iha ihb ⊢
+      omega
+  | app a b iha ihb =>
+      simp [tau, termSize] at iha ihb ⊢
+      omega
+  | recΔ b s n ihb ihs ihn =>
+      simp [tau, termSize] at ihb ihs ihn ⊢
+      omega
+  | eqW a b iha ihb =>
+      simp [tau, termSize] at iha ihb ⊢
+      omega
+
+/-- Any exact-length guarded root reduction is linearly bounded by the source size. -/
+theorem safeStepPow_length_le_linear_termSize {t u : Trace} {n : Nat}
+    (h : SafeStepPow t n u) :
+    n + 2 ≤ 2 * termSize t := by
+  have hτ := safeStepPow_length_le_tau h
+  have hsize := tau_add_two_le_two_mul_termSize t
+  omega
+
 /-- Every exact-length root path lifts to an exact-length context-closed path. -/
 theorem safeStepPow_to_ctxPow {a b : Trace} {n : Nat}
     (h : SafeStepPow a n b) : SafeStepCtxPow n a b := by
@@ -66,6 +99,22 @@ theorem normalizeSafeSteps_le_mwRootBound (t : Trace) :
   rcases normalizeSafeSteps_realized t with ⟨u, hu⟩
   exact safeStepPow_length_le_mwRootBound hu
 
+/-- The certified root normalizer is linearly bounded by structural term size. -/
+theorem normalizeSafeSteps_le_linear_termSize (t : Trace) :
+    normalizeSafeSteps t + 2 ≤ 2 * termSize t := by
+  rcases normalizeSafeSteps_realized t with ⟨u, hu⟩
+  exact safeStepPow_length_le_linear_termSize hu
+
+/-- Exact structural size of the merge-spine lower-bound family. -/
+@[simp] theorem termSize_mergeVoidChain (n : Nat) :
+    termSize (mergeVoidChain n) = 2 * n + 1 := by
+  induction n with
+  | zero =>
+      simp [mergeVoidChain, termSize]
+  | succ n ih =>
+      simp [mergeVoidChain, termSize, ih]
+      omega
+
 /-- The merge-void chain gives the matching exact lower-bound family already proved in
 `NormalizeSafe_LowerBound.lean`, restated here with the new root upper bound. -/
 theorem normalizeSafeSteps_has_linear_lower_family (n : Nat) :
@@ -78,5 +127,12 @@ theorem normalizeSafeSteps_has_linear_lower_family (n : Nat) :
   · exact normalizeSafeSteps_mergeVoidChain_lower_bound n
   · simpa [normalizeSafeSteps_mergeVoidChain n] using
       normalizeSafeSteps_le_complexity_bound (mergeVoidChain n)
+
+/-- The merge-spine family realizes linear guarded root normalization in term size. -/
+theorem normalizeSafeSteps_has_linear_size_family (n : Nat) :
+    ∃ t : Trace,
+      termSize t = 2 * n + 1 ∧
+      normalizeSafeSteps t = n := by
+  refine ⟨mergeVoidChain n, termSize_mergeVoidChain n, normalizeSafeSteps_mergeVoidChain n⟩
 
 end MetaSN_KO7
