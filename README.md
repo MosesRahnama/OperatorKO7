@@ -49,6 +49,8 @@ python scripts/stage_tpdb_submission.py
 Artifact-facing docs:
 - `artifact/REPRODUCIBILITY.md`:
   exact toolchain pins, local replay path, and referee-bundle generation.
+- `artifact/MICRO_BENCHMARKS.md`:
+  local Lean replay timings, selected module check times, and archived TTT2 timings.
 - `artifact/TPDB_SUBMISSION_PREP.md`:
   staged prep notes for a future TPDB submission; not the submission itself.
 - `Artifacts/ttt2/README.md`:
@@ -89,6 +91,9 @@ Artifact-facing docs:
 - `scripts/stage_tpdb_submission.py`:
   stages a local TPDB-prep directory from the archived KO7 `.trs` artifact and
   writes metadata/provenance templates; it does not perform the upstream submission.
+- `scripts/validate_manuscript_refs.py`:
+  validates manuscript `\path{...}` references against the public repo, checking
+  both file/module paths and declaration-style citations.
 - `VerifyTpdbExport.lean`: runnable TPDB exporter/file verifier.
 - `generate_docs.py`: documentation-generation script.
 - `OperatorKO7_Complete_Documentation.md`: extended file-level map.

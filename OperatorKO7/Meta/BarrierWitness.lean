@@ -10,7 +10,7 @@ compositional, or affine), the extractors produce a concrete instantiation
 
     M.eval (S.wrap s (S.recur b s n)) ≥ M.eval (S.recur b s (S.succ n))
 
-## Main definitions
+Main definitions:
 
 * `additive_witness`       — Tier 1 counterexample extractor
 * `compositional_witness`  — Tier 2 counterexample extractor (with transparency)
@@ -22,7 +22,7 @@ Each returns a bundled triple with a proof that orientation fails on that triple
 namespace OperatorKO7.StepDuplicating
 open StepDuplicatingSchema
 
-/-! ### Tier 1: Additive barrier witness -/
+/-! Tier 1: Additive barrier witness -/
 
 /-- Bundled counterexample: a triple `(b, s, n)` on which orientation provably fails. -/
 structure BarrierCertificate (S : StepDuplicatingSchema) (eval : S.T → Nat) where
@@ -50,7 +50,7 @@ def additive_witness {S : StepDuplicatingSchema} (M : AdditiveMeasure S) :
 theorem additive_witness_computable {S : StepDuplicatingSchema} (M : AdditiveMeasure S) :
     (additive_witness M).s = wrapIter S M.w_succ := rfl
 
-/-! ### Tier 2: Compositional barrier witness (with transparency) -/
+/-! Tier 2: Compositional barrier witness (with transparency) -/
 
 /-- Counterexample extractor for the Tier 2 (compositional) barrier.
 Given a compositional measure with base-level successor transparency,
@@ -76,7 +76,7 @@ theorem compositional_witness_is_base {S : StepDuplicatingSchema}
     (compositional_witness CM h_transparent).s = S.base ∧
     (compositional_witness CM h_transparent).n = S.base := ⟨rfl, rfl, rfl⟩
 
-/-! ### Affine barrier witness -/
+/-! Affine barrier witness -/
 
 /-- Counterexample extractor for the affine/linear barrier.
 Given an affine measure and a pump term `s₀` with `eval s₀ ≥ threshold`,

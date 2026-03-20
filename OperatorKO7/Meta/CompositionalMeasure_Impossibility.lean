@@ -14,7 +14,7 @@ The module then shows that the Dependency Pair framework (TTT2's subterm criteri
 projection π(recD#) = 3) escapes the impossibility by violating the compositionality
 axioms: it projects to a single argument instead of aggregating all subterm contributions.
 
-## Structure
+Structure:
 
 - **Section 1**: Helper: iterated `app` constructor (the "pump" for making μ(s) large)
 - **Section 2**: `AdditiveCompositionalMeasure` - concrete Nat-weighted structure
@@ -25,7 +25,7 @@ axioms: it projects to a single argument instead of aggregating all subterm cont
 - **Section 7**: Instance witnesses (simpleSize, tau, nodeCount)
 - **Section 8**: `GlobalOrients` integration
 
-## Results
+Results:
 
 - `no_additive_compositional_orients_rec_succ`: No additive compositional measure orients rec_succ
 - `no_compositional_orients_rec_succ_transparent_delta`: No abstract compositional measure
@@ -35,7 +35,7 @@ axioms: it projects to a single argument instead of aggregating all subterm cont
 - `dp_projection_orients_rec_succ`: DP projection DOES orient rec_succ
 - `dp_projection_violates_sensitivity`: DP projection violates the subterm/sensitivity axiom
 
-## References
+References:
 
 - Dershowitz (1987): duplication defeats additive measures
 - Arts-Giesl (2000): dependency pairs with argument filtering
@@ -62,14 +62,14 @@ def ko7System : StepDuplicatingSchema.StepDuplicatingSystem where
   Step := Step
   dup_step := Step.R_rec_succ
 
-/-! ## Section 1: Iterated App Constructor -/
+/-! Section 1: Iterated App Constructor -/
 
 /-- Build `app(app(...(void)...), void)` with `k` nestings.
 This is the "pump" that makes `μ(s)` arbitrarily large for any compositional measure. -/
 def appIter : Nat → Trace :=
   StepDuplicatingSchema.wrapIter ko7Schema
 
-/-! ## Section 2: Additive Compositional Measure (Tier 1) -/
+/-! Section 2: Additive Compositional Measure (Tier 1) -/
 
 /-- An additive compositional measure assigns a fixed base weight to each KO7 constructor.
 The measure of a compound term is the constructor's weight plus the sum of its subterms' measures.
@@ -122,7 +122,7 @@ lemma eval_appIter_ge (M : AdditiveCompositionalMeasure) (k : Nat) :
     (StepDuplicatingSchema.eval_wrapIter_ge
       (S := ko7Schema) (M := M.toSchemaMeasure) k)
 
-/-! ## Section 3: Tier 1 Impossibility Theorem -/
+/-! Section 3: Tier 1 Impossibility Theorem -/
 
 /-- **IMPOSSIBILITY THEOREM (Additive Measures)**
 
@@ -143,7 +143,7 @@ theorem no_additive_compositional_orients_rec_succ (M : AdditiveCompositionalMea
     (StepDuplicatingSchema.no_additive_orients_dup_step
       (S := ko7Schema) (M := M.toSchemaMeasure))
 
-/-! ## Section 4: Abstract Compositional Measure (Tier 2) -/
+/-! Section 4: Abstract Compositional Measure (Tier 2) -/
 
 /-- An abstract compositional measure over KO7 traces.
 Each constructor has a combining function that maps subterm measure values to
@@ -192,7 +192,7 @@ def CompositionalMeasure.toSchemaMeasure
   wrap_subterm1 := CM.app_subterm1
   wrap_subterm2 := CM.app_subterm2
 
-/-! ## Section 5: Tier 2 Impossibility (Transparent Delta) -/
+/-! Section 5: Tier 2 Impossibility (Transparent Delta) -/
 
 /-- **IMPOSSIBILITY THEOREM (Abstract Compositional, Transparent Delta)**
 
@@ -214,7 +214,7 @@ theorem no_compositional_orients_rec_succ_transparent_delta
     (StepDuplicatingSchema.no_compositional_orients_dup_step_transparent_succ
       (S := ko7Schema) (CM := CM.toSchemaMeasure) h_transparent)
 
-/-! ## Section 6: DP Projection Escape -/
+/-! Section 6: DP Projection Escape -/
 
 /-- A projection-based measure that tracks only delta-nesting depth.
 This is the measure implicitly used by TTT2's subterm criterion with π(recD#) = 3.
@@ -302,7 +302,13 @@ def nodeCount_ACM : AdditiveCompositionalMeasure where
   w_eq        := 1
   hw_app_pos  := by omega
 
-/-- `treeDepth` assigns weight 1 per constructor except void. -/
+/-- Additive constructor-count surrogate sometimes used as a "depth-like" witness.
+
+This is intentionally *not* the standard max-based tree depth used elsewhere in the
+artifact: every non-`void` constructor contributes `1`, so the value adds across
+siblings instead of taking a maximum. The historical name is retained here only for
+backward compatibility with the surrounding no-go catalog.
+-/
 def treeDepth_ACM : AdditiveCompositionalMeasure where
   w_void      := 0
   w_delta     := 1

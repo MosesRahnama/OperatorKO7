@@ -34,6 +34,7 @@ import OperatorKO7.Meta.EscapeTrichotomy
 import OperatorKO7.Meta.DepthBarrier
 import OperatorKO7.Meta.PrecedenceBarrier
 import OperatorKO7.Meta.TypedBarrierSurvival
+import OperatorKO7.Meta.TextbookDupInstance
 import OperatorKO7.Meta.TPDB_Export
 import OperatorKO7.Meta.DependencyPairs_Fragment
 import OperatorKO7.Meta.DependencyPairs_Works

@@ -7,14 +7,14 @@ This module extracts concrete derivation-length bounds from the existing
 well-foundedness infrastructure. The `ctxFuel` measure provides a computable
 numeric bound on the length of any `SafeStepCtx` reduction chain.
 
-## Main Results
+Main results:
 
 - `SafeStepCtxPow n t u`: there is an `n`-step `SafeStepCtx` chain from `t` to `u`
 - `safeStepCtx_length_le_ctxFuel`: any `n`-step chain satisfies `n ≤ ctxFuel t`
 - `termSize`: structural size of a `Trace` term (≥ 1 for all terms)
 - `complexity_bound`: combines `ctxFuel` with `termSize` for a Nat→Nat bound
 
-## Complexity Class
+Complexity class:
 
 The ordinal calibration of the triple-lex measure at ω^ω · 2 (proved in
 `DM_OrderType.lean` and `DM_OrderType_LowerBound.lean`) places the derivational

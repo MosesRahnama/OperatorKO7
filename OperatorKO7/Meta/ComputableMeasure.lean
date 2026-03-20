@@ -11,14 +11,14 @@ using the triple-lexicographic measure μ3c = (δ, κᴹ, τ) where:
 - κᴹ (kappaM): Dershowitz-Manna multiset of recursion weights
 - τ (tau): Computable natural number rank (replaces noncomputable ordinal μ)
 
-## Properties
+Properties:
 - All measure functions (`deltaFlag`, `kappaM`, `tau`) are computable;
   classical reasoning is used only in proof terms (Prop-valued well-foundedness arguments).
 - All 8 SafeStep constructors are proven to strictly decrease μ3c.
 - Explicit `Prod.Lex` parameters prevent elaboration issues.
 - No `sorry`, no `admit`, no `unsafe`.
 
-## Technical Approach
+Technical approach:
 The measure μ3c uses lexicographic ordering Lex3c := Prod.Lex (<) (Prod.Lex DM (<))
 where DM is Mathlib's Dershowitz-Manna multiset order. Each SafeStep rule is proven
 to strictly decrease this measure through either:
@@ -26,7 +26,7 @@ to strictly decrease this measure through either:
 2. κᴹ-drop: Via DM order for rules that modify recursion structure
 3. τ-drop: When δ and κᴹ tie, using carefully chosen head weights
 
-## Constants
+Constants:
 τ assigns head weights ensuring strict inequalities:
 - void: 0
 - delta: transparent (preserves inner term's weight)
@@ -36,7 +36,7 @@ to strictly decrease this measure through either:
 - recΔ: 3 + sum of all three arguments
 - eqW: 4 + sum of arguments (so that 1+2+X < 4+X for eq_diff)
 
-## References
+References:
 - Dershowitz & Manna (1979): Proving termination with multiset orderings
 - Baader & Nipkow: Term Rewriting and All That
 - Newman's Lemma: Local confluence + termination → confluence
@@ -58,12 +58,12 @@ open scoped Classical
 
 A computable Nat-valued rank function.
 
-### Properties:
+Properties:
 1. τ(eqW a b) > τ(integrate (merge a b)) for all a, b (required by eq_diff)
 2. τ strictly increases under all constructors except delta
 3. All inequalities provable by `omega` or `decide`
 
-### Weight design:
+Weight design:
 - void: 0 (base case)
 - delta t: τ(t) (transparent wrapper)
 - integrate/app: weight 1
@@ -438,7 +438,7 @@ theorem wellFounded_of_measure_decreases_R_c
 Well-foundedness of SafeStepRev proves termination.
 Fully computable, no axioms, no noncomputables.
 
-### Implications:
+Implications:
 - No infinite SafeStep chains
 - Normalizer always terminates
 - Confluence + SN = decidable equality

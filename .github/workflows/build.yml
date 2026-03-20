@@ -30,6 +30,9 @@ jobs:
         
       - name: Build OperatorKO7
         run: lake build
+
+      - name: Verify TPDB Export Bridge
+        run: lake exe verifyTpdbExport
         
       - name: Verify build artifacts
         run: |

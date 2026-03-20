@@ -82,3 +82,12 @@ The repository CI definition is:
 
 That workflow currently provides the baseline package build path. The referee-bundle
 script is complementary: it packages the material reviewers need to inspect and replay.
+
+## Micro-Benchmarks
+
+Replay-cost notes for the active artifact state are recorded in:
+
+- `artifact/MICRO_BENCHMARKS.md`
+
+That file reports local Lean replay timings together with the archived TTT2 run times
+already stored in `Artifacts/ttt2/`.

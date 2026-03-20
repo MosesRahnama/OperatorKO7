@@ -59,3 +59,5 @@ TmpInspect_Mutual.lean
 .claude/settings.json
 OperatorKO7/Meta/S142_Exploration.lean
 Docs/KO7_BLUEPRINT.md
+scripts/validate_manuscript_refs.py
+.gitignore

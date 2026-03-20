@@ -39,14 +39,14 @@ barrier theory. It re-exports the generic impossibility theorems, escape
 characterization infrastructure, and executable boundary tooling that apply to
 **any** step-duplicating schema, not only to KO7.
 
-## What this module provides
+What this module provides:
 
-### Core schema definition
+Core schema definition:
 - `StepDuplicatingSchema` — the four-role schema (base/succ/wrap/recur)
 - `StepDuplicatingSystem` — schema + a step relation containing the dup rule
 - `GlobalOrients` — the property that a measure globally orients a relation
 
-### Barrier theorems (schema-level)
+Barrier theorems (schema-level):
 - Additive and transparent-compositional impossibility
 - Affine / linear constructor-local barrier
 - Restricted quadratic, bounded cross-term quadratic barriers
@@ -60,17 +60,17 @@ characterization infrastructure, and executable boundary tooling that apply to
 - Scalar-projection meta-theorem
 - Symbolic variable-condition barrier (KBO-style) and KBO corollary
 
-### Strengthened subclasses and pump infrastructure
+Strengthened subclasses and pump infrastructure:
 - Pumped subclasses with internalized growth conditions
 - Reusable successor-pump and wrap-pump lemmas
 
-### Executable boundary tooling
+Executable boundary tooling:
 - Computable barrier-witness extractors (`additive_witness`, etc.)
 - Extended witness extractors for quadratic, max-plus, and projected matrix families
 - Synthesis-oracle interface
 - Decidable coefficient-table classifier
 
-## What this module does NOT provide
+What this module does NOT provide:
 
 KO7-specific results (kernel definitions, KO7 instantiations, the certified
 normalizer, confluence, ordinal calibration, MPO/polynomial full-step proofs,
@@ -78,7 +78,7 @@ TTT2/CeTA validation, SCC theorems, ablations) live in the main
 `OperatorKO7` import path. This module is for users who want **only** the
 reusable barrier theory for their own step-duplicating systems.
 
-## Usage
+Usage:
 
 ```lean
 import OperatorKO7.SchemaAPI

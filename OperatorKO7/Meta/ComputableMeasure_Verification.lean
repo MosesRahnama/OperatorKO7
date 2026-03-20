@@ -5,7 +5,7 @@ import OperatorKO7.Meta.ComputableMeasure
 
 This file verifies that the computable measure handles all cases correctly.
 
-## Test Categories:
+Test categories:
 1. τ monotonicity verification
 2. DM order properties
 3. Measure decrease for each rule
