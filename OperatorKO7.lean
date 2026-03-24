@@ -4,6 +4,7 @@ import OperatorKO7.Meta.ComputableMeasure
 import OperatorKO7.Meta.ComputableMeasure_Verification
 import OperatorKO7.Meta.DM_OrderType
 import OperatorKO7.Meta.DM_OrderType_LowerBound
+import OperatorKO7.Meta.DM_UpstreamSurface
 import OperatorKO7.Meta.Mu3c_Image_LowerBound
 import OperatorKO7.Meta.RecCore
 import OperatorKO7.Meta.QuadraticBarrier
@@ -22,6 +23,7 @@ import OperatorKO7.Meta.MatrixBarrierFunctional
 import OperatorKO7.Meta.MatrixProjectionCoverage
 import OperatorKO7.Meta.MultilinearBarrier
 import OperatorKO7.Meta.PolynomialBarrierGeneral
+import OperatorKO7.Meta.WPO_PolynomialBarrier
 import OperatorKO7.Meta.MaxBarrier
 import OperatorKO7.Meta.ArcticBarrier
 import OperatorKO7.Meta.SymbolicComparatorBarrier
@@ -51,7 +53,10 @@ import OperatorKO7.Meta.SafeStep_Complexity_Ordinal
 import OperatorKO7.Meta.SafeStep_Complexity_FastGrowing
 import OperatorKO7.Meta.SafeStep_Complexity_MW_Ctx
 import OperatorKO7.Meta.SafeStep_Complexity_MW_CtxExact
+import OperatorKO7.Meta.ContextualCopyBudget_NoGo
 import OperatorKO7.Meta.SafeStepCtx_Complexity_Exponential
+import OperatorKO7.Meta.SafeStepCtx_Complexity_Cichon
+import OperatorKO7.Meta.SafeStepCtx_Complexity_LowerBound
 import OperatorKO7.Meta.SafeRoot_Complexity
 import OperatorKO7.Meta.SafeStepCtx_Confluence
 import OperatorKO7.Meta.EqGuardedConfluence

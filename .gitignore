@@ -61,3 +61,4 @@ OperatorKO7/Meta/S142_Exploration.lean
 Docs/KO7_BLUEPRINT.md
 scripts/validate_manuscript_refs.py
 .gitignore
+artifact/S160_MATHLIB_UPSTREAM_PREP.md

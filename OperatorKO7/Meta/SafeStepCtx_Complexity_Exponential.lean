@@ -4,9 +4,10 @@ import OperatorKO7.Meta.ContextualCopyBudget
 # Single-Exponential Contextual Complexity Bound
 
 This module packages the positive outcome of the contextual copy-budget analysis.
-The exploratory file `ContextualCopyBudget.lean` still contains the no-go results
-that ruled out several weaker measure families. Here we expose only the resulting
-upper-bound interface:
+The constructive measure now lives in `ContextualCopyBudget.lean`, while the
+discarded auxiliary coordinates and no-go results were split into
+`ContextualCopyBudget_NoGo.lean`. Here we expose only the resulting upper-bound
+interface:
 
 - `contextualExpBound n = 2^(2n)`
 - `ctxDupPotential t + 1 ≤ contextualExpBound (termSize t)`

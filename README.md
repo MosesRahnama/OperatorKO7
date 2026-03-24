@@ -94,6 +94,9 @@ Artifact-facing docs:
 - `scripts/validate_manuscript_refs.py`:
   validates manuscript `\path{...}` references against the public repo, checking
   both file/module paths and declaration-style citations.
+- `artifact/S160_MATHLIB_UPSTREAM_PREP.md`:
+  upstream-prep note for staging the general Dershowitz-Manna multiset-order /
+  order-type package toward a future Mathlib contribution.
 - `VerifyTpdbExport.lean`: runnable TPDB exporter/file verifier.
 - `generate_docs.py`: documentation-generation script.
 - `OperatorKO7_Complete_Documentation.md`: extended file-level map.
@@ -153,8 +156,21 @@ Artifact-facing docs:
   size-indexed tower-exponential derivation-length bound for `SafeStepCtx` via `ctxFuel`.
 - `OperatorKO7/Meta/SafeStep_Complexity_FastGrowing.lean`:
   explicit fast-growing-hierarchy-style envelope for the same `SafeStepCtx` derivation-length bound, majorizing the `towerBound` estimate by a size-indexed finite-level `fastGrow` family.
+- `OperatorKO7/Meta/ContextualCopyBudget.lean`:
+  positive position-aware copy-budget development: `copyBudget`, `ctxDupPotential`, strict contextual descent, and the direct single-exponential size bound.
+- `OperatorKO7/Meta/ContextualCopyBudget_NoGo.lean`:
+  auxiliary contextual coordinates, obstruction witnesses, and the no-go theorem for the monotone arithmetic closure of the initial candidate measure family.
+- `OperatorKO7/Meta/SafeStepCtx_Complexity_Exponential.lean`:
+  public single-exponential `SafeStepCtx` upper envelope `safeStepCtx_length_le_singleExponential`, refining the older `ctxFuel` / `towerBound` estimate.
+- `OperatorKO7/Meta/SafeStepCtx_Complexity_Cichon.lean`:
+  finite-note `cichon` packaging of the sharpened single-exponential contextual theorem; proof-theoretic wrapper, not a tighter asymptotic bound.
+- `OperatorKO7/Meta/SafeStepCtx_Complexity_LowerBound.lean`:
+  explicit linear-size lower family with exponentially long exact `SafeStepCtx` chains and exponential normal-form output size, showing the guarded context-closed complexity is genuinely exponential up to constants in the exponent and providing a direct duplication-growth witness.
 - `OperatorKO7/Meta/OrdinalHierarchy.lean`:
   generic `slowGrowing` and `cichon` hierarchies on Mathlib ordinal notations below `ε₀`.
+- `OperatorKO7/Meta/DM_UpstreamSurface.lean`:
+  compact staging surface collecting the general DM embedding / reflection /
+  exact-order-type declarations as future Mathlib candidates.
 - `OperatorKO7/Meta/SafeStep_Complexity_MW_Root.lean`:
   notation bridge from the calibrated `μ3c` ordinal to `ONote` / `NONote`, plus the root Cichon bound `safeStepPow_length_le_mwRootBound`.
 - `OperatorKO7/Meta/SafeStep_Complexity_MW_Ctx.lean`:
@@ -191,6 +207,8 @@ Artifact-facing docs:
   bounded multilinear barrier with frozen-coefficient dominance at base.
 - `OperatorKO7/Meta/PolynomialBarrierGeneral.lean`:
   generalized bounded polynomial barrier with repeated variables and a base-dominance failure condition.
+- `OperatorKO7/Meta/WPO_PolynomialBarrier.lean`:
+  WPO-facing corollary for the direct bounded polynomial-algebra branch, lifting the generalized polynomial barrier to any direct order whose strict comparison is sound for that algebra.
 - `OperatorKO7/Meta/MaxBarrier.lean`:
   schema-level max-plus constructor-local barrier.
 - `OperatorKO7/Meta/ArcticBarrier.lean`:

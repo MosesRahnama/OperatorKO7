@@ -6,6 +6,7 @@ import OperatorKO7.Meta.QuadraticBarrier
 import OperatorKO7.Meta.QuadraticCrossTermBarrier
 import OperatorKO7.Meta.MultilinearBarrier
 import OperatorKO7.Meta.PolynomialBarrierGeneral
+import OperatorKO7.Meta.WPO_PolynomialBarrier
 import OperatorKO7.Meta.MaxBarrier
 import OperatorKO7.Meta.ArcticBarrier
 
@@ -52,6 +53,7 @@ Barrier theorems (schema-level):
 - Restricted quadratic, bounded cross-term quadratic barriers
 - Bounded multilinear barrier
 - Generalized degree-bounded polynomial barrier
+- WPO-facing polynomial-branch corollary built on that bounded polynomial barrier
 - Max-plus barrier and arctic primary-projection corollary
 - Fixed-dimension tracked componentwise vector barrier
 - Dimension-2 lexicographic pair barrier
