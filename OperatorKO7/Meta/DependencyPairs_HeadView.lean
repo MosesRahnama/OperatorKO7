@@ -1,4 +1,4 @@
-import OperatorKO7.Meta.DependencyPairs_FirstOrderTermView
+import OperatorKO7.Meta.DependencyPairs_FirstOrderEngine
 
 /-!
 # Minimal Head/Call-Head View for DP Extraction

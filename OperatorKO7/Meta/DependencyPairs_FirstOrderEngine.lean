@@ -93,4 +93,86 @@ theorem not_globalOrients_of_source_le_target_of_hasNontrivialSCC
 
 end FiniteFirstOrderEngine
 
+/-- Typeclass view exposing a finite first-order rule engine from an internal system type. -/
+class HasFiniteFirstOrderView (ε σ ν : Type) [DecidableEq σ] where
+  Rule : Type
+  rules : ε → Array Rule
+  lhs : Rule → FOTerm σ ν
+  rhs : Rule → FOTerm σ ν
+
+namespace HasFiniteFirstOrderView
+
+variable {ε σ ν : Type} [DecidableEq σ] [HasFiniteFirstOrderView ε σ ν]
+
+/-- Canonical packaged engine induced by the typeclass view. -/
+def toFiniteFirstOrderEngine (E : ε) : FiniteFirstOrderEngine σ ν where
+  Rule := HasFiniteFirstOrderView.Rule (ε := ε) (σ := σ) (ν := ν)
+  rules := HasFiniteFirstOrderView.rules (ε := ε) (σ := σ) (ν := ν) E
+  lhs := HasFiniteFirstOrderView.lhs (ε := ε) (σ := σ) (ν := ν)
+  rhs := HasFiniteFirstOrderView.rhs (ε := ε) (σ := σ) (ν := ν)
+
+/-- Defined heads exposed directly from a viewed engine value. -/
+abbrev definedHeads (E : ε) : Finset σ :=
+  (toFiniteFirstOrderEngine (ε := ε) (σ := σ) (ν := ν) E).definedHeads
+
+/-- Extracted nodes exposed directly from a viewed engine value. -/
+abbrev extractedNodes (E : ε) :
+    Array (ExtractedRuleFrontendNode (HasFiniteFirstOrderView.Rule (ε := ε) (σ := σ) (ν := ν)) σ) :=
+  (toFiniteFirstOrderEngine (ε := ε) (σ := σ) (ν := ν) E).extractedNodes
+
+/-- Extracted call graph exposed directly from a viewed engine value. -/
+abbrev extractedCallGraph (E : ε) : FiniteExtractedCallGraph σ :=
+  (toFiniteFirstOrderEngine (ε := ε) (σ := σ) (ν := ν) E).extractedCallGraph
+
+/-- Direct SCC search exposed from a viewed engine value. -/
+noncomputable abbrev findNontrivialSCCPair? (E : ε) :
+    Option ((extractedCallGraph (ε := ε) (σ := σ) (ν := ν) E).Node ×
+      (extractedCallGraph (ε := ε) (σ := σ) (ν := ν) E).Node) :=
+  (toFiniteFirstOrderEngine (ε := ε) (σ := σ) (ν := ν) E).findNontrivialSCCPair?
+
+/-- SCC existence predicate exposed from a viewed engine value. -/
+abbrev HasNontrivialSCC (E : ε) : Prop :=
+  (toFiniteFirstOrderEngine (ε := ε) (σ := σ) (ν := ν) E).HasNontrivialSCC
+
+/-- Standard SCC witness exposed from a viewed engine value. -/
+noncomputable abbrev toSCCCycle (E : ε)
+    (h : (toFiniteFirstOrderEngine (ε := ε) (σ := σ) (ν := ν) E).HasNontrivialSCC) :
+    SCCCycle (extractedCallGraph (ε := ε) (σ := σ) (ν := ν) E).Node :=
+  (toFiniteFirstOrderEngine (ε := ε) (σ := σ) (ν := ν) E).toSCCCycle h
+
+end HasFiniteFirstOrderView
+
+/-- Conversion from an internal first-order term syntax to the canonical `FOTerm` view. -/
+class HasFirstOrderTermView (τ σ ν : Type) where
+  toFOTerm : τ → FOTerm σ ν
+
+/-- Identity term-view instance for the canonical `FOTerm` syntax itself. -/
+instance instHasFirstOrderTermViewFOTerm (σ ν : Type) :
+    HasFirstOrderTermView (FOTerm σ ν) σ ν where
+  toFOTerm := id
+
+/-- Raw finite first-order engine view using an internal term syntax stored in the class. -/
+class HasFiniteRawFirstOrderView (ε σ ν : Type) [DecidableEq σ] where
+  Rule : Type
+  Term : Type
+  termView : HasFirstOrderTermView Term σ ν
+  rules : ε → Array Rule
+  lhs : Rule → Term
+  rhs : Rule → Term
+
+/-- Any raw first-order engine view induces the canonical `FOTerm`-based view automatically. -/
+instance instHasFiniteFirstOrderViewOfRaw
+    (ε σ ν : Type) [DecidableEq σ] [H : HasFiniteRawFirstOrderView ε σ ν] :
+    HasFiniteFirstOrderView ε σ ν where
+  Rule := H.Rule
+  rules := H.rules
+  lhs := by
+    intro r
+    let _ := H.termView
+    exact HasFirstOrderTermView.toFOTerm (H.lhs r)
+  rhs := by
+    intro r
+    let _ := H.termView
+    exact HasFirstOrderTermView.toFOTerm (H.rhs r)
+
 end OperatorKO7.DependencyPairsFragment

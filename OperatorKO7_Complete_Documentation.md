@@ -1,7 +1,7 @@
 # OperatorKO7 Complete Documentation
-Generated: 2026-03-27 15:43:31 +0330
-Source files: 122
-Total source lines: 26311
+Generated: 2026-03-27 16:40:36 +0330
+Source files: 117
+Total source lines: 26221
 Scope: active `.lean` files in the repository
 
 ## Table of Contents
@@ -26,16 +26,11 @@ Scope: active `.lean` files in the repository
 - [OperatorKO7/Meta/ContextualCopyBudget_NoGo.lean](#operatorko7metacontextualcopybudgetnogolean)
 - [OperatorKO7/Meta/DependencyPairs_CallGraph.lean](#operatorko7metadependencypairscallgraphlean)
 - [OperatorKO7/Meta/DependencyPairs_ExtractedCallGraph.lean](#operatorko7metadependencypairsextractedcallgraphlean)
-- [OperatorKO7/Meta/DependencyPairs_FiniteCarrierExtractedView.lean](#operatorko7metadependencypairsfinitecarrierextractedviewlean)
-- [OperatorKO7/Meta/DependencyPairs_FiniteCarrierHeadView.lean](#operatorko7metadependencypairsfinitecarrierheadviewlean)
-- [OperatorKO7/Meta/DependencyPairs_FiniteCarrierRawView.lean](#operatorko7metadependencypairsfinitecarrierrawviewlean)
 - [OperatorKO7/Meta/DependencyPairs_FiniteCarrierView.lean](#operatorko7metadependencypairsfinitecarrierviewlean)
 - [OperatorKO7/Meta/DependencyPairs_FiniteGraph.lean](#operatorko7metadependencypairsfinitegraphlean)
 - [OperatorKO7/Meta/DependencyPairs_FirstOrderEngine.lean](#operatorko7metadependencypairsfirstorderenginelean)
 - [OperatorKO7/Meta/DependencyPairs_FirstOrderExtraction.lean](#operatorko7metadependencypairsfirstorderextractionlean)
 - [OperatorKO7/Meta/DependencyPairs_FirstOrderFrontend.lean](#operatorko7metadependencypairsfirstorderfrontendlean)
-- [OperatorKO7/Meta/DependencyPairs_FirstOrderTermView.lean](#operatorko7metadependencypairsfirstordertermviewlean)
-- [OperatorKO7/Meta/DependencyPairs_FirstOrderView.lean](#operatorko7metadependencypairsfirstorderviewlean)
 - [OperatorKO7/Meta/DependencyPairs_Fragment.lean](#operatorko7metadependencypairsfragmentlean)
 - [OperatorKO7/Meta/DependencyPairs_HeadView.lean](#operatorko7metadependencypairsheadviewlean)
 - [OperatorKO7/Meta/DependencyPairs_KernelFirstOrder.lean](#operatorko7metadependencypairskernelfirstorderlean)
@@ -169,7 +164,7 @@ require mathlib from git "https://github.com/leanprover-community/mathlib4.git" 
 
 ## OperatorKO7.lean
 
-**Lines:** 114
+**Lines:** 109
 
 ```lean
 import OperatorKO7.SchemaAPI
@@ -236,13 +231,8 @@ import OperatorKO7.Meta.DependencyPairs_TPDBExtraction
 import OperatorKO7.Meta.DependencyPairs_FirstOrderExtraction
 import OperatorKO7.Meta.DependencyPairs_FirstOrderFrontend
 import OperatorKO7.Meta.DependencyPairs_FirstOrderEngine
-import OperatorKO7.Meta.DependencyPairs_FirstOrderView
-import OperatorKO7.Meta.DependencyPairs_FirstOrderTermView
 import OperatorKO7.Meta.DependencyPairs_HeadView
 import OperatorKO7.Meta.DependencyPairs_FiniteCarrierView
-import OperatorKO7.Meta.DependencyPairs_FiniteCarrierRawView
-import OperatorKO7.Meta.DependencyPairs_FiniteCarrierHeadView
-import OperatorKO7.Meta.DependencyPairs_FiniteCarrierExtractedView
 import OperatorKO7.Meta.DependencyPairs_KernelFirstOrder
 import OperatorKO7.Meta.DependencyPairs_Works
 import OperatorKO7.Meta.DP_BaseOrder_Boundary
@@ -5590,333 +5580,9 @@ end OperatorKO7.DependencyPairsFragment
 
 ---
 
-## OperatorKO7/Meta/DependencyPairs_FiniteCarrierExtractedView.lean
-
-**Lines:** 116
-
-```lean
-import OperatorKO7.Meta.DependencyPairs_FiniteCarrierHeadView
-
-/-!
-# Finite Extracted-Data Carrier View for Internal Engines
-
-This module is the bottom of the current dependency-pair frontend stack. It starts from:
-
-- a finite rule carrier,
-- one already-extracted node key per rule, and
-- one already-extracted successor-key set per rule.
-
-There is no explicit rule array and no term interface at all. The array-backed extracted
-call graph and the finite-SCC search / contradiction surface are recovered directly from
-that data.
--/
-
-namespace OperatorKO7.DependencyPairsFragment
-
-/-- Packaged extracted-data engine with a finite rule carrier. -/
-structure FiniteCarrierExtractedEngine (κ : Type) [DecidableEq κ] where
-  Rule : Type
-  ruleFintype : Fintype Rule
-  ruleDecEq : DecidableEq Rule
-  nodeKey? : Rule → Option κ
-  succKeys : Rule → Finset κ
-
-namespace FiniteCarrierExtractedEngine
-
-variable {κ : Type} [DecidableEq κ] (E : FiniteCarrierExtractedEngine κ)
-
-/-- Enumerated extracted node records recovered from the finite rule carrier. -/
-noncomputable def extractedNodes : Array (ExtractedCallNode κ) := by
-  let _ : Fintype E.Rule := E.ruleFintype
-  let _ : DecidableEq E.Rule := E.ruleDecEq
-  exact ((Finset.univ : Finset E.Rule).toList.filterMap fun r =>
-    match E.nodeKey? r with
-    | none => none
-    | some k => some ({ nodeKey := k, succKeys := E.succKeys r } : ExtractedCallNode κ)).toArray
-
-/-- Canonical extracted call graph recovered from the finite carrier data. -/
-noncomputable def toFiniteExtractedCallGraph : FiniteExtractedCallGraph κ where
-  nodes := E.extractedNodes
-
-/-- Direct SCC search recovered from the finite extracted carrier. -/
-noncomputable abbrev findNontrivialSCCPair? :
-    Option (E.toFiniteExtractedCallGraph.Node × E.toFiniteExtractedCallGraph.Node) :=
-  E.toFiniteExtractedCallGraph.findNontrivialSCCPair?
-
-/-- SCC existence predicate recovered from the finite extracted carrier. -/
-abbrev HasNontrivialSCC : Prop :=
-  E.toFiniteExtractedCallGraph.HasNontrivialSCC
-
-/-- Standard SCC witness recovered from the finite extracted carrier. -/
-noncomputable abbrev toSCCCycle (h : E.HasNontrivialSCC) :
-    SCCCycle E.toFiniteExtractedCallGraph.Node :=
-  E.toFiniteExtractedCallGraph.toSCCCycle h
-
-end FiniteCarrierExtractedEngine
-
-/-- Typeclass-level finite extracted-data carrier for internal systems. -/
-class HasFiniteCarrierExtractedView (ε κ : Type) [DecidableEq κ] where
-  Rule : Type
-  ruleFintype : Fintype Rule
-  ruleDecEq : DecidableEq Rule
-  nodeKey? : ε → Rule → Option κ
-  succKeys : ε → Rule → Finset κ
-
-namespace HasFiniteCarrierExtractedView
-
-variable {ε κ : Type} [DecidableEq κ] [H : HasFiniteCarrierExtractedView ε κ]
-
-/-- Package the typeclass-level extracted carrier as the canonical extracted engine. -/
-def toFiniteCarrierExtractedEngine (e : ε) : FiniteCarrierExtractedEngine κ where
-  Rule := H.Rule
-  ruleFintype := H.ruleFintype
-  ruleDecEq := H.ruleDecEq
-  nodeKey? := H.nodeKey? e
-  succKeys := H.succKeys e
-
-/-- Extracted node records recovered directly from the extracted carrier view. -/
-noncomputable abbrev extractedNodes (e : ε) : Array (ExtractedCallNode κ) :=
-  (toFiniteCarrierExtractedEngine (ε := ε) (κ := κ) e).extractedNodes
-
-/-- Extracted call graph recovered directly from the extracted carrier view. -/
-noncomputable abbrev extractedCallGraph (e : ε) : FiniteExtractedCallGraph κ :=
-  (toFiniteCarrierExtractedEngine (ε := ε) (κ := κ) e).toFiniteExtractedCallGraph
-
-/-- Direct SCC search recovered directly from the extracted carrier view. -/
-noncomputable abbrev findNontrivialSCCPair? (e : ε) :
-    Option ((extractedCallGraph (ε := ε) (κ := κ) e).Node ×
-      (extractedCallGraph (ε := ε) (κ := κ) e).Node) :=
-  (toFiniteCarrierExtractedEngine (ε := ε) (κ := κ) e).findNontrivialSCCPair?
-
-/-- SCC existence predicate recovered directly from the extracted carrier view. -/
-abbrev HasNontrivialSCC (e : ε) : Prop :=
-  (toFiniteCarrierExtractedEngine (ε := ε) (κ := κ) e).HasNontrivialSCC
-
-end HasFiniteCarrierExtractedView
-
-/-- Explicit adapter from a finite head-carrier view to the extracted-data carrier view. -/
-def finiteCarrierExtractedViewOfHeadCarrier
-    (ε κ : Type) [DecidableEq κ] [H : HasFiniteCarrierHeadView ε κ] :
-    HasFiniteCarrierExtractedView ε κ where
-  Rule := H.Rule
-  ruleFintype := H.ruleFintype
-  ruleDecEq := H.ruleDecEq
-  nodeKey? := by
-    intro _ r
-    let _ : HasCallHeadView H.Term κ := H.termView
-    exact HasCallHeadView.rootHead? (H.lhs r)
-  succKeys := by
-    intro _ r
-    let _ : HasCallHeadView H.Term κ := H.termView
-    exact HasCallHeadView.callHeads (H.rhs r)
-
-end OperatorKO7.DependencyPairsFragment
-```
-
----
-
-## OperatorKO7/Meta/DependencyPairs_FiniteCarrierHeadView.lean
-
-**Lines:** 119
-
-```lean
-import OperatorKO7.Meta.DependencyPairs_FiniteCarrierRawView
-
-/-!
-# Finite Head/Call-Head Carrier View for Internal Engines
-
-This module is the smallest finite dependency-pair frontend currently in the artifact.
-It starts from:
-
-- a finite rule carrier, and
-- the minimal head / recursive-call-head term view.
-
-No explicit rule array and no full `FOTerm` conversion are needed.
--/
-
-namespace OperatorKO7.DependencyPairsFragment
-
-/-- Packaged head-view engine with a finite rule carrier instead of an explicit rule array. -/
-structure FiniteCarrierHeadEngine (σ : Type) [DecidableEq σ] where
-  Rule : Type
-  ruleFintype : Fintype Rule
-  ruleDecEq : DecidableEq Rule
-  Term : Type
-  termView : HasCallHeadView Term σ
-  lhs : Rule → Term
-  rhs : Rule → Term
-
-namespace FiniteCarrierHeadEngine
-
-variable {σ : Type} [DecidableEq σ] (E : FiniteCarrierHeadEngine σ)
-
-/-- Enumerated rule array recovered from the finite rule carrier. -/
-noncomputable def rules : Array E.Rule := by
-  let _ : Fintype E.Rule := E.ruleFintype
-  let _ : DecidableEq E.Rule := E.ruleDecEq
-  exact (Finset.univ : Finset E.Rule).toList.toArray
-
-/-- Canonical finite head-view engine recovered from the finite rule carrier. -/
-noncomputable def toFiniteHeadRuleEngine : FiniteHeadRuleEngine σ where
-  Rule := E.Rule
-  Term := E.Term
-  termView := E.termView
-  rules := E.rules
-  lhs := E.lhs
-  rhs := E.rhs
-
-/-- Defined heads recovered from the finite head carrier. -/
-noncomputable abbrev definedHeads : Finset σ :=
-  E.toFiniteHeadRuleEngine.definedHeads
-
-/-- Extracted nodes recovered from the finite head carrier. -/
-noncomputable abbrev extractedNodes : Array (ExtractedHeadRuleNode E.Rule σ) :=
-  E.toFiniteHeadRuleEngine.extractedNodes
-
-/-- Extracted call graph recovered from the finite head carrier. -/
-noncomputable abbrev extractedCallGraph : FiniteExtractedCallGraph σ :=
-  E.toFiniteHeadRuleEngine.extractedCallGraph
-
-end FiniteCarrierHeadEngine
-
-/-- Typeclass-level finite head-view carrier for internal systems. -/
-class HasFiniteCarrierHeadView (ε σ : Type) [DecidableEq σ] where
-  Rule : Type
-  ruleFintype : Fintype Rule
-  ruleDecEq : DecidableEq Rule
-  Term : Type
-  termView : HasCallHeadView Term σ
-  lhs : Rule → Term
-  rhs : Rule → Term
-
-namespace HasFiniteCarrierHeadView
-
-variable {ε σ : Type} [DecidableEq σ] [H : HasFiniteCarrierHeadView ε σ]
-
-/-- Package the typeclass-level finite head carrier as the canonical carrier engine. -/
-def toFiniteCarrierHeadEngine (_e : ε) : FiniteCarrierHeadEngine σ where
-  Rule := H.Rule
-  ruleFintype := H.ruleFintype
-  ruleDecEq := H.ruleDecEq
-  Term := H.Term
-  termView := H.termView
-  lhs := H.lhs
-  rhs := H.rhs
-
-/-- Canonical finite head-view engine recovered directly from the carrier view. -/
-noncomputable abbrev toFiniteHeadRuleEngine (e : ε) : FiniteHeadRuleEngine σ :=
-  (toFiniteCarrierHeadEngine (ε := ε) (σ := σ) e).toFiniteHeadRuleEngine
-
-/-- Defined heads recovered directly from the carrier view. -/
-noncomputable abbrev definedHeads (e : ε) : Finset σ :=
-  (toFiniteHeadRuleEngine (ε := ε) (σ := σ) e).definedHeads
-
-/-- Extracted nodes recovered directly from the carrier view. -/
-noncomputable abbrev extractedNodes (e : ε) :
-    Array (ExtractedHeadRuleNode
-      (HasFiniteCarrierHeadView.Rule (ε := ε) (σ := σ)) σ) :=
-  (toFiniteHeadRuleEngine (ε := ε) (σ := σ) e).extractedNodes
-
-/-- Extracted call graph recovered directly from the carrier view. -/
-noncomputable abbrev extractedCallGraph (e : ε) : FiniteExtractedCallGraph σ :=
-  (toFiniteHeadRuleEngine (ε := ε) (σ := σ) e).extractedCallGraph
-
-end HasFiniteCarrierHeadView
-
-/-- Explicit adapter from a finite raw rule-carrier view to the smaller finite head-carrier
-view. -/
-def finiteCarrierHeadViewOfFiniteCarrierRaw
-    (ε σ ν : Type) [DecidableEq σ] [H : HasFiniteCarrierRawFirstOrderView ε σ ν] :
-    HasFiniteCarrierHeadView ε σ where
-  Rule := H.Rule
-  ruleFintype := H.ruleFintype
-  ruleDecEq := H.ruleDecEq
-  Term := H.Term
-  termView := by
-    let _ : HasFirstOrderTermView H.Term σ ν := H.termView
-    exact headViewOfFirstOrderTermView H.Term σ ν
-  lhs := H.lhs
-  rhs := H.rhs
-
-end OperatorKO7.DependencyPairsFragment
-```
-
----
-
-## OperatorKO7/Meta/DependencyPairs_FiniteCarrierRawView.lean
-
-**Lines:** 62
-
-```lean
-import OperatorKO7.Meta.DependencyPairs_FiniteCarrierView
-
-/-!
-# Finite Raw Rule-Carrier View for Internal Engines
-
-This module combines two reductions at once:
-
-- rules are given by a finite carrier type rather than an explicit array, and
-- terms can remain in an internal syntax rather than being exposed directly as `FOTerm`.
-
-From that smaller interface, the finite carrier first-order surface is recovered
-automatically, and the smaller head-view surface can be recovered through an explicit
-adapter.
--/
-
-namespace OperatorKO7.DependencyPairsFragment
-
-/-- Typeclass-level finite raw rule-carrier view for internal systems. -/
-class HasFiniteCarrierRawFirstOrderView (ε σ ν : Type) [DecidableEq σ] where
-  Rule : Type
-  ruleFintype : Fintype Rule
-  ruleDecEq : DecidableEq Rule
-  Term : Type
-  termView : HasFirstOrderTermView Term σ ν
-  lhs : Rule → Term
-  rhs : Rule → Term
-
-/-- Any finite raw rule-carrier view induces the canonical finite carrier first-order view. -/
-instance instHasFiniteCarrierFirstOrderViewOfRawCarrier
-    (ε σ ν : Type) [DecidableEq σ] [H : HasFiniteCarrierRawFirstOrderView ε σ ν] :
-    HasFiniteCarrierFirstOrderView ε σ ν where
-  Rule := H.Rule
-  ruleFintype := H.ruleFintype
-  ruleDecEq := H.ruleDecEq
-  lhs := by
-    intro _ r
-    let _ : HasFirstOrderTermView H.Term σ ν := H.termView
-    exact HasFirstOrderTermView.toFOTerm (H.lhs r)
-  rhs := by
-    intro _ r
-    let _ : HasFirstOrderTermView H.Term σ ν := H.termView
-    exact HasFirstOrderTermView.toFOTerm (H.rhs r)
-
-/-- Explicit adapter from a finite raw rule-carrier view to the smaller head-view engine
-surface. -/
-noncomputable def finiteHeadRuleViewOfFiniteCarrierRaw
-    (ε σ ν : Type) [DecidableEq σ] [H : HasFiniteCarrierRawFirstOrderView ε σ ν] :
-    HasFiniteHeadRuleView ε σ where
-  Rule := H.Rule
-  Term := H.Term
-  termView := by
-    let _ : HasFirstOrderTermView H.Term σ ν := H.termView
-    exact headViewOfFirstOrderTermView H.Term σ ν
-  rules := by
-    intro _
-    let _ : Fintype H.Rule := H.ruleFintype
-    let _ : DecidableEq H.Rule := H.ruleDecEq
-    exact (Finset.univ : Finset H.Rule).toList.toArray
-  lhs := H.lhs
-  rhs := H.rhs
-
-end OperatorKO7.DependencyPairsFragment
-```
-
----
-
 ## OperatorKO7/Meta/DependencyPairs_FiniteCarrierView.lean
 
-**Lines:** 138
+**Lines:** 381
 
 ```lean
 import OperatorKO7.Meta.DependencyPairs_HeadView
@@ -6056,6 +5722,249 @@ noncomputable abbrev toSCCCycle (e : ε)
 
 end HasFiniteCarrierFirstOrderView
 
+/-- Typeclass-level finite raw rule-carrier view for internal systems. -/
+class HasFiniteCarrierRawFirstOrderView (ε σ ν : Type) [DecidableEq σ] where
+  Rule : Type
+  ruleFintype : Fintype Rule
+  ruleDecEq : DecidableEq Rule
+  Term : Type
+  termView : HasFirstOrderTermView Term σ ν
+  lhs : Rule → Term
+  rhs : Rule → Term
+
+/-- Any finite raw rule-carrier view induces the canonical finite carrier first-order view. -/
+instance instHasFiniteCarrierFirstOrderViewOfRawCarrier
+    (ε σ ν : Type) [DecidableEq σ] [H : HasFiniteCarrierRawFirstOrderView ε σ ν] :
+    HasFiniteCarrierFirstOrderView ε σ ν where
+  Rule := H.Rule
+  ruleFintype := H.ruleFintype
+  ruleDecEq := H.ruleDecEq
+  lhs := by
+    intro _ r
+    let _ : HasFirstOrderTermView H.Term σ ν := H.termView
+    exact HasFirstOrderTermView.toFOTerm (H.lhs r)
+  rhs := by
+    intro _ r
+    let _ : HasFirstOrderTermView H.Term σ ν := H.termView
+    exact HasFirstOrderTermView.toFOTerm (H.rhs r)
+
+/-- Explicit adapter from a finite raw rule-carrier view to the smaller head-view engine
+surface. -/
+noncomputable def finiteHeadRuleViewOfFiniteCarrierRaw
+    (ε σ ν : Type) [DecidableEq σ] [H : HasFiniteCarrierRawFirstOrderView ε σ ν] :
+    HasFiniteHeadRuleView ε σ where
+  Rule := H.Rule
+  Term := H.Term
+  termView := by
+    let _ : HasFirstOrderTermView H.Term σ ν := H.termView
+    exact headViewOfFirstOrderTermView H.Term σ ν
+  rules := by
+    intro _
+    let _ : Fintype H.Rule := H.ruleFintype
+    let _ : DecidableEq H.Rule := H.ruleDecEq
+    exact (Finset.univ : Finset H.Rule).toList.toArray
+  lhs := H.lhs
+  rhs := H.rhs
+
+/-- Packaged head-view engine with a finite rule carrier instead of an explicit rule array. -/
+structure FiniteCarrierHeadEngine (σ : Type) [DecidableEq σ] where
+  Rule : Type
+  ruleFintype : Fintype Rule
+  ruleDecEq : DecidableEq Rule
+  Term : Type
+  termView : HasCallHeadView Term σ
+  lhs : Rule → Term
+  rhs : Rule → Term
+
+namespace FiniteCarrierHeadEngine
+
+variable {σ : Type} [DecidableEq σ] (E : FiniteCarrierHeadEngine σ)
+
+/-- Enumerated rule array recovered from the finite rule carrier. -/
+noncomputable def rules : Array E.Rule := by
+  let _ : Fintype E.Rule := E.ruleFintype
+  let _ : DecidableEq E.Rule := E.ruleDecEq
+  exact (Finset.univ : Finset E.Rule).toList.toArray
+
+/-- Canonical finite head-view engine recovered from the finite rule carrier. -/
+noncomputable def toFiniteHeadRuleEngine : FiniteHeadRuleEngine σ where
+  Rule := E.Rule
+  Term := E.Term
+  termView := E.termView
+  rules := E.rules
+  lhs := E.lhs
+  rhs := E.rhs
+
+/-- Defined heads recovered from the finite head carrier. -/
+noncomputable abbrev definedHeads : Finset σ :=
+  E.toFiniteHeadRuleEngine.definedHeads
+
+/-- Extracted nodes recovered from the finite head carrier. -/
+noncomputable abbrev extractedNodes : Array (ExtractedHeadRuleNode E.Rule σ) :=
+  E.toFiniteHeadRuleEngine.extractedNodes
+
+/-- Extracted call graph recovered from the finite head carrier. -/
+noncomputable abbrev extractedCallGraph : FiniteExtractedCallGraph σ :=
+  E.toFiniteHeadRuleEngine.extractedCallGraph
+
+end FiniteCarrierHeadEngine
+
+/-- Typeclass-level finite head-view carrier for internal systems. -/
+class HasFiniteCarrierHeadView (ε σ : Type) [DecidableEq σ] where
+  Rule : Type
+  ruleFintype : Fintype Rule
+  ruleDecEq : DecidableEq Rule
+  Term : Type
+  termView : HasCallHeadView Term σ
+  lhs : Rule → Term
+  rhs : Rule → Term
+
+namespace HasFiniteCarrierHeadView
+
+variable {ε σ : Type} [DecidableEq σ] [H : HasFiniteCarrierHeadView ε σ]
+
+/-- Package the typeclass-level finite head carrier as the canonical carrier engine. -/
+def toFiniteCarrierHeadEngine (_e : ε) : FiniteCarrierHeadEngine σ where
+  Rule := H.Rule
+  ruleFintype := H.ruleFintype
+  ruleDecEq := H.ruleDecEq
+  Term := H.Term
+  termView := H.termView
+  lhs := H.lhs
+  rhs := H.rhs
+
+/-- Canonical finite head-view engine recovered directly from the carrier view. -/
+noncomputable abbrev toFiniteHeadRuleEngine (e : ε) : FiniteHeadRuleEngine σ :=
+  (toFiniteCarrierHeadEngine (ε := ε) (σ := σ) e).toFiniteHeadRuleEngine
+
+/-- Defined heads recovered directly from the carrier view. -/
+noncomputable abbrev definedHeads (e : ε) : Finset σ :=
+  (toFiniteHeadRuleEngine (ε := ε) (σ := σ) e).definedHeads
+
+/-- Extracted nodes recovered directly from the carrier view. -/
+noncomputable abbrev extractedNodes (e : ε) :
+    Array (ExtractedHeadRuleNode
+      (HasFiniteCarrierHeadView.Rule (ε := ε) (σ := σ)) σ) :=
+  (toFiniteHeadRuleEngine (ε := ε) (σ := σ) e).extractedNodes
+
+/-- Extracted call graph recovered directly from the carrier view. -/
+noncomputable abbrev extractedCallGraph (e : ε) : FiniteExtractedCallGraph σ :=
+  (toFiniteHeadRuleEngine (ε := ε) (σ := σ) e).extractedCallGraph
+
+end HasFiniteCarrierHeadView
+
+/-- Explicit adapter from a finite raw rule-carrier view to the smaller finite head-carrier
+view. -/
+def finiteCarrierHeadViewOfFiniteCarrierRaw
+    (ε σ ν : Type) [DecidableEq σ] [H : HasFiniteCarrierRawFirstOrderView ε σ ν] :
+    HasFiniteCarrierHeadView ε σ where
+  Rule := H.Rule
+  ruleFintype := H.ruleFintype
+  ruleDecEq := H.ruleDecEq
+  Term := H.Term
+  termView := by
+    let _ : HasFirstOrderTermView H.Term σ ν := H.termView
+    exact headViewOfFirstOrderTermView H.Term σ ν
+  lhs := H.lhs
+  rhs := H.rhs
+
+/-- Packaged extracted-data engine with a finite rule carrier. -/
+structure FiniteCarrierExtractedEngine (κ : Type) [DecidableEq κ] where
+  Rule : Type
+  ruleFintype : Fintype Rule
+  ruleDecEq : DecidableEq Rule
+  nodeKey? : Rule → Option κ
+  succKeys : Rule → Finset κ
+
+namespace FiniteCarrierExtractedEngine
+
+variable {κ : Type} [DecidableEq κ] (E : FiniteCarrierExtractedEngine κ)
+
+/-- Enumerated extracted node records recovered from the finite rule carrier. -/
+noncomputable def extractedNodes : Array (ExtractedCallNode κ) := by
+  let _ : Fintype E.Rule := E.ruleFintype
+  let _ : DecidableEq E.Rule := E.ruleDecEq
+  exact ((Finset.univ : Finset E.Rule).toList.filterMap fun r =>
+    match E.nodeKey? r with
+    | none => none
+    | some k => some ({ nodeKey := k, succKeys := E.succKeys r } : ExtractedCallNode κ)).toArray
+
+/-- Canonical extracted call graph recovered from the finite carrier data. -/
+noncomputable def toFiniteExtractedCallGraph : FiniteExtractedCallGraph κ where
+  nodes := E.extractedNodes
+
+/-- Direct SCC search recovered from the finite extracted carrier. -/
+noncomputable abbrev findNontrivialSCCPair? :
+    Option (E.toFiniteExtractedCallGraph.Node × E.toFiniteExtractedCallGraph.Node) :=
+  E.toFiniteExtractedCallGraph.findNontrivialSCCPair?
+
+/-- SCC existence predicate recovered from the finite extracted carrier. -/
+abbrev HasNontrivialSCC : Prop :=
+  E.toFiniteExtractedCallGraph.HasNontrivialSCC
+
+/-- Standard SCC witness recovered from the finite extracted carrier. -/
+noncomputable abbrev toSCCCycle (h : E.HasNontrivialSCC) :
+    SCCCycle E.toFiniteExtractedCallGraph.Node :=
+  E.toFiniteExtractedCallGraph.toSCCCycle h
+
+end FiniteCarrierExtractedEngine
+
+/-- Typeclass-level finite extracted-data carrier for internal systems. -/
+class HasFiniteCarrierExtractedView (ε κ : Type) [DecidableEq κ] where
+  Rule : Type
+  ruleFintype : Fintype Rule
+  ruleDecEq : DecidableEq Rule
+  nodeKey? : ε → Rule → Option κ
+  succKeys : ε → Rule → Finset κ
+
+namespace HasFiniteCarrierExtractedView
+
+variable {ε κ : Type} [DecidableEq κ] [H : HasFiniteCarrierExtractedView ε κ]
+
+/-- Package the typeclass-level extracted carrier as the canonical extracted engine. -/
+def toFiniteCarrierExtractedEngine (e : ε) : FiniteCarrierExtractedEngine κ where
+  Rule := H.Rule
+  ruleFintype := H.ruleFintype
+  ruleDecEq := H.ruleDecEq
+  nodeKey? := H.nodeKey? e
+  succKeys := H.succKeys e
+
+/-- Extracted node records recovered directly from the extracted carrier view. -/
+noncomputable abbrev extractedNodes (e : ε) : Array (ExtractedCallNode κ) :=
+  (toFiniteCarrierExtractedEngine (ε := ε) (κ := κ) e).extractedNodes
+
+/-- Extracted call graph recovered directly from the extracted carrier view. -/
+noncomputable abbrev extractedCallGraph (e : ε) : FiniteExtractedCallGraph κ :=
+  (toFiniteCarrierExtractedEngine (ε := ε) (κ := κ) e).toFiniteExtractedCallGraph
+
+/-- Direct SCC search recovered directly from the extracted carrier view. -/
+noncomputable abbrev findNontrivialSCCPair? (e : ε) :
+    Option ((extractedCallGraph (ε := ε) (κ := κ) e).Node ×
+      (extractedCallGraph (ε := ε) (κ := κ) e).Node) :=
+  (toFiniteCarrierExtractedEngine (ε := ε) (κ := κ) e).findNontrivialSCCPair?
+
+/-- SCC existence predicate recovered directly from the extracted carrier view. -/
+abbrev HasNontrivialSCC (e : ε) : Prop :=
+  (toFiniteCarrierExtractedEngine (ε := ε) (κ := κ) e).HasNontrivialSCC
+
+end HasFiniteCarrierExtractedView
+
+/-- Explicit adapter from a finite head-carrier view to the extracted-data carrier view. -/
+def finiteCarrierExtractedViewOfHeadCarrier
+    (ε κ : Type) [DecidableEq κ] [H : HasFiniteCarrierHeadView ε κ] :
+    HasFiniteCarrierExtractedView ε κ where
+  Rule := H.Rule
+  ruleFintype := H.ruleFintype
+  ruleDecEq := H.ruleDecEq
+  nodeKey? := by
+    intro _ r
+    let _ : HasCallHeadView H.Term κ := H.termView
+    exact HasCallHeadView.rootHead? (H.lhs r)
+  succKeys := by
+    intro _ r
+    let _ : HasCallHeadView H.Term κ := H.termView
+    exact HasCallHeadView.callHeads (H.rhs r)
+
 end OperatorKO7.DependencyPairsFragment
 ```
 
@@ -6176,7 +6085,7 @@ end OperatorKO7.DependencyPairsFragment
 
 ## OperatorKO7/Meta/DependencyPairs_FirstOrderEngine.lean
 
-**Lines:** 96
+**Lines:** 178
 
 ```lean
 import OperatorKO7.Meta.DependencyPairs_FirstOrderFrontend
@@ -6273,6 +6182,88 @@ theorem not_globalOrients_of_source_le_target_of_hasNontrivialSCC
       E.rules E.lhs E.rhs h hge)
 
 end FiniteFirstOrderEngine
+
+/-- Typeclass view exposing a finite first-order rule engine from an internal system type. -/
+class HasFiniteFirstOrderView (ε σ ν : Type) [DecidableEq σ] where
+  Rule : Type
+  rules : ε → Array Rule
+  lhs : Rule → FOTerm σ ν
+  rhs : Rule → FOTerm σ ν
+
+namespace HasFiniteFirstOrderView
+
+variable {ε σ ν : Type} [DecidableEq σ] [HasFiniteFirstOrderView ε σ ν]
+
+/-- Canonical packaged engine induced by the typeclass view. -/
+def toFiniteFirstOrderEngine (E : ε) : FiniteFirstOrderEngine σ ν where
+  Rule := HasFiniteFirstOrderView.Rule (ε := ε) (σ := σ) (ν := ν)
+  rules := HasFiniteFirstOrderView.rules (ε := ε) (σ := σ) (ν := ν) E
+  lhs := HasFiniteFirstOrderView.lhs (ε := ε) (σ := σ) (ν := ν)
+  rhs := HasFiniteFirstOrderView.rhs (ε := ε) (σ := σ) (ν := ν)
+
+/-- Defined heads exposed directly from a viewed engine value. -/
+abbrev definedHeads (E : ε) : Finset σ :=
+  (toFiniteFirstOrderEngine (ε := ε) (σ := σ) (ν := ν) E).definedHeads
+
+/-- Extracted nodes exposed directly from a viewed engine value. -/
+abbrev extractedNodes (E : ε) :
+    Array (ExtractedRuleFrontendNode (HasFiniteFirstOrderView.Rule (ε := ε) (σ := σ) (ν := ν)) σ) :=
+  (toFiniteFirstOrderEngine (ε := ε) (σ := σ) (ν := ν) E).extractedNodes
+
+/-- Extracted call graph exposed directly from a viewed engine value. -/
+abbrev extractedCallGraph (E : ε) : FiniteExtractedCallGraph σ :=
+  (toFiniteFirstOrderEngine (ε := ε) (σ := σ) (ν := ν) E).extractedCallGraph
+
+/-- Direct SCC search exposed from a viewed engine value. -/
+noncomputable abbrev findNontrivialSCCPair? (E : ε) :
+    Option ((extractedCallGraph (ε := ε) (σ := σ) (ν := ν) E).Node ×
+      (extractedCallGraph (ε := ε) (σ := σ) (ν := ν) E).Node) :=
+  (toFiniteFirstOrderEngine (ε := ε) (σ := σ) (ν := ν) E).findNontrivialSCCPair?
+
+/-- SCC existence predicate exposed from a viewed engine value. -/
+abbrev HasNontrivialSCC (E : ε) : Prop :=
+  (toFiniteFirstOrderEngine (ε := ε) (σ := σ) (ν := ν) E).HasNontrivialSCC
+
+/-- Standard SCC witness exposed from a viewed engine value. -/
+noncomputable abbrev toSCCCycle (E : ε)
+    (h : (toFiniteFirstOrderEngine (ε := ε) (σ := σ) (ν := ν) E).HasNontrivialSCC) :
+    SCCCycle (extractedCallGraph (ε := ε) (σ := σ) (ν := ν) E).Node :=
+  (toFiniteFirstOrderEngine (ε := ε) (σ := σ) (ν := ν) E).toSCCCycle h
+
+end HasFiniteFirstOrderView
+
+/-- Conversion from an internal first-order term syntax to the canonical `FOTerm` view. -/
+class HasFirstOrderTermView (τ σ ν : Type) where
+  toFOTerm : τ → FOTerm σ ν
+
+/-- Identity term-view instance for the canonical `FOTerm` syntax itself. -/
+instance instHasFirstOrderTermViewFOTerm (σ ν : Type) :
+    HasFirstOrderTermView (FOTerm σ ν) σ ν where
+  toFOTerm := id
+
+/-- Raw finite first-order engine view using an internal term syntax stored in the class. -/
+class HasFiniteRawFirstOrderView (ε σ ν : Type) [DecidableEq σ] where
+  Rule : Type
+  Term : Type
+  termView : HasFirstOrderTermView Term σ ν
+  rules : ε → Array Rule
+  lhs : Rule → Term
+  rhs : Rule → Term
+
+/-- Any raw first-order engine view induces the canonical `FOTerm`-based view automatically. -/
+instance instHasFiniteFirstOrderViewOfRaw
+    (ε σ ν : Type) [DecidableEq σ] [H : HasFiniteRawFirstOrderView ε σ ν] :
+    HasFiniteFirstOrderView ε σ ν where
+  Rule := H.Rule
+  rules := H.rules
+  lhs := by
+    intro r
+    let _ := H.termView
+    exact HasFirstOrderTermView.toFOTerm (H.lhs r)
+  rhs := by
+    intro r
+    let _ := H.termView
+    exact HasFirstOrderTermView.toFOTerm (H.rhs r)
 
 end OperatorKO7.DependencyPairsFragment
 ```
@@ -6654,137 +6645,6 @@ end OperatorKO7.DependencyPairsFragment
 
 ---
 
-## OperatorKO7/Meta/DependencyPairs_FirstOrderTermView.lean
-
-**Lines:** 50
-
-```lean
-import OperatorKO7.Meta.DependencyPairs_FirstOrderView
-
-/-!
-# Raw-Term View for Internal First-Order Engines
-
-This module removes one more explicit conversion layer for internal systems. An engine can
-keep its own first-order term syntax and expose:
-
-- a conversion to the canonical `FOTerm` syntax, and
-- a finite raw rule view using that internal term type.
-
-The generic `HasFiniteFirstOrderView` surface is then derived automatically.
--/
-
-namespace OperatorKO7.DependencyPairsFragment
-
-/-- Conversion from an internal first-order term syntax to the canonical `FOTerm` view. -/
-class HasFirstOrderTermView (τ σ ν : Type) where
-  toFOTerm : τ → FOTerm σ ν
-
-/-- Identity term-view instance for the canonical `FOTerm` syntax itself. -/
-instance instHasFirstOrderTermViewFOTerm (σ ν : Type) :
-    HasFirstOrderTermView (FOTerm σ ν) σ ν where
-  toFOTerm := id
-
-/-- Raw finite first-order engine view using an internal term syntax stored in the class. -/
-class HasFiniteRawFirstOrderView (ε σ ν : Type) [DecidableEq σ] where
-  Rule : Type
-  Term : Type
-  termView : HasFirstOrderTermView Term σ ν
-  rules : ε → Array Rule
-  lhs : Rule → Term
-  rhs : Rule → Term
-
-/-- Any raw first-order engine view induces the canonical `FOTerm`-based view automatically. -/
-instance instHasFiniteFirstOrderViewOfRaw
-    (ε σ ν : Type) [DecidableEq σ] [H : HasFiniteRawFirstOrderView ε σ ν] :
-    HasFiniteFirstOrderView ε σ ν where
-  Rule := H.Rule
-  rules := H.rules
-  lhs := by
-    intro r
-    let _ := H.termView
-    exact HasFirstOrderTermView.toFOTerm (H.lhs r)
-  rhs := by
-    intro r
-    let _ := H.termView
-    exact HasFirstOrderTermView.toFOTerm (H.rhs r)
-
-end OperatorKO7.DependencyPairsFragment
-```
-
----
-
-## OperatorKO7/Meta/DependencyPairs_FirstOrderView.lean
-
-**Lines:** 63
-
-```lean
-import OperatorKO7.Meta.DependencyPairs_FirstOrderEngine
-
-/-!
-# Typeclass View for Internal First-Order Engines
-
-This module removes the remaining explicit engine-construction step for internal systems
-whose rule representation is fixed at the type level. A type can expose a finite
-first-order view through one instance, and the generic dependency-pair extraction / SCC
-surface is then available directly from values of that type.
--/
-
-namespace OperatorKO7.DependencyPairsFragment
-
-/-- Typeclass view exposing a finite first-order rule engine from an internal system type. -/
-class HasFiniteFirstOrderView (ε σ ν : Type) [DecidableEq σ] where
-  Rule : Type
-  rules : ε → Array Rule
-  lhs : Rule → FOTerm σ ν
-  rhs : Rule → FOTerm σ ν
-
-namespace HasFiniteFirstOrderView
-
-variable {ε σ ν : Type} [DecidableEq σ] [HasFiniteFirstOrderView ε σ ν]
-
-/-- Canonical packaged engine induced by the typeclass view. -/
-def toFiniteFirstOrderEngine (E : ε) : FiniteFirstOrderEngine σ ν where
-  Rule := HasFiniteFirstOrderView.Rule (ε := ε) (σ := σ) (ν := ν)
-  rules := HasFiniteFirstOrderView.rules (ε := ε) (σ := σ) (ν := ν) E
-  lhs := HasFiniteFirstOrderView.lhs (ε := ε) (σ := σ) (ν := ν)
-  rhs := HasFiniteFirstOrderView.rhs (ε := ε) (σ := σ) (ν := ν)
-
-/-- Defined heads exposed directly from a viewed engine value. -/
-abbrev definedHeads (E : ε) : Finset σ :=
-  (toFiniteFirstOrderEngine (ε := ε) (σ := σ) (ν := ν) E).definedHeads
-
-/-- Extracted nodes exposed directly from a viewed engine value. -/
-abbrev extractedNodes (E : ε) :
-    Array (ExtractedRuleFrontendNode (HasFiniteFirstOrderView.Rule (ε := ε) (σ := σ) (ν := ν)) σ) :=
-  (toFiniteFirstOrderEngine (ε := ε) (σ := σ) (ν := ν) E).extractedNodes
-
-/-- Extracted call graph exposed directly from a viewed engine value. -/
-abbrev extractedCallGraph (E : ε) : FiniteExtractedCallGraph σ :=
-  (toFiniteFirstOrderEngine (ε := ε) (σ := σ) (ν := ν) E).extractedCallGraph
-
-/-- Direct SCC search exposed from a viewed engine value. -/
-noncomputable abbrev findNontrivialSCCPair? (E : ε) :
-    Option ((extractedCallGraph (ε := ε) (σ := σ) (ν := ν) E).Node ×
-      (extractedCallGraph (ε := ε) (σ := σ) (ν := ν) E).Node) :=
-  (toFiniteFirstOrderEngine (ε := ε) (σ := σ) (ν := ν) E).findNontrivialSCCPair?
-
-/-- SCC existence predicate exposed from a viewed engine value. -/
-abbrev HasNontrivialSCC (E : ε) : Prop :=
-  (toFiniteFirstOrderEngine (ε := ε) (σ := σ) (ν := ν) E).HasNontrivialSCC
-
-/-- Standard SCC witness exposed from a viewed engine value. -/
-noncomputable abbrev toSCCCycle (E : ε)
-    (h : (toFiniteFirstOrderEngine (ε := ε) (σ := σ) (ν := ν) E).HasNontrivialSCC) :
-    SCCCycle (extractedCallGraph (ε := ε) (σ := σ) (ν := ν) E).Node :=
-  (toFiniteFirstOrderEngine (ε := ε) (σ := σ) (ν := ν) E).toSCCCycle h
-
-end HasFiniteFirstOrderView
-
-end OperatorKO7.DependencyPairsFragment
-```
-
----
-
 ## OperatorKO7/Meta/DependencyPairs_Fragment.lean
 
 **Lines:** 88
@@ -6887,7 +6747,7 @@ end OperatorKO7.DependencyPairsFragment
 **Lines:** 239
 
 ```lean
-import OperatorKO7.Meta.DependencyPairs_FirstOrderTermView
+import OperatorKO7.Meta.DependencyPairs_FirstOrderEngine
 
 /-!
 # Minimal Head/Call-Head View for DP Extraction
@@ -7135,7 +6995,7 @@ end OperatorKO7.DependencyPairsFragment
 **Lines:** 209
 
 ```lean
-import OperatorKO7.Meta.DependencyPairs_FiniteCarrierExtractedView
+import OperatorKO7.Meta.DependencyPairs_FiniteCarrierView
 
 /-!
 # KO7 Kernel Rules as a Generic First-Order TRS

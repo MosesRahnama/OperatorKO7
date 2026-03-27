@@ -1,4 +1,4 @@
-import OperatorKO7.Meta.DependencyPairs_FiniteCarrierExtractedView
+import OperatorKO7.Meta.DependencyPairs_FiniteCarrierView
 
 /-!
 # KO7 Kernel Rules as a Generic First-Order TRS
