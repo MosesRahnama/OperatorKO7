@@ -1,7 +1,7 @@
 # OperatorKO7 Complete Documentation
-Generated: 2026-03-21 02:34:56 +0330
-Source files: 84
-Total source lines: 17604
+Generated: 2026-03-27 13:30:37 +0330
+Source files: 122
+Total source lines: 26311
 Scope: active `.lean` files in the repository
 
 ## Table of Contents
@@ -12,6 +12,7 @@ Scope: active `.lean` files in the repository
 - [OperatorKO7/Meta/ArcticBarrier.lean](#operatorko7metaarcticbarrierlean)
 - [OperatorKO7/Meta/BarrierClass_Classifier.lean](#operatorko7metabarrierclassclassifierlean)
 - [OperatorKO7/Meta/BarrierWitness.lean](#operatorko7metabarrierwitnesslean)
+- [OperatorKO7/Meta/BarrierWitness_Budgets.lean](#operatorko7metabarrierwitnessbudgetslean)
 - [OperatorKO7/Meta/BarrierWitness_Extended.lean](#operatorko7metabarrierwitnessextendedlean)
 - [OperatorKO7/Meta/CompositionalMeasure_Impossibility.lean](#operatorko7metacompositionalmeasureimpossibilitylean)
 - [OperatorKO7/Meta/ComputableMeasure.lean](#operatorko7metacomputablemeasurelean)
@@ -21,15 +22,36 @@ Scope: active `.lean` files in the repository
 - [OperatorKO7/Meta/ContextClosed_SN.lean](#operatorko7metacontextclosedsnlean)
 - [OperatorKO7/Meta/ContextClosed_SN_Full.lean](#operatorko7metacontextclosedsnfulllean)
 - [OperatorKO7/Meta/ContextClosedBarrier.lean](#operatorko7metacontextclosedbarrierlean)
+- [OperatorKO7/Meta/ContextualCopyBudget.lean](#operatorko7metacontextualcopybudgetlean)
+- [OperatorKO7/Meta/ContextualCopyBudget_NoGo.lean](#operatorko7metacontextualcopybudgetnogolean)
+- [OperatorKO7/Meta/DependencyPairs_CallGraph.lean](#operatorko7metadependencypairscallgraphlean)
+- [OperatorKO7/Meta/DependencyPairs_ExtractedCallGraph.lean](#operatorko7metadependencypairsextractedcallgraphlean)
+- [OperatorKO7/Meta/DependencyPairs_FiniteCarrierExtractedView.lean](#operatorko7metadependencypairsfinitecarrierextractedviewlean)
+- [OperatorKO7/Meta/DependencyPairs_FiniteCarrierHeadView.lean](#operatorko7metadependencypairsfinitecarrierheadviewlean)
+- [OperatorKO7/Meta/DependencyPairs_FiniteCarrierRawView.lean](#operatorko7metadependencypairsfinitecarrierrawviewlean)
+- [OperatorKO7/Meta/DependencyPairs_FiniteCarrierView.lean](#operatorko7metadependencypairsfinitecarrierviewlean)
+- [OperatorKO7/Meta/DependencyPairs_FiniteGraph.lean](#operatorko7metadependencypairsfinitegraphlean)
+- [OperatorKO7/Meta/DependencyPairs_FirstOrderEngine.lean](#operatorko7metadependencypairsfirstorderenginelean)
+- [OperatorKO7/Meta/DependencyPairs_FirstOrderExtraction.lean](#operatorko7metadependencypairsfirstorderextractionlean)
+- [OperatorKO7/Meta/DependencyPairs_FirstOrderFrontend.lean](#operatorko7metadependencypairsfirstorderfrontendlean)
+- [OperatorKO7/Meta/DependencyPairs_FirstOrderTermView.lean](#operatorko7metadependencypairsfirstordertermviewlean)
+- [OperatorKO7/Meta/DependencyPairs_FirstOrderView.lean](#operatorko7metadependencypairsfirstorderviewlean)
 - [OperatorKO7/Meta/DependencyPairs_Fragment.lean](#operatorko7metadependencypairsfragmentlean)
+- [OperatorKO7/Meta/DependencyPairs_HeadView.lean](#operatorko7metadependencypairsheadviewlean)
+- [OperatorKO7/Meta/DependencyPairs_KernelFirstOrder.lean](#operatorko7metadependencypairskernelfirstorderlean)
+- [OperatorKO7/Meta/DependencyPairs_TPDBExtraction.lean](#operatorko7metadependencypairstpdbextractionlean)
 - [OperatorKO7/Meta/DependencyPairs_Works.lean](#operatorko7metadependencypairsworkslean)
 - [OperatorKO7/Meta/DepthBarrier.lean](#operatorko7metadepthbarrierlean)
 - [OperatorKO7/Meta/DM_OrderType.lean](#operatorko7metadmordertypelean)
 - [OperatorKO7/Meta/DM_OrderType_LowerBound.lean](#operatorko7metadmordertypelowerboundlean)
+- [OperatorKO7/Meta/DM_UpstreamSurface.lean](#operatorko7metadmupstreamsurfacelean)
 - [OperatorKO7/Meta/DP_BaseOrder_Boundary.lean](#operatorko7metadpbaseorderboundarylean)
 - [OperatorKO7/Meta/EqGuardedConfluence.lean](#operatorko7metaeqguardedconfluencelean)
 - [OperatorKO7/Meta/EqW_Guard_Barrier.lean](#operatorko7metaeqwguardbarrierlean)
 - [OperatorKO7/Meta/EscapeTrichotomy.lean](#operatorko7metaescapetrichotomylean)
+- [OperatorKO7/Meta/FiniteGraphReachability.lean](#operatorko7metafinitegraphreachabilitylean)
+- [OperatorKO7/Meta/FiniteGraphSCC.lean](#operatorko7metafinitegraphscclean)
+- [OperatorKO7/Meta/GraphPathExtraction.lean](#operatorko7metagraphpathextractionlean)
 - [OperatorKO7/Meta/Impossibility_Lemmas.lean](#operatorko7metaimpossibilitylemmaslean)
 - [OperatorKO7/Meta/KBO_Impossible.lean](#operatorko7metakboimpossiblelean)
 - [OperatorKO7/Meta/LinearRec_Ablation.lean](#operatorko7metalinearrecablationlean)
@@ -46,9 +68,21 @@ Scope: active `.lean` files in the repository
 - [OperatorKO7/Meta/MPO_ProofTheoreticBound.lean](#operatorko7metampoprooftheoreticboundlean)
 - [OperatorKO7/Meta/Mu3c_Image_LowerBound.lean](#operatorko7metamu3cimagelowerboundlean)
 - [OperatorKO7/Meta/MultilinearBarrier.lean](#operatorko7metamultilinearbarrierlean)
+- [OperatorKO7/Meta/MutualDuplication_CallGraph.lean](#operatorko7metamutualduplicationcallgraphlean)
 - [OperatorKO7/Meta/MutualDuplication_Case.lean](#operatorko7metamutualduplicationcaselean)
+- [OperatorKO7/Meta/MutualDuplication_CycleFlow.lean](#operatorko7metamutualduplicationcycleflowlean)
+- [OperatorKO7/Meta/MutualDuplication_ExtractedCallGraph.lean](#operatorko7metamutualduplicationextractedcallgraphlean)
 - [OperatorKO7/Meta/MutualDuplication_General.lean](#operatorko7metamutualduplicationgenerallean)
+- [OperatorKO7/Meta/MutualDuplication_GraphCycle.lean](#operatorko7metamutualduplicationgraphcyclelean)
+- [OperatorKO7/Meta/MutualDuplication_KNode.lean](#operatorko7metamutualduplicationknodelean)
+- [OperatorKO7/Meta/MutualDuplication_KNode_Abstract.lean](#operatorko7metamutualduplicationknodeabstractlean)
+- [OperatorKO7/Meta/MutualDuplication_PacketGraph.lean](#operatorko7metamutualduplicationpacketgraphlean)
+- [OperatorKO7/Meta/MutualDuplication_PayloadFlow.lean](#operatorko7metamutualduplicationpayloadflowlean)
 - [OperatorKO7/Meta/MutualDuplication_Preserving.lean](#operatorko7metamutualduplicationpreservinglean)
+- [OperatorKO7/Meta/MutualDuplication_Preserving_Abstract.lean](#operatorko7metamutualduplicationpreservingabstractlean)
+- [OperatorKO7/Meta/MutualDuplication_Preserving_KNode.lean](#operatorko7metamutualduplicationpreservingknodelean)
+- [OperatorKO7/Meta/MutualDuplication_Preserving_Transparent.lean](#operatorko7metamutualduplicationpreservingtransparentlean)
+- [OperatorKO7/Meta/MutualDuplication_RelationalGraph.lean](#operatorko7metamutualduplicationrelationalgraphlean)
 - [OperatorKO7/Meta/MutualDuplication_Transparent.lean](#operatorko7metamutualduplicationtransparentlean)
 - [OperatorKO7/Meta/Newman_Safe.lean](#operatorko7metanewmansafelean)
 - [OperatorKO7/Meta/Normalize_Safe.lean](#operatorko7metanormalizesafelean)
@@ -74,6 +108,9 @@ Scope: active `.lean` files in the repository
 - [OperatorKO7/Meta/SafeStep_Complexity_Ordinal.lean](#operatorko7metasafestepcomplexityordinallean)
 - [OperatorKO7/Meta/SafeStep_Core.lean](#operatorko7metasafestepcorelean)
 - [OperatorKO7/Meta/SafeStep_Ctx.lean](#operatorko7metasafestepctxlean)
+- [OperatorKO7/Meta/SafeStepCtx_Complexity_Cichon.lean](#operatorko7metasafestepctxcomplexitycichonlean)
+- [OperatorKO7/Meta/SafeStepCtx_Complexity_Exponential.lean](#operatorko7metasafestepctxcomplexityexponentiallean)
+- [OperatorKO7/Meta/SafeStepCtx_Complexity_LowerBound.lean](#operatorko7metasafestepctxcomplexitylowerboundlean)
 - [OperatorKO7/Meta/SafeStepCtx_Confluence.lean](#operatorko7metasafestepctxconfluencelean)
 - [OperatorKO7/Meta/ScalarProjectionBarrier.lean](#operatorko7metascalarprojectionbarrierlean)
 - [OperatorKO7/Meta/SharingBarrierLift.lean](#operatorko7metasharingbarrierliftlean)
@@ -86,6 +123,7 @@ Scope: active `.lean` files in the repository
 - [OperatorKO7/Meta/TropicalBarrier.lean](#operatorko7metatropicalbarrierlean)
 - [OperatorKO7/Meta/TTT2_CertificateReplay.lean](#operatorko7metattt2certificatereplaylean)
 - [OperatorKO7/Meta/TypedBarrierSurvival.lean](#operatorko7metatypedbarriersurvivallean)
+- [OperatorKO7/Meta/WPO_PolynomialBarrier.lean](#operatorko7metawpopolynomialbarrierlean)
 - [OperatorKO7/SchemaAPI.lean](#operatorko7schemaapilean)
 - [OperatorKO7/Test/Sanity.lean](#operatorko7testsanitylean)
 - [OperatorKO7/Test/TPDB_Export.lean](#operatorko7testtpdbexportlean)
@@ -131,7 +169,7 @@ require mathlib from git "https://github.com/leanprover-community/mathlib4.git" 
 
 ## OperatorKO7.lean
 
-**Lines:** 77
+**Lines:** 114
 
 ```lean
 import OperatorKO7.SchemaAPI
@@ -140,6 +178,7 @@ import OperatorKO7.Meta.ComputableMeasure
 import OperatorKO7.Meta.ComputableMeasure_Verification
 import OperatorKO7.Meta.DM_OrderType
 import OperatorKO7.Meta.DM_OrderType_LowerBound
+import OperatorKO7.Meta.DM_UpstreamSurface
 import OperatorKO7.Meta.Mu3c_Image_LowerBound
 import OperatorKO7.Meta.RecCore
 import OperatorKO7.Meta.QuadraticBarrier
@@ -148,7 +187,20 @@ import OperatorKO7.Meta.AffineThresholdSharpness
 import OperatorKO7.Meta.ObjectAxiom_Ablation
 import OperatorKO7.Meta.MutualDuplication_Case
 import OperatorKO7.Meta.MutualDuplication_General
+import OperatorKO7.Meta.MutualDuplication_CycleFlow
+import OperatorKO7.Meta.MutualDuplication_KNode
+import OperatorKO7.Meta.MutualDuplication_KNode_Abstract
+import OperatorKO7.Meta.GraphPathExtraction
+import OperatorKO7.Meta.FiniteGraphReachability
+import OperatorKO7.Meta.FiniteGraphSCC
+import OperatorKO7.Meta.MutualDuplication_GraphCycle
 import OperatorKO7.Meta.MutualDuplication_Preserving
+import OperatorKO7.Meta.MutualDuplication_PayloadFlow
+import OperatorKO7.Meta.MutualDuplication_Preserving_KNode
+import OperatorKO7.Meta.MutualDuplication_Preserving_Abstract
+import OperatorKO7.Meta.MutualDuplication_Preserving_Transparent
+import OperatorKO7.Meta.MutualDuplication_PacketGraph
+import OperatorKO7.Meta.MutualDuplication_RelationalGraph
 import OperatorKO7.Meta.MutualDuplication_Transparent
 import OperatorKO7.Meta.MatrixBarrier2
 import OperatorKO7.Meta.MatrixBarrierD
@@ -158,12 +210,14 @@ import OperatorKO7.Meta.MatrixBarrierFunctional
 import OperatorKO7.Meta.MatrixProjectionCoverage
 import OperatorKO7.Meta.MultilinearBarrier
 import OperatorKO7.Meta.PolynomialBarrierGeneral
+import OperatorKO7.Meta.WPO_PolynomialBarrier
 import OperatorKO7.Meta.MaxBarrier
 import OperatorKO7.Meta.ArcticBarrier
 import OperatorKO7.Meta.SymbolicComparatorBarrier
 import OperatorKO7.Meta.KBO_Impossible
 import OperatorKO7.Meta.ScalarProjectionBarrier
 import OperatorKO7.Meta.BarrierClass_Classifier
+import OperatorKO7.Meta.BarrierWitness_Budgets
 import OperatorKO7.Meta.SynthesisOracle
 import OperatorKO7.Meta.PumpedBarrierClasses
 import OperatorKO7.Meta.StandardPumpLemmas
@@ -175,8 +229,25 @@ import OperatorKO7.Meta.ManySortedBarrierSurvival
 import OperatorKO7.Meta.TextbookDupInstance
 import OperatorKO7.Meta.TPDB_Export
 import OperatorKO7.Meta.DependencyPairs_Fragment
+import OperatorKO7.Meta.DependencyPairs_FiniteGraph
+import OperatorKO7.Meta.DependencyPairs_CallGraph
+import OperatorKO7.Meta.DependencyPairs_ExtractedCallGraph
+import OperatorKO7.Meta.DependencyPairs_TPDBExtraction
+import OperatorKO7.Meta.DependencyPairs_FirstOrderExtraction
+import OperatorKO7.Meta.DependencyPairs_FirstOrderFrontend
+import OperatorKO7.Meta.DependencyPairs_FirstOrderEngine
+import OperatorKO7.Meta.DependencyPairs_FirstOrderView
+import OperatorKO7.Meta.DependencyPairs_FirstOrderTermView
+import OperatorKO7.Meta.DependencyPairs_HeadView
+import OperatorKO7.Meta.DependencyPairs_FiniteCarrierView
+import OperatorKO7.Meta.DependencyPairs_FiniteCarrierRawView
+import OperatorKO7.Meta.DependencyPairs_FiniteCarrierHeadView
+import OperatorKO7.Meta.DependencyPairs_FiniteCarrierExtractedView
+import OperatorKO7.Meta.DependencyPairs_KernelFirstOrder
 import OperatorKO7.Meta.DependencyPairs_Works
 import OperatorKO7.Meta.DP_BaseOrder_Boundary
+import OperatorKO7.Meta.MutualDuplication_CallGraph
+import OperatorKO7.Meta.MutualDuplication_ExtractedCallGraph
 import OperatorKO7.Meta.ContextClosed_SN
 import OperatorKO7.Meta.NormalizeSafe_LowerBound
 import OperatorKO7.Meta.EqW_Guard_Barrier
@@ -187,6 +258,10 @@ import OperatorKO7.Meta.SafeStep_Complexity_Ordinal
 import OperatorKO7.Meta.SafeStep_Complexity_FastGrowing
 import OperatorKO7.Meta.SafeStep_Complexity_MW_Ctx
 import OperatorKO7.Meta.SafeStep_Complexity_MW_CtxExact
+import OperatorKO7.Meta.ContextualCopyBudget_NoGo
+import OperatorKO7.Meta.SafeStepCtx_Complexity_Exponential
+import OperatorKO7.Meta.SafeStepCtx_Complexity_Cichon
+import OperatorKO7.Meta.SafeStepCtx_Complexity_LowerBound
 import OperatorKO7.Meta.SafeRoot_Complexity
 import OperatorKO7.Meta.SafeStepCtx_Confluence
 import OperatorKO7.Meta.EqGuardedConfluence
@@ -208,8 +283,8 @@ Why this file exists:
 - Includes the computable-measure verification suite in the default build path.
 - Includes ordinal calibration upper-bound lemmas (`DM_OrderType`) in the default build path.
 - Includes Phase-B lower-bound scaffolding (`DM_OrderType_LowerBound`) in the default build path.
-- Additional modules (normalizer, confluence) are imported directly where needed
-  (e.g. in `OperatorKO7/Meta/Examples_Publish.lean`).
+- Additional modules (normalizer, confluence, contextual complexity refinements)
+  are imported directly where needed.
 -/
 ```
 
@@ -951,6 +1026,147 @@ def affine_witness {S : StepDuplicatingSchema}
         _ ≤ M.wrap_const + M.wrap_left * Sval + M.wrap_right * (A + B) := by
             omega
     exact Nat.not_lt_of_ge this hspec'
+
+end OperatorKO7.StepDuplicating
+```
+
+---
+
+## OperatorKO7/Meta/BarrierWitness_Budgets.lean
+
+**Lines:** 132
+
+```lean
+import OperatorKO7.Meta.BarrierWitness_Extended
+
+/-!
+# Canonical budgets for constructive barrier witnesses
+
+The generic schema-level witness extractors live over an abstract carrier `S.T`,
+so they do not support a uniform theorem about concrete syntax size. Instead,
+the file proves an explicit construction-budget theorem: the generated step payload is
+always either the base term, a successor chain `succIter k`, or a wrapper chain
+`wrapIter k`, with a computable budget `k` read off from the measure data.
+-/
+
+namespace OperatorKO7.StepDuplicating
+open StepDuplicatingSchema
+
+namespace StepDuplicatingSchema
+
+/-- Canonical shapes used by the constructive schema-level witness extractors. -/
+inductive WitnessStepShape (S : StepDuplicatingSchema) where
+  | base
+  | succPump (k : Nat)
+  | wrapPump (k : Nat)
+
+/-- Realization relation for the canonical witness shapes. -/
+def WitnessStepShape.Realizes {S : StepDuplicatingSchema} :
+    WitnessStepShape S → S.T → Prop
+  | .base, t => t = S.base
+  | .succPump k, t => t = succIter S k
+  | .wrapPump k, t => t = wrapIter S k
+
+theorem additive_witness_shape {S : StepDuplicatingSchema} (M : AdditiveMeasure S) :
+    WitnessStepShape.Realizes
+      (S := S) (.wrapPump M.w_succ) (additive_witness M).s := by
+  rfl
+
+theorem compositional_witness_shape {S : StepDuplicatingSchema}
+    (CM : CompositionalMeasure S) (h_transparent : CM.c_succ CM.c_base = CM.c_base) :
+    WitnessStepShape.Realizes
+      (S := S) .base (compositional_witness CM h_transparent).s := by
+  rfl
+
+theorem affine_with_pump_witness_shape {S : StepDuplicatingSchema}
+    (M : AffineMeasureWithPump S) :
+    WitnessStepShape.Realizes
+        (S := S)
+        (.succPump (M.recur_counter * (M.succ_bias + M.succ_scale * M.c_base)))
+        (affine_with_pump_witness M).s
+      ∨
+      WitnessStepShape.Realizes
+        (S := S)
+        (.wrapPump (M.recur_counter * (M.succ_bias + M.succ_scale * M.c_base)))
+        (affine_with_pump_witness M).s := by
+  classical
+  by_cases hsucc : 1 ≤ M.succ_bias ∧ 1 ≤ M.succ_scale
+  · left
+    unfold affine_with_pump_witness
+    simp only [hsucc]
+    rfl
+  · right
+    unfold affine_with_pump_witness
+    simp only [hsucc, dite_false]
+    rfl
+
+theorem quadratic_with_pump_witness_shape {S : StepDuplicatingSchema}
+    (M : QuadraticCounterMeasureWithPump S) :
+    WitnessStepShape.Realizes
+        (S := S)
+        (.succPump
+          (M.recur_counter * (M.succ_bias + M.succ_scale * M.c_base) +
+            M.recur_quad * (M.succ_bias + M.succ_scale * M.c_base) *
+              (M.succ_bias + M.succ_scale * M.c_base)))
+        (quadratic_with_pump_witness M).s
+      ∨
+      WitnessStepShape.Realizes
+        (S := S)
+        (.wrapPump
+          (M.recur_counter * (M.succ_bias + M.succ_scale * M.c_base) +
+            M.recur_quad * (M.succ_bias + M.succ_scale * M.c_base) *
+              (M.succ_bias + M.succ_scale * M.c_base)))
+        (quadratic_with_pump_witness M).s := by
+  classical
+  by_cases hsucc : 1 ≤ M.succ_bias ∧ 1 ≤ M.succ_scale
+  · left
+    unfold quadratic_with_pump_witness
+    simp only [hsucc]
+    rfl
+  · right
+    unfold quadratic_with_pump_witness
+    simp only [hsucc, dite_false]
+    rfl
+
+theorem max_with_pump_witness_shape {S : StepDuplicatingSchema}
+    (M : MaxMeasureWithPump S) :
+    WitnessStepShape.Realizes
+        (S := S)
+        (.succPump (max (M.recur_base + M.c_base) (M.recur_counter + (M.succ_const + M.c_base))))
+        (max_with_pump_witness M).s
+      ∨
+      WitnessStepShape.Realizes
+        (S := S)
+        (.wrapPump (max (M.recur_base + M.c_base) (M.recur_counter + (M.succ_const + M.c_base))))
+        (max_with_pump_witness M).s := by
+  classical
+  by_cases hsucc : 1 ≤ M.succ_const
+  · left
+    unfold max_with_pump_witness
+    simp only [hsucc, dite_true]
+    rfl
+  · right
+    unfold max_with_pump_witness
+    simp only [hsucc, dite_false]
+    rfl
+
+theorem matrixFunctional_with_projected_affine_pump_witness_shape
+    {S : StepDuplicatingSchema} {d : Nat}
+    (M : MatrixFunctionalMeasureWithProjectedAffinePump S d) :
+    WitnessStepShape.Realizes
+        (S := S)
+        (.succPump (M.recur_counter * (M.succ_bias + M.succ_scale * M.c_base)))
+        (matrixFunctional_with_projected_affine_pump_witness M).s
+      ∨
+      WitnessStepShape.Realizes
+        (S := S)
+        (.wrapPump (M.recur_counter * (M.succ_bias + M.succ_scale * M.c_base)))
+        (matrixFunctional_with_projected_affine_pump_witness M).s := by
+  classical
+  simpa [matrixFunctional_with_projected_affine_pump_witness] using
+    affine_with_pump_witness_shape (S := S) M.projectedAffineWithPump
+
+end StepDuplicatingSchema
 
 end OperatorKO7.StepDuplicating
 ```
@@ -4255,6 +4471,2320 @@ end OperatorKO7.ContextClosedBarrier
 
 ---
 
+## OperatorKO7/Meta/ContextualCopyBudget.lean
+
+**Lines:** 437
+
+```lean
+import OperatorKO7.Meta.SafeStep_Complexity_Ordinal
+
+/-!
+# Position-aware contextual copy budget
+
+This file contains the positive outcome of the tighter `SafeStepCtx`
+complexity program.
+
+What is kept here:
+- the syntactic control coordinate `copyBudget`
+- its monotonicity under `SafeStep` and `SafeStepCtx`
+- the position-aware multiplicity potential `ctxDupPotential`
+- the strict contextual descent proof
+- the resulting exact-length and single-exponential size bounds
+
+The exploratory obstruction side has been split out to
+`Meta/ContextualCopyBudget_NoGo.lean`, which now contains the failed auxiliary
+coordinates, payload-recursive counterexamples, and the class-level no-go
+theorems for the initial monotone arithmetic measure family.
+-/
+
+open OperatorKO7 Trace
+
+namespace MetaSN_KO7
+
+/-- A purely syntactic upper budget for future `delta`-driven copying. -/
+@[simp] def copyBudget : Trace → Nat
+| void            => 0
+| delta t         => copyBudget t + 1
+| integrate t     => copyBudget t
+| merge a b       => max (copyBudget a) (copyBudget b)
+| app a b         => max (copyBudget a) (copyBudget b)
+| recΔ b s n      => max (copyBudget b) (max (copyBudget s) (copyBudget n))
+| eqW a b         => max (copyBudget a) (copyBudget b)
+
+/-- A safe root step never increases `copyBudget`. -/
+theorem copyBudget_mono_safe : ∀ {a b : Trace}, SafeStep a b → copyBudget b ≤ copyBudget a
+| _, _, SafeStep.R_int_delta t => by
+    simp [copyBudget]
+| _, _, SafeStep.R_merge_void_left t _ => by
+    simp [copyBudget]
+| _, _, SafeStep.R_merge_void_right t _ => by
+    simp [copyBudget]
+| _, _, SafeStep.R_merge_cancel t _ _ => by
+    simp [copyBudget]
+| _, _, SafeStep.R_rec_zero b s _ => by
+    simp [copyBudget]
+| _, _, SafeStep.R_rec_succ b s n => by
+    have hs : max (copyBudget s) (copyBudget n) ≤ max (copyBudget s) (copyBudget n + 1) := by
+      exact max_le_max le_rfl (Nat.le_succ _)
+    have hb :
+        max (copyBudget b) (max (copyBudget s) (copyBudget n)) ≤
+          max (copyBudget b) (max (copyBudget s) (copyBudget n + 1)) := by
+      exact max_le_max le_rfl hs
+    simpa [copyBudget, max_assoc, max_left_comm, max_comm] using hb
+| _, _, SafeStep.R_eq_refl a _ => by
+    simp [copyBudget]
+| _, _, SafeStep.R_eq_diff a b _ => by
+    simp [copyBudget]
+
+/-- The `rec_succ` root step drops the syntactic copy budget by at most one. -/
+theorem copyBudget_rec_succ_shape (b s n : Trace) :
+    copyBudget (app s (recΔ b s n)) ≤ copyBudget (recΔ b s (delta n)) := by
+  exact copyBudget_mono_safe (SafeStep.R_rec_succ b s n)
+
+/-- Context closure preserves the non-increase of `copyBudget`. -/
+theorem copyBudget_mono_safeStepCtx :
+    ∀ {a b : Trace}, SafeStepCtx a b → copyBudget b ≤ copyBudget a
+| _, _, SafeStepCtx.root hs => copyBudget_mono_safe hs
+| _, _, SafeStepCtx.integrate h => by
+    simpa [copyBudget] using copyBudget_mono_safeStepCtx h
+| _, _, SafeStepCtx.mergeL (a := a) (a' := a') (b := b) h => by
+    change max (copyBudget a') (copyBudget b) ≤ max (copyBudget a) (copyBudget b)
+    exact max_le_max (copyBudget_mono_safeStepCtx h) le_rfl
+| _, _, SafeStepCtx.mergeR (a := a) (b := b) (b' := b') h => by
+    change max (copyBudget a) (copyBudget b') ≤ max (copyBudget a) (copyBudget b)
+    exact max_le_max le_rfl (copyBudget_mono_safeStepCtx h)
+| _, _, SafeStepCtx.appL (a := a) (a' := a') (b := b) h => by
+    change max (copyBudget a') (copyBudget b) ≤ max (copyBudget a) (copyBudget b)
+    exact max_le_max (copyBudget_mono_safeStepCtx h) le_rfl
+| _, _, SafeStepCtx.appR (a := a) (b := b) (b' := b') h => by
+    change max (copyBudget a) (copyBudget b') ≤ max (copyBudget a) (copyBudget b)
+    exact max_le_max le_rfl (copyBudget_mono_safeStepCtx h)
+| _, _, SafeStepCtx.recB (b := b) (b' := b') (s := s) (n := n) h => by
+    change max (copyBudget b') (max (copyBudget s) (copyBudget n)) ≤
+      max (copyBudget b) (max (copyBudget s) (copyBudget n))
+    exact max_le_max (copyBudget_mono_safeStepCtx h) le_rfl
+| _, _, SafeStepCtx.recS (b := b) (s := s) (s' := s') (n := n) h => by
+    change max (copyBudget b) (max (copyBudget s') (copyBudget n)) ≤
+      max (copyBudget b) (max (copyBudget s) (copyBudget n))
+    exact max_le_max le_rfl (max_le_max (copyBudget_mono_safeStepCtx h) le_rfl)
+| _, _, SafeStepCtx.recN (b := b) (s := s) (n := n) (n' := n') h => by
+    change max (copyBudget b) (max (copyBudget s) (copyBudget n')) ≤
+      max (copyBudget b) (max (copyBudget s) (copyBudget n))
+    exact max_le_max le_rfl (max_le_max le_rfl (copyBudget_mono_safeStepCtx h))
+
+/-- Position-aware multiplicity potential: a recursor budgets `(copyBudget n + 1)` copies
+of the payload cost, rather than using a global max or a naive whole-term sum. -/
+@[simp] def ctxDupPotential : Trace → Nat
+| void            => 0
+| delta t         => ctxDupPotential t
+| integrate t     => ctxDupPotential t + 1
+| merge a b       => ctxDupPotential a + ctxDupPotential b + 1
+| app a b         => ctxDupPotential a + ctxDupPotential b
+| recΔ b s n      =>
+    ctxDupPotential b +
+      ctxDupPotential n +
+      (copyBudget n + 1) * (ctxDupPotential s + 1) + 1
+| eqW a b         => ctxDupPotential a + ctxDupPotential b + 3
+
+/-- Every safe root step strictly decreases the position-aware multiplicity potential. -/
+theorem ctxDupPotential_decreases_safe :
+    ∀ {a b : Trace}, SafeStep a b → ctxDupPotential b < ctxDupPotential a
+| _, _, SafeStep.R_int_delta t => by
+    simp [ctxDupPotential]
+| _, _, SafeStep.R_merge_void_left t _ => by
+    simp [ctxDupPotential]
+| _, _, SafeStep.R_merge_void_right t _ => by
+    simp [ctxDupPotential]
+| _, _, SafeStep.R_merge_cancel t _ _ => by
+    simp [ctxDupPotential]
+    omega
+| _, _, SafeStep.R_rec_zero b s _ => by
+    simp [ctxDupPotential]
+    omega
+| _, _, SafeStep.R_rec_succ b s n => by
+    have hmain :
+        ctxDupPotential s + (copyBudget n + 1) * (ctxDupPotential s + 1) <
+          (copyBudget n + 2) * (ctxDupPotential s + 1) := by
+      have hlt :
+          ctxDupPotential s + (copyBudget n + 1) * (ctxDupPotential s + 1) <
+            (ctxDupPotential s + 1) + (copyBudget n + 1) * (ctxDupPotential s + 1) := by
+        exact Nat.add_lt_add_right (Nat.lt_succ_self (ctxDupPotential s))
+          ((copyBudget n + 1) * (ctxDupPotential s + 1))
+      have heq :
+          (ctxDupPotential s + 1) + (copyBudget n + 1) * (ctxDupPotential s + 1) =
+            (copyBudget n + 2) * (ctxDupPotential s + 1) := by
+        simpa [Nat.add_assoc, Nat.add_comm, Nat.add_left_comm] using
+          (Nat.succ_mul (copyBudget n + 1) (ctxDupPotential s + 1)).symm
+      exact lt_of_lt_of_eq hlt heq
+    simpa [ctxDupPotential, copyBudget, Nat.add_assoc, Nat.add_comm, Nat.add_left_comm,
+      Nat.mul_add, Nat.add_mul] using
+      Nat.add_lt_add_right hmain (ctxDupPotential b + ctxDupPotential n + 1)
+| _, _, SafeStep.R_eq_refl a _ => by
+    simp [ctxDupPotential]
+| _, _, SafeStep.R_eq_diff a b _ => by
+    simp [ctxDupPotential]
+
+/-- The position-aware multiplicity potential strictly decreases on every contextual step. -/
+theorem ctxDupPotential_decreases_ctx :
+    ∀ {a b : Trace}, SafeStepCtx a b → ctxDupPotential b < ctxDupPotential a
+| _, _, SafeStepCtx.root hs =>
+    ctxDupPotential_decreases_safe hs
+| _, _, SafeStepCtx.integrate h => by
+    simpa [ctxDupPotential] using Nat.succ_lt_succ (ctxDupPotential_decreases_ctx h)
+| _, _, SafeStepCtx.mergeL (a := a) (a' := a') (b := b) h => by
+    have ih := ctxDupPotential_decreases_ctx h
+    simpa [ctxDupPotential, Nat.add_assoc, Nat.add_comm, Nat.add_left_comm] using
+      Nat.add_lt_add_right ih (ctxDupPotential b + 1)
+| _, _, SafeStepCtx.mergeR (a := a) (b := b) (b' := b') h => by
+    have ih := ctxDupPotential_decreases_ctx h
+    have hsum : ctxDupPotential a + ctxDupPotential b' <
+        ctxDupPotential a + ctxDupPotential b := Nat.add_lt_add_left ih (ctxDupPotential a)
+    simpa [ctxDupPotential, Nat.add_assoc, Nat.add_comm, Nat.add_left_comm] using
+      Nat.add_lt_add_right hsum 1
+| _, _, SafeStepCtx.appL (a := a) (a' := a') (b := b) h => by
+    have ih := ctxDupPotential_decreases_ctx h
+    simpa [ctxDupPotential, Nat.add_assoc, Nat.add_comm, Nat.add_left_comm] using
+      Nat.add_lt_add_right ih (ctxDupPotential b)
+| _, _, SafeStepCtx.appR (a := a) (b := b) (b' := b') h => by
+    have ih := ctxDupPotential_decreases_ctx h
+    exact Nat.add_lt_add_left ih (ctxDupPotential a)
+| _, _, SafeStepCtx.recB (b := b) (b' := b') (s := s) (n := n) h => by
+    have ih := ctxDupPotential_decreases_ctx h
+    let C : Nat := ctxDupPotential n + (copyBudget n + 1) * (ctxDupPotential s + 1) + 1
+    have hsum : ctxDupPotential b' + C < ctxDupPotential b + C := Nat.add_lt_add_right ih C
+    simpa [ctxDupPotential, C, Nat.add_assoc, Nat.add_comm, Nat.add_left_comm] using hsum
+| _, _, SafeStepCtx.recS (b := b) (s := s) (s' := s') (n := n) h => by
+    have ih := ctxDupPotential_decreases_ctx h
+    have hsucc : ctxDupPotential s' + 1 < ctxDupPotential s + 1 := Nat.succ_lt_succ ih
+    have hmul :
+        (copyBudget n + 1) * (ctxDupPotential s' + 1) <
+          (copyBudget n + 1) * (ctxDupPotential s + 1) := by
+      exact Nat.mul_lt_mul_of_pos_left hsucc (Nat.succ_pos _)
+    let C : Nat := ctxDupPotential b + ctxDupPotential n
+    have hsum : C + (copyBudget n + 1) * (ctxDupPotential s' + 1) <
+        C + (copyBudget n + 1) * (ctxDupPotential s + 1) := Nat.add_lt_add_left hmul C
+    simpa [ctxDupPotential, C, Nat.add_assoc, Nat.add_comm, Nat.add_left_comm] using
+      Nat.add_lt_add_right hsum 1
+| _, _, SafeStepCtx.recN (b := b) (s := s) (n := n) (n' := n') h => by
+    have ih := ctxDupPotential_decreases_ctx h
+    have hcopy : copyBudget n' ≤ copyBudget n := copyBudget_mono_safeStepCtx h
+    have hmul :
+        (copyBudget n' + 1) * (ctxDupPotential s + 1) ≤
+          (copyBudget n + 1) * (ctxDupPotential s + 1) := by
+      exact Nat.mul_le_mul_right (ctxDupPotential s + 1) (Nat.succ_le_succ hcopy)
+    let C' : Nat := ctxDupPotential b + ((copyBudget n' + 1) * (ctxDupPotential s + 1) + 1)
+    let C : Nat := ctxDupPotential b + ((copyBudget n + 1) * (ctxDupPotential s + 1) + 1)
+    have hleft : ctxDupPotential n' + C' < ctxDupPotential n + C' := Nat.add_lt_add_right ih C'
+    have hright : ctxDupPotential n + C' ≤ ctxDupPotential n + C := by
+      exact Nat.add_le_add_left
+        (Nat.add_le_add_left (Nat.succ_le_succ hmul) (ctxDupPotential b))
+        (ctxDupPotential n)
+    have hfinal : ctxDupPotential n' + C' < ctxDupPotential n + C := lt_of_lt_of_le hleft hright
+    simpa [ctxDupPotential, C', C, Nat.add_assoc, Nat.add_comm, Nat.add_left_comm] using hfinal
+
+/-- Exact-length contextual chains are bounded by the new position-aware multiplicity potential. -/
+theorem safeStepCtx_length_le_ctxDupPotential (t u : Trace) (n : Nat)
+    (h : SafeStepCtxPow n t u) : n ≤ ctxDupPotential t := by
+  induction n generalizing t with
+  | zero =>
+      omega
+  | succ n ih =>
+      obtain ⟨v, hstep, hrest⟩ := h
+      have hv := ih v hrest
+      have hdrop := ctxDupPotential_decreases_ctx hstep
+      omega
+
+/-- `n + 1 ≤ 2 ^ n` for every natural number `n`. -/
+private theorem succ_le_two_pow (n : Nat) : n + 1 ≤ 2 ^ n := by
+  induction n with
+  | zero =>
+      simp
+  | succ n ih =>
+      rw [pow_succ]
+      have hpow : 1 ≤ 2 ^ n := Nat.one_le_pow n 2 (by omega)
+      omega
+
+/-- Powers of `2` are monotone in the exponent. -/
+private theorem two_pow_mono {m n : Nat} (h : m ≤ n) : 2 ^ m ≤ 2 ^ n :=
+  Nat.pow_le_pow_right (by decide) h
+
+/-- `4 * 2^k = 2^(k+2)`. -/
+private theorem four_mul_two_pow (k : Nat) : 4 * 2 ^ k = 2 ^ (k + 2) := by
+  have h4 : (4 : Nat) = 2 ^ 2 := by decide
+  calc
+    4 * 2 ^ k = 2 ^ k * 4 := by ac_rfl
+    _ = 2 ^ k * 2 ^ 2 := by rw [h4]
+    _ = 2 ^ (k + 2) := by rw [← Nat.pow_add]
+
+/-- `copyBudget` is bounded by structural term size. -/
+theorem copyBudget_le_termSize (t : Trace) : copyBudget t ≤ termSize t := by
+  induction t with
+  | void =>
+      simp [copyBudget, termSize]
+  | delta t ih =>
+      simpa [Nat.succ_eq_add_one, copyBudget, termSize, Nat.add_comm, Nat.add_left_comm,
+        Nat.add_assoc] using Nat.succ_le_succ ih
+  | integrate t ih =>
+      exact le_trans ih (by simp [termSize])
+  | merge a b iha ihb =>
+      simpa [copyBudget, termSize] using
+        (max_le (le_trans iha (by omega)) (le_trans ihb (by omega)))
+  | app a b iha ihb =>
+      simpa [copyBudget, termSize] using
+        (max_le (le_trans iha (by omega)) (le_trans ihb (by omega)))
+  | recΔ b s n ihb ihs ihn =>
+      have hb : copyBudget b ≤ 1 + termSize b + termSize s + termSize n := by
+        omega
+      have hs : copyBudget s ≤ 1 + termSize b + termSize s + termSize n := by
+        omega
+      have hn : copyBudget n ≤ 1 + termSize b + termSize s + termSize n := by
+        omega
+      simpa [copyBudget, termSize, max_le_iff] using And.intro hb (And.intro hs hn)
+  | eqW a b iha ihb =>
+      simpa [copyBudget, termSize] using
+        (max_le (le_trans iha (by omega)) (le_trans ihb (by omega)))
+
+/-- `copyBudget` itself is single-exponentially bounded by structural size. -/
+theorem copyBudget_add_one_le_two_pow_double_termSize (t : Trace) :
+    copyBudget t + 1 ≤ 2 ^ (2 * termSize t) := by
+  have hsize : copyBudget t + 1 ≤ termSize t + 1 := Nat.succ_le_succ (copyBudget_le_termSize t)
+  have hpow : termSize t + 1 ≤ 2 ^ termSize t := succ_le_two_pow (termSize t)
+  have hmono : 2 ^ termSize t ≤ 2 ^ (2 * termSize t) := by
+    exact two_pow_mono (by
+      have hpos := termSize_pos t
+      omega)
+  exact le_trans hsize (le_trans hpow hmono)
+
+/-- The position-aware multiplicity potential is bounded by a single exponential in term size. -/
+theorem ctxDupPotential_add_one_le_two_pow_double_termSize (t : Trace) :
+    ctxDupPotential t + 1 ≤ 2 ^ (2 * termSize t) := by
+  induction t with
+  | void =>
+      simp [ctxDupPotential, termSize]
+  | delta t ih =>
+      simpa [ctxDupPotential, termSize] using
+        le_trans ih (two_pow_mono (by omega))
+  | integrate t ih =>
+      have hpow : 1 ≤ 2 ^ (2 * termSize t) := Nat.one_le_pow (2 * termSize t) 2 (by omega)
+      have hmain : ctxDupPotential t + 1 + 1 ≤ 2 ^ (2 * (termSize t + 1)) := by
+        calc
+        ctxDupPotential t + 1 + 1 ≤ 2 ^ (2 * termSize t) + 1 := by omega
+        _ ≤ 2 ^ (2 * termSize t) + 2 ^ (2 * termSize t) := by
+              exact Nat.add_le_add_left hpow _
+        _ = 2 ^ (2 * termSize t + 1) := by
+              rw [pow_succ]
+              omega
+        _ ≤ 2 ^ (2 * (termSize t + 1)) := by
+              exact two_pow_mono (by omega)
+      simpa [ctxDupPotential, termSize, Nat.add_assoc, Nat.add_comm, Nat.add_left_comm] using hmain
+  | merge a b iha ihb =>
+      let K := 2 * termSize a + 2 * termSize b
+      have hmono_a : 2 ^ (2 * termSize a) ≤ 2 ^ K := by
+        exact two_pow_mono (by
+          have hb := termSize_pos b
+          omega)
+      have hmono_b : 2 ^ (2 * termSize b) ≤ 2 ^ K := by
+        exact two_pow_mono (by
+          have ha := termSize_pos a
+          omega)
+      have haK : ctxDupPotential a + 1 ≤ 2 ^ K := le_trans iha hmono_a
+      have hbK : ctxDupPotential b + 1 ≤ 2 ^ K := le_trans ihb hmono_b
+      calc
+        ctxDupPotential a + ctxDupPotential b + 2
+            ≤ 2 ^ K + 2 ^ K := by omega
+        _ = 2 ^ (K + 1) := by
+              rw [pow_succ]
+              omega
+        _ ≤ 2 ^ (2 * (1 + termSize a + termSize b)) := by
+              exact two_pow_mono (by omega)
+  | app a b iha ihb =>
+      let K := 2 * termSize a + 2 * termSize b
+      have hmono_a : 2 ^ (2 * termSize a) ≤ 2 ^ K := by
+        exact two_pow_mono (by
+          have hb := termSize_pos b
+          omega)
+      have hmono_b : 2 ^ (2 * termSize b) ≤ 2 ^ K := by
+        exact two_pow_mono (by
+          have ha := termSize_pos a
+          omega)
+      have haK : ctxDupPotential a + 1 ≤ 2 ^ K := le_trans iha hmono_a
+      have hbK : ctxDupPotential b + 1 ≤ 2 ^ K := le_trans ihb hmono_b
+      calc
+        ctxDupPotential a + ctxDupPotential b + 1
+            ≤ 2 ^ K + 2 ^ K := by omega
+        _ = 2 ^ (K + 1) := by
+              rw [pow_succ]
+              omega
+        _ ≤ 2 ^ (2 * (1 + termSize a + termSize b)) := by
+              exact two_pow_mono (by omega)
+  | recΔ b s n ihb ihs ihn =>
+      have hcb : copyBudget n + 1 ≤ 2 ^ (2 * termSize n) :=
+        copyBudget_add_one_le_two_pow_double_termSize n
+      have hpb :
+          ctxDupPotential b ≤ 2 ^ (2 * termSize b + 2 * termSize s + 2 * termSize n) := by
+        have hbmono :
+            2 ^ (2 * termSize b) ≤
+              2 ^ (2 * termSize b + 2 * termSize s + 2 * termSize n) := by
+          exact two_pow_mono (by
+            have hspos := termSize_pos s
+            have hnpos := termSize_pos n
+            omega)
+        omega
+      have hpn :
+          ctxDupPotential n ≤ 2 ^ (2 * termSize b + 2 * termSize s + 2 * termSize n) := by
+        have hnmono :
+            2 ^ (2 * termSize n) ≤
+              2 ^ (2 * termSize b + 2 * termSize s + 2 * termSize n) := by
+          exact two_pow_mono (by
+            have hbpos := termSize_pos b
+            have hspos := termSize_pos s
+            omega)
+        omega
+      have hprod :
+          (copyBudget n + 1) * (ctxDupPotential s + 1) ≤
+            2 ^ (2 * termSize b + 2 * termSize s + 2 * termSize n) := by
+        have hmul :
+            (copyBudget n + 1) * (ctxDupPotential s + 1) ≤
+              2 ^ (2 * termSize n) * 2 ^ (2 * termSize s) :=
+          Nat.mul_le_mul hcb ihs
+        have hpow :
+            2 ^ (2 * termSize n) * 2 ^ (2 * termSize s) ≤
+              2 ^ (2 * termSize b + 2 * termSize s + 2 * termSize n) := by
+          have hmono :
+              2 ^ (2 * termSize n + 2 * termSize s) ≤
+                2 ^ (2 * termSize b + 2 * termSize s + 2 * termSize n) := by
+            exact two_pow_mono (by
+              have hbpos := termSize_pos b
+              omega)
+          simpa [← Nat.pow_add, Nat.add_assoc, Nat.add_comm, Nat.add_left_comm] using hmono
+        exact le_trans hmul hpow
+      have hconst :
+          2 ≤ 2 ^ (2 * termSize b + 2 * termSize s + 2 * termSize n) := by
+        have hs := succ_le_two_pow (2 * termSize b + 2 * termSize s + 2 * termSize n)
+        have hbpos := termSize_pos b
+        have hspos := termSize_pos s
+        have hnpos := termSize_pos n
+        omega
+      have hsum :
+          ctxDupPotential b + ctxDupPotential n +
+              (copyBudget n + 1) * (ctxDupPotential s + 1) + 2
+            ≤ 4 * 2 ^ (2 * termSize b + 2 * termSize s + 2 * termSize n) := by
+        omega
+      calc
+        ctxDupPotential b + ctxDupPotential n +
+            (copyBudget n + 1) * (ctxDupPotential s + 1) + 2
+            ≤ 4 * 2 ^ (2 * termSize b + 2 * termSize s + 2 * termSize n) := hsum
+        _ = 2 ^ ((2 * termSize b + 2 * termSize s + 2 * termSize n) + 2) := by
+              rw [four_mul_two_pow]
+        _ ≤ 2 ^ (2 * (1 + termSize b + termSize s + termSize n)) := by
+              exact two_pow_mono (by omega)
+  | eqW a b iha ihb =>
+      let K := 2 * termSize a + 2 * termSize b
+      have haK : ctxDupPotential a + 1 ≤ 2 ^ K := by
+        refine le_trans iha ?_
+        exact two_pow_mono (by
+          have hb := termSize_pos b
+          omega)
+      have hbK : ctxDupPotential b + 1 ≤ 2 ^ K := by
+        refine le_trans ihb ?_
+        exact two_pow_mono (by
+          have ha := termSize_pos a
+          omega)
+      have h2 : 2 ≤ 2 ^ K := by
+        have hs := succ_le_two_pow K
+        have ha := termSize_pos a
+        have hb := termSize_pos b
+        omega
+      have hsum : ctxDupPotential a + ctxDupPotential b + 4 ≤ 4 * 2 ^ K := by
+        omega
+      calc
+        ctxDupPotential a + ctxDupPotential b + 4
+            ≤ 4 * 2 ^ K := hsum
+        _ = 2 ^ (K + 2) := by
+              rw [four_mul_two_pow]
+        _ ≤ 2 ^ (2 * (1 + termSize a + termSize b)) := by
+              exact two_pow_mono (by omega)
+
+/-- Any contextual reduction chain is bounded by a single exponential in structural size. -/
+theorem safeStepCtx_length_le_two_pow_double_termSize (t u : Trace) (n : Nat)
+    (h : SafeStepCtxPow n t u) : n + 1 ≤ 2 ^ (2 * termSize t) := by
+  have hlen := safeStepCtx_length_le_ctxDupPotential t u n h
+  have hpot := ctxDupPotential_add_one_le_two_pow_double_termSize t
+  omega
+
+end MetaSN_KO7
+```
+
+---
+
+## OperatorKO7/Meta/ContextualCopyBudget_NoGo.lean
+
+**Lines:** 436
+
+```lean
+import OperatorKO7.Meta.ContextualCopyBudget
+import OperatorKO7.Meta.NormalizeSafe_LowerBound
+import OperatorKO7.Meta.ComputableMeasure
+
+/-!
+# No-go results around contextual copy budgets
+
+This file contains the exploratory obstruction side of the tighter
+`SafeStepCtx` complexity program. The positive outcome now lives in
+`Meta/ContextualCopyBudget.lean`; this companion file keeps the failed measure
+families, concrete counterexamples, and the class-level impossibility theorem
+for the monotone arithmetic closure of the initial candidate coordinates.
+-/
+
+open OperatorKO7 Trace
+open OperatorKO7.MetaCM
+
+namespace MetaSN_KO7
+
+/-- A localized budget that only records copy pressure coming from recursor counters. -/
+@[simp] def counterBudget : Trace → Nat
+| void            => 0
+| delta t         => counterBudget t
+| integrate t     => counterBudget t
+| merge a b       => max (counterBudget a) (counterBudget b)
+| app a b         => max (counterBudget a) (counterBudget b)
+| recΔ b s n      => max (copyBudget n)
+    (max (counterBudget b) (max (counterBudget s) (counterBudget n)))
+| eqW a b         => max (counterBudget a) (counterBudget b)
+
+/-- A naive multiplicity-sensitive copy-pressure coordinate. This counts both subtree
+shape and repeated occurrences, so it is a natural first attempt beyond max-based budgets. -/
+@[simp] def copyMass : Trace → Nat
+| void            => 0
+| delta t         => copyMass t + 1
+| integrate t     => copyMass t
+| merge a b       => copyMass a + copyMass b
+| app a b         => copyMass a + copyMass b
+| recΔ b s n      => copyMass b + copyMass s + copyMass n + copyBudget n
+| eqW a b         => copyMass a + copyMass b
+
+/-- A safe root step never increases the localized recursor-counter budget. -/
+theorem counterBudget_mono_safe : ∀ {a b : Trace}, SafeStep a b → counterBudget b ≤ counterBudget a
+| _, _, SafeStep.R_int_delta t => by
+    simp [counterBudget]
+| _, _, SafeStep.R_merge_void_left t _ => by
+    simp [counterBudget]
+| _, _, SafeStep.R_merge_void_right t _ => by
+    simp [counterBudget]
+| _, _, SafeStep.R_merge_cancel t _ _ => by
+    simp [counterBudget]
+| _, _, SafeStep.R_rec_zero b s _ => by
+    simp [counterBudget]
+| _, _, SafeStep.R_rec_succ b s n => by
+    have hsub :
+        max (copyBudget n)
+            (max (counterBudget b) (max (counterBudget s) (counterBudget n))) ≤
+          max (copyBudget n + 1)
+            (max (counterBudget b) (max (counterBudget s) (counterBudget n))) := by
+      exact max_le_max (Nat.le_succ _) le_rfl
+    simpa [counterBudget, copyBudget, max_assoc, max_left_comm, max_comm] using hsub
+| _, _, SafeStep.R_eq_refl a _ => by
+    simp [counterBudget]
+| _, _, SafeStep.R_eq_diff a b _ => by
+    simp [counterBudget]
+
+/-- Context closure preserves the non-increase of the localized recursor-counter budget. -/
+theorem counterBudget_mono_safeStepCtx :
+    ∀ {a b : Trace}, SafeStepCtx a b → counterBudget b ≤ counterBudget a
+| _, _, SafeStepCtx.root hs => counterBudget_mono_safe hs
+| _, _, SafeStepCtx.integrate h => by
+    simpa [counterBudget] using counterBudget_mono_safeStepCtx h
+| _, _, SafeStepCtx.mergeL (a := a) (a' := a') (b := b) h => by
+    change max (counterBudget a') (counterBudget b) ≤ max (counterBudget a) (counterBudget b)
+    exact max_le_max (counterBudget_mono_safeStepCtx h) le_rfl
+| _, _, SafeStepCtx.mergeR (a := a) (b := b) (b' := b') h => by
+    change max (counterBudget a) (counterBudget b') ≤ max (counterBudget a) (counterBudget b)
+    exact max_le_max le_rfl (counterBudget_mono_safeStepCtx h)
+| _, _, SafeStepCtx.appL (a := a) (a' := a') (b := b) h => by
+    change max (counterBudget a') (counterBudget b) ≤ max (counterBudget a) (counterBudget b)
+    exact max_le_max (counterBudget_mono_safeStepCtx h) le_rfl
+| _, _, SafeStepCtx.appR (a := a) (b := b) (b' := b') h => by
+    change max (counterBudget a) (counterBudget b') ≤ max (counterBudget a) (counterBudget b)
+    exact max_le_max le_rfl (counterBudget_mono_safeStepCtx h)
+| _, _, SafeStepCtx.recB (b := b) (b' := b') (s := s) (n := n) h => by
+    change max (copyBudget n) (max (counterBudget b') (max (counterBudget s) (counterBudget n))) ≤
+      max (copyBudget n) (max (counterBudget b) (max (counterBudget s) (counterBudget n)))
+    exact max_le_max le_rfl (max_le_max (counterBudget_mono_safeStepCtx h) le_rfl)
+| _, _, SafeStepCtx.recS (b := b) (s := s) (s' := s') (n := n) h => by
+    change max (copyBudget n) (max (counterBudget b) (max (counterBudget s') (counterBudget n))) ≤
+      max (copyBudget n) (max (counterBudget b) (max (counterBudget s) (counterBudget n)))
+    exact max_le_max le_rfl (max_le_max le_rfl (max_le_max (counterBudget_mono_safeStepCtx h) le_rfl))
+| _, _, SafeStepCtx.recN (b := b) (s := s) (n := n) (n' := n') h => by
+    have hcopy : copyBudget n' ≤ copyBudget n := copyBudget_mono_safeStepCtx h
+    have hctr : counterBudget n' ≤ counterBudget n := counterBudget_mono_safeStepCtx h
+    change max (copyBudget n') (max (counterBudget b) (max (counterBudget s) (counterBudget n'))) ≤
+      max (copyBudget n) (max (counterBudget b) (max (counterBudget s) (counterBudget n)))
+    exact max_le_max hcopy (max_le_max le_rfl (max_le_max le_rfl hctr))
+
+/-- A `recN` example where whole-term root normalization cost increases under a contextual step. -/
+@[simp] def recNRootCostSrc : Trace := recΔ void void (merge void void)
+
+/-- Target of the `recN` root-cost counterexample. -/
+@[simp] def recNRootCostTgt : Trace := recΔ void void void
+
+theorem recNRootCost_step : SafeStepCtx recNRootCostSrc recNRootCostTgt := by
+  refine SafeStepCtx.recN ?_
+  refine SafeStepCtx.root ?_
+  simpa using (SafeStep.R_merge_void_left void rfl)
+
+theorem recNRootCost_copyBudget_eq :
+    copyBudget recNRootCostTgt = copyBudget recNRootCostSrc := by
+  simp [recNRootCostSrc, recNRootCostTgt, copyBudget]
+
+theorem recNRootCost_normalizeSafeSteps_src :
+    normalizeSafeSteps recNRootCostSrc = 0 := by
+  rw [normalizeSafeSteps_eq]
+  simp [recNRootCostSrc, safeStepWitness?]
+
+theorem recNRootCost_normalizeSafeSteps_tgt :
+    normalizeSafeSteps recNRootCostTgt = 1 := by
+  rw [normalizeSafeSteps_eq]
+  simp [recNRootCostTgt, safeStepWitness?, normalizeSafeSteps_void]
+
+/-- `normalizeSafeSteps` is not monotone under `SafeStepCtx`, so it cannot be used directly
+as the second coordinate of a contextual lexicographic measure. -/
+theorem not_normalizeSafeSteps_mono_safeStepCtx :
+    ¬ ∀ {a b : Trace}, SafeStepCtx a b → normalizeSafeSteps b ≤ normalizeSafeSteps a := by
+  intro hmono
+  have h := hmono recNRootCost_step
+  rw [recNRootCost_normalizeSafeSteps_src, recNRootCost_normalizeSafeSteps_tgt] at h
+  omega
+
+/-- A flat-`copyBudget` `rec_succ` example. -/
+@[simp] def recSuccFlatTauSrc : Trace := recΔ (delta void) void (delta void)
+
+/-- Target of the flat-`copyBudget` `rec_succ` example. -/
+@[simp] def recSuccFlatTauTgt : Trace := app void (recΔ (delta void) void void)
+
+theorem recSuccFlatTau_step : SafeStep recSuccFlatTauSrc recSuccFlatTauTgt := by
+  simpa [recSuccFlatTauSrc, recSuccFlatTauTgt] using
+    (SafeStep.R_rec_succ (delta void) void void)
+
+theorem recSuccFlatTau_copyBudget_eq :
+    copyBudget recSuccFlatTauTgt = copyBudget recSuccFlatTauSrc := by
+  simp [recSuccFlatTauSrc, recSuccFlatTauTgt, copyBudget]
+
+theorem recSuccFlatTau_tau_increases :
+    tau recSuccFlatTauSrc < tau recSuccFlatTauTgt := by
+  simp [recSuccFlatTauSrc, recSuccFlatTauTgt, tau]
+
+/-- `tau` cannot serve as the companion coordinate on the flat-`copyBudget` `rec_succ` cases. -/
+theorem not_tau_mono_on_flat_copyBudget_safe :
+    ¬ ∀ {a b : Trace}, SafeStep a b → copyBudget b = copyBudget a → tau b ≤ tau a := by
+  intro hmono
+  have h := hmono recSuccFlatTau_step recSuccFlatTau_copyBudget_eq
+  exact Nat.not_le_of_lt recSuccFlatTau_tau_increases h
+
+/-- The active counter dominates all recursive substructure. -/
+def recCounterDominates (b s n : Trace) : Prop :=
+  max (counterBudget b) (max (counterBudget s) (counterBudget n)) ≤ copyBudget n
+
+/-- Under dominance of the active counter, the localized recursor-counter budget drops on `rec_succ`. -/
+theorem counterBudget_rec_succ_strict_of_dom (b s n : Trace)
+    (hdom : recCounterDominates b s n) :
+    counterBudget (app s (recΔ b s n)) < counterBudget (recΔ b s (delta n)) := by
+  have hsrc :
+      counterBudget (recΔ b s (delta n)) = copyBudget n + 1 := by
+    simp [counterBudget, copyBudget, recCounterDominates] at hdom ⊢
+    omega
+  have htgt :
+      counterBudget (app s (recΔ b s n)) = copyBudget n := by
+    simp [counterBudget, recCounterDominates] at hdom ⊢
+    omega
+  rw [hsrc, htgt]
+  omega
+
+/-- In the earlier base-dominated flat-`copyBudget` example, the localized counter budget does drop. -/
+theorem recSuccFlatTau_counterBudget_drops :
+    counterBudget recSuccFlatTauTgt < counterBudget recSuccFlatTauSrc := by
+  simp [recSuccFlatTauSrc, recSuccFlatTauTgt, counterBudget, copyBudget]
+
+/-- A payload-recursive example where the localized counter budget also stays flat. -/
+@[simp] def recSuccPayloadFlatSrc : Trace :=
+  recΔ void (recΔ void void (delta void)) (delta void)
+
+@[simp] def recSuccPayloadFlatTgt : Trace :=
+  app (recΔ void void (delta void)) (recΔ void (recΔ void void (delta void)) void)
+
+theorem recSuccPayloadFlat_step : SafeStep recSuccPayloadFlatSrc recSuccPayloadFlatTgt := by
+  simpa [recSuccPayloadFlatSrc, recSuccPayloadFlatTgt] using
+    (SafeStep.R_rec_succ void (recΔ void void (delta void)) void)
+
+theorem recSuccPayloadFlat_copyBudget_eq :
+    copyBudget recSuccPayloadFlatTgt = copyBudget recSuccPayloadFlatSrc := by
+  simp [recSuccPayloadFlatSrc, recSuccPayloadFlatTgt, copyBudget]
+
+theorem recSuccPayloadFlat_counterBudget_eq :
+    counterBudget recSuccPayloadFlatTgt = counterBudget recSuccPayloadFlatSrc := by
+  simp [recSuccPayloadFlatSrc, recSuccPayloadFlatTgt, counterBudget, copyBudget]
+
+theorem recSuccPayloadFlat_tau_increases :
+    tau recSuccPayloadFlatSrc < tau recSuccPayloadFlatTgt := by
+  simp [recSuccPayloadFlatSrc, recSuccPayloadFlatTgt, tau]
+
+/-- The simple lexicographic pair `(copyBudget, counterBudget)` still fails on the
+payload-recursive `rec_succ` obstruction. -/
+theorem not_copyBudget_counterBudget_lex_safe :
+    ¬ ∀ {a b : Trace}, SafeStep a b →
+      copyBudget b < copyBudget a ∨
+        (copyBudget b = copyBudget a ∧ counterBudget b < counterBudget a) := by
+  intro hlex
+  have h := hlex recSuccPayloadFlat_step
+  have hcb : copyBudget recSuccPayloadFlatTgt = copyBudget recSuccPayloadFlatSrc :=
+    recSuccPayloadFlat_copyBudget_eq
+  have hctr : counterBudget recSuccPayloadFlatTgt = counterBudget recSuccPayloadFlatSrc :=
+    recSuccPayloadFlat_counterBudget_eq
+  rcases h with hdrop | ⟨heq, hdrop⟩
+  · rw [hcb] at hdrop
+    exact Nat.lt_irrefl _ hdrop
+  · rw [hcb] at heq
+    rw [hctr] at hdrop
+    exact Nat.lt_irrefl _ hdrop
+
+/-- Even the obvious lexicographic triple `(copyBudget, counterBudget, tau)` is ruled out
+by the payload-recursive `rec_succ` case. -/
+theorem not_copyBudget_counterBudget_tau_lex_safe :
+    ¬ ∀ {a b : Trace}, SafeStep a b →
+      copyBudget b < copyBudget a ∨
+        (copyBudget b = copyBudget a ∧
+          (counterBudget b < counterBudget a ∨
+            (counterBudget b = counterBudget a ∧ tau b < tau a))) := by
+  intro hlex
+  have h := hlex recSuccPayloadFlat_step
+  have hcb : copyBudget recSuccPayloadFlatTgt = copyBudget recSuccPayloadFlatSrc :=
+    recSuccPayloadFlat_copyBudget_eq
+  have hctr : counterBudget recSuccPayloadFlatTgt = counterBudget recSuccPayloadFlatSrc :=
+    recSuccPayloadFlat_counterBudget_eq
+  rcases h with hdrop | ⟨heqcb, hrest⟩
+  · rw [hcb] at hdrop
+    exact Nat.lt_irrefl _ hdrop
+  · rcases hrest with hdrop | ⟨heqctr, htaudrop⟩
+    · rw [hctr] at hdrop
+      exact Nat.lt_irrefl _ hdrop
+    · have htauup := recSuccPayloadFlat_tau_increases
+      exact Nat.lt_asymm htaudrop htauup
+
+/-- A deeper payload where naive multiplicity-sensitive copy counting grows under `rec_succ`. -/
+@[simp] def recSuccMassBadPayload : Trace :=
+  recΔ void (recΔ void void (delta void)) (delta void)
+
+@[simp] def recSuccMassBadSrc : Trace :=
+  recΔ void recSuccMassBadPayload (delta void)
+
+@[simp] def recSuccMassBadTgt : Trace :=
+  app recSuccMassBadPayload (recΔ void recSuccMassBadPayload void)
+
+theorem recSuccMassBad_step : SafeStep recSuccMassBadSrc recSuccMassBadTgt := by
+  simpa [recSuccMassBadSrc, recSuccMassBadTgt, recSuccMassBadPayload] using
+    (SafeStep.R_rec_succ void recSuccMassBadPayload void)
+
+theorem recSuccMassBad_copyMass_increases :
+    copyMass recSuccMassBadSrc < copyMass recSuccMassBadTgt := by
+  simp [recSuccMassBadSrc, recSuccMassBadTgt, recSuccMassBadPayload, copyMass, copyBudget]
+
+/-- The naive multiplicity-sensitive sum is not even root-monotone, so it cannot be used
+as a contextual companion coordinate. -/
+theorem not_copyMass_mono_safe :
+    ¬ ∀ {a b : Trace}, SafeStep a b → copyMass b ≤ copyMass a := by
+  intro hmono
+  have h := hmono recSuccMassBad_step
+  exact Nat.not_le_of_lt recSuccMassBad_copyMass_increases h
+
+/-- A small DSL for monotone arithmetic expressions over the currently explored
+contextual coordinates. -/
+inductive CoordExpr where
+| const : Nat → CoordExpr
+| cb : CoordExpr
+| ctr : CoordExpr
+| tau : CoordExpr
+| mass : CoordExpr
+| succ : CoordExpr → CoordExpr
+| add : CoordExpr → CoordExpr → CoordExpr
+| max : CoordExpr → CoordExpr → CoordExpr
+deriving Repr, DecidableEq
+
+/-- Evaluate a coordinate expression on a trace. -/
+@[simp] def CoordExpr.eval : CoordExpr → Trace → Nat
+| .const n, _ => n
+| .cb, t => copyBudget t
+| .ctr, t => counterBudget t
+| .tau, t => OperatorKO7.MetaCM.tau t
+| .mass, t => copyMass t
+| .succ e, t => Nat.succ (e.eval t)
+| .add e₁ e₂, t => e₁.eval t + e₂.eval t
+| .max e₁ e₂, t => Nat.max (e₁.eval t) (e₂.eval t)
+
+theorem recSuccPayloadFlat_copyMass_eq :
+    copyMass recSuccPayloadFlatTgt = copyMass recSuccPayloadFlatSrc := by
+  simp [recSuccPayloadFlatSrc, recSuccPayloadFlatTgt, copyMass, copyBudget]
+
+/-- Every monotone arithmetic expression over the current coordinates is non-decreasing
+on the payload-recursive `rec_succ` obstruction. -/
+theorem coordExpr_payloadFlat_nondec (e : CoordExpr) :
+    e.eval recSuccPayloadFlatSrc ≤ e.eval recSuccPayloadFlatTgt := by
+  induction e with
+  | const n =>
+      simp [CoordExpr.eval]
+  | cb =>
+      rw [CoordExpr.eval, CoordExpr.eval, recSuccPayloadFlat_copyBudget_eq]
+  | ctr =>
+      rw [CoordExpr.eval, CoordExpr.eval, recSuccPayloadFlat_counterBudget_eq]
+  | tau =>
+      exact Nat.le_of_lt recSuccPayloadFlat_tau_increases
+  | mass =>
+      rw [CoordExpr.eval, CoordExpr.eval, recSuccPayloadFlat_copyMass_eq]
+  | succ e ih =>
+      simpa [CoordExpr.eval] using Nat.succ_le_succ ih
+  | add e₁ e₂ ih₁ ih₂ =>
+      simpa [CoordExpr.eval] using Nat.add_le_add ih₁ ih₂
+  | max e₁ e₂ ih₁ ih₂ =>
+      simpa [CoordExpr.eval] using max_le_max ih₁ ih₂
+
+/-- Stack-style lex certification relation for a list of coordinate expressions. -/
+def CoordExprStackCertifies (es : List CoordExpr) (a b : Trace) : Prop :=
+  ∃ pre e post,
+    es = pre ++ e :: post ∧
+    (∀ e' ∈ pre, e'.eval a = e'.eval b) ∧
+    e.eval b < e.eval a
+
+/-- No lexicographic stack built from the current monotone arithmetic expression class
+can certify the payload-recursive `rec_succ` obstruction. -/
+theorem not_coordExprStackCertifies_payloadFlat (es : List CoordExpr) :
+    ¬ CoordExprStackCertifies es recSuccPayloadFlatSrc recSuccPayloadFlatTgt := by
+  intro h
+  rcases h with ⟨pre, e, post, _, _, hdrop⟩
+  exact Nat.not_le_of_lt hdrop (coordExpr_payloadFlat_nondec e)
+
+/-- Iterated delta wrapper. -/
+@[simp] def deltaPow : Nat → Trace
+| 0 => void
+| k + 1 => delta (deltaPow k)
+
+@[simp] theorem copyBudget_deltaPow (k : Nat) :
+    copyBudget (deltaPow k) = k := by
+  induction k with
+  | zero =>
+      simp [deltaPow, copyBudget]
+  | succ k ih =>
+      simp [deltaPow, copyBudget, ih]
+
+@[simp] theorem counterBudget_deltaPow (k : Nat) :
+    counterBudget (deltaPow k) = 0 := by
+  induction k with
+  | zero =>
+      simp [deltaPow, counterBudget]
+  | succ k ih =>
+      simp [deltaPow, counterBudget, ih]
+
+@[simp] theorem tau_deltaPow (k : Nat) :
+    tau (deltaPow k) = 0 := by
+  induction k with
+  | zero =>
+      simp [deltaPow, tau]
+  | succ k ih =>
+      simp [deltaPow, tau, ih]
+
+@[simp] theorem copyMass_deltaPow (k : Nat) :
+    copyMass (deltaPow k) = k := by
+  induction k with
+  | zero =>
+      simp [deltaPow, copyMass]
+  | succ k ih =>
+      simp [deltaPow, copyMass, ih]
+
+/-- Infinite payload-recursive `rec_succ` family with persistent copy pressure. -/
+@[simp] def payloadRecFamily (k : Nat) : Trace :=
+  recΔ void void (deltaPow (k + 1))
+
+@[simp] def payloadRecFamilySrc (k : Nat) : Trace :=
+  recΔ void (payloadRecFamily k) (delta (deltaPow k))
+
+@[simp] def payloadRecFamilyTgt (k : Nat) : Trace :=
+  app (payloadRecFamily k) (recΔ void (payloadRecFamily k) (deltaPow k))
+
+theorem payloadRecFamily_step (k : Nat) :
+    SafeStep (payloadRecFamilySrc k) (payloadRecFamilyTgt k) := by
+  simpa [payloadRecFamilySrc, payloadRecFamilyTgt, payloadRecFamily] using
+    (SafeStep.R_rec_succ void (payloadRecFamily k) (deltaPow k))
+
+theorem payloadRecFamily_copyBudget_eq (k : Nat) :
+    copyBudget (payloadRecFamilyTgt k) = copyBudget (payloadRecFamilySrc k) := by
+  simp [payloadRecFamilySrc, payloadRecFamilyTgt, payloadRecFamily, copyBudget]
+
+theorem payloadRecFamily_counterBudget_eq (k : Nat) :
+    counterBudget (payloadRecFamilyTgt k) = counterBudget (payloadRecFamilySrc k) := by
+  simp [payloadRecFamilySrc, payloadRecFamilyTgt, payloadRecFamily, counterBudget, copyBudget]
+
+theorem payloadRecFamily_tau_increases (k : Nat) :
+    tau (payloadRecFamilySrc k) < tau (payloadRecFamilyTgt k) := by
+  simp [payloadRecFamilySrc, payloadRecFamilyTgt, payloadRecFamily, tau]
+
+theorem payloadRecFamily_copyMass_nondec (k : Nat) :
+    copyMass (payloadRecFamilySrc k) ≤ copyMass (payloadRecFamilyTgt k) := by
+  simp [payloadRecFamilySrc, payloadRecFamilyTgt, payloadRecFamily, copyMass, copyBudget]
+  omega
+
+/-- The same monotone arithmetic closure is blocked on an infinite payload-recursive family,
+not just on a single witness. -/
+theorem coordExpr_payloadFamily_nondec (e : CoordExpr) (k : Nat) :
+    e.eval (payloadRecFamilySrc k) ≤ e.eval (payloadRecFamilyTgt k) := by
+  induction e generalizing k with
+  | const n =>
+      simp [CoordExpr.eval]
+  | cb =>
+      rw [CoordExpr.eval, CoordExpr.eval, payloadRecFamily_copyBudget_eq]
+  | ctr =>
+      rw [CoordExpr.eval, CoordExpr.eval, payloadRecFamily_counterBudget_eq]
+  | tau =>
+      exact Nat.le_of_lt (payloadRecFamily_tau_increases k)
+  | mass =>
+      exact payloadRecFamily_copyMass_nondec k
+  | succ e ih =>
+      simpa [CoordExpr.eval] using Nat.succ_le_succ (ih k)
+  | add e₁ e₂ ih₁ ih₂ =>
+      simpa [CoordExpr.eval] using Nat.add_le_add (ih₁ k) (ih₂ k)
+  | max e₁ e₂ ih₁ ih₂ =>
+      simpa [CoordExpr.eval] using max_le_max (ih₁ k) (ih₂ k)
+
+theorem not_coordExprStackCertifies_payloadFamily (es : List CoordExpr) (k : Nat) :
+    ¬ CoordExprStackCertifies es (payloadRecFamilySrc k) (payloadRecFamilyTgt k) := by
+  intro h
+  rcases h with ⟨pre, e, post, _, _, hdrop⟩
+  exact Nat.not_le_of_lt hdrop (coordExpr_payloadFamily_nondec e k)
+
+end MetaSN_KO7
+```
+
+---
+
+## OperatorKO7/Meta/DependencyPairs_CallGraph.lean
+
+**Lines:** 99
+
+```lean
+import OperatorKO7.Meta.DependencyPairs_FiniteGraph
+
+/-!
+# Finite Call-Graph Presentation for Dependency Pairs
+
+This module removes one more layer of manual graph packaging for finite dependency-pair
+arguments. Instead of supplying a binary pair relation directly, a caller can work with a
+more concrete extracted call-graph presentation:
+
+- a finite type of dependency-pair nodes,
+- a finite key type for marked call heads,
+- one key attached to each node, and
+- the finite set of successor keys extracted from each node.
+
+The binary edge relation is then built automatically by matching successor keys against the
+keys of target nodes.
+-/
+
+namespace OperatorKO7.DependencyPairsFragment
+
+/-- Finite extracted call-graph presentation for dependency-pair nodes. -/
+structure FiniteCallGraph (ι κ : Type) [Fintype ι] [DecidableEq ι] [DecidableEq κ] where
+  nodeKey : ι → κ
+  succKeys : ι → Finset κ
+
+namespace FiniteCallGraph
+
+variable {ι κ : Type} [Fintype ι] [DecidableEq ι] [DecidableEq κ] (G : FiniteCallGraph ι κ)
+
+/-- The induced dependency-pair edge relation: a target node is reachable when its key
+appears in the extracted successor-key set of the source node. -/
+def Edge (i j : ι) : Prop :=
+  G.nodeKey j ∈ G.succKeys i
+
+instance instDecidableRelEdge : DecidableRel G.Edge := by
+  intro i j
+  unfold Edge
+  infer_instance
+
+/-- The induced finite dependency-pair graph. -/
+def toFiniteDPGraph : FiniteDPGraph ι where
+  Pair := G.Edge
+  decPair := instDecidableRelEdge (G := G)
+
+@[simp] theorem edge_iff_mem_succKeys {i j : ι} :
+    G.Edge i j ↔ G.nodeKey j ∈ G.succKeys i := by
+  rfl
+
+/-- Finite search for a nontrivial SCC in the induced dependency-pair graph. -/
+noncomputable def findNontrivialSCCPair? : Option (ι × ι) :=
+  G.toFiniteDPGraph.findNontrivialSCCPair?
+
+/-- Finite-SCC existence for the induced dependency-pair graph. -/
+abbrev HasNontrivialSCC : Prop :=
+  G.toFiniteDPGraph.HasNontrivialSCC
+
+theorem hasNontrivialSCC_iff_exists_findNontrivialSCCPair? :
+    G.HasNontrivialSCC ↔ ∃ p : ι × ι, G.findNontrivialSCCPair? = some p := by
+  simpa [FiniteCallGraph.findNontrivialSCCPair?, FiniteCallGraph.HasNontrivialSCC] using
+    (FiniteDPGraph.hasNontrivialSCC_iff_exists_findNontrivialSCCPair? (G := G.toFiniteDPGraph))
+
+theorem hasNontrivialSCC_of_findNontrivialSCCPair?_eq_some {p : ι × ι}
+    (h : G.findNontrivialSCCPair? = some p) :
+    G.HasNontrivialSCC := by
+  simpa [FiniteCallGraph.findNontrivialSCCPair?, FiniteCallGraph.HasNontrivialSCC] using
+    (FiniteDPGraph.hasNontrivialSCC_of_findNontrivialSCCPair?_eq_some
+      (G := G.toFiniteDPGraph) h)
+
+theorem findNontrivialSCCPair?_spec {p : ι × ι}
+    (h : G.findNontrivialSCCPair? = some p) :
+    OperatorKO7.FiniteGraphSCC.NontrivialRoundTrip G.Edge p.1 p.2 := by
+  simpa [FiniteCallGraph.findNontrivialSCCPair?] using
+    (FiniteDPGraph.findNontrivialSCCPair?_spec (G := G.toFiniteDPGraph) h)
+
+/-- Standard SCC witness for the induced finite dependency-pair graph. -/
+noncomputable def toSCCCycle (h : G.HasNontrivialSCC) : SCCCycle ι :=
+  G.toFiniteDPGraph.toSCCCycle h
+
+theorem not_globalOrients_of_source_le_target_of_findNontrivialSCCPair?
+    {m : ι → Nat} {p : ι × ι}
+    (hfind : G.findNontrivialSCCPair? = some p)
+    (hge : m p.1 ≤ m p.2) :
+    ¬ GlobalOrients G.Edge m (· < ·) := by
+  simpa [FiniteCallGraph.findNontrivialSCCPair?, FiniteCallGraph.Edge] using
+    (FiniteDPGraph.not_globalOrients_of_source_le_target_of_findNontrivialSCCPair?
+      (G := G.toFiniteDPGraph) hfind hge)
+
+theorem not_globalOrients_of_source_le_target_of_hasNontrivialSCC
+    {m : ι → Nat}
+    (h : G.HasNontrivialSCC)
+    (hge : m (G.toSCCCycle h).source ≤ m (G.toSCCCycle h).target) :
+    ¬ GlobalOrients G.Edge m (· < ·) := by
+  simpa [FiniteCallGraph.Edge] using
+    (FiniteDPGraph.not_globalOrients_of_source_le_target_of_hasNontrivialSCC
+      (G := G.toFiniteDPGraph) h hge)
+
+end FiniteCallGraph
+
+end OperatorKO7.DependencyPairsFragment
+```
+
+---
+
+## OperatorKO7/Meta/DependencyPairs_ExtractedCallGraph.lean
+
+**Lines:** 111
+
+```lean
+import OperatorKO7.Meta.DependencyPairs_CallGraph
+
+/-!
+# Array-Backed Extracted Call Graphs
+
+This module removes one more packaging layer from the finite dependency-pair graph
+interface. Instead of supplying:
+
+- a finite node type,
+- a key function on nodes, and
+- a successor-key function on nodes,
+
+callers can start from raw extracted node data stored in an array. The node type is then
+generated automatically as `Fin nodes.size`, and the existing finite call-graph / SCC
+search surface is reexported on top of that presentation.
+-/
+
+namespace OperatorKO7.DependencyPairsFragment
+
+/-- Raw extracted dependency-pair node data. -/
+structure ExtractedCallNode (κ : Type) [DecidableEq κ] where
+  nodeKey : κ
+  succKeys : Finset κ
+
+/-- Array-backed extracted call graph. -/
+structure FiniteExtractedCallGraph (κ : Type) [DecidableEq κ] where
+  nodes : Array (ExtractedCallNode κ)
+
+namespace FiniteExtractedCallGraph
+
+variable {κ : Type} [DecidableEq κ] (G : FiniteExtractedCallGraph κ)
+
+/-- Build an extracted call graph from arbitrary node records via field extractors. -/
+def ofArrayMap {σ : Type} (nodes : Array σ) (nodeKey : σ → κ) (succKeys : σ → Finset κ) :
+    FiniteExtractedCallGraph κ where
+  nodes := nodes.map fun s => { nodeKey := nodeKey s, succKeys := succKeys s }
+
+/-- Automatically generated finite node type for the extracted call graph. -/
+abbrev Node : Type := Fin G.nodes.size
+
+instance instFintypeNode : Fintype G.Node := inferInstance
+instance instDecidableEqNode : DecidableEq G.Node := inferInstance
+
+/-- Raw node record at a generated node index. -/
+abbrev nodeData (i : G.Node) : ExtractedCallNode κ := G.nodes[i]
+
+/-- Extracted key attached to a generated node. -/
+abbrev nodeKey (i : G.Node) : κ := (G.nodeData i).nodeKey
+
+/-- Extracted successor-key set attached to a generated node. -/
+abbrev succKeys (i : G.Node) : Finset κ := (G.nodeData i).succKeys
+
+/-- Canonical finite call-graph view of the extracted data. -/
+def toFiniteCallGraph : FiniteCallGraph G.Node κ where
+  nodeKey := G.nodeKey
+  succKeys := G.succKeys
+
+/-- Search for a nontrivial SCC in the extracted call graph. -/
+noncomputable abbrev findNontrivialSCCPair? : Option (G.Node × G.Node) :=
+  G.toFiniteCallGraph.findNontrivialSCCPair?
+
+/-- SCC existence for the extracted call graph. -/
+abbrev HasNontrivialSCC : Prop := G.toFiniteCallGraph.HasNontrivialSCC
+
+theorem hasNontrivialSCC_iff_exists_findNontrivialSCCPair? :
+    G.HasNontrivialSCC ↔ ∃ p : G.Node × G.Node, G.findNontrivialSCCPair? = some p := by
+  simpa [FiniteExtractedCallGraph.findNontrivialSCCPair?,
+    FiniteExtractedCallGraph.HasNontrivialSCC] using
+    (FiniteCallGraph.hasNontrivialSCC_iff_exists_findNontrivialSCCPair?
+      (G := G.toFiniteCallGraph))
+
+theorem hasNontrivialSCC_of_findNontrivialSCCPair?_eq_some {p : G.Node × G.Node}
+    (h : G.findNontrivialSCCPair? = some p) :
+    G.HasNontrivialSCC := by
+  simpa [FiniteExtractedCallGraph.findNontrivialSCCPair?,
+    FiniteExtractedCallGraph.HasNontrivialSCC] using
+    (FiniteCallGraph.hasNontrivialSCC_of_findNontrivialSCCPair?_eq_some
+      (G := G.toFiniteCallGraph) h)
+
+theorem findNontrivialSCCPair?_spec {p : G.Node × G.Node}
+    (h : G.findNontrivialSCCPair? = some p) :
+    OperatorKO7.FiniteGraphSCC.NontrivialRoundTrip G.toFiniteCallGraph.Edge p.1 p.2 := by
+  simpa [FiniteExtractedCallGraph.findNontrivialSCCPair?] using
+    (FiniteCallGraph.findNontrivialSCCPair?_spec (G := G.toFiniteCallGraph) h)
+
+/-- Standard SCC witness for the extracted call graph. -/
+noncomputable abbrev toSCCCycle (h : G.HasNontrivialSCC) :
+    SCCCycle G.Node :=
+  G.toFiniteCallGraph.toSCCCycle h
+
+theorem not_globalOrients_of_source_le_target_of_findNontrivialSCCPair?
+    {m : G.Node → Nat} {p : G.Node × G.Node}
+    (hfind : G.findNontrivialSCCPair? = some p)
+    (hge : m p.1 ≤ m p.2) :
+    ¬ GlobalOrients G.toFiniteCallGraph.Edge m (· < ·) := by
+  simpa [FiniteExtractedCallGraph.findNontrivialSCCPair?] using
+    (FiniteCallGraph.not_globalOrients_of_source_le_target_of_findNontrivialSCCPair?
+      (G := G.toFiniteCallGraph) hfind hge)
+
+theorem not_globalOrients_of_source_le_target_of_hasNontrivialSCC
+    {m : G.Node → Nat}
+    (h : G.HasNontrivialSCC)
+    (hge : m (G.toSCCCycle h).source ≤ m (G.toSCCCycle h).target) :
+    ¬ GlobalOrients G.toFiniteCallGraph.Edge m (· < ·) := by
+  simpa using
+    (FiniteCallGraph.not_globalOrients_of_source_le_target_of_hasNontrivialSCC
+      (G := G.toFiniteCallGraph) h hge)
+
+end FiniteExtractedCallGraph
+
+end OperatorKO7.DependencyPairsFragment
+```
+
+---
+
+## OperatorKO7/Meta/DependencyPairs_FiniteCarrierExtractedView.lean
+
+**Lines:** 116
+
+```lean
+import OperatorKO7.Meta.DependencyPairs_FiniteCarrierHeadView
+
+/-!
+# Finite Extracted-Data Carrier View for Internal Engines
+
+This module is the bottom of the current dependency-pair frontend stack. It starts from:
+
+- a finite rule carrier,
+- one already-extracted node key per rule, and
+- one already-extracted successor-key set per rule.
+
+There is no explicit rule array and no term interface at all. The array-backed extracted
+call graph and the finite-SCC search / contradiction surface are recovered directly from
+that data.
+-/
+
+namespace OperatorKO7.DependencyPairsFragment
+
+/-- Packaged extracted-data engine with a finite rule carrier. -/
+structure FiniteCarrierExtractedEngine (κ : Type) [DecidableEq κ] where
+  Rule : Type
+  ruleFintype : Fintype Rule
+  ruleDecEq : DecidableEq Rule
+  nodeKey? : Rule → Option κ
+  succKeys : Rule → Finset κ
+
+namespace FiniteCarrierExtractedEngine
+
+variable {κ : Type} [DecidableEq κ] (E : FiniteCarrierExtractedEngine κ)
+
+/-- Enumerated extracted node records recovered from the finite rule carrier. -/
+noncomputable def extractedNodes : Array (ExtractedCallNode κ) := by
+  let _ : Fintype E.Rule := E.ruleFintype
+  let _ : DecidableEq E.Rule := E.ruleDecEq
+  exact ((Finset.univ : Finset E.Rule).toList.filterMap fun r =>
+    match E.nodeKey? r with
+    | none => none
+    | some k => some ({ nodeKey := k, succKeys := E.succKeys r } : ExtractedCallNode κ)).toArray
+
+/-- Canonical extracted call graph recovered from the finite carrier data. -/
+noncomputable def toFiniteExtractedCallGraph : FiniteExtractedCallGraph κ where
+  nodes := E.extractedNodes
+
+/-- Direct SCC search recovered from the finite extracted carrier. -/
+noncomputable abbrev findNontrivialSCCPair? :
+    Option (E.toFiniteExtractedCallGraph.Node × E.toFiniteExtractedCallGraph.Node) :=
+  E.toFiniteExtractedCallGraph.findNontrivialSCCPair?
+
+/-- SCC existence predicate recovered from the finite extracted carrier. -/
+abbrev HasNontrivialSCC : Prop :=
+  E.toFiniteExtractedCallGraph.HasNontrivialSCC
+
+/-- Standard SCC witness recovered from the finite extracted carrier. -/
+noncomputable abbrev toSCCCycle (h : E.HasNontrivialSCC) :
+    SCCCycle E.toFiniteExtractedCallGraph.Node :=
+  E.toFiniteExtractedCallGraph.toSCCCycle h
+
+end FiniteCarrierExtractedEngine
+
+/-- Typeclass-level finite extracted-data carrier for internal systems. -/
+class HasFiniteCarrierExtractedView (ε κ : Type) [DecidableEq κ] where
+  Rule : Type
+  ruleFintype : Fintype Rule
+  ruleDecEq : DecidableEq Rule
+  nodeKey? : ε → Rule → Option κ
+  succKeys : ε → Rule → Finset κ
+
+namespace HasFiniteCarrierExtractedView
+
+variable {ε κ : Type} [DecidableEq κ] [H : HasFiniteCarrierExtractedView ε κ]
+
+/-- Package the typeclass-level extracted carrier as the canonical extracted engine. -/
+def toFiniteCarrierExtractedEngine (e : ε) : FiniteCarrierExtractedEngine κ where
+  Rule := H.Rule
+  ruleFintype := H.ruleFintype
+  ruleDecEq := H.ruleDecEq
+  nodeKey? := H.nodeKey? e
+  succKeys := H.succKeys e
+
+/-- Extracted node records recovered directly from the extracted carrier view. -/
+noncomputable abbrev extractedNodes (e : ε) : Array (ExtractedCallNode κ) :=
+  (toFiniteCarrierExtractedEngine (ε := ε) (κ := κ) e).extractedNodes
+
+/-- Extracted call graph recovered directly from the extracted carrier view. -/
+noncomputable abbrev extractedCallGraph (e : ε) : FiniteExtractedCallGraph κ :=
+  (toFiniteCarrierExtractedEngine (ε := ε) (κ := κ) e).toFiniteExtractedCallGraph
+
+/-- Direct SCC search recovered directly from the extracted carrier view. -/
+noncomputable abbrev findNontrivialSCCPair? (e : ε) :
+    Option ((extractedCallGraph (ε := ε) (κ := κ) e).Node ×
+      (extractedCallGraph (ε := ε) (κ := κ) e).Node) :=
+  (toFiniteCarrierExtractedEngine (ε := ε) (κ := κ) e).findNontrivialSCCPair?
+
+/-- SCC existence predicate recovered directly from the extracted carrier view. -/
+abbrev HasNontrivialSCC (e : ε) : Prop :=
+  (toFiniteCarrierExtractedEngine (ε := ε) (κ := κ) e).HasNontrivialSCC
+
+end HasFiniteCarrierExtractedView
+
+/-- Explicit adapter from a finite head-carrier view to the extracted-data carrier view. -/
+def finiteCarrierExtractedViewOfHeadCarrier
+    (ε κ : Type) [DecidableEq κ] [H : HasFiniteCarrierHeadView ε κ] :
+    HasFiniteCarrierExtractedView ε κ where
+  Rule := H.Rule
+  ruleFintype := H.ruleFintype
+  ruleDecEq := H.ruleDecEq
+  nodeKey? := by
+    intro _ r
+    let _ : HasCallHeadView H.Term κ := H.termView
+    exact HasCallHeadView.rootHead? (H.lhs r)
+  succKeys := by
+    intro _ r
+    let _ : HasCallHeadView H.Term κ := H.termView
+    exact HasCallHeadView.callHeads (H.rhs r)
+
+end OperatorKO7.DependencyPairsFragment
+```
+
+---
+
+## OperatorKO7/Meta/DependencyPairs_FiniteCarrierHeadView.lean
+
+**Lines:** 119
+
+```lean
+import OperatorKO7.Meta.DependencyPairs_FiniteCarrierRawView
+
+/-!
+# Finite Head/Call-Head Carrier View for Internal Engines
+
+This module is the smallest finite dependency-pair frontend currently in the artifact.
+It starts from:
+
+- a finite rule carrier, and
+- the minimal head / recursive-call-head term view.
+
+No explicit rule array and no full `FOTerm` conversion are needed.
+-/
+
+namespace OperatorKO7.DependencyPairsFragment
+
+/-- Packaged head-view engine with a finite rule carrier instead of an explicit rule array. -/
+structure FiniteCarrierHeadEngine (σ : Type) [DecidableEq σ] where
+  Rule : Type
+  ruleFintype : Fintype Rule
+  ruleDecEq : DecidableEq Rule
+  Term : Type
+  termView : HasCallHeadView Term σ
+  lhs : Rule → Term
+  rhs : Rule → Term
+
+namespace FiniteCarrierHeadEngine
+
+variable {σ : Type} [DecidableEq σ] (E : FiniteCarrierHeadEngine σ)
+
+/-- Enumerated rule array recovered from the finite rule carrier. -/
+noncomputable def rules : Array E.Rule := by
+  let _ : Fintype E.Rule := E.ruleFintype
+  let _ : DecidableEq E.Rule := E.ruleDecEq
+  exact (Finset.univ : Finset E.Rule).toList.toArray
+
+/-- Canonical finite head-view engine recovered from the finite rule carrier. -/
+noncomputable def toFiniteHeadRuleEngine : FiniteHeadRuleEngine σ where
+  Rule := E.Rule
+  Term := E.Term
+  termView := E.termView
+  rules := E.rules
+  lhs := E.lhs
+  rhs := E.rhs
+
+/-- Defined heads recovered from the finite head carrier. -/
+noncomputable abbrev definedHeads : Finset σ :=
+  E.toFiniteHeadRuleEngine.definedHeads
+
+/-- Extracted nodes recovered from the finite head carrier. -/
+noncomputable abbrev extractedNodes : Array (ExtractedHeadRuleNode E.Rule σ) :=
+  E.toFiniteHeadRuleEngine.extractedNodes
+
+/-- Extracted call graph recovered from the finite head carrier. -/
+noncomputable abbrev extractedCallGraph : FiniteExtractedCallGraph σ :=
+  E.toFiniteHeadRuleEngine.extractedCallGraph
+
+end FiniteCarrierHeadEngine
+
+/-- Typeclass-level finite head-view carrier for internal systems. -/
+class HasFiniteCarrierHeadView (ε σ : Type) [DecidableEq σ] where
+  Rule : Type
+  ruleFintype : Fintype Rule
+  ruleDecEq : DecidableEq Rule
+  Term : Type
+  termView : HasCallHeadView Term σ
+  lhs : Rule → Term
+  rhs : Rule → Term
+
+namespace HasFiniteCarrierHeadView
+
+variable {ε σ : Type} [DecidableEq σ] [H : HasFiniteCarrierHeadView ε σ]
+
+/-- Package the typeclass-level finite head carrier as the canonical carrier engine. -/
+def toFiniteCarrierHeadEngine (_e : ε) : FiniteCarrierHeadEngine σ where
+  Rule := H.Rule
+  ruleFintype := H.ruleFintype
+  ruleDecEq := H.ruleDecEq
+  Term := H.Term
+  termView := H.termView
+  lhs := H.lhs
+  rhs := H.rhs
+
+/-- Canonical finite head-view engine recovered directly from the carrier view. -/
+noncomputable abbrev toFiniteHeadRuleEngine (e : ε) : FiniteHeadRuleEngine σ :=
+  (toFiniteCarrierHeadEngine (ε := ε) (σ := σ) e).toFiniteHeadRuleEngine
+
+/-- Defined heads recovered directly from the carrier view. -/
+noncomputable abbrev definedHeads (e : ε) : Finset σ :=
+  (toFiniteHeadRuleEngine (ε := ε) (σ := σ) e).definedHeads
+
+/-- Extracted nodes recovered directly from the carrier view. -/
+noncomputable abbrev extractedNodes (e : ε) :
+    Array (ExtractedHeadRuleNode
+      (HasFiniteCarrierHeadView.Rule (ε := ε) (σ := σ)) σ) :=
+  (toFiniteHeadRuleEngine (ε := ε) (σ := σ) e).extractedNodes
+
+/-- Extracted call graph recovered directly from the carrier view. -/
+noncomputable abbrev extractedCallGraph (e : ε) : FiniteExtractedCallGraph σ :=
+  (toFiniteHeadRuleEngine (ε := ε) (σ := σ) e).extractedCallGraph
+
+end HasFiniteCarrierHeadView
+
+/-- Explicit adapter from a finite raw rule-carrier view to the smaller finite head-carrier
+view. -/
+def finiteCarrierHeadViewOfFiniteCarrierRaw
+    (ε σ ν : Type) [DecidableEq σ] [H : HasFiniteCarrierRawFirstOrderView ε σ ν] :
+    HasFiniteCarrierHeadView ε σ where
+  Rule := H.Rule
+  ruleFintype := H.ruleFintype
+  ruleDecEq := H.ruleDecEq
+  Term := H.Term
+  termView := by
+    let _ : HasFirstOrderTermView H.Term σ ν := H.termView
+    exact headViewOfFirstOrderTermView H.Term σ ν
+  lhs := H.lhs
+  rhs := H.rhs
+
+end OperatorKO7.DependencyPairsFragment
+```
+
+---
+
+## OperatorKO7/Meta/DependencyPairs_FiniteCarrierRawView.lean
+
+**Lines:** 62
+
+```lean
+import OperatorKO7.Meta.DependencyPairs_FiniteCarrierView
+
+/-!
+# Finite Raw Rule-Carrier View for Internal Engines
+
+This module combines two reductions at once:
+
+- rules are given by a finite carrier type rather than an explicit array, and
+- terms can remain in an internal syntax rather than being exposed directly as `FOTerm`.
+
+From that smaller interface, the finite carrier first-order surface is recovered
+automatically, and the smaller head-view surface can be recovered through an explicit
+adapter.
+-/
+
+namespace OperatorKO7.DependencyPairsFragment
+
+/-- Typeclass-level finite raw rule-carrier view for internal systems. -/
+class HasFiniteCarrierRawFirstOrderView (ε σ ν : Type) [DecidableEq σ] where
+  Rule : Type
+  ruleFintype : Fintype Rule
+  ruleDecEq : DecidableEq Rule
+  Term : Type
+  termView : HasFirstOrderTermView Term σ ν
+  lhs : Rule → Term
+  rhs : Rule → Term
+
+/-- Any finite raw rule-carrier view induces the canonical finite carrier first-order view. -/
+instance instHasFiniteCarrierFirstOrderViewOfRawCarrier
+    (ε σ ν : Type) [DecidableEq σ] [H : HasFiniteCarrierRawFirstOrderView ε σ ν] :
+    HasFiniteCarrierFirstOrderView ε σ ν where
+  Rule := H.Rule
+  ruleFintype := H.ruleFintype
+  ruleDecEq := H.ruleDecEq
+  lhs := by
+    intro _ r
+    let _ : HasFirstOrderTermView H.Term σ ν := H.termView
+    exact HasFirstOrderTermView.toFOTerm (H.lhs r)
+  rhs := by
+    intro _ r
+    let _ : HasFirstOrderTermView H.Term σ ν := H.termView
+    exact HasFirstOrderTermView.toFOTerm (H.rhs r)
+
+/-- Explicit adapter from a finite raw rule-carrier view to the smaller head-view engine
+surface. -/
+noncomputable def finiteHeadRuleViewOfFiniteCarrierRaw
+    (ε σ ν : Type) [DecidableEq σ] [H : HasFiniteCarrierRawFirstOrderView ε σ ν] :
+    HasFiniteHeadRuleView ε σ where
+  Rule := H.Rule
+  Term := H.Term
+  termView := by
+    let _ : HasFirstOrderTermView H.Term σ ν := H.termView
+    exact headViewOfFirstOrderTermView H.Term σ ν
+  rules := by
+    intro _
+    let _ : Fintype H.Rule := H.ruleFintype
+    let _ : DecidableEq H.Rule := H.ruleDecEq
+    exact (Finset.univ : Finset H.Rule).toList.toArray
+  lhs := H.lhs
+  rhs := H.rhs
+
+end OperatorKO7.DependencyPairsFragment
+```
+
+---
+
+## OperatorKO7/Meta/DependencyPairs_FiniteCarrierView.lean
+
+**Lines:** 138
+
+```lean
+import OperatorKO7.Meta.DependencyPairs_HeadView
+
+/-!
+# Finite Rule-Carrier View for Internal First-Order Engines
+
+This module removes the remaining explicit rule-array layer for engines whose rules are
+already organized as a finite carrier type. Instead of exposing an `Array Rule`, callers
+can expose:
+
+- a finite rule carrier,
+- left-hand sides, and
+- right-hand sides.
+
+The canonical first-order and head-view extraction surfaces are then recovered by
+enumerating that carrier.
+-/
+
+namespace OperatorKO7.DependencyPairsFragment
+
+/-- Packaged first-order engine with a finite rule carrier instead of an explicit rule
+array. -/
+structure FiniteCarrierFirstOrderEngine (σ ν : Type) [DecidableEq σ] where
+  Rule : Type
+  ruleFintype : Fintype Rule
+  ruleDecEq : DecidableEq Rule
+  lhs : Rule → FOTerm σ ν
+  rhs : Rule → FOTerm σ ν
+
+namespace FiniteCarrierFirstOrderEngine
+
+variable {σ ν : Type} [DecidableEq σ] (E : FiniteCarrierFirstOrderEngine σ ν)
+
+/-- Enumerated rule array recovered from the finite rule carrier. -/
+noncomputable def rules : Array E.Rule := by
+  let _ : Fintype E.Rule := E.ruleFintype
+  let _ : DecidableEq E.Rule := E.ruleDecEq
+  exact (Finset.univ : Finset E.Rule).toList.toArray
+
+/-- Canonical finite first-order engine recovered from the finite rule carrier. -/
+noncomputable def toFiniteFirstOrderEngine : FiniteFirstOrderEngine σ ν where
+  Rule := E.Rule
+  rules := E.rules
+  lhs := E.lhs
+  rhs := E.rhs
+
+/-- Smaller head-view engine recovered from the finite rule carrier. -/
+noncomputable def toFiniteHeadRuleEngine : FiniteHeadRuleEngine σ :=
+  FiniteHeadRuleEngine.ofFiniteFirstOrderEngine E.toFiniteFirstOrderEngine
+
+/-- Defined heads recovered from the finite rule carrier. -/
+noncomputable abbrev definedHeads : Finset σ :=
+  E.toFiniteFirstOrderEngine.definedHeads
+
+/-- Extracted nodes recovered from the finite rule carrier. -/
+noncomputable abbrev extractedNodes : Array (ExtractedRuleFrontendNode E.Rule σ) :=
+  E.toFiniteFirstOrderEngine.extractedNodes
+
+/-- Extracted call graph recovered from the finite rule carrier. -/
+noncomputable abbrev extractedCallGraph : FiniteExtractedCallGraph σ :=
+  E.toFiniteFirstOrderEngine.extractedCallGraph
+
+/-- Direct SCC search recovered from the finite rule carrier. -/
+noncomputable abbrev findNontrivialSCCPair? :
+    Option (E.extractedCallGraph.Node × E.extractedCallGraph.Node) :=
+  E.toFiniteFirstOrderEngine.findNontrivialSCCPair?
+
+/-- SCC existence predicate recovered from the finite rule carrier. -/
+abbrev HasNontrivialSCC : Prop :=
+  E.toFiniteFirstOrderEngine.HasNontrivialSCC
+
+/-- Standard SCC witness recovered from the finite rule carrier. -/
+noncomputable abbrev toSCCCycle (h : E.HasNontrivialSCC) :
+    SCCCycle E.extractedCallGraph.Node :=
+  E.toFiniteFirstOrderEngine.toSCCCycle h
+
+end FiniteCarrierFirstOrderEngine
+
+/-- Typeclass-level finite rule-carrier view for internal systems. -/
+class HasFiniteCarrierFirstOrderView (ε σ ν : Type) [DecidableEq σ] where
+  Rule : Type
+  ruleFintype : Fintype Rule
+  ruleDecEq : DecidableEq Rule
+  lhs : ε → Rule → FOTerm σ ν
+  rhs : ε → Rule → FOTerm σ ν
+
+namespace HasFiniteCarrierFirstOrderView
+
+variable {ε σ ν : Type} [DecidableEq σ] [H : HasFiniteCarrierFirstOrderView ε σ ν]
+
+/-- Pack the typeclass-level finite rule-carrier view as the canonical carrier engine. -/
+def toFiniteCarrierFirstOrderEngine (e : ε) : FiniteCarrierFirstOrderEngine σ ν where
+  Rule := H.Rule
+  ruleFintype := H.ruleFintype
+  ruleDecEq := H.ruleDecEq
+  lhs := H.lhs e
+  rhs := H.rhs e
+
+/-- Canonical finite first-order engine recovered directly from the carrier view. -/
+noncomputable abbrev toFiniteFirstOrderEngine (e : ε) : FiniteFirstOrderEngine σ ν :=
+  (toFiniteCarrierFirstOrderEngine (ε := ε) (σ := σ) (ν := ν) e).toFiniteFirstOrderEngine
+
+/-- Smaller head-view engine recovered directly from the carrier view. -/
+noncomputable abbrev toFiniteHeadRuleEngine (e : ε) : FiniteHeadRuleEngine σ :=
+  (toFiniteCarrierFirstOrderEngine (ε := ε) (σ := σ) (ν := ν) e).toFiniteHeadRuleEngine
+
+/-- Defined heads recovered directly from the carrier view. -/
+noncomputable abbrev definedHeads (e : ε) : Finset σ :=
+  (toFiniteFirstOrderEngine (ε := ε) (σ := σ) (ν := ν) e).definedHeads
+
+/-- Extracted nodes recovered directly from the carrier view. -/
+noncomputable abbrev extractedNodes (e : ε) :
+    Array (ExtractedRuleFrontendNode
+      (HasFiniteCarrierFirstOrderView.Rule (ε := ε) (σ := σ) (ν := ν)) σ) :=
+  (toFiniteFirstOrderEngine (ε := ε) (σ := σ) (ν := ν) e).extractedNodes
+
+/-- Extracted call graph recovered directly from the carrier view. -/
+noncomputable abbrev extractedCallGraph (e : ε) : FiniteExtractedCallGraph σ :=
+  (toFiniteFirstOrderEngine (ε := ε) (σ := σ) (ν := ν) e).extractedCallGraph
+
+/-- Direct SCC search recovered directly from the carrier view. -/
+noncomputable abbrev findNontrivialSCCPair? (e : ε) :
+    Option ((extractedCallGraph (ε := ε) (σ := σ) (ν := ν) e).Node ×
+      (extractedCallGraph (ε := ε) (σ := σ) (ν := ν) e).Node) :=
+  (toFiniteFirstOrderEngine (ε := ε) (σ := σ) (ν := ν) e).findNontrivialSCCPair?
+
+/-- SCC existence predicate recovered directly from the carrier view. -/
+abbrev HasNontrivialSCC (e : ε) : Prop :=
+  (toFiniteFirstOrderEngine (ε := ε) (σ := σ) (ν := ν) e).HasNontrivialSCC
+
+/-- Standard SCC witness recovered directly from the carrier view. -/
+noncomputable abbrev toSCCCycle (e : ε)
+    (h : (toFiniteFirstOrderEngine (ε := ε) (σ := σ) (ν := ν) e).HasNontrivialSCC) :
+    SCCCycle (extractedCallGraph (ε := ε) (σ := σ) (ν := ν) e).Node :=
+  (toFiniteFirstOrderEngine (ε := ε) (σ := σ) (ν := ν) e).toSCCCycle h
+
+end HasFiniteCarrierFirstOrderView
+
+end OperatorKO7.DependencyPairsFragment
+```
+
+---
+
+## OperatorKO7/Meta/DependencyPairs_FiniteGraph.lean
+
+**Lines:** 104
+
+```lean
+import OperatorKO7.Meta.DependencyPairs_Fragment
+import OperatorKO7.Meta.FiniteGraphReachability
+import OperatorKO7.Meta.FiniteGraphSCC
+
+/-!
+# Finite Dependency-Pair Graph Interface
+
+This module connects the finite SCC search layer back to the small dependency-pair
+fragment. A caller provides only a finite decidable dependency-pair relation. The module
+then:
+
+- reuses the finite-SCC search surface (`findNontrivialSCCPair?`),
+- repackages a discovered SCC into the standard `SCCCycle` witness, and
+- exposes the usual DP-style contradiction theorems directly from that search result.
+
+The goal is not to formalize all dependency-pair processors. The goal is to remove the
+remaining SCC witness packaging from finite DP-graph uses of the fragment.
+-/
+
+namespace OperatorKO7.DependencyPairsFragment
+
+open OperatorKO7.FiniteGraphReachability
+open OperatorKO7.FiniteGraphSCC
+
+/-- A finite decidable dependency-pair graph. -/
+structure FiniteDPGraph (α : Type) [Fintype α] [DecidableEq α] where
+  Pair : α → α → Prop
+  decPair : DecidableRel Pair
+
+attribute [instance] FiniteDPGraph.decPair
+
+namespace FiniteDPGraph
+
+variable {α : Type} [Fintype α] [DecidableEq α] (G : FiniteDPGraph α)
+
+/-- Finite-SCC existence for the dependency-pair relation. -/
+abbrev HasNontrivialSCC : Prop :=
+  OperatorKO7.FiniteGraphSCC.HasNontrivialSCC G.Pair
+
+/-- Finite search for a distinct SCC pair in the dependency-pair graph. -/
+noncomputable def findNontrivialSCCPair? : Option (α × α) :=
+  OperatorKO7.FiniteGraphSCC.findNontrivialSCCPair? (R := G.Pair)
+
+theorem hasNontrivialSCC_iff_exists_findNontrivialSCCPair? :
+    G.HasNontrivialSCC ↔ ∃ p : α × α, G.findNontrivialSCCPair? = some p := by
+  simpa [FiniteDPGraph.findNontrivialSCCPair?, FiniteDPGraph.HasNontrivialSCC] using
+    (OperatorKO7.FiniteGraphSCC.hasNontrivialSCC_iff_exists_findNontrivialSCCPair?
+      (R := G.Pair))
+
+theorem hasNontrivialSCC_of_findNontrivialSCCPair?_eq_some {p : α × α}
+    (h : G.findNontrivialSCCPair? = some p) :
+    G.HasNontrivialSCC := by
+  simpa [FiniteDPGraph.findNontrivialSCCPair?, FiniteDPGraph.HasNontrivialSCC] using
+    (OperatorKO7.FiniteGraphSCC.hasNontrivialSCC_of_findNontrivialSCCPair?_eq_some
+      (R := G.Pair) h)
+
+theorem findNontrivialSCCPair?_spec {p : α × α}
+    (h : G.findNontrivialSCCPair? = some p) :
+    NontrivialRoundTrip G.Pair p.1 p.2 := by
+  simpa [FiniteDPGraph.findNontrivialSCCPair?] using
+    (OperatorKO7.FiniteGraphSCC.findNontrivialSCCPair?_spec (R := G.Pair) h)
+
+/-- Turn any finite-SCC existence proof into the fragment's standard SCC witness. -/
+noncomputable def toSCCCycle (h : G.HasNontrivialSCC) : SCCCycle α where
+  Step := G.Pair
+  source := witnessSrc G.Pair h
+  target := witnessDst G.Pair h
+  path :=
+    transGen_of_reachable_of_ne (R := G.Pair)
+      (reachable_witnessSrc_witnessDst (R := G.Pair) h)
+      (witnessSrc_ne_witnessDst (R := G.Pair) h)
+
+/-- A successful finite SCC search immediately yields the standard DP-fragment strict-drop
+obligation along the discovered SCC edge path. -/
+theorem target_lt_source_of_findNontrivialSCCPair? {m : α → Nat} {p : α × α}
+    (hfind : G.findNontrivialSCCPair? = some p)
+    (horient : GlobalOrients G.Pair m (· < ·)) :
+    m p.2 < m p.1 := by
+  have hp : NontrivialRoundTrip G.Pair p.1 p.2 := G.findNontrivialSCCPair?_spec hfind
+  exact transGen_drop (R := G.Pair) (m := m) horient
+    (transGen_of_reachable_of_ne (R := G.Pair) hp.2.1 hp.1)
+
+/-- Therefore any candidate measure that fails to strictly drop across the discovered SCC
+pair cannot globally orient the finite dependency-pair graph. -/
+theorem not_globalOrients_of_source_le_target_of_findNontrivialSCCPair?
+    {m : α → Nat} {p : α × α}
+    (hfind : G.findNontrivialSCCPair? = some p)
+    (hge : m p.1 ≤ m p.2) :
+    ¬ GlobalOrients G.Pair m (· < ·) := by
+  intro horient
+  exact Nat.not_lt_of_ge hge (G.target_lt_source_of_findNontrivialSCCPair? hfind horient)
+
+/-- The same contradiction can be phrased through the fragment's standard SCC witness,
+without exposing the chosen finite SCC pair explicitly. -/
+theorem not_globalOrients_of_source_le_target_of_hasNontrivialSCC
+    {m : α → Nat}
+    (h : G.HasNontrivialSCC)
+    (hge : m (G.toSCCCycle h).source ≤ m (G.toSCCCycle h).target) :
+    ¬ GlobalOrients G.Pair m (· < ·) :=
+  SCCCycle.not_globalOrients_of_source_le_target (G.toSCCCycle h) hge
+
+end FiniteDPGraph
+
+end OperatorKO7.DependencyPairsFragment
+```
+
+---
+
+## OperatorKO7/Meta/DependencyPairs_FirstOrderEngine.lean
+
+**Lines:** 96
+
+```lean
+import OperatorKO7.Meta.DependencyPairs_FirstOrderFrontend
+
+/-!
+# Engine-Level Frontend for Generic First-Order Extraction
+
+This module removes one more packaging layer from the generic first-order extraction stack.
+Instead of passing
+
+- a finite rule array,
+- a left-hand side extractor, and
+- a right-hand side extractor
+
+at each use site, callers can package an internal first-order TRS / DP engine once as a
+single structure. The same extracted-node, call-graph, SCC-search, and contradiction
+surface is then reexported from that engine object directly.
+-/
+
+namespace OperatorKO7.DependencyPairsFragment
+
+/-- Minimal finite first-order rule engine packaged as one object. -/
+structure FiniteFirstOrderEngine (σ ν : Type) [DecidableEq σ] where
+  Rule : Type
+  rules : Array Rule
+  lhs : Rule → FOTerm σ ν
+  rhs : Rule → FOTerm σ ν
+
+namespace FiniteFirstOrderEngine
+
+variable {σ ν : Type} [DecidableEq σ] (E : FiniteFirstOrderEngine σ ν)
+
+/-- Defined heads of the packaged engine. -/
+abbrev definedHeads : Finset σ :=
+  foDefinedHeadsOf E.rules E.lhs
+
+/-- Extracted dependency-pair nodes of the packaged engine. -/
+abbrev extractedNodes : Array (ExtractedRuleFrontendNode E.Rule σ) :=
+  extractRuleFrontendNodes E.rules E.lhs E.rhs
+
+/-- Array-backed extracted call graph of the packaged engine. -/
+abbrev extractedCallGraph : FiniteExtractedCallGraph σ :=
+  foExtractedCallGraphOf E.rules E.lhs E.rhs
+
+/-- Direct SCC search on the packaged engine. -/
+noncomputable abbrev findNontrivialSCCPair? :
+    Option (E.extractedCallGraph.Node × E.extractedCallGraph.Node) :=
+  findNontrivialSCCPair?Of E.rules E.lhs E.rhs
+
+/-- SCC existence predicate on the packaged engine. -/
+abbrev HasNontrivialSCC : Prop :=
+  HasNontrivialSCCOf E.rules E.lhs E.rhs
+
+theorem hasNontrivialSCC_iff_exists_findNontrivialSCCPair? :
+    E.HasNontrivialSCC ↔
+      ∃ p : E.extractedCallGraph.Node × E.extractedCallGraph.Node,
+        E.findNontrivialSCCPair? = some p := by
+  simpa [FiniteFirstOrderEngine.HasNontrivialSCC, FiniteFirstOrderEngine.findNontrivialSCCPair?,
+    FiniteFirstOrderEngine.extractedCallGraph] using
+    (hasNontrivialSCCOf_iff_exists_findNontrivialSCCPair? E.rules E.lhs E.rhs)
+
+theorem hasNontrivialSCC_of_findNontrivialSCCPair?_eq_some
+    {p : E.extractedCallGraph.Node × E.extractedCallGraph.Node}
+    (h : E.findNontrivialSCCPair? = some p) :
+    E.HasNontrivialSCC := by
+  simpa [FiniteFirstOrderEngine.HasNontrivialSCC, FiniteFirstOrderEngine.findNontrivialSCCPair?,
+    FiniteFirstOrderEngine.extractedCallGraph] using
+    (hasNontrivialSCCOf_of_findNontrivialSCCPair?_eq_some E.rules E.lhs E.rhs h)
+
+/-- Standard SCC witness recovered directly from the packaged engine. -/
+noncomputable abbrev toSCCCycle (h : E.HasNontrivialSCC) :
+    SCCCycle E.extractedCallGraph.Node :=
+  toSCCCycleOf E.rules E.lhs E.rhs h
+
+theorem not_globalOrients_of_source_le_target_of_findNontrivialSCCPair?
+    {m : E.extractedCallGraph.Node → Nat}
+    {p : E.extractedCallGraph.Node × E.extractedCallGraph.Node}
+    (hfind : E.findNontrivialSCCPair? = some p)
+    (hge : m p.1 ≤ m p.2) :
+    ¬ GlobalOrients E.extractedCallGraph.toFiniteCallGraph.Edge m (· < ·) := by
+  simpa [FiniteFirstOrderEngine.findNontrivialSCCPair?, FiniteFirstOrderEngine.extractedCallGraph]
+    using
+      (not_globalOrients_of_source_le_target_of_findNontrivialSCCPair?Of
+        E.rules E.lhs E.rhs hfind hge)
+
+theorem not_globalOrients_of_source_le_target_of_hasNontrivialSCC
+    {m : E.extractedCallGraph.Node → Nat}
+    (h : E.HasNontrivialSCC)
+    (hge : m (E.toSCCCycle h).source ≤ m (E.toSCCCycle h).target) :
+    ¬ GlobalOrients E.extractedCallGraph.toFiniteCallGraph.Edge m (· < ·) := by
+  simpa [FiniteFirstOrderEngine.HasNontrivialSCC, FiniteFirstOrderEngine.toSCCCycle,
+    FiniteFirstOrderEngine.extractedCallGraph] using
+    (not_globalOrients_of_source_le_target_of_hasNontrivialSCCOf
+      E.rules E.lhs E.rhs h hge)
+
+end FiniteFirstOrderEngine
+
+end OperatorKO7.DependencyPairsFragment
+```
+
+---
+
+## OperatorKO7/Meta/DependencyPairs_FirstOrderExtraction.lean
+
+**Lines:** 175
+
+```lean
+import OperatorKO7.Meta.DependencyPairs_TPDBExtraction
+
+/-!
+# Generic First-Order Dependency-Pair Extraction
+
+This module abstracts the concrete TPDB-side extraction layer to a generic finite
+first-order TRS presentation with arbitrary symbol and variable types. From a finite rule
+list it computes:
+
+- the defined heads (left-hand side root symbols),
+- the defined call-heads appearing in right-hand sides, and
+- the corresponding array-backed extracted call graph.
+
+The TPDB-specific extractor can then be seen as one frontend into this generic layer,
+instead of being the theorem shape itself.
+-/
+
+namespace OperatorKO7.DependencyPairsFragment
+
+/-- Generic first-order term syntax with variables and function symbols. -/
+inductive FOTerm (σ ν : Type) : Type
+| var : ν → FOTerm σ ν
+| app : σ → List (FOTerm σ ν) → FOTerm σ ν
+
+/-- Generic first-order rewrite rule. -/
+structure FORule (σ ν : Type) where
+  lhs : FOTerm σ ν
+  rhs : FOTerm σ ν
+
+namespace FOTerm
+
+variable {σ ν : Type}
+
+/-- Root head symbol of a first-order term, when present. -/
+def head? : FOTerm σ ν → Option σ
+| .var _ => none
+| .app f _ => some f
+
+/-- All function heads appearing anywhere in a first-order term. -/
+def allHeads [DecidableEq σ] : FOTerm σ ν → Finset σ
+| .var _ => ∅
+| .app f args =>
+    insert f <| args.foldl (fun acc t => acc ∪ allHeads t) ∅
+
+end FOTerm
+
+namespace FORule
+
+variable {σ ν : Type}
+
+/-- Root head symbol of the left-hand side of a first-order rule, when present. -/
+def lhsHead? (r : FORule σ ν) : Option σ :=
+  FOTerm.head? r.lhs
+
+end FORule
+
+/-- Extracted dependency-pair node data for a first-order rule. -/
+structure ExtractedFORuleNode (σ ν : Type) [DecidableEq σ] where
+  rule : FORule σ ν
+  nodeKey : σ
+  succKeys : Finset σ
+
+/-- Defined heads of a finite first-order TRS: the function symbols appearing at rule
+roots. -/
+def foDefinedHeads {σ ν : Type} [DecidableEq σ] (rules : Array (FORule σ ν)) : Finset σ :=
+  rules.foldl
+    (fun acc r =>
+      match FORule.lhsHead? r with
+      | some f => insert f acc
+      | none => acc)
+    ∅
+
+/-- Extract one dependency-pair call-graph node from a first-order rule. -/
+def extractFORuleNode? {σ ν : Type} [DecidableEq σ]
+    (defined : Finset σ) (r : FORule σ ν) : Option (ExtractedFORuleNode σ ν) :=
+  match FORule.lhsHead? r with
+  | none => none
+  | some f =>
+      some
+        { rule := r
+          nodeKey := f
+          succKeys := (FOTerm.allHeads r.rhs).filter (· ∈ defined) }
+
+/-- Extracted dependency-pair call-graph nodes for a finite first-order TRS. -/
+def extractFORuleNodes {σ ν : Type} [DecidableEq σ]
+    (rules : Array (FORule σ ν)) : Array (ExtractedFORuleNode σ ν) :=
+  let defined := foDefinedHeads rules
+  rules.filterMap (extractFORuleNode? defined)
+
+/-- Array-backed extracted call graph induced by a finite first-order TRS. -/
+def foExtractedCallGraph {σ ν : Type} [DecidableEq σ]
+    (rules : Array (FORule σ ν)) : FiniteExtractedCallGraph σ :=
+  FiniteExtractedCallGraph.ofArrayMap
+    (nodes := extractFORuleNodes rules)
+    (nodeKey := ExtractedFORuleNode.nodeKey)
+    (succKeys := ExtractedFORuleNode.succKeys)
+
+namespace TPDBBridge
+
+open OperatorKO7
+
+/-- Convert a TPDB term to the generic first-order syntax. -/
+def term : TpdbTerm → FOTerm String String
+| .var x => .var x
+| .app f args => .app f (args.map term)
+
+/-- Convert a TPDB rule to the generic first-order syntax. -/
+def rule (r : TpdbRule) : FORule String String where
+  lhs := term r.lhs
+  rhs := term r.rhs
+
+@[simp] theorem term_head?_eq (t : TpdbTerm) :
+    FOTerm.head? (term t) = OperatorKO7.DependencyPairsFragment.TpdbTerm.head? t := by
+  cases t <;> simp [term, FOTerm.head?, OperatorKO7.DependencyPairsFragment.TpdbTerm.head?]
+
+@[simp] theorem rule_lhsHead?_eq (r : TpdbRule) :
+    FORule.lhsHead? (rule r) = OperatorKO7.DependencyPairsFragment.TpdbRule.lhsHead? r := by
+  simp [FORule.lhsHead?, rule, OperatorKO7.DependencyPairsFragment.TpdbRule.lhsHead?, term_head?_eq]
+
+end TPDBBridge
+
+namespace KO7FirstOrder
+
+open OperatorKO7
+
+/-- Generic first-order variable shorthands for the KO7 full-step TRS. -/
+def x : FOTerm String String := .var "x"
+def y : FOTerm String String := .var "y"
+def z : FOTerm String String := .var "z"
+
+/-- Generic first-order constructor / function shorthands for KO7. -/
+def void : FOTerm String String := .app "void" []
+def delta (t : FOTerm String String) : FOTerm String String := .app "delta" [t]
+def integrate (t : FOTerm String String) : FOTerm String String := .app "integrate" [t]
+def merge (a b : FOTerm String String) : FOTerm String String := .app "merge" [a, b]
+def app (a b : FOTerm String String) : FOTerm String String := .app "app" [a, b]
+def recD (b s n : FOTerm String String) : FOTerm String String := .app "recD" [b, s, n]
+def eqW (a b : FOTerm String String) : FOTerm String String := .app "eqW" [a, b]
+
+/-- The KO7 full-step TRS as a generic first-order rule list. -/
+def ko7FullStepFORules : Array (FORule String String) :=
+  #[ ⟨integrate (delta x), void⟩
+   , ⟨merge void x, x⟩
+   , ⟨merge x void, x⟩
+   , ⟨merge x x, x⟩
+   , ⟨recD x y void, x⟩
+   , ⟨recD x y (delta z), app y (recD x y z)⟩
+   , ⟨eqW x x, void⟩
+   , ⟨eqW x y, integrate (merge x y)⟩ ]
+
+/-- Concrete extracted nodes for the generic first-order KO7 rule list. -/
+def ko7FullStepExtractedNodes : Array (ExtractedFORuleNode String String) :=
+  extractFORuleNodes ko7FullStepFORules
+
+/-- Concrete extracted call graph for the generic first-order KO7 rule list. -/
+def ko7FullStepExtractedCallGraph : FiniteExtractedCallGraph String :=
+  foExtractedCallGraph ko7FullStepFORules
+
+theorem ko7_full_step_extracted_node_count :
+    ko7FullStepExtractedNodes.size = 8 := by
+  native_decide
+
+theorem ko7_full_step_defined_heads :
+    foDefinedHeads ko7FullStepFORules =
+      ({ "integrate", "merge", "recD", "eqW" } : Finset String) := by
+  native_decide
+
+theorem ko7_full_step_has_recD_successor :
+    ∃ n ∈ ko7FullStepExtractedNodes.toList,
+      n.nodeKey = "recD" ∧ n.succKeys = ({ "recD" } : Finset String) := by
+  native_decide
+
+end KO7FirstOrder
+
+end OperatorKO7.DependencyPairsFragment
+```
+
+---
+
+## OperatorKO7/Meta/DependencyPairs_FirstOrderFrontend.lean
+
+**Lines:** 182
+
+```lean
+import OperatorKO7.Meta.DependencyPairs_FirstOrderExtraction
+
+/-!
+# Rule-Record Frontend for Generic First-Order Extraction
+
+This module removes one more packaging layer from the generic first-order dependency-pair
+extraction stack. Instead of first converting an engine-specific rule record to the
+uniform `FORule` structure, callers can provide:
+
+- a finite array of rule records,
+- a left-hand side extractor into `FOTerm`, and
+- a right-hand side extractor into `FOTerm`.
+
+The defined-head computation, extracted call-head node array, and array-backed call graph
+are then built directly from that rule-record frontend.
+-/
+
+namespace OperatorKO7.DependencyPairsFragment
+
+/-- Extracted dependency-pair node data for an arbitrary rule record over first-order
+left- and right-hand side extractors. -/
+structure ExtractedRuleFrontendNode (ρ σ : Type) [DecidableEq σ] where
+  rule : ρ
+  nodeKey : σ
+  succKeys : Finset σ
+
+/-- Defined heads of a finite rule-record frontend. -/
+def foDefinedHeadsOf {ρ σ ν : Type} [DecidableEq σ]
+    (rules : Array ρ) (lhs : ρ → FOTerm σ ν) : Finset σ :=
+  rules.foldl
+    (fun acc r =>
+      match FOTerm.head? (lhs r) with
+      | some f => insert f acc
+      | none => acc)
+    ∅
+
+/-- Extract one dependency-pair node from an arbitrary rule record, when the left-hand
+side has a function head. -/
+def extractRuleFrontendNode? {ρ σ ν : Type} [DecidableEq σ]
+    (lhs : ρ → FOTerm σ ν) (rhs : ρ → FOTerm σ ν)
+    (defined : Finset σ) (r : ρ) : Option (ExtractedRuleFrontendNode ρ σ) :=
+  match FOTerm.head? (lhs r) with
+  | none => none
+  | some f =>
+      some
+        { rule := r
+          nodeKey := f
+          succKeys := (FOTerm.allHeads (rhs r)).filter (· ∈ defined) }
+
+/-- Extracted dependency-pair call-head nodes for a finite rule-record frontend. -/
+def extractRuleFrontendNodes {ρ σ ν : Type} [DecidableEq σ]
+    (rules : Array ρ) (lhs : ρ → FOTerm σ ν) (rhs : ρ → FOTerm σ ν) :
+    Array (ExtractedRuleFrontendNode ρ σ) :=
+  let defined := foDefinedHeadsOf rules lhs
+  rules.filterMap (extractRuleFrontendNode? lhs rhs defined)
+
+/-- Array-backed extracted call graph induced directly from a rule-record frontend. -/
+def foExtractedCallGraphOf {ρ σ ν : Type} [DecidableEq σ]
+    (rules : Array ρ) (lhs : ρ → FOTerm σ ν) (rhs : ρ → FOTerm σ ν) :
+    FiniteExtractedCallGraph σ :=
+  FiniteExtractedCallGraph.ofArrayMap
+    (nodes := extractRuleFrontendNodes rules lhs rhs)
+    (nodeKey := ExtractedRuleFrontendNode.nodeKey)
+    (succKeys := ExtractedRuleFrontendNode.succKeys)
+
+/-- Direct SCC search surface from a rule-record frontend. -/
+noncomputable abbrev findNontrivialSCCPair?Of {ρ σ ν : Type} [DecidableEq σ]
+    (rules : Array ρ) (lhs : ρ → FOTerm σ ν) (rhs : ρ → FOTerm σ ν) :
+    Option ((foExtractedCallGraphOf rules lhs rhs).Node × (foExtractedCallGraphOf rules lhs rhs).Node) :=
+  (foExtractedCallGraphOf rules lhs rhs).findNontrivialSCCPair?
+
+/-- SCC existence predicate from a rule-record frontend. -/
+abbrev HasNontrivialSCCOf {ρ σ ν : Type} [DecidableEq σ]
+    (rules : Array ρ) (lhs : ρ → FOTerm σ ν) (rhs : ρ → FOTerm σ ν) : Prop :=
+  (foExtractedCallGraphOf rules lhs rhs).HasNontrivialSCC
+
+theorem hasNontrivialSCCOf_iff_exists_findNontrivialSCCPair? {ρ σ ν : Type} [DecidableEq σ]
+    (rules : Array ρ) (lhs : ρ → FOTerm σ ν) (rhs : ρ → FOTerm σ ν) :
+    HasNontrivialSCCOf rules lhs rhs ↔
+      ∃ p : (foExtractedCallGraphOf rules lhs rhs).Node × (foExtractedCallGraphOf rules lhs rhs).Node,
+        findNontrivialSCCPair?Of rules lhs rhs = some p := by
+  simpa [HasNontrivialSCCOf, findNontrivialSCCPair?Of] using
+    (FiniteExtractedCallGraph.hasNontrivialSCC_iff_exists_findNontrivialSCCPair?
+      (G := foExtractedCallGraphOf rules lhs rhs))
+
+theorem hasNontrivialSCCOf_of_findNontrivialSCCPair?_eq_some {ρ σ ν : Type} [DecidableEq σ]
+    (rules : Array ρ) (lhs : ρ → FOTerm σ ν) (rhs : ρ → FOTerm σ ν)
+    {p : (foExtractedCallGraphOf rules lhs rhs).Node × (foExtractedCallGraphOf rules lhs rhs).Node}
+    (h : findNontrivialSCCPair?Of rules lhs rhs = some p) :
+    HasNontrivialSCCOf rules lhs rhs := by
+  simpa [HasNontrivialSCCOf, findNontrivialSCCPair?Of] using
+    (FiniteExtractedCallGraph.hasNontrivialSCC_of_findNontrivialSCCPair?_eq_some
+      (G := foExtractedCallGraphOf rules lhs rhs) h)
+
+/-- Standard SCC witness recovered directly from a rule-record frontend. -/
+noncomputable abbrev toSCCCycleOf {ρ σ ν : Type} [DecidableEq σ]
+    (rules : Array ρ) (lhs : ρ → FOTerm σ ν) (rhs : ρ → FOTerm σ ν)
+    (h : HasNontrivialSCCOf rules lhs rhs) :
+    SCCCycle (foExtractedCallGraphOf rules lhs rhs).Node :=
+  (foExtractedCallGraphOf rules lhs rhs).toSCCCycle h
+
+theorem not_globalOrients_of_source_le_target_of_findNontrivialSCCPair?Of
+    {ρ σ ν : Type} [DecidableEq σ]
+    (rules : Array ρ) (lhs : ρ → FOTerm σ ν) (rhs : ρ → FOTerm σ ν)
+    {m : (foExtractedCallGraphOf rules lhs rhs).Node → Nat}
+    {p : (foExtractedCallGraphOf rules lhs rhs).Node × (foExtractedCallGraphOf rules lhs rhs).Node}
+    (hfind : findNontrivialSCCPair?Of rules lhs rhs = some p)
+    (hge : m p.1 ≤ m p.2) :
+    ¬ GlobalOrients (foExtractedCallGraphOf rules lhs rhs).toFiniteCallGraph.Edge m (· < ·) := by
+  simpa [findNontrivialSCCPair?Of] using
+    (FiniteExtractedCallGraph.not_globalOrients_of_source_le_target_of_findNontrivialSCCPair?
+      (G := foExtractedCallGraphOf rules lhs rhs) hfind hge)
+
+theorem not_globalOrients_of_source_le_target_of_hasNontrivialSCCOf
+    {ρ σ ν : Type} [DecidableEq σ]
+    (rules : Array ρ) (lhs : ρ → FOTerm σ ν) (rhs : ρ → FOTerm σ ν)
+    {m : (foExtractedCallGraphOf rules lhs rhs).Node → Nat}
+    (h : HasNontrivialSCCOf rules lhs rhs)
+    (hge : m (toSCCCycleOf rules lhs rhs h).source ≤ m (toSCCCycleOf rules lhs rhs h).target) :
+    ¬ GlobalOrients (foExtractedCallGraphOf rules lhs rhs).toFiniteCallGraph.Edge m (· < ·) := by
+  simpa [HasNontrivialSCCOf, toSCCCycleOf] using
+    (FiniteExtractedCallGraph.not_globalOrients_of_source_le_target_of_hasNontrivialSCC
+      (G := foExtractedCallGraphOf rules lhs rhs) h hge)
+
+theorem foDefinedHeadsOf_eq_foDefinedHeads {σ ν : Type} [DecidableEq σ]
+    (rules : Array (FORule σ ν)) :
+    foDefinedHeadsOf rules FORule.lhs = foDefinedHeads rules := by
+  rfl
+
+private def packExtractedFORuleNode {σ ν : Type} [DecidableEq σ] :
+    ExtractedFORuleNode σ ν → ExtractedRuleFrontendNode (FORule σ ν) σ
+  | n => {
+      rule := n.rule
+      nodeKey := n.nodeKey
+      succKeys := n.succKeys
+    }
+
+private theorem extractRuleFrontendNode?_eq_map_extractFORuleNode? {σ ν : Type}
+    [DecidableEq σ] (defined : Finset σ) (r : FORule σ ν) :
+    extractRuleFrontendNode? FORule.lhs FORule.rhs defined r =
+      (extractFORuleNode? defined r).map (packExtractedFORuleNode (σ := σ) (ν := ν)) := by
+  cases h : FOTerm.head? (FORule.lhs r) <;>
+    simp [extractRuleFrontendNode?, extractFORuleNode?, FORule.lhsHead?, h,
+      packExtractedFORuleNode]
+
+private theorem extractRuleFrontendNode?_eq_map_extractFORuleNode {σ ν : Type}
+    [DecidableEq σ] (defined : Finset σ) :
+    extractRuleFrontendNode? FORule.lhs FORule.rhs defined =
+      fun r =>
+        (extractFORuleNode? defined r).map (packExtractedFORuleNode (σ := σ) (ν := ν)) := by
+  funext r
+  exact extractRuleFrontendNode?_eq_map_extractFORuleNode? defined r
+
+theorem extractRuleFrontendNodes_eq_extractFORuleNodes {σ ν : Type} [DecidableEq σ]
+    (rules : Array (FORule σ ν)) :
+    extractRuleFrontendNodes rules FORule.lhs FORule.rhs =
+      (extractFORuleNodes rules).map (packExtractedFORuleNode (σ := σ) (ν := ν)) := by
+  have hlist :
+      (extractRuleFrontendNodes rules FORule.lhs FORule.rhs).toList =
+        ((extractFORuleNodes rules).map (packExtractedFORuleNode (σ := σ) (ν := ν))).toList := by
+    simpa [extractRuleFrontendNodes, extractFORuleNodes, foDefinedHeadsOf_eq_foDefinedHeads,
+      packExtractedFORuleNode, Array.toList_filterMap, Array.toList_map,
+      extractRuleFrontendNode?_eq_map_extractFORuleNode] using
+      (List.map_filterMap (f := extractFORuleNode? (foDefinedHeads rules))
+        (g := packExtractedFORuleNode (σ := σ) (ν := ν)) (l := rules.toList)).symm
+  have hmap :
+      (List.map (packExtractedFORuleNode (σ := σ) (ν := ν))
+        (extractFORuleNodes rules).toList).toArray =
+        (extractFORuleNodes rules).map (packExtractedFORuleNode (σ := σ) (ν := ν)) := by
+    simpa [Array.toList_map] using
+      (Array.toArray_toList
+        (xs := (extractFORuleNodes rules).map (packExtractedFORuleNode (σ := σ) (ν := ν))))
+  calc
+    extractRuleFrontendNodes rules FORule.lhs FORule.rhs =
+        (List.map (packExtractedFORuleNode (σ := σ) (ν := ν))
+          (extractFORuleNodes rules).toList).toArray := by
+            simpa [Array.toArray_toList, Array.toList_map, packExtractedFORuleNode] using
+              congrArg List.toArray hlist
+    _ =
+        (extractFORuleNodes rules).map (packExtractedFORuleNode (σ := σ) (ν := ν)) := hmap
+
+end OperatorKO7.DependencyPairsFragment
+```
+
+---
+
+## OperatorKO7/Meta/DependencyPairs_FirstOrderTermView.lean
+
+**Lines:** 50
+
+```lean
+import OperatorKO7.Meta.DependencyPairs_FirstOrderView
+
+/-!
+# Raw-Term View for Internal First-Order Engines
+
+This module removes one more explicit conversion layer for internal systems. An engine can
+keep its own first-order term syntax and expose:
+
+- a conversion to the canonical `FOTerm` syntax, and
+- a finite raw rule view using that internal term type.
+
+The generic `HasFiniteFirstOrderView` surface is then derived automatically.
+-/
+
+namespace OperatorKO7.DependencyPairsFragment
+
+/-- Conversion from an internal first-order term syntax to the canonical `FOTerm` view. -/
+class HasFirstOrderTermView (τ σ ν : Type) where
+  toFOTerm : τ → FOTerm σ ν
+
+/-- Identity term-view instance for the canonical `FOTerm` syntax itself. -/
+instance instHasFirstOrderTermViewFOTerm (σ ν : Type) :
+    HasFirstOrderTermView (FOTerm σ ν) σ ν where
+  toFOTerm := id
+
+/-- Raw finite first-order engine view using an internal term syntax stored in the class. -/
+class HasFiniteRawFirstOrderView (ε σ ν : Type) [DecidableEq σ] where
+  Rule : Type
+  Term : Type
+  termView : HasFirstOrderTermView Term σ ν
+  rules : ε → Array Rule
+  lhs : Rule → Term
+  rhs : Rule → Term
+
+/-- Any raw first-order engine view induces the canonical `FOTerm`-based view automatically. -/
+instance instHasFiniteFirstOrderViewOfRaw
+    (ε σ ν : Type) [DecidableEq σ] [H : HasFiniteRawFirstOrderView ε σ ν] :
+    HasFiniteFirstOrderView ε σ ν where
+  Rule := H.Rule
+  rules := H.rules
+  lhs := by
+    intro r
+    let _ := H.termView
+    exact HasFirstOrderTermView.toFOTerm (H.lhs r)
+  rhs := by
+    intro r
+    let _ := H.termView
+    exact HasFirstOrderTermView.toFOTerm (H.rhs r)
+
+end OperatorKO7.DependencyPairsFragment
+```
+
+---
+
+## OperatorKO7/Meta/DependencyPairs_FirstOrderView.lean
+
+**Lines:** 63
+
+```lean
+import OperatorKO7.Meta.DependencyPairs_FirstOrderEngine
+
+/-!
+# Typeclass View for Internal First-Order Engines
+
+This module removes the remaining explicit engine-construction step for internal systems
+whose rule representation is fixed at the type level. A type can expose a finite
+first-order view through one instance, and the generic dependency-pair extraction / SCC
+surface is then available directly from values of that type.
+-/
+
+namespace OperatorKO7.DependencyPairsFragment
+
+/-- Typeclass view exposing a finite first-order rule engine from an internal system type. -/
+class HasFiniteFirstOrderView (ε σ ν : Type) [DecidableEq σ] where
+  Rule : Type
+  rules : ε → Array Rule
+  lhs : Rule → FOTerm σ ν
+  rhs : Rule → FOTerm σ ν
+
+namespace HasFiniteFirstOrderView
+
+variable {ε σ ν : Type} [DecidableEq σ] [HasFiniteFirstOrderView ε σ ν]
+
+/-- Canonical packaged engine induced by the typeclass view. -/
+def toFiniteFirstOrderEngine (E : ε) : FiniteFirstOrderEngine σ ν where
+  Rule := HasFiniteFirstOrderView.Rule (ε := ε) (σ := σ) (ν := ν)
+  rules := HasFiniteFirstOrderView.rules (ε := ε) (σ := σ) (ν := ν) E
+  lhs := HasFiniteFirstOrderView.lhs (ε := ε) (σ := σ) (ν := ν)
+  rhs := HasFiniteFirstOrderView.rhs (ε := ε) (σ := σ) (ν := ν)
+
+/-- Defined heads exposed directly from a viewed engine value. -/
+abbrev definedHeads (E : ε) : Finset σ :=
+  (toFiniteFirstOrderEngine (ε := ε) (σ := σ) (ν := ν) E).definedHeads
+
+/-- Extracted nodes exposed directly from a viewed engine value. -/
+abbrev extractedNodes (E : ε) :
+    Array (ExtractedRuleFrontendNode (HasFiniteFirstOrderView.Rule (ε := ε) (σ := σ) (ν := ν)) σ) :=
+  (toFiniteFirstOrderEngine (ε := ε) (σ := σ) (ν := ν) E).extractedNodes
+
+/-- Extracted call graph exposed directly from a viewed engine value. -/
+abbrev extractedCallGraph (E : ε) : FiniteExtractedCallGraph σ :=
+  (toFiniteFirstOrderEngine (ε := ε) (σ := σ) (ν := ν) E).extractedCallGraph
+
+/-- Direct SCC search exposed from a viewed engine value. -/
+noncomputable abbrev findNontrivialSCCPair? (E : ε) :
+    Option ((extractedCallGraph (ε := ε) (σ := σ) (ν := ν) E).Node ×
+      (extractedCallGraph (ε := ε) (σ := σ) (ν := ν) E).Node) :=
+  (toFiniteFirstOrderEngine (ε := ε) (σ := σ) (ν := ν) E).findNontrivialSCCPair?
+
+/-- SCC existence predicate exposed from a viewed engine value. -/
+abbrev HasNontrivialSCC (E : ε) : Prop :=
+  (toFiniteFirstOrderEngine (ε := ε) (σ := σ) (ν := ν) E).HasNontrivialSCC
+
+/-- Standard SCC witness exposed from a viewed engine value. -/
+noncomputable abbrev toSCCCycle (E : ε)
+    (h : (toFiniteFirstOrderEngine (ε := ε) (σ := σ) (ν := ν) E).HasNontrivialSCC) :
+    SCCCycle (extractedCallGraph (ε := ε) (σ := σ) (ν := ν) E).Node :=
+  (toFiniteFirstOrderEngine (ε := ε) (σ := σ) (ν := ν) E).toSCCCycle h
+
+end HasFiniteFirstOrderView
+
+end OperatorKO7.DependencyPairsFragment
+```
+
+---
+
 ## OperatorKO7/Meta/DependencyPairs_Fragment.lean
 
 **Lines:** 88
@@ -4346,6 +6876,588 @@ theorem not_globalOrients_of_source_le_target {α : Type} (C : SCCCycle α)
   exact Nat.not_lt_of_ge hge (C.target_lt_source horient)
 
 end SCCCycle
+
+end OperatorKO7.DependencyPairsFragment
+```
+
+---
+
+## OperatorKO7/Meta/DependencyPairs_HeadView.lean
+
+**Lines:** 239
+
+```lean
+import OperatorKO7.Meta.DependencyPairs_FirstOrderTermView
+
+/-!
+# Minimal Head/Call-Head View for DP Extraction
+
+This module removes the need for a full conversion into the canonical `FOTerm` syntax when
+only dependency-pair extraction matters. An internal term syntax can expose just:
+
+- its root head symbol, and
+- the set of call heads appearing anywhere in the term.
+
+That is already enough to recover the extracted call graph and the finite-SCC search /
+contradiction surface.
+-/
+
+namespace OperatorKO7.DependencyPairsFragment
+
+/-- Minimal interface needed for dependency-pair call-head extraction from an internal term
+syntax. -/
+class HasCallHeadView (τ σ : Type) [DecidableEq σ] where
+  head? : τ → Option σ
+  allHeads : τ → Finset σ
+
+namespace HasCallHeadView
+
+variable {τ σ : Type} [DecidableEq σ] [HasCallHeadView τ σ]
+
+/-- Root head symbol from the minimal call-head view. -/
+abbrev rootHead? : τ → Option σ := HasCallHeadView.head?
+
+/-- All recursive call heads from the minimal call-head view. -/
+abbrev callHeads : τ → Finset σ := HasCallHeadView.allHeads
+
+end HasCallHeadView
+
+/-- The canonical `FOTerm` syntax already carries the needed head / call-head data. -/
+instance instHasCallHeadViewFOTerm (σ ν : Type) [DecidableEq σ] :
+    HasCallHeadView (FOTerm σ ν) σ where
+  head? := FOTerm.head?
+  allHeads := FOTerm.allHeads
+
+/-- Explicit call-head view induced by a raw first-order term view. -/
+def headViewOfFirstOrderTermView
+    (τ σ ν : Type) [DecidableEq σ] [HasFirstOrderTermView τ σ ν] :
+    HasCallHeadView τ σ where
+  head? := by
+    intro t
+    exact FOTerm.head? (HasFirstOrderTermView.toFOTerm (τ := τ) (σ := σ) (ν := ν) t)
+  allHeads := by
+    intro t
+    exact FOTerm.allHeads (HasFirstOrderTermView.toFOTerm (τ := τ) (σ := σ) (ν := ν) t)
+
+/-- Extracted node data from a raw rule engine exposing only head / call-head structure. -/
+structure ExtractedHeadRuleNode (ρ σ : Type) [DecidableEq σ] where
+  rule : ρ
+  nodeKey : σ
+  succKeys : Finset σ
+
+/-- Finite rule engine exposing only the head / call-head data needed by DP extraction. -/
+structure FiniteHeadRuleEngine (σ : Type) [DecidableEq σ] where
+  Rule : Type
+  Term : Type
+  termView : HasCallHeadView Term σ
+  rules : Array Rule
+  lhs : Rule → Term
+  rhs : Rule → Term
+
+/-- Typeclass-level finite engine view using only root-head and recursive-call-head data. -/
+class HasFiniteHeadRuleView (ε σ : Type) [DecidableEq σ] where
+  Rule : Type
+  Term : Type
+  termView : HasCallHeadView Term σ
+  rules : ε → Array Rule
+  lhs : Rule → Term
+  rhs : Rule → Term
+
+/-- Adapter from a canonical first-order engine view to the smaller head-view engine view. -/
+def finiteHeadRuleViewOfFirstOrder
+    (ε σ ν : Type) [DecidableEq σ] [H : HasFiniteFirstOrderView ε σ ν] :
+    HasFiniteHeadRuleView ε σ where
+  Rule := H.Rule
+  Term := FOTerm σ ν
+  termView := instHasCallHeadViewFOTerm σ ν
+  rules := H.rules
+  lhs := H.lhs
+  rhs := H.rhs
+
+/-- Adapter from a raw first-order engine view to the smaller head-view engine view. -/
+def finiteHeadRuleViewOfRaw
+    (ε σ ν : Type) [DecidableEq σ] [H : HasFiniteRawFirstOrderView ε σ ν] :
+    HasFiniteHeadRuleView ε σ where
+  Rule := H.Rule
+  Term := H.Term
+  termView := by
+    let _ : HasFirstOrderTermView H.Term σ ν := H.termView
+    exact headViewOfFirstOrderTermView H.Term σ ν
+  rules := H.rules
+  lhs := H.lhs
+  rhs := H.rhs
+
+namespace FiniteHeadRuleEngine
+
+variable {σ : Type} [DecidableEq σ] (E : FiniteHeadRuleEngine σ)
+
+/-- Defined heads of the raw head-view engine. -/
+def definedHeads : Finset σ :=
+  let _ := E.termView
+  E.rules.foldl
+    (fun acc r =>
+      match HasCallHeadView.rootHead? (E.lhs r) with
+      | some f => insert f acc
+      | none => acc)
+    ∅
+
+/-- Extract one call-graph node from the raw head-view engine. -/
+def extractNode? (defined : Finset σ) (r : E.Rule) : Option (ExtractedHeadRuleNode E.Rule σ) :=
+  let _ := E.termView
+  match HasCallHeadView.rootHead? (E.lhs r) with
+  | none => none
+  | some f =>
+      some
+        { rule := r
+          nodeKey := f
+          succKeys := (HasCallHeadView.callHeads (E.rhs r)).filter (· ∈ defined) }
+
+/-- Extracted call-head nodes of the raw head-view engine. -/
+def extractedNodes : Array (ExtractedHeadRuleNode E.Rule σ) :=
+  let defined := E.definedHeads
+  E.rules.filterMap (E.extractNode? defined)
+
+/-- Extracted call graph of the raw head-view engine. -/
+def extractedCallGraph : FiniteExtractedCallGraph σ :=
+  FiniteExtractedCallGraph.ofArrayMap
+    (nodes := E.extractedNodes)
+    (nodeKey := ExtractedHeadRuleNode.nodeKey)
+    (succKeys := ExtractedHeadRuleNode.succKeys)
+
+/-- Direct SCC search on the raw head-view engine. -/
+noncomputable abbrev findNontrivialSCCPair? :
+    Option (E.extractedCallGraph.Node × E.extractedCallGraph.Node) :=
+  E.extractedCallGraph.findNontrivialSCCPair?
+
+/-- SCC existence predicate on the raw head-view engine. -/
+abbrev HasNontrivialSCC : Prop :=
+  E.extractedCallGraph.HasNontrivialSCC
+
+/-- Standard SCC witness on the raw head-view engine. -/
+noncomputable abbrev toSCCCycle (h : E.HasNontrivialSCC) :
+    SCCCycle E.extractedCallGraph.Node :=
+  E.extractedCallGraph.toSCCCycle h
+
+theorem hasNontrivialSCC_iff_exists_findNontrivialSCCPair? :
+    E.HasNontrivialSCC ↔
+      ∃ p : E.extractedCallGraph.Node × E.extractedCallGraph.Node,
+        E.findNontrivialSCCPair? = some p := by
+  simpa [FiniteHeadRuleEngine.HasNontrivialSCC, FiniteHeadRuleEngine.findNontrivialSCCPair?,
+    FiniteHeadRuleEngine.extractedCallGraph] using
+    (FiniteExtractedCallGraph.hasNontrivialSCC_iff_exists_findNontrivialSCCPair?
+      (G := E.extractedCallGraph))
+
+theorem not_globalOrients_of_source_le_target_of_findNontrivialSCCPair?
+    {m : E.extractedCallGraph.Node → Nat}
+    {p : E.extractedCallGraph.Node × E.extractedCallGraph.Node}
+    (hfind : E.findNontrivialSCCPair? = some p)
+    (hge : m p.1 ≤ m p.2) :
+    ¬ GlobalOrients E.extractedCallGraph.toFiniteCallGraph.Edge m (· < ·) := by
+  simpa [FiniteHeadRuleEngine.findNontrivialSCCPair?, FiniteHeadRuleEngine.extractedCallGraph] using
+    (FiniteExtractedCallGraph.not_globalOrients_of_source_le_target_of_findNontrivialSCCPair?
+      (G := E.extractedCallGraph) hfind hge)
+
+theorem not_globalOrients_of_source_le_target_of_hasNontrivialSCC
+    {m : E.extractedCallGraph.Node → Nat}
+    (h : E.HasNontrivialSCC)
+    (hge : m (E.toSCCCycle h).source ≤ m (E.toSCCCycle h).target) :
+    ¬ GlobalOrients E.extractedCallGraph.toFiniteCallGraph.Edge m (· < ·) := by
+  simpa [FiniteHeadRuleEngine.HasNontrivialSCC, FiniteHeadRuleEngine.toSCCCycle,
+    FiniteHeadRuleEngine.extractedCallGraph] using
+    (FiniteExtractedCallGraph.not_globalOrients_of_source_le_target_of_hasNontrivialSCC
+      (G := E.extractedCallGraph) h hge)
+
+/-- Any packaged canonical first-order engine induces the smaller head-view engine. -/
+def ofFiniteFirstOrderEngine {ν : Type} (F : FiniteFirstOrderEngine σ ν) : FiniteHeadRuleEngine σ where
+  Rule := F.Rule
+  Term := FOTerm σ ν
+  termView := instHasCallHeadViewFOTerm σ ν
+  rules := F.rules
+  lhs := F.lhs
+  rhs := F.rhs
+
+/-- Any typeclass-exposed first-order engine induces the smaller head-view engine. -/
+def ofFirstOrderView {ε ν : Type} [HasFiniteFirstOrderView ε σ ν] (e : ε) :
+    FiniteHeadRuleEngine σ :=
+  ofFiniteFirstOrderEngine
+    (HasFiniteFirstOrderView.toFiniteFirstOrderEngine (ε := ε) (σ := σ) (ν := ν) e)
+
+/-- Any raw first-order engine view induces the smaller head-view engine. -/
+def ofRawFirstOrderView {ε ν : Type} [HasFiniteRawFirstOrderView ε σ ν] (e : ε) :
+    FiniteHeadRuleEngine σ := by
+  let H := (inferInstance : HasFiniteRawFirstOrderView ε σ ν)
+  let _ : HasFirstOrderTermView H.Term σ ν := H.termView
+  let termView : HasCallHeadView H.Term σ := headViewOfFirstOrderTermView H.Term σ ν
+  exact
+    { Rule := H.Rule
+      Term := H.Term
+      termView := termView
+      rules := H.rules e
+      lhs := H.lhs
+      rhs := H.rhs }
+
+end FiniteHeadRuleEngine
+
+namespace HasFiniteHeadRuleView
+
+variable {ε σ : Type} [DecidableEq σ] [H : HasFiniteHeadRuleView ε σ]
+
+/-- Package a typeclass-level head-view engine as the canonical finite head-rule engine. -/
+def toFiniteHeadRuleEngine (e : ε) : FiniteHeadRuleEngine σ where
+  Rule := H.Rule
+  Term := H.Term
+  termView := H.termView
+  rules := H.rules e
+  lhs := H.lhs
+  rhs := H.rhs
+
+/-- Defined heads recovered directly from a typeclass-level head-view engine. -/
+def definedHeads (e : ε) : Finset σ :=
+  (toFiniteHeadRuleEngine e).definedHeads
+
+/-- Extracted nodes recovered directly from a typeclass-level head-view engine. -/
+def extractedNodes (e : ε) : Array (ExtractedHeadRuleNode H.Rule σ) :=
+  (toFiniteHeadRuleEngine e).extractedNodes
+
+/-- Extracted call graph recovered directly from a typeclass-level head-view engine. -/
+def extractedCallGraph (e : ε) : FiniteExtractedCallGraph σ :=
+  (toFiniteHeadRuleEngine e).extractedCallGraph
+
+end HasFiniteHeadRuleView
+
+end OperatorKO7.DependencyPairsFragment
+```
+
+---
+
+## OperatorKO7/Meta/DependencyPairs_KernelFirstOrder.lean
+
+**Lines:** 209
+
+```lean
+import OperatorKO7.Meta.DependencyPairs_FiniteCarrierExtractedView
+
+/-!
+# KO7 Kernel Rules as a Generic First-Order TRS
+
+This module packages the KO7 full root-step rules directly as a finite first-order TRS over
+an internal symbol type, rather than through the external TPDB string syntax. It shows
+that the generic first-order dependency-pair extraction layer can be driven from an
+artifact-internal presentation as well.
+-/
+
+namespace OperatorKO7.DependencyPairsFragment.KernelFirstOrder
+
+/-- Internal first-order symbol type for the KO7 full-step TRS. -/
+inductive Symbol
+| void
+| delta
+| integrate
+| merge
+| app
+| recD
+| eqW
+deriving DecidableEq, Repr
+
+abbrev Term := OperatorKO7.DependencyPairsFragment.FOTerm Symbol String
+abbrev Rule := OperatorKO7.DependencyPairsFragment.FORule Symbol String
+
+/-- Variable shorthands for the internal KO7 first-order presentation. -/
+def x : Term := .var "x"
+def y : Term := .var "y"
+def z : Term := .var "z"
+
+/-- Internal symbol constructor shorthands. -/
+def void : Term := .app Symbol.void []
+def delta (t : Term) : Term := .app Symbol.delta [t]
+def integrate (t : Term) : Term := .app Symbol.integrate [t]
+def merge (a b : Term) : Term := .app Symbol.merge [a, b]
+def app (a b : Term) : Term := .app Symbol.app [a, b]
+def recD (b s n : Term) : Term := .app Symbol.recD [b, s, n]
+def eqW (a b : Term) : Term := .app Symbol.eqW [a, b]
+
+/-- KO7 full-step rules as an internal first-order TRS. -/
+def ko7FullStepRules : Array Rule :=
+  #[ ⟨integrate (delta x), void⟩
+   , ⟨merge void x, x⟩
+   , ⟨merge x void, x⟩
+   , ⟨merge x x, x⟩
+   , ⟨recD x y void, x⟩
+   , ⟨recD x y (delta z), app y (recD x y z)⟩
+   , ⟨eqW x x, void⟩
+   , ⟨eqW x y, integrate (merge x y)⟩ ]
+
+/-- Trivial internal engine carrier for the KO7 full-step TRS. -/
+inductive EngineTag
+| full
+deriving DecidableEq, Repr
+
+/-- Finite rule carrier for the KO7 full-step TRS. -/
+inductive RuleId
+| integrate_delta
+| merge_void_left
+| merge_void_right
+| merge_idem
+| rec_zero
+| rec_succ
+| eq_refl
+| eq_diff
+deriving Fintype, DecidableEq, Repr
+
+/-- Left-hand sides indexed by the finite KO7 rule carrier. -/
+def ruleLhs : RuleId → Term
+| .integrate_delta => integrate (delta x)
+| .merge_void_left => merge void x
+| .merge_void_right => merge x void
+| .merge_idem => merge x x
+| .rec_zero => recD x y void
+| .rec_succ => recD x y (delta z)
+| .eq_refl => eqW x x
+| .eq_diff => eqW x y
+
+/-- Right-hand sides indexed by the finite KO7 rule carrier. -/
+def ruleRhs : RuleId → Term
+| .integrate_delta => void
+| .merge_void_left => x
+| .merge_void_right => x
+| .merge_idem => x
+| .rec_zero => x
+| .rec_succ => app y (recD x y z)
+| .eq_refl => void
+| .eq_diff => integrate (merge x y)
+
+instance : OperatorKO7.DependencyPairsFragment.HasFiniteRawFirstOrderView EngineTag Symbol String where
+  Rule := Rule
+  Term := Term
+  termView := OperatorKO7.DependencyPairsFragment.instHasFirstOrderTermViewFOTerm Symbol String
+  rules _ := ko7FullStepRules
+  lhs := FORule.lhs
+  rhs := FORule.rhs
+
+instance : OperatorKO7.DependencyPairsFragment.HasFiniteHeadRuleView EngineTag Symbol :=
+  OperatorKO7.DependencyPairsFragment.finiteHeadRuleViewOfRaw EngineTag Symbol String
+
+instance : OperatorKO7.DependencyPairsFragment.HasFiniteCarrierRawFirstOrderView EngineTag Symbol String where
+  Rule := RuleId
+  ruleFintype := inferInstance
+  ruleDecEq := inferInstance
+  Term := Term
+  termView := OperatorKO7.DependencyPairsFragment.instHasFirstOrderTermViewFOTerm Symbol String
+  lhs := ruleLhs
+  rhs := ruleRhs
+
+instance : OperatorKO7.DependencyPairsFragment.HasFiniteCarrierHeadView EngineTag Symbol :=
+  OperatorKO7.DependencyPairsFragment.finiteCarrierHeadViewOfFiniteCarrierRaw
+    EngineTag Symbol String
+
+instance : OperatorKO7.DependencyPairsFragment.HasFiniteCarrierExtractedView EngineTag Symbol :=
+  OperatorKO7.DependencyPairsFragment.finiteCarrierExtractedViewOfHeadCarrier
+    EngineTag Symbol
+
+/-- KO7 full-step rules packaged through the generic internal-engine view. -/
+def ko7Engine : OperatorKO7.DependencyPairsFragment.FiniteFirstOrderEngine Symbol String :=
+  OperatorKO7.DependencyPairsFragment.HasFiniteFirstOrderView.toFiniteFirstOrderEngine EngineTag.full
+
+/-- KO7 full-step rules packaged through the finite rule-carrier engine view. -/
+noncomputable def ko7CarrierEngine :
+    OperatorKO7.DependencyPairsFragment.FiniteCarrierFirstOrderEngine Symbol String :=
+  OperatorKO7.DependencyPairsFragment.HasFiniteCarrierFirstOrderView.toFiniteCarrierFirstOrderEngine
+    EngineTag.full
+
+/-- KO7 full-step rules recovered directly from the finite rule-carrier first-order surface. -/
+noncomputable def ko7CarrierFirstOrderEngine :
+    OperatorKO7.DependencyPairsFragment.FiniteFirstOrderEngine Symbol String :=
+  OperatorKO7.DependencyPairsFragment.HasFiniteCarrierFirstOrderView.toFiniteFirstOrderEngine
+    (ε := EngineTag) (σ := Symbol) (ν := String) EngineTag.full
+
+/-- KO7 full-step rules packaged through the smaller head / call-head interface. -/
+def ko7HeadEngine : OperatorKO7.DependencyPairsFragment.FiniteHeadRuleEngine Symbol :=
+  OperatorKO7.DependencyPairsFragment.FiniteHeadRuleEngine.ofRawFirstOrderView
+    (ε := EngineTag) (σ := Symbol) (ν := String) EngineTag.full
+
+/-- KO7 full-step rules recovered directly from the typeclass-level head-view surface. -/
+def ko7HeadViewEngine : OperatorKO7.DependencyPairsFragment.FiniteHeadRuleEngine Symbol :=
+  OperatorKO7.DependencyPairsFragment.HasFiniteHeadRuleView.toFiniteHeadRuleEngine EngineTag.full
+
+/-- KO7 full-step rules recovered directly from the finite rule-carrier head-view surface. -/
+noncomputable def ko7CarrierHeadEngine : OperatorKO7.DependencyPairsFragment.FiniteHeadRuleEngine Symbol :=
+  OperatorKO7.DependencyPairsFragment.HasFiniteCarrierFirstOrderView.toFiniteHeadRuleEngine
+    (ε := EngineTag) (σ := Symbol) (ν := String) EngineTag.full
+
+/-- KO7 full-step rules recovered directly from the finite head-carrier surface. -/
+noncomputable def ko7CarrierHeadOnlyEngine : OperatorKO7.DependencyPairsFragment.FiniteHeadRuleEngine Symbol :=
+  OperatorKO7.DependencyPairsFragment.HasFiniteCarrierHeadView.toFiniteHeadRuleEngine
+    (ε := EngineTag) (σ := Symbol) EngineTag.full
+
+/-- KO7 full-step rules recovered directly from the finite extracted-data carrier surface. -/
+noncomputable def ko7CarrierExtractedGraph :
+    OperatorKO7.DependencyPairsFragment.FiniteExtractedCallGraph Symbol :=
+  OperatorKO7.DependencyPairsFragment.HasFiniteCarrierExtractedView.extractedCallGraph
+    (ε := EngineTag) (κ := Symbol) EngineTag.full
+
+/-- Extracted nodes for the internal KO7 first-order TRS. -/
+def ko7FullStepExtractedNodes :=
+  ko7Engine.extractedNodes
+
+/-- Extracted call graph for the internal KO7 first-order TRS. -/
+def ko7FullStepExtractedCallGraph :
+    OperatorKO7.DependencyPairsFragment.FiniteExtractedCallGraph Symbol :=
+  ko7Engine.extractedCallGraph
+
+theorem ko7_full_step_rule_count :
+    ko7FullStepRules.size = 8 := by
+  native_decide
+
+theorem ko7_carrier_rule_card :
+    Fintype.card RuleId = 8 := by
+  native_decide
+
+theorem ko7_full_step_extracted_node_count :
+    ko7FullStepExtractedNodes.size = 8 := by
+  native_decide
+
+theorem ko7_full_step_defined_heads :
+    ko7Engine.definedHeads =
+      ({ Symbol.integrate, Symbol.merge, Symbol.recD, Symbol.eqW } : Finset Symbol) := by
+  native_decide
+
+theorem ko7_head_engine_defined_heads :
+    ko7HeadEngine.definedHeads = ko7Engine.definedHeads := by
+  native_decide
+
+theorem ko7_head_engine_extracted_node_count :
+    ko7HeadEngine.extractedNodes.size = 8 := by
+  native_decide
+
+theorem ko7_head_view_engine_matches :
+    ko7HeadViewEngine.definedHeads = ko7HeadEngine.definedHeads := by
+  native_decide
+
+theorem ko7_full_step_has_recD_successor :
+    ∃ n ∈ ko7FullStepExtractedNodes.toList,
+      n.nodeKey = Symbol.recD ∧ n.succKeys = ({ Symbol.recD } : Finset Symbol) := by
+  native_decide
+
+theorem ko7_head_engine_has_recD_successor :
+    ∃ n ∈ ko7HeadEngine.extractedNodes.toList,
+      n.nodeKey = Symbol.recD ∧ n.succKeys = ({ Symbol.recD } : Finset Symbol) := by
+  native_decide
+
+end OperatorKO7.DependencyPairsFragment.KernelFirstOrder
+```
+
+---
+
+## OperatorKO7/Meta/DependencyPairs_TPDBExtraction.lean
+
+**Lines:** 107
+
+```lean
+import OperatorKO7.Meta.DependencyPairs_ExtractedCallGraph
+import OperatorKO7.Meta.TPDB_Export
+
+/-!
+# Dependency-Pair Call-Graph Extraction from TPDB Rules
+
+This module connects the finite SCC search surface to the concrete TPDB / TTT2 export
+syntax already used in the artifact. Starting from a finite list of first-order TPDB
+rules, it extracts:
+
+- the set of defined heads (left-hand side root symbols),
+- the defined call-heads appearing in each right-hand side, and
+- the corresponding array-backed extracted call graph.
+
+This does not yet prove SCC existence for an arbitrary TRS, but it removes the remaining
+manual call-graph packaging step for concrete finite TPDB-style rule lists.
+-/
+
+namespace OperatorKO7.DependencyPairsFragment
+
+open OperatorKO7
+
+namespace TpdbTerm
+
+/-- Root head symbol of a TPDB term, when present. -/
+def head? : TpdbTerm → Option String
+| .var _ => none
+| .app f _ => some f
+
+/-- All function heads appearing anywhere in a TPDB term. -/
+def allHeads : TpdbTerm → Finset String
+| .var _ => ∅
+| .app f args =>
+    insert f <| args.foldl (fun acc t => acc ∪ allHeads t) ∅
+
+end TpdbTerm
+
+namespace TpdbRule
+
+/-- Root head symbol of the left-hand side of a TPDB rule, when present. -/
+def lhsHead? (r : TpdbRule) : Option String :=
+  TpdbTerm.head? r.lhs
+
+end TpdbRule
+
+/-- Extracted TPDB dependency-pair node data. -/
+structure ExtractedTpdbNode where
+  rule : TpdbRule
+  nodeKey : String
+  succKeys : Finset String
+
+/-- Defined heads of a finite TPDB rule set: the function symbols appearing at rule roots. -/
+def tpdbDefinedHeads (rules : Array TpdbRule) : Finset String :=
+  rules.foldl
+    (fun acc r =>
+      match TpdbRule.lhsHead? r with
+      | some f => insert f acc
+      | none => acc)
+    ∅
+
+/-- Extract one dependency-pair call-graph node from a TPDB rule, when the left-hand side
+has a function head. The successor keys are the defined heads occurring in the right-hand
+side. -/
+def extractTpdbNode? (defined : Finset String) (r : TpdbRule) : Option ExtractedTpdbNode :=
+  match TpdbRule.lhsHead? r with
+  | none => none
+  | some f =>
+      some
+        { rule := r
+          nodeKey := f
+          succKeys := (TpdbTerm.allHeads r.rhs).filter (· ∈ defined) }
+
+/-- Extracted dependency-pair call-graph nodes for a finite TPDB rule set. -/
+def extractTpdbNodes (rules : Array TpdbRule) : Array ExtractedTpdbNode :=
+  let defined := tpdbDefinedHeads rules
+  rules.filterMap (extractTpdbNode? defined)
+
+/-- Array-backed extracted call graph induced by a finite TPDB rule list. -/
+def tpdbExtractedCallGraph (rules : Array TpdbRule) : FiniteExtractedCallGraph String :=
+  FiniteExtractedCallGraph.ofArrayMap
+    (nodes := extractTpdbNodes rules)
+    (nodeKey := ExtractedTpdbNode.nodeKey)
+    (succKeys := ExtractedTpdbNode.succKeys)
+
+/-- Concrete extracted nodes for the exported KO7 full-step TRS. -/
+def ko7FullStepExtractedNodes : Array ExtractedTpdbNode :=
+  extractTpdbNodes ko7FullStepTpdbRules.toArray
+
+/-- Concrete extracted call graph for the exported KO7 full-step TRS. -/
+def ko7FullStepExtractedCallGraph : FiniteExtractedCallGraph String :=
+  tpdbExtractedCallGraph ko7FullStepTpdbRules.toArray
+
+theorem ko7_full_step_extracted_node_count :
+    ko7FullStepExtractedNodes.size = 8 := by
+  native_decide
+
+theorem ko7_full_step_defined_heads :
+    tpdbDefinedHeads ko7FullStepTpdbRules.toArray =
+      ({ "integrate", "merge", "recD", "eqW" } : Finset String) := by
+  native_decide
+
+theorem ko7_full_step_has_recD_successor :
+    ∃ n ∈ ko7FullStepExtractedNodes.toList,
+      n.nodeKey = "recD" ∧ n.succKeys = ({ "recD" } : Finset String) := by
+  native_decide
 
 end OperatorKO7.DependencyPairsFragment
 ```
@@ -6036,6 +9148,81 @@ end OperatorKO7.MetaDM
 
 ---
 
+## OperatorKO7/Meta/DM_UpstreamSurface.lean
+
+**Lines:** 66
+
+```lean
+import OperatorKO7.Meta.DM_OrderType_LowerBound
+
+/-!
+# Upstream-Staging Surface for the DM Order / Order-Type Package
+
+This module does not claim an actual Mathlib PR. Its purpose is narrower:
+
+- isolate the *general* Dershowitz-Manna multiset-order declarations already
+  present in this repository,
+- restate them in one small staging surface, and
+- give the artifact a concrete upstream-preparation target distinct from the
+  KO7-specific calibration theorems.
+
+The candidate surface collected here is independent of the KO7 kernel itself:
+
+- `dmOrdEmbed` on `Multiset Nat`
+- order reflection / strict monotonicity with respect to `DM`
+- the upper bound `dmOrdEmbed m < ω^ω`
+- the exact order-type package `dm_order_type_omega_omega`
+
+What is still missing relative to the original review request is an actual
+upstream Mathlib pull request. This file is therefore an upstream-prep artifact,
+not an upstream contribution by itself.
+-/
+
+namespace OperatorKO7.MetaDMUpstream
+
+open Ordinal
+open OperatorKO7.MetaCM
+open OperatorKO7.MetaDM
+
+/-- Compact statement of the general DM candidate surface that is plausibly
+upstreamable to Mathlib after namespace / dependency cleanup. -/
+def DMOrderTypeUpstreamSurface : Prop :=
+  (∀ m₁ m₂ : Multiset Nat, MetaCM.DM m₁ m₂ ↔ dmOrdEmbed m₁ < dmOrdEmbed m₂) ∧
+  (∀ m : Multiset Nat, dmOrdEmbed m < (ω : Ordinal) ^ (ω : Ordinal)) ∧
+  (∀ α < (ω : Ordinal) ^ (ω : Ordinal), ∃ m : Multiset Nat, dmOrdEmbed m = α)
+
+/-- The current repository already proves the full general-order surface. -/
+theorem dmOrderTypeUpstreamSurface_holds : DMOrderTypeUpstreamSurface :=
+  dm_order_type_omega_omega
+
+/-- Forward strict monotonicity, exposed under the staging namespace. -/
+theorem dmOrder_strictMono {m₁ m₂ : Multiset Nat} (hDM : DM m₁ m₂) :
+    dmOrdEmbed m₁ < dmOrdEmbed m₂ :=
+  dmOrdEmbed_strictMono hDM
+
+/-- Order reflection, exposed under the staging namespace. -/
+theorem dmOrder_reflects {m₁ m₂ : Multiset Nat}
+    (hlt : dmOrdEmbed m₁ < dmOrdEmbed m₂) :
+    DM m₁ m₂ :=
+  dmOrdEmbed_reflects hlt
+
+/-- The general upper bound below `ω^ω`, exposed under the staging namespace. -/
+theorem dmOrder_lt_opow_omega (m : Multiset Nat) :
+    dmOrdEmbed m < (ω : Ordinal) ^ (ω : Ordinal) :=
+  dmOrdEmbed_lt_opow_omega m
+
+/-- Exact order-type package, exposed under the staging namespace. -/
+theorem dmOrder_exact_type :
+    (∀ m₁ m₂ : Multiset Nat, MetaCM.DM m₁ m₂ ↔ dmOrdEmbed m₁ < dmOrdEmbed m₂) ∧
+    (∀ m : Multiset Nat, dmOrdEmbed m < (ω : Ordinal) ^ (ω : Ordinal)) ∧
+    (∀ α < (ω : Ordinal) ^ (ω : Ordinal), ∃ m : Multiset Nat, dmOrdEmbed m = α) :=
+  dm_order_type_omega_omega
+
+end OperatorKO7.MetaDMUpstream
+```
+
+---
+
 ## OperatorKO7/Meta/DP_BaseOrder_Boundary.lean
 
 **Lines:** 54
@@ -6767,6 +9954,427 @@ end OperatorKO7.EscapeTrichotomy
 
 ---
 
+## OperatorKO7/Meta/FiniteGraphReachability.lean
+
+**Lines:** 148
+
+```lean
+import Mathlib
+
+/-!
+# Finite Graph Reachability
+
+This module adds a small finite-graph reachability layer for arbitrary directed relations.
+For a finite decidable graph, bounded successor-closure over `Fintype.card α` steps already
+captures the full reflexive transitive closure. The result is used as a convenience bridge
+for the raw-graph SCC barrier theorems: under finite decidable graph assumptions, callers
+can work with finite reachability facts instead of supplying explicit `TransGen` witnesses.
+-/
+
+namespace OperatorKO7.FiniteGraphReachability
+
+open Relation
+
+variable {α : Type} (R : α → α → Prop) [Fintype α] [DecidableEq α] [DecidableRel R]
+
+/-- One-step successor closure of a finite node set. -/
+def succSet (S : Finset α) : Finset α :=
+  S ∪ Finset.univ.filter fun v => ∃ u ∈ S, R u v
+
+/-- Bounded reachability iteration from a start node. -/
+def reachIter (a : α) : Nat → Finset α
+  | 0 => {a}
+  | n + 1 => succSet R (reachIter a n)
+
+/-- Finite reachability: successor closure after `Fintype.card α` rounds. -/
+def Reachable (a b : α) : Prop :=
+  b ∈ reachIter R a (Fintype.card α)
+
+@[simp] theorem mem_succSet {S : Finset α} {v : α} :
+    v ∈ succSet R S ↔ v ∈ S ∨ ∃ u ∈ S, R u v := by
+  simp [succSet]
+
+theorem subset_succSet (S : Finset α) : S ⊆ succSet R S := by
+  intro v hv
+  exact (mem_succSet (R := R)).2 <| Or.inl hv
+
+theorem reachIter_mono_succ (a : α) (n : Nat) :
+    reachIter R a n ⊆ reachIter R a (n + 1) := by
+  simpa [reachIter] using subset_succSet (R := R) (reachIter R a n)
+
+theorem self_mem_reachIter (a : α) : ∀ n, a ∈ reachIter R a n
+  | 0 => by simp [reachIter]
+  | n + 1 => by
+      exact (reachIter_mono_succ (R := R) a n) (self_mem_reachIter a n)
+
+theorem mem_reachIter_sound {a b : α} :
+    ∀ {n}, b ∈ reachIter R a n → ReflTransGen R a b
+  | 0, hb => by
+      simp [reachIter] at hb
+      subst hb
+      exact ReflTransGen.refl
+  | n + 1, hb => by
+      rcases (mem_succSet (R := R)).1 (by simpa [reachIter] using hb) with hmem | ⟨u, hu, hub⟩
+      · exact mem_reachIter_sound hmem
+      · exact ReflTransGen.tail (mem_reachIter_sound hu) hub
+
+theorem reachIter_eq_succ_of_eq_succ_at {a : α} {n k : Nat}
+    (h : reachIter R a n = reachIter R a (n + 1)) :
+    reachIter R a (n + k) = reachIter R a (n + k + 1) := by
+  induction k with
+  | zero =>
+      simpa using h
+  | succ k ih =>
+      have hs := congrArg (succSet R) ih
+      simpa [Nat.add_assoc, reachIter] using hs
+
+theorem reachIter_eq_succ_of_eq_succ_of_le {a : α} {m n : Nat}
+    (h : reachIter R a m = reachIter R a (m + 1)) (hmn : m ≤ n) :
+    reachIter R a n = reachIter R a (n + 1) := by
+  have hk : n = m + (n - m) := by omega
+  rw [hk]
+  simpa using reachIter_eq_succ_of_eq_succ_at (R := R) (a := a) (n := m) (k := n - m) h
+
+theorem card_reachIter_ge_of_strict_prefix {a : α} :
+    ∀ n,
+      (∀ m, m < n → reachIter R a m ≠ reachIter R a (m + 1)) →
+      n + 1 ≤ (reachIter R a n).card
+  | 0, _ => by simp [reachIter]
+  | n + 1, hstrict => by
+      have hprefix : ∀ m, m < n → reachIter R a m ≠ reachIter R a (m + 1) := by
+        intro m hm
+        exact hstrict m (lt_trans hm (Nat.lt_succ_self n))
+      have ih := card_reachIter_ge_of_strict_prefix n hprefix
+      have hsub : reachIter R a n ⊆ reachIter R a (n + 1) :=
+        reachIter_mono_succ (R := R) a n
+      have hne : reachIter R a n ≠ reachIter R a (n + 1) :=
+        hstrict n (Nat.lt_succ_self n)
+      have hssub : reachIter R a n ⊂ reachIter R a (n + 1) := by
+        refine ⟨hsub, ?_⟩
+        intro hback
+        exact hne (Finset.Subset.antisymm hsub hback)
+      have hcard : (reachIter R a n).card < (reachIter R a (n + 1)).card :=
+        Finset.card_lt_card hssub
+      omega
+
+theorem reachIter_card_eq_succ {a : α} :
+    reachIter R a (Fintype.card α) = reachIter R a (Fintype.card α + 1) := by
+  by_contra hne
+  have hprefix : ∀ m, m < Fintype.card α + 1 → reachIter R a m ≠ reachIter R a (m + 1) := by
+    intro m hm hmEq
+    exact hne <|
+      reachIter_eq_succ_of_eq_succ_of_le (R := R) (a := a) hmEq (by omega)
+  have hcard :=
+    card_reachIter_ge_of_strict_prefix (R := R) (a := a) (n := Fintype.card α + 1) hprefix
+  have huniv : (reachIter R a (Fintype.card α + 1)).card ≤ Fintype.card α := by
+    exact Finset.card_le_univ (reachIter R a (Fintype.card α + 1))
+  omega
+
+theorem closed_reachIter_card {a u v : α}
+    (hu : u ∈ reachIter R a (Fintype.card α)) (h : R u v) :
+    v ∈ reachIter R a (Fintype.card α) := by
+  have hnext : v ∈ reachIter R a (Fintype.card α + 1) := by
+    have : v ∈ succSet R (reachIter R a (Fintype.card α)) := (mem_succSet (R := R)).2 <|
+      Or.inr ⟨u, hu, h⟩
+    simpa [reachIter] using this
+  simpa [reachIter_card_eq_succ (R := R) (a := a)] using hnext
+
+theorem mem_reachIter_card_of_reflTransGen {a b : α}
+    (h : ReflTransGen R a b) :
+    b ∈ reachIter R a (Fintype.card α) := by
+  induction h with
+  | refl =>
+      exact self_mem_reachIter (R := R) a (Fintype.card α)
+  | tail hab hbc ih =>
+      exact closed_reachIter_card (R := R) ih hbc
+
+theorem reachable_iff_reflTransGen {a b : α} :
+    Reachable R a b ↔ ReflTransGen R a b := by
+  constructor
+  · exact mem_reachIter_sound (R := R)
+  · intro h
+    exact mem_reachIter_card_of_reflTransGen (R := R) h
+
+theorem reachable_iff_eq_or_transGen {a b : α} :
+    Reachable R a b ↔ b = a ∨ TransGen R a b := by
+  rw [reachable_iff_reflTransGen (R := R), Relation.reflTransGen_iff_eq_or_transGen]
+
+theorem transGen_of_reachable_of_ne {a b : α}
+    (h : Reachable R a b) (hne : a ≠ b) :
+    TransGen R a b := by
+  rcases (reachable_iff_eq_or_transGen (R := R)).1 h with rfl | htg
+  · exact False.elim (hne rfl)
+  · exact htg
+
+end OperatorKO7.FiniteGraphReachability
+```
+
+---
+
+## OperatorKO7/Meta/FiniteGraphSCC.lean
+
+**Lines:** 138
+
+```lean
+import OperatorKO7.Meta.FiniteGraphReachability
+
+/-!
+# Finite Graph SCC Witness Packaging
+
+This module packages one more automation layer on top of finite reachability.
+For a finite decidable directed graph, callers can state only that a nontrivial SCC
+exists, and the concrete node pair plus both reachability directions are recovered
+internally.
+
+The point is not to solve SCC discovery for arbitrary TRSs. The point is to remove
+the remaining hand-written pair / round-trip packaging layer once a finite graph
+relation is already fixed.
+-/
+
+namespace OperatorKO7.FiniteGraphSCC
+
+open OperatorKO7.FiniteGraphReachability
+
+variable {α : Type} (R : α → α → Prop) [Fintype α] [DecidableEq α] [DecidableRel R]
+
+/-- Two distinct nodes lie in the same SCC when each reaches the other. -/
+def NontrivialRoundTrip (a b : α) : Prop :=
+  a ≠ b ∧ Reachable R a b ∧ Reachable R b a
+
+/-- A finite graph has a nontrivial SCC if some distinct pair lies in the same SCC. -/
+def HasNontrivialSCC : Prop :=
+  ∃ a b, NontrivialRoundTrip R a b
+
+instance instDecidableNontrivialRoundTrip (a b : α) :
+    Decidable (NontrivialRoundTrip R a b) := by
+  unfold NontrivialRoundTrip Reachable
+  infer_instance
+
+/-- All candidate node pairs in the finite graph. -/
+def candidatePairs (α : Type) [Fintype α] : Finset (α × α) :=
+  Finset.univ.product Finset.univ
+
+/-- The finite set of distinct mutually reachable node pairs. -/
+def sccPairs (R : α → α → Prop) [Fintype α] [DecidableEq α] [DecidableRel R] : Finset (α × α) :=
+  (candidatePairs α).filter fun p => decide (NontrivialRoundTrip R p.1 p.2)
+
+theorem mem_sccPairs {p : α × α} :
+    p ∈ sccPairs R ↔ NontrivialRoundTrip R p.1 p.2 := by
+  simp [sccPairs, candidatePairs, NontrivialRoundTrip]
+
+theorem sccPairs_nonempty_iff :
+    (sccPairs R).Nonempty ↔ HasNontrivialSCC R := by
+  constructor
+  · rintro ⟨p, hp⟩
+    exact ⟨p.1, p.2, (mem_sccPairs (R := R)).1 hp⟩
+  · rintro ⟨a, b, hab⟩
+    exact ⟨(a, b), (mem_sccPairs (R := R)).2 hab⟩
+
+/-- Computable search for a concrete SCC pair on a finite graph. -/
+noncomputable def findNontrivialSCCPair? : Option (α × α) :=
+  (sccPairs R).toList.head?
+
+theorem findNontrivialSCCPair?_spec {p : α × α}
+    (h : findNontrivialSCCPair? (R := R) = some p) :
+    NontrivialRoundTrip R p.1 p.2 := by
+  classical
+  have hmemList : p ∈ (sccPairs R).toList := by
+    exact List.mem_of_head? (by simpa [findNontrivialSCCPair?] using h)
+  have hmem : p ∈ sccPairs R := by
+    simpa using hmemList
+  exact (mem_sccPairs (R := R)).1 hmem
+
+theorem exists_findNontrivialSCCPair?_eq_some
+    (h : HasNontrivialSCC R) :
+    ∃ p : α × α, findNontrivialSCCPair? (R := R) = some p := by
+  classical
+  have hs : (sccPairs R).Nonempty := (sccPairs_nonempty_iff (R := R)).2 h
+  cases hlist : (sccPairs R).toList with
+  | nil =>
+      exfalso
+      exact hs.toList_ne_nil hlist
+  | cons p ps =>
+      exact ⟨p, by simp [findNontrivialSCCPair?, hlist]⟩
+
+theorem hasNontrivialSCC_iff_exists_findNontrivialSCCPair? :
+    HasNontrivialSCC R ↔ ∃ p : α × α, findNontrivialSCCPair? (R := R) = some p := by
+  constructor
+  · exact exists_findNontrivialSCCPair?_eq_some (R := R)
+  · rintro ⟨p, hp⟩
+    exact ⟨p.1, p.2, findNontrivialSCCPair?_spec (R := R) hp⟩
+
+theorem hasNontrivialSCC_of_findNontrivialSCCPair?_eq_some {p : α × α}
+    (h : findNontrivialSCCPair? (R := R) = some p) :
+    HasNontrivialSCC R := by
+  exact ⟨p.1, p.2, findNontrivialSCCPair?_spec (R := R) h⟩
+
+theorem findNontrivialSCCPair?_eq_none_iff_not_hasNontrivialSCC :
+    findNontrivialSCCPair? (R := R) = none ↔ ¬ HasNontrivialSCC R := by
+  constructor
+  · intro hnone hscc
+    rcases exists_findNontrivialSCCPair?_eq_some (R := R) hscc with ⟨p, hp⟩
+    rw [hnone] at hp
+    simp at hp
+  · intro hnot
+    cases hfind : findNontrivialSCCPair? (R := R) with
+    | none =>
+        rfl
+    | some p =>
+        exfalso
+        exact hnot (hasNontrivialSCC_of_findNontrivialSCCPair?_eq_some (R := R) hfind)
+
+/-- A nontrivial SCC witness can be repackaged as an explicit sigma pair. -/
+private theorem witnessPair_nonempty (h : HasNontrivialSCC R) :
+    Nonempty {p : α × α // NontrivialRoundTrip R p.1 p.2} := by
+  classical
+  rcases h with ⟨a, b, hab⟩
+  exact ⟨⟨(a, b), hab⟩⟩
+
+/-- Chosen concrete witness pair for a nontrivial SCC. -/
+noncomputable def witnessPair (h : HasNontrivialSCC R) :
+    {p : α × α // NontrivialRoundTrip R p.1 p.2} :=
+  Classical.choice (witnessPair_nonempty R h)
+
+noncomputable def witnessSrc (h : HasNontrivialSCC R) : α :=
+  (witnessPair R h).1.1
+
+noncomputable def witnessDst (h : HasNontrivialSCC R) : α :=
+  (witnessPair R h).1.2
+
+theorem witnessSrc_ne_witnessDst (h : HasNontrivialSCC R) :
+    witnessSrc R h ≠ witnessDst R h :=
+  (witnessPair R h).2.1
+
+theorem reachable_witnessSrc_witnessDst (h : HasNontrivialSCC R) :
+    Reachable R (witnessSrc R h) (witnessDst R h) :=
+  (witnessPair R h).2.2.1
+
+theorem reachable_witnessDst_witnessSrc (h : HasNontrivialSCC R) :
+    Reachable R (witnessDst R h) (witnessSrc R h) :=
+  (witnessPair R h).2.2.2
+
+end OperatorKO7.FiniteGraphSCC
+```
+
+---
+
+## OperatorKO7/Meta/GraphPathExtraction.lean
+
+**Lines:** 108
+
+```lean
+import Mathlib
+
+/-!
+# Graph Path Extraction Utilities
+
+This module packages a small generic bridge from `Relation.TransGen` proofs to explicit
+edge-indexed path witnesses. It is intentionally narrow and purely structural: it does
+not discover paths algorithmically, but once a nonempty transitive-closure proof is
+available it reconstructs a concrete node sequence with per-edge certificates.
+-/
+
+namespace OperatorKO7.GraphPathExtraction
+
+/-- A concrete nonempty edge path from `a` to `b`. -/
+structure EdgePath {α : Type} (R : α → α → Prop) (a b : α) where
+  len : Nat
+  hlen : 0 < len
+  node : Nat → α
+  start : node 0 = a
+  finish : node len = b
+  edge : ∀ r, r < len → R (node r) (node (r + 1))
+
+namespace EdgePath
+
+variable {α : Type} {R : α → α → Prop} {a b c : α}
+
+/-- Single-edge path. -/
+def single (h : R a b) : EdgePath R a b where
+  len := 1
+  hlen := by omega
+  node
+    | 0 => a
+    | _ + 1 => b
+  start := rfl
+  finish := rfl
+  edge := by
+    intro r hr
+    have : r = 0 := by omega
+    subst this
+    simpa using h
+
+/-- Prepend one certified edge to a concrete path. -/
+def cons (h : R a b) (p : EdgePath R b c) : EdgePath R a c where
+  len := p.len + 1
+  hlen := by omega
+  node
+    | 0 => a
+    | n + 1 => p.node n
+  start := rfl
+  finish := by simpa using p.finish
+  edge := by
+    intro r hr
+    cases r with
+    | zero =>
+        simpa [p.start] using h
+    | succ r =>
+        have hr' : r < p.len := by omega
+        simpa using p.edge r hr'
+
+/-- Concatenate two concrete paths with matching endpoint / startpoint. -/
+def append (p : EdgePath R a b) (q : EdgePath R b c) : EdgePath R a c where
+  len := p.len + q.len
+  hlen := Nat.add_pos_left p.hlen q.len
+  node := fun n =>
+    if h : n < p.len then p.node n else q.node (n - p.len)
+  start := by
+    have h : 0 < p.len := p.hlen
+    simp [h, p.start]
+  finish := by
+    have h : ¬ p.len + q.len < p.len := by omega
+    have hsub : p.len + q.len - p.len = q.len := by omega
+    simp [h, hsub, q.finish]
+  edge := by
+    intro r hr
+    by_cases hrp : r < p.len
+    · by_cases hp : r + 1 < p.len
+      · simp [hrp, hp]
+        exact p.edge r hrp
+      · have hEq : r + 1 = p.len := by omega
+        have hed := p.edge r hrp
+        simpa [hrp, hEq, p.finish, q.start] using hed
+    · have hq : r - p.len < q.len := by omega
+      have hp' : ¬ r + 1 < p.len := by omega
+      have hsucc : r + 1 - p.len = (r - p.len) + 1 := by omega
+      simp [hrp, hp', hsucc]
+      exact q.edge (r - p.len) hq
+
+/-- A nonempty transitive-closure proof carries a concrete edge path witness. -/
+theorem nonempty_ofTransGen (h : Relation.TransGen R a b) : Nonempty (EdgePath R a b) := by
+  induction h with
+  | single h =>
+      exact ⟨single h⟩
+  | tail hab hbc ih =>
+      rcases ih with ⟨p⟩
+      exact ⟨append p (single hbc)⟩
+
+/-- Extract a concrete edge path from a nonempty transitive-closure proof. -/
+noncomputable def ofTransGen (h : Relation.TransGen R a b) : EdgePath R a b :=
+  Classical.choice (nonempty_ofTransGen h)
+
+/-- Concatenate two extracted transitive-closure paths. -/
+noncomputable def ofRoundTrip (hab : Relation.TransGen R a b) (hbc : Relation.TransGen R b c) :
+    EdgePath R a c :=
+  append (ofTransGen hab) (ofTransGen hbc)
+
+end EdgePath
+
+end OperatorKO7.GraphPathExtraction
+```
+
+---
+
 ## OperatorKO7/Meta/Impossibility_Lemmas.lean
 
 **Lines:** 338
@@ -7116,7 +10724,7 @@ end OperatorKO7
 
 ## OperatorKO7/Meta/KBO_Impossible.lean
 
-**Lines:** 42
+**Lines:** 36
 
 ```lean
 import OperatorKO7.Meta.SymbolicComparatorBarrier
@@ -7150,15 +10758,9 @@ theorem no_kbo_orients_dup_step (K : KBOStyleOrder) :
   not_orients_dup_rule K
 
 /-- No KBO-style order exists that orients the duplicating schema step. -/
-theorem no_kbo_orients_dup_step_exists :
-    ¬ ∃ K : KBOStyleOrder, K.gt dupSrc dupTgt :=
-  no_symbolic_variable_condition_orients_dup_step
-
-/-- The KO7 `rec_succ` rule is an instance of the symbolic duplicating schema.
-This theorem packages the impossibility under an explicit KO7-facing name. -/
 theorem no_kbo_orients_ko7_rec_succ :
     ¬ ∃ K : KBOStyleOrder, K.gt dupSrc dupTgt :=
-  no_kbo_orients_dup_step_exists
+  no_symbolic_variable_condition_orients_dup_step
 
 end OperatorKO7.KBOImpossible
 ```
@@ -10342,6 +13944,256 @@ end OperatorKO7.MultilinearBarrier
 
 ---
 
+## OperatorKO7/Meta/MutualDuplication_CallGraph.lean
+
+**Lines:** 241
+
+```lean
+import OperatorKO7.Meta.DependencyPairs_CallGraph
+import OperatorKO7.Meta.MutualDuplication_RelationalGraph
+
+/-!
+# Call-Graph Construction of SCC Barrier Systems
+
+This module removes another manual layer from the SCC barrier transport stack. Instead of
+starting from an explicit edge relation, callers can present a finite extracted call graph:
+
+- a finite node type,
+- a key attached to each node,
+- the finite successor-key set extracted from each node, and
+- the local delayed or preserving edge-realization theorem whenever a target key appears in
+  that successor-key set.
+
+From that concrete call-graph presentation we build the relation-level delayed or
+preserving system automatically and reexport the finite-SCC search-result barrier wrappers.
+-/
+
+namespace OperatorKO7.MutualDuplicationCallGraph
+
+open OperatorKO7.DependencyPairsFragment
+
+namespace Delayed
+
+open OperatorKO7.MutualDuplicationRelationalGraph
+
+/-- Delayed-duplication presentation over a finite extracted call graph. -/
+structure Presentation (ι κ : Type) [Fintype ι] [DecidableEq ι] [DecidableEq κ] where
+  graph : FiniteCallGraph ι κ
+  T : Type
+  base : T
+  succ : T → T
+  wrap : T → T → T
+  recur : ι → T → T → T → T
+  Step : T → T → Prop
+  step_succ_of_mem :
+    ∀ {i j}, graph.nodeKey j ∈ graph.succKeys i → ∀ b s n,
+      Step (recur i b s (succ n)) (wrap s (recur j b s n))
+
+namespace Presentation
+
+variable {ι κ : Type} [Fintype ι] [DecidableEq ι] [DecidableEq κ] (P : Presentation ι κ)
+
+abbrev Edge : ι → ι → Prop := P.graph.Edge
+
+instance instDecidableRelEdge : DecidableRel P.Edge := by
+  intro i j
+  dsimp [Edge, FiniteCallGraph.Edge]
+  infer_instance
+
+/-- Convert the call-graph presentation to the existing relation-level delayed system. -/
+def toRelational :
+    MutualDuplicationRelationalGraph.Delayed.Presentation ι P.Edge where
+  T := P.T
+  base := P.base
+  succ := P.succ
+  wrap := P.wrap
+  recur := P.recur
+  Step := P.Step
+  step_succ := by
+    intro i j hij b s n
+    exact P.step_succ_of_mem hij b s n
+
+abbrev AdditiveMeasure := (P.toRelational).AdditiveMeasure
+abbrev AffineMeasure := (P.toRelational).AffineMeasure
+abbrev CompositionalMeasure := (P.toRelational).CompositionalMeasure
+abbrev GlobalOrientsCtx {α : Type} (m : P.T → α) (lt : α → α → Prop) : Prop :=
+  (P.toRelational).GlobalOrientsCtx m lt
+abbrev HasNontrivialSCC : Prop := P.graph.HasNontrivialSCC
+noncomputable abbrev findNontrivialSCCPair? : Option (ι × ι) := P.graph.findNontrivialSCCPair?
+
+theorem no_global_orients_ctx_additive_of_exists_findNontrivialSCCPair?
+    (hfind : ∃ p : ι × ι, P.findNontrivialSCCPair? = some p)
+    (M : P.AdditiveMeasure) :
+    ¬ P.GlobalOrientsCtx M.eval (· < ·) :=
+  OperatorKO7.MutualDuplicationRelationalGraph.Delayed.Presentation.no_global_orients_ctx_additive_of_exists_findNontrivialSCCPair?
+    (P := P.toRelational) hfind M
+
+theorem no_global_orients_ctx_affine_of_unbounded_of_exists_findNontrivialSCCPair?
+    (hfind : ∃ p : ι × ι, P.findNontrivialSCCPair? = some p)
+    (M : P.AffineMeasure)
+    (hunbounded :
+      let hSCC := (P.graph.hasNontrivialSCC_iff_exists_findNontrivialSCCPair?).2 hfind
+      let hij := OperatorKO7.FiniteGraphSCC.reachable_witnessSrc_witnessDst (R := P.Edge) hSCC
+      let hji := OperatorKO7.FiniteGraphSCC.reachable_witnessDst_witnessSrc (R := P.Edge) hSCC
+      let C := MutualDuplicationGraphCycle.GraphDupSystem.ofRoundTrip
+        (Sys := P.toRelational.toGraphSystem)
+        (OperatorKO7.FiniteGraphReachability.transGen_of_reachable_of_ne (R := P.Edge) hij
+          (OperatorKO7.FiniteGraphSCC.witnessSrc_ne_witnessDst (R := P.Edge) hSCC))
+        (OperatorKO7.FiniteGraphReachability.transGen_of_reachable_of_ne (R := P.Edge) hji
+          (OperatorKO7.FiniteGraphSCC.witnessSrc_ne_witnessDst (R := P.Edge) hSCC).symm)
+      OperatorKO7.StepDuplicating.StepDuplicatingSchema.HasUnboundedRange
+        (OperatorKO7.MutualDuplicationCycleFlow.AffineOps.toDupMeasure
+          (MutualDuplicationGraphCycle.GraphDupSystem.AffineMeasure.toNodeMeasure M (C.node 0))
+          C.copies C.hcopies)) :
+    ¬ P.GlobalOrientsCtx M.eval (· < ·) :=
+  OperatorKO7.MutualDuplicationRelationalGraph.Delayed.Presentation.no_global_orients_ctx_affine_of_unbounded_of_exists_findNontrivialSCCPair?
+    (P := P.toRelational) hfind M hunbounded
+
+theorem no_global_orients_ctx_compositional_transparent_of_exists_findNontrivialSCCPair?
+    (hfind : ∃ p : ι × ι, P.findNontrivialSCCPair? = some p)
+    (M : P.CompositionalMeasure)
+    (htrans : M.c_succ M.c_base = M.c_base) :
+    ¬ P.GlobalOrientsCtx M.eval (· < ·) :=
+  OperatorKO7.MutualDuplicationRelationalGraph.Delayed.Presentation.no_global_orients_ctx_compositional_transparent_of_exists_findNontrivialSCCPair?
+    (P := P.toRelational) hfind M htrans
+
+theorem no_global_orients_ctx_of_scalar_projection_affine_of_unbounded_of_exists_findNontrivialSCCPair?
+    (hfind : ∃ p : ι × ι, P.findNontrivialSCCPair? = some p)
+    {α : Type} (μ : P.T → α) (Q : α → α → Prop) (π : α → Nat)
+    (hproj : ∀ {u v : α}, Q u v → π u < π v)
+    (A :
+      let hSCC := (P.graph.hasNontrivialSCC_iff_exists_findNontrivialSCCPair?).2 hfind
+      let hij := OperatorKO7.FiniteGraphSCC.reachable_witnessSrc_witnessDst (R := P.Edge) hSCC
+      let hji := OperatorKO7.FiniteGraphSCC.reachable_witnessDst_witnessSrc (R := P.Edge) hSCC
+      let C := MutualDuplicationGraphCycle.GraphDupSystem.ofRoundTrip
+        (Sys := P.toRelational.toGraphSystem)
+        (OperatorKO7.FiniteGraphReachability.transGen_of_reachable_of_ne (R := P.Edge) hij
+          (OperatorKO7.FiniteGraphSCC.witnessSrc_ne_witnessDst (R := P.Edge) hSCC))
+        (OperatorKO7.FiniteGraphReachability.transGen_of_reachable_of_ne (R := P.Edge) hji
+          (OperatorKO7.FiniteGraphSCC.witnessSrc_ne_witnessDst (R := P.Edge) hSCC).symm)
+      OperatorKO7.StepDuplicating.StepDuplicatingSchema.AffineMeasure
+        (OperatorKO7.MutualDuplicationCycleFlow.toDupSchema
+          (P.toRelational.toGraphSystem.toNodeSchema (C.node 0)) C.copies))
+    (hπ : ∀ t : P.T, π (μ t) = A.eval t)
+    (hunbounded :
+      OperatorKO7.StepDuplicating.StepDuplicatingSchema.HasUnboundedRange A) :
+    ¬ OperatorKO7.DependencyPairsFragment.GlobalOrients
+      (OperatorKO7.MutualDuplicationGraphCycle.GraphDupSystem.StepCtx P.toRelational.toGraphSystem)
+      μ Q :=
+  OperatorKO7.MutualDuplicationRelationalGraph.Delayed.Presentation.no_global_orients_ctx_of_scalar_projection_affine_of_unbounded_of_exists_findNontrivialSCCPair?
+    (P := P.toRelational) hfind μ Q π hproj A hπ hunbounded
+
+end Presentation
+
+end Delayed
+
+namespace Preserving
+
+open OperatorKO7.MutualDuplicationRelationalGraph
+
+/-- Preserving synchronized-packet presentation over a finite extracted call graph. -/
+structure Presentation (ι κ : Type) [Fintype ι] [DecidableEq ι] [DecidableEq κ] where
+  graph : FiniteCallGraph ι κ
+  T : Type
+  empty : T
+  wrap : T → T → T
+  recur : ι → T → T → T
+  packet : ι → Nat → T → T
+  packet_zero : ∀ i p, packet i 0 p = empty
+  Step : T → T → Prop
+  step_packet_of_mem :
+    ∀ {i j}, graph.nodeKey j ∈ graph.succKeys i → ∀ ctx payload n,
+      Step (recur i ctx (packet i (n + 1) payload))
+        (wrap payload (recur j ctx (packet j n payload)))
+
+namespace Presentation
+
+variable {ι κ : Type} [Fintype ι] [DecidableEq ι] [DecidableEq κ] (P : Presentation ι κ)
+
+abbrev Edge : ι → ι → Prop := P.graph.Edge
+
+instance instDecidableRelEdge : DecidableRel P.Edge := by
+  intro i j
+  dsimp [Edge, FiniteCallGraph.Edge]
+  infer_instance
+
+/-- Convert the call-graph presentation to the existing relation-level preserving system. -/
+def toRelational :
+    MutualDuplicationRelationalGraph.Preserving.Presentation ι P.Edge where
+  T := P.T
+  empty := P.empty
+  wrap := P.wrap
+  recur := P.recur
+  packet := P.packet
+  packet_zero := P.packet_zero
+  Step := P.Step
+  step_packet := by
+    intro i j hij ctx payload n
+    exact P.step_packet_of_mem hij ctx payload n
+
+abbrev AdditiveMeasure := (P.toRelational).AdditiveMeasure
+abbrev AffineMeasure := (P.toRelational).AffineMeasure
+abbrev TransparentMeasure := (P.toRelational).TransparentMeasure
+abbrev GlobalOrientsCtx (m : P.T → Nat) : Prop := (P.toRelational).GlobalOrientsCtx m
+abbrev HasNontrivialSCC : Prop := P.graph.HasNontrivialSCC
+noncomputable abbrev findNontrivialSCCPair? : Option (ι × ι) := P.graph.findNontrivialSCCPair?
+
+theorem no_global_orients_ctx_additive_of_exists_findNontrivialSCCPair?
+    (hfind : ∃ p : ι × ι, P.findNontrivialSCCPair? = some p)
+    (M : P.AdditiveMeasure) :
+    ¬ P.GlobalOrientsCtx M.eval :=
+  OperatorKO7.MutualDuplicationRelationalGraph.Preserving.Presentation.no_global_orients_ctx_additive_of_exists_findNontrivialSCCPair?
+    (P := P.toRelational) hfind M
+
+theorem no_global_orients_ctx_affine_of_wrapper_dominance_of_exists_findNontrivialSCCPair?
+    (hfind : ∃ p : ι × ι, P.findNontrivialSCCPair? = some p)
+    (M : P.AffineMeasure)
+    (hdom :
+      let hSCC := (P.graph.hasNontrivialSCC_iff_exists_findNontrivialSCCPair?).2 hfind
+      let hij := OperatorKO7.FiniteGraphSCC.reachable_witnessSrc_witnessDst (R := P.Edge) hSCC
+      let hji := OperatorKO7.FiniteGraphSCC.reachable_witnessDst_witnessSrc (R := P.Edge) hSCC
+      let C := MutualDuplicationPacketGraph.GraphPacketSystem.ofRoundTrip
+        (Sys := P.toRelational.toGraphSystem)
+        (OperatorKO7.FiniteGraphReachability.transGen_of_reachable_of_ne (R := P.Edge) hij
+          (OperatorKO7.FiniteGraphSCC.witnessSrc_ne_witnessDst (R := P.Edge) hSCC))
+        (OperatorKO7.FiniteGraphReachability.transGen_of_reachable_of_ne (R := P.Edge) hji
+          (OperatorKO7.FiniteGraphSCC.witnessSrc_ne_witnessDst (R := P.Edge) hSCC).symm)
+      OperatorKO7.MutualDuplicationPayloadFlow.WrapperDominance
+        (MutualDuplicationPacketGraph.GraphPacketSystem.CyclePath.AffineMeasure.toPacketModelMeasure
+          M (C.node 0)) C.copies)
+    (hunbounded : ∀ q : Nat, ∃ t : P.T, q ≤ M.eval t) :
+    ¬ P.GlobalOrientsCtx M.eval :=
+  OperatorKO7.MutualDuplicationRelationalGraph.Preserving.Presentation.no_global_orients_ctx_affine_of_wrapper_dominance_of_exists_findNontrivialSCCPair?
+    (P := P.toRelational) hfind M hdom hunbounded
+
+theorem no_global_orients_ctx_transparent_of_exists_findNontrivialSCCPair?
+    (hfind : ∃ p : ι × ι, P.findNontrivialSCCPair? = some p)
+    (M : P.TransparentMeasure) :
+    ¬ P.GlobalOrientsCtx M.eval :=
+  OperatorKO7.MutualDuplicationRelationalGraph.Preserving.Presentation.no_global_orients_ctx_transparent_of_exists_findNontrivialSCCPair?
+    (P := P.toRelational) hfind M
+
+theorem no_global_orients_ctx_of_scalar_projection_transparent_of_exists_findNontrivialSCCPair?
+    (hfind : ∃ p : ι × ι, P.findNontrivialSCCPair? = some p)
+    {α : Type} (μ : P.T → α) (Q : α → α → Prop) (π : α → Nat)
+    (hproj : ∀ {u v : α}, Q u v → π u < π v)
+    (M : P.TransparentMeasure)
+    (hπ : ∀ t : P.T, π (μ t) = M.eval t) :
+    ¬ OperatorKO7.DependencyPairsFragment.GlobalOrients
+      (OperatorKO7.MutualDuplicationPacketGraph.GraphPacketSystem.StepCtx P.toRelational.toGraphSystem)
+      μ Q :=
+  OperatorKO7.MutualDuplicationRelationalGraph.Preserving.Presentation.no_global_orients_ctx_of_scalar_projection_transparent_of_exists_findNontrivialSCCPair?
+    (P := P.toRelational) hfind μ Q π hproj M hπ
+
+end Presentation
+
+end Preserving
+
+end OperatorKO7.MutualDuplicationCallGraph
+```
+
+---
+
 ## OperatorKO7/Meta/MutualDuplication_Case.lean
 
 **Lines:** 138
@@ -10485,6 +14337,664 @@ theorem no_additive_orients_alternating_dup2_step (M : AdditiveAlternatingMeasur
   omega
 
 end OperatorKO7.MutualDuplicationCase
+```
+
+---
+
+## OperatorKO7/Meta/MutualDuplication_CycleFlow.lean
+
+**Lines:** 405
+
+```lean
+import OperatorKO7.Meta.StepDuplicatingSchema
+import OperatorKO7.Meta.ScalarProjectionBarrier
+import OperatorKO7.Meta.DependencyPairs_Fragment
+
+/-!
+# Abstract Delayed-Duplication Cycle Barrier
+
+This module isolates the common proof pattern behind the delayed-duplication SCC
+results. A single full cycle is treated abstractly as a contextual path from
+
+`recur b s (succ^copies n)`
+
+to
+
+`wrap^copies s (recur b s n)`.
+
+The resulting theorems rederive additive, affine, transparent-compositional, and
+scalar-projection contextual barriers from that one-cycle witness.
+-/
+
+namespace OperatorKO7.MutualDuplicationCycleFlow
+
+open OperatorKO7.StepDuplicating
+open OperatorKO7.DependencyPairsFragment
+open OperatorKO7.StepDuplicating.StepDuplicatingSchema
+
+/-- Iterate the successor constructor on an arbitrary starting term. -/
+def succIterOn (S : StepDuplicatingSchema) : Nat → S.T → S.T
+  | 0, t => t
+  | n + 1, t => S.succ (succIterOn S n t)
+
+/-- Left-nested wrapper iteration around an arbitrary seed term. -/
+def wrapNest (S : StepDuplicatingSchema) (s : S.T) : Nat → S.T → S.T
+  | 0, t => t
+  | n + 1, t => wrapNest S s n (S.wrap s t)
+
+/-- One-cycle delayed-duplication source term. -/
+def cycleSource (S : StepDuplicatingSchema) (copies : Nat) (b s n : S.T) : S.T :=
+  S.recur b s (succIterOn S copies n)
+
+/-- One-cycle delayed-duplication target term. -/
+def cycleTarget (S : StepDuplicatingSchema) (copies : Nat) (b s n : S.T) : S.T :=
+  wrapNest S s copies (S.recur b s n)
+
+/-- Derived one-cycle schema on the same carrier. -/
+def toDupSchema (S : StepDuplicatingSchema) (copies : Nat) : StepDuplicatingSchema where
+  T := S.T
+  base := S.base
+  succ := succIterOn S copies
+  wrap := fun s t => wrapNest S s copies t
+  recur := S.recur
+
+/-- Exact one-cycle witness for the induced minimal contextual relation. -/
+structure CycleWitness (S : StepDuplicatingSchema) (copies : Nat) where
+  StepCtx : S.T → S.T → Prop
+  cycle_realized :
+    ∀ b s n,
+      Relation.TransGen StepCtx
+        (cycleSource S copies b s n)
+        (cycleTarget S copies b s n)
+
+/-- Orientation of the induced contextual relation. -/
+def GlobalOrientsCtx {S : StepDuplicatingSchema} {copies : Nat} {α : Type}
+    (W : CycleWitness S copies) (m : S.T → α) (lt : α → α → Prop) : Prop :=
+  ∀ {a b : S.T}, W.StepCtx a b → lt (m b) (m a)
+
+lemma eval_succIter_additive {S : StepDuplicatingSchema} (M : AdditiveMeasure S) :
+    ∀ n t, M.eval (succIterOn S n t) = n * M.w_succ + M.eval t
+  | 0, t => by simp [succIterOn]
+  | n + 1, t => by
+      rw [succIterOn, M.eval_succ, eval_succIter_additive M n t]
+      ring
+
+lemma eval_wrapNest_additive {S : StepDuplicatingSchema} (M : AdditiveMeasure S) (s : S.T) :
+    ∀ n t, M.eval (wrapNest S s n t) = n * M.w_wrap + n * M.eval s + M.eval t
+  | 0, t => by simp [wrapNest]
+  | n + 1, t => by
+      rw [wrapNest, eval_wrapNest_additive M s n (S.wrap s t), M.eval_wrap]
+      ring
+
+/-- A delayed duplicate over `copies ≥ 1` already defeats any additive direct orienter on
+the composite one-cycle profile. -/
+theorem no_additive_orients_cycle_composite
+    {S : StepDuplicatingSchema} (M : AdditiveMeasure S) {copies : Nat}
+    (hcopies : 1 ≤ copies) :
+    ¬ (∀ (b s n : S.T),
+      M.eval (cycleTarget S copies b s n) <
+        M.eval (cycleSource S copies b s n)) := by
+  intro h
+  let sval := M.eval (wrapIter S M.w_succ)
+  have hspec := h S.base (wrapIter S M.w_succ) S.base
+  have hspec' :
+      copies * M.w_wrap + copies * sval +
+          (M.w_recur + M.w_base + sval + M.w_base) <
+        copies * M.w_succ + (M.w_recur + M.w_base + sval + M.w_base) := by
+    simpa [cycleSource, cycleTarget, sval, M.eval_base, M.eval_recur,
+      eval_succIter_additive, eval_wrapNest_additive, Nat.add_assoc,
+      Nat.add_left_comm, Nat.add_comm, Nat.mul_add, Nat.add_mul,
+      Nat.mul_assoc, Nat.mul_left_comm, Nat.mul_comm] using hspec
+  have hdrop : copies * M.w_wrap + copies * sval < copies * M.w_succ := by
+    exact Nat.lt_of_add_lt_add_right hspec'
+  have hsval : M.w_succ ≤ sval := by
+    simpa [sval] using eval_wrapIter_ge M M.w_succ
+  have hmul : copies * M.w_succ ≤ copies * sval := by
+    exact Nat.mul_le_mul_left _ hsval
+  have hwrap : 1 ≤ copies * M.w_wrap := by
+    exact Nat.mul_le_mul hcopies M.h_wrap_pos
+  have hstrict : copies * M.w_succ < copies * M.w_wrap + copies * sval := by
+    have hsval_lt : copies * sval < copies * M.w_wrap + copies * sval := by
+      exact Nat.lt_add_of_pos_left hwrap
+    exact lt_of_le_of_lt hmul hsval_lt
+  exact Nat.not_lt_of_ge (Nat.le_of_lt hstrict) hdrop
+
+/-- Any contextual relation realizing the delayed duplicate cycle is also blocked by the
+additive barrier. -/
+theorem no_global_orients_ctx_additive
+    {S : StepDuplicatingSchema} {copies : Nat}
+    (W : CycleWitness S copies) (M : AdditiveMeasure S) (hcopies : 1 ≤ copies) :
+    ¬ GlobalOrientsCtx W M.eval (· < ·) := by
+  intro h
+  have hcomp :
+      ∀ (b s n : S.T),
+        M.eval (cycleTarget S copies b s n) <
+          M.eval (cycleSource S copies b s n) := by
+    intro b s n
+    have horient : DependencyPairsFragment.GlobalOrients W.StepCtx M.eval (· < ·) := by
+      intro a b hstep
+      exact h hstep
+    exact
+      DependencyPairsFragment.transGen_drop
+        (R := W.StepCtx) (m := M.eval) horient (W.cycle_realized b s n)
+  exact no_additive_orients_cycle_composite M hcopies hcomp
+
+namespace AffineOps
+
+def succConst {S : StepDuplicatingSchema} (M : AffineMeasure S) : Nat → Nat
+  | 0 => 0
+  | n + 1 => M.succ_bias + M.succ_scale * succConst M n
+
+def wrapRightIter {S : StepDuplicatingSchema} (M : AffineMeasure S) : Nat → Nat
+  | 0 => 1
+  | n + 1 => wrapRightIter M n * M.wrap_right
+
+def wrapConstIter {S : StepDuplicatingSchema} (M : AffineMeasure S) : Nat → Nat
+  | 0 => 0
+  | n + 1 => wrapConstIter M n + wrapRightIter M n * M.wrap_const
+
+def wrapLeftIter {S : StepDuplicatingSchema} (M : AffineMeasure S) : Nat → Nat
+  | 0 => 0
+  | n + 1 => wrapLeftIter M n + wrapRightIter M n * M.wrap_left
+
+lemma eval_succIter {S : StepDuplicatingSchema} (M : AffineMeasure S) :
+    ∀ n t, M.eval (succIterOn S n t) = succConst M n + M.succ_scale ^ n * M.eval t
+  | 0, t => by simp [succIterOn, succConst]
+  | n + 1, t => by
+      rw [succIterOn, M.eval_succ, eval_succIter M n t, succConst, Nat.pow_succ]
+      ring
+
+lemma eval_wrapNest {S : StepDuplicatingSchema} (M : AffineMeasure S) (s : S.T) :
+    ∀ n t,
+      M.eval (wrapNest S s n t) =
+        wrapConstIter M n + wrapLeftIter M n * M.eval s + wrapRightIter M n * M.eval t
+  | 0, t => by
+      simp [wrapNest, wrapConstIter, wrapLeftIter, wrapRightIter]
+  | n + 1, t => by
+      rw [wrapNest, eval_wrapNest M s n (S.wrap s t), M.eval_wrap]
+      simp [wrapConstIter, wrapLeftIter, wrapRightIter, Nat.mul_add, Nat.add_mul]
+      ring
+
+lemma wrapRightIter_pos {S : StepDuplicatingSchema} (M : AffineMeasure S) :
+    ∀ n, 1 ≤ wrapRightIter M n
+  | 0 => by simp [wrapRightIter]
+  | n + 1 => by
+      simp [wrapRightIter]
+      exact Nat.mul_le_mul (wrapRightIter_pos M n) M.h_wrap_right_pos
+
+lemma wrapLeftIter_pos {S : StepDuplicatingSchema} (M : AffineMeasure S) :
+    ∀ n, 0 < n → 1 ≤ wrapLeftIter M n
+  | 0, h => by cases Nat.not_lt_zero _ h
+  | n + 1, _ => by
+      have hterm : 1 ≤ wrapRightIter M n * M.wrap_left := by
+        exact Nat.mul_le_mul (wrapRightIter_pos M n) M.h_wrap_left_pos
+      have hsum : 1 ≤ wrapLeftIter M n + wrapRightIter M n * M.wrap_left := by
+        exact le_trans hterm (Nat.le_add_left _ _)
+      simpa [wrapLeftIter] using hsum
+
+/-- Transport an affine measure to the one-cycle derived schema. -/
+def toDupMeasure {S : StepDuplicatingSchema} (M : AffineMeasure S)
+    (copies : Nat) (hcopies : 0 < copies) :
+    AffineMeasure (toDupSchema S copies) where
+  eval := M.eval
+  c_base := M.c_base
+  succ_bias := AffineOps.succConst M copies
+  succ_scale := M.succ_scale ^ copies
+  wrap_const := AffineOps.wrapConstIter M copies
+  wrap_left := AffineOps.wrapLeftIter M copies
+  wrap_right := AffineOps.wrapRightIter M copies
+  recur_const := M.recur_const
+  recur_base := M.recur_base
+  recur_step := M.recur_step
+  recur_counter := M.recur_counter
+  eval_base := M.eval_base
+  eval_succ := by
+    intro t
+    simpa [toDupSchema] using AffineOps.eval_succIter M copies t
+  eval_wrap := by
+    intro x y
+    simpa [toDupSchema] using AffineOps.eval_wrapNest M x copies y
+  eval_recur := by
+    intro b s n
+    simpa [toDupSchema] using M.eval_recur b s n
+  h_wrap_left_pos := by
+    exact AffineOps.wrapLeftIter_pos M copies hcopies
+  h_wrap_right_pos := by
+    exact AffineOps.wrapRightIter_pos M copies
+
+end AffineOps
+
+/-- The delayed one-cycle profile also defeats any affine direct orienter, provided the
+derived one-cycle schema admits the usual unbounded pump. -/
+theorem no_affine_orients_cycle_composite_of_unbounded
+    {S : StepDuplicatingSchema} (M : AffineMeasure S) {copies : Nat}
+    (hcopies : 0 < copies)
+    (hunbounded : HasUnboundedRange (AffineOps.toDupMeasure M copies hcopies)) :
+    ¬ (∀ (b s n : S.T),
+      M.eval (cycleTarget S copies b s n) <
+        M.eval (cycleSource S copies b s n)) := by
+  simpa [toDupSchema, cycleSource, cycleTarget, AffineOps.toDupMeasure] using
+    (no_affine_orients_dup_step_of_unbounded
+      (S := toDupSchema S copies)
+      (M := AffineOps.toDupMeasure M copies hcopies) hunbounded)
+
+/-- Any contextual relation realizing the delayed duplicate cycle is also blocked by the
+affine barrier under the usual derived-schema unbounded-pump hypothesis. -/
+theorem no_global_orients_ctx_affine_of_unbounded
+    {S : StepDuplicatingSchema} {copies : Nat}
+    (W : CycleWitness S copies) (M : AffineMeasure S)
+    (hcopies : 0 < copies)
+    (hunbounded : HasUnboundedRange (AffineOps.toDupMeasure M copies hcopies)) :
+    ¬ GlobalOrientsCtx W M.eval (· < ·) := by
+  intro h
+  have hcomp :
+      ∀ (b s n : S.T),
+        M.eval (cycleTarget S copies b s n) <
+          M.eval (cycleSource S copies b s n) := by
+    intro b s n
+    have horient : DependencyPairsFragment.GlobalOrients W.StepCtx M.eval (· < ·) := by
+      intro a b hstep
+      exact h hstep
+    exact
+      DependencyPairsFragment.transGen_drop
+        (R := W.StepCtx) (m := M.eval) horient (W.cycle_realized b s n)
+  exact no_affine_orients_cycle_composite_of_unbounded M hcopies hunbounded hcomp
+
+namespace CompositionalOps
+
+def succIterFn {S : StepDuplicatingSchema} (CM : CompositionalMeasure S) : Nat → Nat → Nat
+  | 0, x => x
+  | n + 1, x => CM.c_succ (succIterFn CM n x)
+
+def wrapNestFn {S : StepDuplicatingSchema} (CM : CompositionalMeasure S) :
+    Nat → Nat → Nat → Nat
+  | 0, _, y => y
+  | n + 1, x, y => wrapNestFn CM n x (CM.c_wrap x y)
+
+lemma eval_succIter {S : StepDuplicatingSchema} (CM : CompositionalMeasure S) :
+    ∀ n t, CM.eval (succIterOn S n t) = succIterFn CM n (CM.eval t)
+  | 0, t => by simp [succIterOn, succIterFn]
+  | n + 1, t => by
+      rw [succIterOn, CM.eval_succ, eval_succIter CM n t, succIterFn]
+
+lemma eval_wrapNest {S : StepDuplicatingSchema} (CM : CompositionalMeasure S) (s : S.T) :
+    ∀ n t, CM.eval (wrapNest S s n t) = wrapNestFn CM n (CM.eval s) (CM.eval t)
+  | 0, t => by simp [wrapNest, wrapNestFn]
+  | n + 1, t => by
+      rw [wrapNest, eval_wrapNest CM s n (S.wrap s t), CM.eval_wrap, wrapNestFn]
+
+lemma succIter_transparent_at_base {S : StepDuplicatingSchema}
+    (CM : CompositionalMeasure S) (htrans : CM.c_succ CM.c_base = CM.c_base) :
+    ∀ n, succIterFn CM n CM.c_base = CM.c_base
+  | 0 => by simp [succIterFn]
+  | n + 1 => by simp [succIterFn, succIter_transparent_at_base CM htrans n, htrans]
+
+lemma wrapNestFn_gt_subterm1 {S : StepDuplicatingSchema} (CM : CompositionalMeasure S) :
+    ∀ n x y, 0 < n → x < wrapNestFn CM n x y
+  | 0, x, y, h => by cases Nat.not_lt_zero _ h
+  | 1, x, y, _ => by simpa [wrapNestFn] using CM.wrap_subterm1 x y
+  | n + 2, x, y, _ => by
+      simpa [wrapNestFn] using
+        wrapNestFn_gt_subterm1 CM (n + 1) x (CM.c_wrap x y) (Nat.succ_pos _)
+
+lemma wrapNestFn_gt_subterm2 {S : StepDuplicatingSchema} (CM : CompositionalMeasure S) :
+    ∀ n x y, 0 < n → y < wrapNestFn CM n x y
+  | 0, x, y, h => by cases Nat.not_lt_zero _ h
+  | 1, x, y, _ => by simpa [wrapNestFn] using CM.wrap_subterm2 x y
+  | n + 2, x, y, _ => by
+      have hbase : y < CM.c_wrap x y := CM.wrap_subterm2 x y
+      have htail :
+          CM.c_wrap x y < wrapNestFn CM (n + 1) x (CM.c_wrap x y) := by
+        exact wrapNestFn_gt_subterm2 CM (n + 1) x (CM.c_wrap x y) (Nat.succ_pos _)
+      simpa [wrapNestFn] using Nat.lt_trans hbase htail
+
+/-- Transport a transparent-compositional measure to the one-cycle derived schema. -/
+def toDupMeasure {S : StepDuplicatingSchema} (CM : CompositionalMeasure S)
+    (copies : Nat) (hcopies : 0 < copies) :
+    CompositionalMeasure (toDupSchema S copies) where
+  eval := CM.eval
+  c_base := CM.c_base
+  c_succ := CompositionalOps.succIterFn CM copies
+  c_wrap := CompositionalOps.wrapNestFn CM copies
+  c_recur := CM.c_recur
+  eval_base := CM.eval_base
+  eval_succ := by
+    intro t
+    simpa [toDupSchema] using CompositionalOps.eval_succIter CM copies t
+  eval_wrap := by
+    intro x y
+    simpa [toDupSchema] using CompositionalOps.eval_wrapNest CM x copies y
+  eval_recur := by
+    intro b s n
+    simpa [toDupSchema] using CM.eval_recur b s n
+  wrap_subterm1 := by
+    intro x y
+    exact CompositionalOps.wrapNestFn_gt_subterm1 CM copies x y hcopies
+  wrap_subterm2 := by
+    intro x y
+    exact CompositionalOps.wrapNestFn_gt_subterm2 CM copies x y hcopies
+
+end CompositionalOps
+
+/-- A transparent-compositional measure also cannot orient the delayed one-cycle profile,
+provided successor is transparent at the base point. -/
+theorem no_compositional_orients_cycle_composite_transparent
+    {S : StepDuplicatingSchema} (CM : CompositionalMeasure S) {copies : Nat}
+    (hcopies : 0 < copies) (htrans : CM.c_succ CM.c_base = CM.c_base) :
+    ¬ (∀ (b s n : S.T),
+      CM.eval (cycleTarget S copies b s n) <
+        CM.eval (cycleSource S copies b s n)) := by
+  have htrans' :
+      (CompositionalOps.toDupMeasure CM copies hcopies).c_succ
+          (CompositionalOps.toDupMeasure CM copies hcopies).c_base =
+        (CompositionalOps.toDupMeasure CM copies hcopies).c_base := by
+    simpa [CompositionalOps.toDupMeasure] using
+      CompositionalOps.succIter_transparent_at_base CM htrans copies
+  simpa [toDupSchema, cycleSource, cycleTarget, CompositionalOps.toDupMeasure] using
+    (no_compositional_orients_dup_step_transparent_succ
+      (S := toDupSchema S copies)
+      (CM := CompositionalOps.toDupMeasure CM copies hcopies) htrans')
+
+/-- Any contextual relation realizing the delayed duplicate cycle is also blocked by the
+transparent-compositional barrier. -/
+theorem no_global_orients_ctx_compositional_transparent
+    {S : StepDuplicatingSchema} {copies : Nat}
+    (W : CycleWitness S copies) (CM : CompositionalMeasure S)
+    (hcopies : 0 < copies) (htrans : CM.c_succ CM.c_base = CM.c_base) :
+    ¬ GlobalOrientsCtx W CM.eval (· < ·) := by
+  intro h
+  have hcomp :
+      ∀ (b s n : S.T),
+        CM.eval (cycleTarget S copies b s n) <
+          CM.eval (cycleSource S copies b s n) := by
+    intro b s n
+    have horient : DependencyPairsFragment.GlobalOrients W.StepCtx CM.eval (· < ·) := by
+      intro a b hstep
+      exact h hstep
+    exact
+      DependencyPairsFragment.transGen_drop
+        (R := W.StepCtx) (m := CM.eval) horient (W.cycle_realized b s n)
+  exact no_compositional_orients_cycle_composite_transparent CM hcopies htrans hcomp
+
+/-- Generic scalar-projection lift for delayed-duplication cycles, using an affine barrier on
+the derived one-cycle schema. -/
+theorem no_global_orients_ctx_of_scalar_projection_affine_of_unbounded
+    {S : StepDuplicatingSchema} {copies : Nat} {α : Type}
+    (W : CycleWitness S copies) (μ : S.T → α) (R : α → α → Prop) (π : α → Nat)
+    (hproj : ∀ {u v : α}, R u v → π u < π v)
+    (A : AffineMeasure (toDupSchema S copies))
+    (hπ : ∀ t : S.T, π (μ t) = A.eval t)
+    (hunbounded : HasUnboundedRange A) :
+    ¬ GlobalOrientsCtx W μ R := by
+  intro h
+  have hcomp :
+      ∀ (b s n : S.T),
+        A.eval (cycleTarget S copies b s n) <
+          A.eval (cycleSource S copies b s n) := by
+    intro b s n
+    have horient :
+        DependencyPairsFragment.GlobalOrients W.StepCtx (fun t => π (μ t)) (· < ·) := by
+      intro a b hstep
+      exact hproj (h hstep)
+    have hlt :
+        π (μ (cycleTarget S copies b s n)) <
+          π (μ (cycleSource S copies b s n)) := by
+      exact
+        DependencyPairsFragment.transGen_drop
+          (R := W.StepCtx) (m := fun t => π (μ t)) horient (W.cycle_realized b s n)
+    simpa [hπ (cycleTarget S copies b s n), hπ (cycleSource S copies b s n)] using hlt
+  exact
+    no_affine_orients_dup_step_of_unbounded
+      (S := toDupSchema S copies) A hunbounded
+      (by
+        intro b s n
+        simpa [toDupSchema, cycleSource, cycleTarget] using hcomp b s n)
+
+end OperatorKO7.MutualDuplicationCycleFlow
+```
+
+---
+
+## OperatorKO7/Meta/MutualDuplication_ExtractedCallGraph.lean
+
+**Lines:** 235
+
+```lean
+import OperatorKO7.Meta.DependencyPairs_ExtractedCallGraph
+import OperatorKO7.Meta.MutualDuplication_CallGraph
+
+/-!
+# Extracted-Data Construction of SCC Barrier Systems
+
+This module removes the finite-type packaging layer from the call-graph SCC transport
+stack. Callers can start from raw extracted node data stored in an array, together with
+the local delayed or preserving edge-realization theorem indexed by `Fin nodes.size`.
+
+The module then builds the corresponding call-graph presentation automatically and
+reexports the finite-SCC search-result contextual barrier wrappers.
+-/
+
+namespace OperatorKO7.MutualDuplicationExtractedCallGraph
+
+open OperatorKO7.DependencyPairsFragment
+
+namespace Delayed
+
+/-- Delayed-duplication presentation over array-backed extracted call-graph data. -/
+structure Presentation (κ : Type) [DecidableEq κ] where
+  graph : FiniteExtractedCallGraph κ
+  T : Type
+  base : T
+  succ : T → T
+  wrap : T → T → T
+  recur : graph.Node → T → T → T → T
+  Step : T → T → Prop
+  step_succ_of_mem :
+    ∀ {i j : graph.Node}, graph.nodeKey j ∈ graph.succKeys i → ∀ b s n,
+      Step (recur i b s (succ n)) (wrap s (recur j b s n))
+
+namespace Presentation
+
+variable {κ : Type} [DecidableEq κ] (P : Presentation κ)
+
+/-- Convert the extracted-data delayed presentation to the existing call-graph system. -/
+def toCallGraph :
+    OperatorKO7.MutualDuplicationCallGraph.Delayed.Presentation P.graph.Node κ where
+  graph := P.graph.toFiniteCallGraph
+  T := P.T
+  base := P.base
+  succ := P.succ
+  wrap := P.wrap
+  recur := P.recur
+  Step := P.Step
+  step_succ_of_mem := P.step_succ_of_mem
+
+abbrev AdditiveMeasure := (P.toCallGraph).AdditiveMeasure
+abbrev AffineMeasure := (P.toCallGraph).AffineMeasure
+abbrev CompositionalMeasure := (P.toCallGraph).CompositionalMeasure
+abbrev GlobalOrientsCtx {α : Type} (m : P.T → α) (lt : α → α → Prop) : Prop :=
+  (P.toCallGraph).GlobalOrientsCtx m lt
+abbrev HasNontrivialSCC : Prop := P.graph.HasNontrivialSCC
+noncomputable abbrev findNontrivialSCCPair? : Option (P.graph.Node × P.graph.Node) :=
+  P.graph.findNontrivialSCCPair?
+
+  theorem no_global_orients_ctx_additive_of_exists_findNontrivialSCCPair?
+    (hfind : ∃ p : P.graph.Node × P.graph.Node, P.findNontrivialSCCPair? = some p)
+    (M : P.AdditiveMeasure) :
+    ¬ P.GlobalOrientsCtx M.eval (· < ·) :=
+  OperatorKO7.MutualDuplicationCallGraph.Delayed.Presentation.no_global_orients_ctx_additive_of_exists_findNontrivialSCCPair?
+    (P := P.toCallGraph) hfind M
+
+theorem no_global_orients_ctx_affine_of_unbounded_of_exists_findNontrivialSCCPair?
+    (hfind : ∃ p : P.graph.Node × P.graph.Node, P.findNontrivialSCCPair? = some p)
+    (M : P.AffineMeasure)
+    (hunbounded :
+      let hSCC := (P.graph.hasNontrivialSCC_iff_exists_findNontrivialSCCPair?).2 hfind
+      let hij := OperatorKO7.FiniteGraphSCC.reachable_witnessSrc_witnessDst
+        (R := P.graph.toFiniteCallGraph.Edge) hSCC
+      let hji := OperatorKO7.FiniteGraphSCC.reachable_witnessDst_witnessSrc
+        (R := P.graph.toFiniteCallGraph.Edge) hSCC
+      let C := MutualDuplicationGraphCycle.GraphDupSystem.ofRoundTrip
+        (Sys := P.toCallGraph.toRelational.toGraphSystem)
+        (OperatorKO7.FiniteGraphReachability.transGen_of_reachable_of_ne
+          (R := P.graph.toFiniteCallGraph.Edge) hij
+          (OperatorKO7.FiniteGraphSCC.witnessSrc_ne_witnessDst
+            (R := P.graph.toFiniteCallGraph.Edge) hSCC))
+        (OperatorKO7.FiniteGraphReachability.transGen_of_reachable_of_ne
+          (R := P.graph.toFiniteCallGraph.Edge) hji
+          (OperatorKO7.FiniteGraphSCC.witnessSrc_ne_witnessDst
+            (R := P.graph.toFiniteCallGraph.Edge) hSCC).symm)
+      OperatorKO7.StepDuplicating.StepDuplicatingSchema.HasUnboundedRange
+        (OperatorKO7.MutualDuplicationCycleFlow.AffineOps.toDupMeasure
+          (MutualDuplicationGraphCycle.GraphDupSystem.AffineMeasure.toNodeMeasure M (C.node 0))
+          C.copies C.hcopies)) :
+    ¬ P.GlobalOrientsCtx M.eval (· < ·) :=
+  OperatorKO7.MutualDuplicationCallGraph.Delayed.Presentation.no_global_orients_ctx_affine_of_unbounded_of_exists_findNontrivialSCCPair?
+    (P := P.toCallGraph) hfind M hunbounded
+
+theorem no_global_orients_ctx_compositional_transparent_of_exists_findNontrivialSCCPair?
+    (hfind : ∃ p : P.graph.Node × P.graph.Node, P.findNontrivialSCCPair? = some p)
+    (M : P.CompositionalMeasure)
+    (htrans : M.c_succ M.c_base = M.c_base) :
+    ¬ P.GlobalOrientsCtx M.eval (· < ·) :=
+  OperatorKO7.MutualDuplicationCallGraph.Delayed.Presentation.no_global_orients_ctx_compositional_transparent_of_exists_findNontrivialSCCPair?
+    (P := P.toCallGraph) hfind M htrans
+
+theorem no_global_orients_ctx_of_scalar_projection_affine_of_unbounded_of_exists_findNontrivialSCCPair?
+    (hfind : ∃ p : P.graph.Node × P.graph.Node, P.findNontrivialSCCPair? = some p)
+    {α : Type} (μ : P.T → α) (Q : α → α → Prop) (π : α → Nat)
+    (hproj : ∀ {u v : α}, Q u v → π u < π v)
+    (A :
+      let hSCC := (P.graph.hasNontrivialSCC_iff_exists_findNontrivialSCCPair?).2 hfind
+      let hij := OperatorKO7.FiniteGraphSCC.reachable_witnessSrc_witnessDst
+        (R := P.graph.toFiniteCallGraph.Edge) hSCC
+      let hji := OperatorKO7.FiniteGraphSCC.reachable_witnessDst_witnessSrc
+        (R := P.graph.toFiniteCallGraph.Edge) hSCC
+      let C := MutualDuplicationGraphCycle.GraphDupSystem.ofRoundTrip
+        (Sys := P.toCallGraph.toRelational.toGraphSystem)
+        (OperatorKO7.FiniteGraphReachability.transGen_of_reachable_of_ne
+          (R := P.graph.toFiniteCallGraph.Edge) hij
+          (OperatorKO7.FiniteGraphSCC.witnessSrc_ne_witnessDst
+            (R := P.graph.toFiniteCallGraph.Edge) hSCC))
+        (OperatorKO7.FiniteGraphReachability.transGen_of_reachable_of_ne
+          (R := P.graph.toFiniteCallGraph.Edge) hji
+          (OperatorKO7.FiniteGraphSCC.witnessSrc_ne_witnessDst
+            (R := P.graph.toFiniteCallGraph.Edge) hSCC).symm)
+      OperatorKO7.StepDuplicating.StepDuplicatingSchema.AffineMeasure
+        (OperatorKO7.MutualDuplicationCycleFlow.toDupSchema
+          (P.toCallGraph.toRelational.toGraphSystem.toNodeSchema (C.node 0)) C.copies))
+    (hπ : ∀ t : P.T, π (μ t) = A.eval t)
+    (hunbounded : OperatorKO7.StepDuplicating.StepDuplicatingSchema.HasUnboundedRange A) :
+    ¬ OperatorKO7.DependencyPairsFragment.GlobalOrients
+      (OperatorKO7.MutualDuplicationGraphCycle.GraphDupSystem.StepCtx
+        P.toCallGraph.toRelational.toGraphSystem) μ Q :=
+  OperatorKO7.MutualDuplicationCallGraph.Delayed.Presentation.no_global_orients_ctx_of_scalar_projection_affine_of_unbounded_of_exists_findNontrivialSCCPair?
+    (P := P.toCallGraph) hfind μ Q π hproj A hπ hunbounded
+
+end Presentation
+
+end Delayed
+
+namespace Preserving
+
+/-- Preserving synchronized-packet presentation over array-backed extracted call-graph data. -/
+structure Presentation (κ : Type) [DecidableEq κ] where
+  graph : FiniteExtractedCallGraph κ
+  T : Type
+  empty : T
+  wrap : T → T → T
+  recur : graph.Node → T → T → T
+  packet : graph.Node → Nat → T → T
+  packet_zero : ∀ i p, packet i 0 p = empty
+  Step : T → T → Prop
+  step_packet_of_mem :
+    ∀ {i j : graph.Node}, graph.nodeKey j ∈ graph.succKeys i → ∀ ctx payload n,
+      Step (recur i ctx (packet i (n + 1) payload))
+        (wrap payload (recur j ctx (packet j n payload)))
+
+namespace Presentation
+
+variable {κ : Type} [DecidableEq κ] (P : Presentation κ)
+
+/-- Convert the extracted-data preserving presentation to the existing call-graph system. -/
+def toCallGraph :
+    OperatorKO7.MutualDuplicationCallGraph.Preserving.Presentation P.graph.Node κ where
+  graph := P.graph.toFiniteCallGraph
+  T := P.T
+  empty := P.empty
+  wrap := P.wrap
+  recur := P.recur
+  packet := P.packet
+  packet_zero := P.packet_zero
+  Step := P.Step
+  step_packet_of_mem := P.step_packet_of_mem
+
+abbrev AdditiveMeasure := (P.toCallGraph).AdditiveMeasure
+abbrev AffineMeasure := (P.toCallGraph).AffineMeasure
+abbrev TransparentMeasure := (P.toCallGraph).TransparentMeasure
+abbrev GlobalOrientsCtx (m : P.T → Nat) : Prop := (P.toCallGraph).GlobalOrientsCtx m
+abbrev HasNontrivialSCC : Prop := P.graph.HasNontrivialSCC
+noncomputable abbrev findNontrivialSCCPair? : Option (P.graph.Node × P.graph.Node) :=
+  P.graph.findNontrivialSCCPair?
+
+  theorem no_global_orients_ctx_additive_of_exists_findNontrivialSCCPair?
+    (hfind : ∃ p : P.graph.Node × P.graph.Node, P.findNontrivialSCCPair? = some p)
+    (M : P.AdditiveMeasure) :
+    ¬ P.GlobalOrientsCtx M.eval :=
+  OperatorKO7.MutualDuplicationCallGraph.Preserving.Presentation.no_global_orients_ctx_additive_of_exists_findNontrivialSCCPair?
+    (P := P.toCallGraph) hfind M
+
+theorem no_global_orients_ctx_affine_of_wrapper_dominance_of_exists_findNontrivialSCCPair?
+    (hfind : ∃ p : P.graph.Node × P.graph.Node, P.findNontrivialSCCPair? = some p)
+    (M : P.AffineMeasure)
+    (hdom :
+      let hSCC := (P.graph.hasNontrivialSCC_iff_exists_findNontrivialSCCPair?).2 hfind
+      let hij := OperatorKO7.FiniteGraphSCC.reachable_witnessSrc_witnessDst
+        (R := P.graph.toFiniteCallGraph.Edge) hSCC
+      let hji := OperatorKO7.FiniteGraphSCC.reachable_witnessDst_witnessSrc
+        (R := P.graph.toFiniteCallGraph.Edge) hSCC
+      let C := MutualDuplicationPacketGraph.GraphPacketSystem.ofRoundTrip
+        (Sys := P.toCallGraph.toRelational.toGraphSystem)
+        (OperatorKO7.FiniteGraphReachability.transGen_of_reachable_of_ne
+          (R := P.graph.toFiniteCallGraph.Edge) hij
+          (OperatorKO7.FiniteGraphSCC.witnessSrc_ne_witnessDst
+            (R := P.graph.toFiniteCallGraph.Edge) hSCC))
+        (OperatorKO7.FiniteGraphReachability.transGen_of_reachable_of_ne
+          (R := P.graph.toFiniteCallGraph.Edge) hji
+          (OperatorKO7.FiniteGraphSCC.witnessSrc_ne_witnessDst
+            (R := P.graph.toFiniteCallGraph.Edge) hSCC).symm)
+      OperatorKO7.MutualDuplicationPayloadFlow.WrapperDominance
+        (MutualDuplicationPacketGraph.GraphPacketSystem.CyclePath.AffineMeasure.toPacketModelMeasure
+          M (C.node 0)) C.copies)
+    (hunbounded : ∀ q : Nat, ∃ t : P.T, q ≤ M.eval t) :
+    ¬ P.GlobalOrientsCtx M.eval :=
+  OperatorKO7.MutualDuplicationCallGraph.Preserving.Presentation.no_global_orients_ctx_affine_of_wrapper_dominance_of_exists_findNontrivialSCCPair?
+    (P := P.toCallGraph) hfind M hdom hunbounded
+
+  theorem no_global_orients_ctx_transparent_of_exists_findNontrivialSCCPair?
+    (hfind : ∃ p : P.graph.Node × P.graph.Node, P.findNontrivialSCCPair? = some p)
+    (M : P.TransparentMeasure) :
+    ¬ P.GlobalOrientsCtx M.eval :=
+  OperatorKO7.MutualDuplicationCallGraph.Preserving.Presentation.no_global_orients_ctx_transparent_of_exists_findNontrivialSCCPair?
+    (P := P.toCallGraph) hfind M
+
+theorem no_global_orients_ctx_of_scalar_projection_transparent_of_exists_findNontrivialSCCPair?
+    (hfind : ∃ p : P.graph.Node × P.graph.Node, P.findNontrivialSCCPair? = some p)
+    {α : Type} (μ : P.T → α) (Q : α → α → Prop) (π : α → Nat)
+    (hproj : ∀ {u v : α}, Q u v → π u < π v)
+    (M : P.TransparentMeasure)
+    (hπ : ∀ t : P.T, π (μ t) = M.eval t) :
+    ¬ OperatorKO7.DependencyPairsFragment.GlobalOrients
+      (OperatorKO7.MutualDuplicationPacketGraph.GraphPacketSystem.StepCtx
+        P.toCallGraph.toRelational.toGraphSystem) μ Q :=
+  OperatorKO7.MutualDuplicationCallGraph.Preserving.Presentation.no_global_orients_ctx_of_scalar_projection_transparent_of_exists_findNontrivialSCCPair?
+    (P := P.toCallGraph) hfind μ Q π hproj M hπ
+
+end Presentation
+
+end Preserving
+
+end OperatorKO7.MutualDuplicationExtractedCallGraph
 ```
 
 ---
@@ -10768,6 +15278,2554 @@ theorem no_global_orients_ctx_affine_of_unbounded
 end AlternatingDupSchema
 
 end OperatorKO7.MutualDuplicationGeneral
+```
+
+---
+
+## OperatorKO7/Meta/MutualDuplication_GraphCycle.lean
+
+**Lines:** 761
+
+```lean
+import OperatorKO7.Meta.MutualDuplication_CycleFlow
+import OperatorKO7.Meta.GraphPathExtraction
+import OperatorKO7.Meta.FiniteGraphReachability
+import OperatorKO7.Meta.FiniteGraphSCC
+
+/-!
+# Raw-Graph Delayed-Duplication SCC Barrier
+
+This module lifts the delayed-duplication SCC story from finite cyclic signatures to an
+arbitrary directed graph equipped with:
+
+- a shared first-order constructor interface,
+- a family of graph-indexed recursors,
+- local successor rules along graph edges, and
+- an explicit closed cycle witness in the raw graph.
+
+The point is not to discover SCCs automatically. The theorem is still witness-based.
+But once a concrete cycle in an arbitrary graph is certified, the additive, affine,
+transparent-compositional, and scalar-projection contextual barriers follow uniformly.
+-/
+
+namespace OperatorKO7.MutualDuplicationGraphCycle
+
+open OperatorKO7.StepDuplicating
+open OperatorKO7.DependencyPairsFragment
+open OperatorKO7.MutualDuplicationCycleFlow
+open OperatorKO7.GraphPathExtraction
+open OperatorKO7.FiniteGraphReachability
+open OperatorKO7.FiniteGraphSCC
+open OperatorKO7.StepDuplicating.StepDuplicatingSchema
+
+/-- A rewrite signature indexed by an arbitrary directed graph. -/
+structure GraphDupSystem (ι : Type) where
+  T : Type
+  base : T
+  succ : T → T
+  wrap : T → T → T
+  recur : ι → T → T → T → T
+  Edge : ι → ι → Prop
+  Step : T → T → Prop
+  step_succ :
+    ∀ {i j}, Edge i j → ∀ b s n,
+      Step (recur i b s (succ n)) (wrap s (recur j b s n))
+
+namespace GraphDupSystem
+
+/-- Forget all but one chosen graph node and expose the ordinary duplication schema. -/
+def toNodeSchema {ι : Type} (Sys : GraphDupSystem ι) (i : ι) : StepDuplicatingSchema where
+  T := Sys.T
+  base := Sys.base
+  succ := Sys.succ
+  wrap := Sys.wrap
+  recur := Sys.recur i
+
+/-- Minimal contextual relation: root steps plus right-wrapper descent. -/
+inductive StepCtx {ι : Type} (Sys : GraphDupSystem ι) : Sys.T → Sys.T → Prop
+| root : ∀ {a b}, Sys.Step a b → StepCtx Sys a b
+| wrap_right : ∀ s {a b}, StepCtx Sys a b → StepCtx Sys (Sys.wrap s a) (Sys.wrap s b)
+
+/-- Orientation of the induced contextual relation. -/
+def GlobalOrientsCtx {ι : Type} {α : Type} (Sys : GraphDupSystem ι) (m : Sys.T → α)
+    (lt : α → α → Prop) : Prop :=
+  ∀ {a b : Sys.T}, StepCtx Sys a b → lt (m b) (m a)
+
+/-- Successor iteration on the shared carrier. -/
+def succIterOn {ι : Type} (Sys : GraphDupSystem ι) : Nat → Sys.T → Sys.T
+  | 0, t => t
+  | n + 1, t => Sys.succ (succIterOn Sys n t)
+
+/-- Wrapper nesting on the shared carrier. -/
+def wrapNest {ι : Type} (Sys : GraphDupSystem ι) (s : Sys.T) : Nat → Sys.T → Sys.T
+  | 0, t => t
+  | n + 1, t => wrapNest Sys s n (Sys.wrap s t)
+
+/-- Uniform additive constructor-local measures on the graph-indexed SCC syntax. -/
+structure AdditiveMeasure {ι : Type} (Sys : GraphDupSystem ι) where
+  eval : Sys.T → Nat
+  w_base : Nat
+  w_succ : Nat
+  w_wrap : Nat
+  w_recur : Nat
+  eval_base : eval Sys.base = w_base
+  eval_succ : ∀ t, eval (Sys.succ t) = w_succ + eval t
+  eval_wrap : ∀ x y, eval (Sys.wrap x y) = w_wrap + eval x + eval y
+  eval_recur : ∀ i b s n, eval (Sys.recur i b s n) = w_recur + eval b + eval s + eval n
+  h_wrap_pos : 1 ≤ w_wrap
+
+/-- Uniform affine constructor-local measures on the graph-indexed SCC syntax. -/
+structure AffineMeasure {ι : Type} (Sys : GraphDupSystem ι) where
+  eval : Sys.T → Nat
+  c_base : Nat
+  succ_bias : Nat
+  succ_scale : Nat
+  wrap_const : Nat
+  wrap_left : Nat
+  wrap_right : Nat
+  recur_const : Nat
+  recur_base : Nat
+  recur_step : Nat
+  recur_counter : Nat
+  eval_base : eval Sys.base = c_base
+  eval_succ : ∀ t, eval (Sys.succ t) = succ_bias + succ_scale * eval t
+  eval_wrap : ∀ x y, eval (Sys.wrap x y) = wrap_const + wrap_left * eval x + wrap_right * eval y
+  eval_recur :
+    ∀ i b s n,
+      eval (Sys.recur i b s n) =
+        recur_const + recur_base * eval b + recur_step * eval s + recur_counter * eval n
+  h_wrap_left_pos : 1 ≤ wrap_left
+  h_wrap_right_pos : 1 ≤ wrap_right
+
+/-- Uniform transparent-compositional measures on the graph-indexed SCC syntax. -/
+structure CompositionalMeasure {ι : Type} (Sys : GraphDupSystem ι) where
+  eval : Sys.T → Nat
+  c_base : Nat
+  c_succ : Nat → Nat
+  c_wrap : Nat → Nat → Nat
+  c_recur : Nat → Nat → Nat → Nat
+  eval_base : eval Sys.base = c_base
+  eval_succ : ∀ t, eval (Sys.succ t) = c_succ (eval t)
+  eval_wrap : ∀ x y, eval (Sys.wrap x y) = c_wrap (eval x) (eval y)
+  eval_recur : ∀ i b s n, eval (Sys.recur i b s n) = c_recur (eval b) (eval s) (eval n)
+  wrap_subterm1 : ∀ x y, c_wrap x y > x
+  wrap_subterm2 : ∀ x y, c_wrap x y > y
+
+def AdditiveMeasure.toNodeMeasure {ι : Type} {Sys : GraphDupSystem ι}
+    (M : AdditiveMeasure Sys) (i : ι) :
+    StepDuplicatingSchema.AdditiveMeasure (Sys.toNodeSchema i) where
+  eval := M.eval
+  w_base := M.w_base
+  w_succ := M.w_succ
+  w_wrap := M.w_wrap
+  w_recur := M.w_recur
+  eval_base := M.eval_base
+  eval_succ := M.eval_succ
+  eval_wrap := M.eval_wrap
+  eval_recur := M.eval_recur i
+  h_wrap_pos := M.h_wrap_pos
+
+def AffineMeasure.toNodeMeasure {ι : Type} {Sys : GraphDupSystem ι}
+    (M : AffineMeasure Sys) (i : ι) :
+    StepDuplicatingSchema.AffineMeasure (Sys.toNodeSchema i) where
+  eval := M.eval
+  c_base := M.c_base
+  succ_bias := M.succ_bias
+  succ_scale := M.succ_scale
+  wrap_const := M.wrap_const
+  wrap_left := M.wrap_left
+  wrap_right := M.wrap_right
+  recur_const := M.recur_const
+  recur_base := M.recur_base
+  recur_step := M.recur_step
+  recur_counter := M.recur_counter
+  eval_base := M.eval_base
+  eval_succ := M.eval_succ
+  eval_wrap := M.eval_wrap
+  eval_recur := M.eval_recur i
+  h_wrap_left_pos := M.h_wrap_left_pos
+  h_wrap_right_pos := M.h_wrap_right_pos
+
+def CompositionalMeasure.toNodeMeasure {ι : Type} {Sys : GraphDupSystem ι}
+    (M : CompositionalMeasure Sys) (i : ι) :
+    StepDuplicatingSchema.CompositionalMeasure (Sys.toNodeSchema i) where
+  eval := M.eval
+  c_base := M.c_base
+  c_succ := M.c_succ
+  c_wrap := M.c_wrap
+  c_recur := M.c_recur
+  eval_base := M.eval_base
+  eval_succ := M.eval_succ
+  eval_wrap := M.eval_wrap
+  eval_recur := M.eval_recur i
+  wrap_subterm1 := M.wrap_subterm1
+  wrap_subterm2 := M.wrap_subterm2
+
+namespace StepCtx
+
+lemma wrapNest_right {ι : Type} {Sys : GraphDupSystem ι}
+    (s : Sys.T) :
+    ∀ n {a b : Sys.T}, StepCtx Sys a b →
+      StepCtx Sys
+        (GraphDupSystem.wrapNest Sys s n a)
+        (GraphDupSystem.wrapNest Sys s n b) := by
+  intro n
+  induction n with
+  | zero =>
+      intro a b h
+      simpa [GraphDupSystem.wrapNest] using h
+  | succ n ih =>
+      intro a b h
+      simpa [GraphDupSystem.wrapNest] using
+        ih (StepCtx.wrap_right s h)
+
+end StepCtx
+
+/-- A certified closed cycle in the raw graph. The graph itself may have arbitrary extra
+structure; only this chosen cycle is used. -/
+structure CyclePath {ι : Type} (Sys : GraphDupSystem ι) where
+  copies : Nat
+  hcopies : 0 < copies
+  node : Nat → ι
+  edge : ∀ r, r < copies → Sys.Edge (node r) (node (r + 1))
+  closed : node copies = node 0
+
+/-- Build a concrete graph cycle from any nonempty closed transitive-closure witness. -/
+noncomputable def ofClosedTransGen {ι : Type} {Sys : GraphDupSystem ι} {i : ι}
+    (hcycle : Relation.TransGen Sys.Edge i i) : CyclePath Sys := by
+  let P := EdgePath.ofTransGen hcycle
+  refine
+    { copies := P.len
+      hcopies := P.hlen
+      node := P.node
+      edge := P.edge
+      closed := ?_ }
+  simpa [P.start] using P.finish
+
+/-- Build a concrete graph cycle from a round-trip SCC witness. -/
+noncomputable def ofRoundTrip {ι : Type} {Sys : GraphDupSystem ι} {i j : ι}
+    (hij : Relation.TransGen Sys.Edge i j) (hji : Relation.TransGen Sys.Edge j i) :
+    CyclePath Sys := by
+  let P := EdgePath.ofRoundTrip hij hji
+  refine
+    { copies := P.len
+      hcopies := P.hlen
+      node := P.node
+      edge := P.edge
+      closed := ?_ }
+  simpa [P.start] using P.finish
+
+@[simp] theorem ofClosedTransGen_node0 {ι : Type} {Sys : GraphDupSystem ι} {i : ι}
+    (hcycle : Relation.TransGen Sys.Edge i i) :
+    (ofClosedTransGen hcycle).node 0 = i := by
+  simpa [ofClosedTransGen] using (EdgePath.ofTransGen hcycle).start
+
+@[simp] theorem ofRoundTrip_node0 {ι : Type} {Sys : GraphDupSystem ι} {i j : ι}
+    (hij : Relation.TransGen Sys.Edge i j) (hji : Relation.TransGen Sys.Edge j i) :
+    (ofRoundTrip hij hji).node 0 = i := by
+  simpa [ofRoundTrip] using (EdgePath.ofRoundTrip hij hji).start
+
+namespace CyclePath
+
+variable {ι : Type} {Sys : GraphDupSystem ι}
+
+/-- The `r`-step residual phase of one certified raw-graph cycle. -/
+def phase (C : CyclePath Sys) (b s n : Sys.T) (r : Nat) : Sys.T :=
+  GraphDupSystem.wrapNest Sys s (C.copies - r)
+    (Sys.recur (C.node (C.copies - r)) b s
+      (GraphDupSystem.succIterOn Sys r n))
+
+lemma cycleFlow_succIter_eq (C : CyclePath Sys) :
+    ∀ n t,
+      GraphDupSystem.succIterOn Sys n t =
+        OperatorKO7.MutualDuplicationCycleFlow.succIterOn
+          (Sys.toNodeSchema (C.node 0)) n t
+  | 0, t => by rfl
+  | n + 1, t => by
+      rw [GraphDupSystem.succIterOn, OperatorKO7.MutualDuplicationCycleFlow.succIterOn,
+        cycleFlow_succIter_eq C n]
+      rfl
+
+lemma cycleFlow_wrapNest_eq (C : CyclePath Sys) (s : Sys.T) :
+    ∀ n t,
+      GraphDupSystem.wrapNest Sys s n t =
+        OperatorKO7.MutualDuplicationCycleFlow.wrapNest
+          (Sys.toNodeSchema (C.node 0)) s n t
+  | 0, t => by rfl
+  | n + 1, t => by
+      rw [GraphDupSystem.wrapNest, OperatorKO7.MutualDuplicationCycleFlow.wrapNest,
+        cycleFlow_wrapNest_eq C s n]
+      rfl
+
+lemma phase_step (C : CyclePath Sys) (b s n : Sys.T) {r : Nat} (hr : r < C.copies) :
+    StepCtx Sys (phase C b s n (r + 1)) (phase C b s n r) := by
+  let idx := C.copies - (r + 1)
+  have hidx : idx < C.copies := by
+    dsimp [idx]
+    omega
+  have hedge : Sys.Edge (C.node idx) (C.node (idx + 1)) := C.edge idx hidx
+  have hroot :
+      StepCtx Sys
+        (Sys.recur (C.node idx) b s
+          (Sys.succ
+            (GraphDupSystem.succIterOn Sys r n)))
+        (Sys.wrap s
+          (Sys.recur (C.node (idx + 1)) b s
+            (GraphDupSystem.succIterOn Sys r n))) := by
+    exact StepCtx.root (Sys.step_succ hedge b s _)
+  have hlift :=
+    StepCtx.wrapNest_right (Sys := Sys) s (C.copies - (r + 1)) hroot
+  have hcount : C.copies - r = (C.copies - (r + 1)) + 1 := by
+    omega
+  have hnode : C.node ((C.copies - (r + 1)) + 1) = C.node (C.copies - r) := by
+    simp [hcount]
+  have hs :
+      phase C b s n (r + 1) =
+        GraphDupSystem.wrapNest Sys s (C.copies - (r + 1))
+          (Sys.recur (C.node idx) b s (Sys.succ (GraphDupSystem.succIterOn Sys r n))) := by
+    rfl
+  have ht :
+      phase C b s n r =
+        GraphDupSystem.wrapNest Sys s (C.copies - (r + 1))
+          (Sys.wrap s
+            (Sys.recur (C.node ((C.copies - (r + 1)) + 1)) b s
+              (GraphDupSystem.succIterOn Sys r n))) := by
+    simp [phase, hcount, hnode, GraphDupSystem.wrapNest]
+  rw [hs, ht]
+  exact hlift
+
+/-- One full certified raw-graph cycle realizes the delayed duplicate. -/
+theorem cycle_realized (C : CyclePath Sys) (b s n : Sys.T) :
+    Relation.TransGen (StepCtx Sys)
+      (OperatorKO7.MutualDuplicationCycleFlow.cycleSource
+        (Sys.toNodeSchema (C.node 0)) C.copies b s n)
+      (OperatorKO7.MutualDuplicationCycleFlow.cycleTarget
+        (Sys.toNodeSchema (C.node 0)) C.copies b s n) := by
+  have hpath :
+      ∀ m, m < C.copies →
+        Relation.TransGen (StepCtx Sys) (phase C b s n (m + 1)) (phase C b s n 0) := by
+    intro m
+    induction m with
+    | zero =>
+        intro hm
+        exact Relation.TransGen.single (phase_step C b s n (r := 0) hm)
+    | succ m ih =>
+        intro hm
+        have hstep : StepCtx Sys (phase C b s n (m + 2)) (phase C b s n (m + 1)) := by
+          exact phase_step C b s n (r := m + 1) hm
+        have htail :
+            Relation.TransGen (StepCtx Sys) (phase C b s n (m + 1)) (phase C b s n 0) := by
+          exact ih (by omega)
+        exact Relation.TransGen.trans (Relation.TransGen.single hstep) htail
+  have hstart :
+      phase C b s n C.copies =
+        OperatorKO7.MutualDuplicationCycleFlow.cycleSource
+          (Sys.toNodeSchema (C.node 0)) C.copies b s n := by
+    simp [phase, GraphDupSystem.toNodeSchema, GraphDupSystem.wrapNest,
+      OperatorKO7.MutualDuplicationCycleFlow.cycleSource,
+      cycleFlow_succIter_eq C C.copies n]
+  have htarget :
+      phase C b s n 0 =
+        OperatorKO7.MutualDuplicationCycleFlow.cycleTarget
+          (Sys.toNodeSchema (C.node 0)) C.copies b s n := by
+    simp [phase, GraphDupSystem.toNodeSchema, GraphDupSystem.succIterOn,
+      OperatorKO7.MutualDuplicationCycleFlow.cycleTarget,
+      C.closed, cycleFlow_wrapNest_eq C s C.copies (Sys.recur (C.node 0) b s n)]
+  rw [← hstart, ← htarget]
+  have hpred : C.copies - 1 < C.copies := by
+    simpa [Nat.pred_eq_sub_one] using Nat.pred_lt (Nat.ne_of_gt C.hcopies)
+  have hlast : C.copies - 1 + 1 = C.copies := by
+    exact Nat.sub_add_cancel (Nat.succ_le_of_lt C.hcopies)
+  simpa [hlast] using hpath (C.copies - 1) hpred
+
+/-- The raw-graph delayed-duplication cycle yields an abstract cycle witness. -/
+def toCycleWitness (C : CyclePath Sys) :
+    OperatorKO7.MutualDuplicationCycleFlow.CycleWitness
+      (Sys.toNodeSchema (C.node 0)) C.copies where
+  StepCtx := StepCtx Sys
+  cycle_realized := cycle_realized C
+
+/-- Additive barrier for any raw-graph SCC admitting a certified delayed-duplication cycle. -/
+theorem no_global_orients_ctx_additive
+    (C : CyclePath Sys)
+    (M : GraphDupSystem.AdditiveMeasure Sys) :
+    ¬ GlobalOrientsCtx Sys M.eval (· < ·) := by
+  intro h
+  have h' :
+      OperatorKO7.MutualDuplicationCycleFlow.GlobalOrientsCtx
+        (toCycleWitness C) (GraphDupSystem.AdditiveMeasure.toNodeMeasure M (C.node 0)).eval (· < ·) := by
+    intro a b hstep
+    exact h hstep
+  exact
+    OperatorKO7.MutualDuplicationCycleFlow.no_global_orients_ctx_additive
+      (W := toCycleWitness C)
+      (M := GraphDupSystem.AdditiveMeasure.toNodeMeasure M (C.node 0))
+      (hcopies := Nat.succ_le_of_lt C.hcopies) h'
+
+/-- Affine barrier for any raw-graph SCC admitting a certified delayed-duplication cycle. -/
+theorem no_global_orients_ctx_affine_of_unbounded
+    (C : CyclePath Sys)
+    (M : GraphDupSystem.AffineMeasure Sys)
+    (hunbounded :
+      StepDuplicatingSchema.HasUnboundedRange
+        (AffineOps.toDupMeasure (GraphDupSystem.AffineMeasure.toNodeMeasure M (C.node 0))
+          C.copies C.hcopies)) :
+    ¬ GlobalOrientsCtx Sys M.eval (· < ·) := by
+  intro h
+  have h' :
+      OperatorKO7.MutualDuplicationCycleFlow.GlobalOrientsCtx
+        (toCycleWitness C) (GraphDupSystem.AffineMeasure.toNodeMeasure M (C.node 0)).eval (· < ·) := by
+    intro a b hstep
+    exact h hstep
+  exact
+    OperatorKO7.MutualDuplicationCycleFlow.no_global_orients_ctx_affine_of_unbounded
+      (W := toCycleWitness C)
+      (M := GraphDupSystem.AffineMeasure.toNodeMeasure M (C.node 0))
+      (hcopies := C.hcopies)
+      (hunbounded := hunbounded) h'
+
+/-- Transparent-compositional barrier for any raw-graph SCC admitting a certified delayed
+duplicate cycle. -/
+theorem no_global_orients_ctx_compositional_transparent
+    (C : CyclePath Sys) (M : GraphDupSystem.CompositionalMeasure Sys)
+    (htrans : M.c_succ M.c_base = M.c_base) :
+    ¬ GlobalOrientsCtx Sys M.eval (· < ·) := by
+  intro h
+  have h' :
+      OperatorKO7.MutualDuplicationCycleFlow.GlobalOrientsCtx
+        (toCycleWitness C) (GraphDupSystem.CompositionalMeasure.toNodeMeasure M (C.node 0)).eval (· < ·) := by
+    intro a b hstep
+    exact h hstep
+  exact
+    OperatorKO7.MutualDuplicationCycleFlow.no_global_orients_ctx_compositional_transparent
+      (W := toCycleWitness C)
+      (CM := GraphDupSystem.CompositionalMeasure.toNodeMeasure M (C.node 0))
+      (hcopies := C.hcopies)
+      (htrans := htrans) h'
+
+/-- Scalar-projection lift for any raw-graph SCC admitting a certified delayed duplicate
+cycle. -/
+theorem no_global_orients_ctx_of_scalar_projection_affine_of_unbounded
+    (C : CyclePath Sys)
+    {α : Type} (μ : Sys.T → α) (R : α → α → Prop) (π : α → Nat)
+    (hproj : ∀ {u v : α}, R u v → π u < π v)
+    (A : StepDuplicatingSchema.AffineMeasure (toDupSchema (Sys.toNodeSchema (C.node 0)) C.copies))
+    (hπ : ∀ t : Sys.T, π (μ t) = A.eval t)
+    (hunbounded : StepDuplicatingSchema.HasUnboundedRange A) :
+    ¬ DependencyPairsFragment.GlobalOrients (StepCtx Sys) μ R := by
+  exact
+    OperatorKO7.MutualDuplicationCycleFlow.no_global_orients_ctx_of_scalar_projection_affine_of_unbounded
+      (W := toCycleWitness C)
+      (μ := μ) (R := R) (π := π)
+      (hproj := hproj) (A := A) (hπ := hπ) (hunbounded := hunbounded)
+
+/-- Closed-path wrapper for the additive raw-graph delayed-duplication barrier. -/
+theorem no_global_orients_ctx_additive_of_closedTransGen
+    {i : ι} (hcycle : Relation.TransGen Sys.Edge i i)
+    (M : GraphDupSystem.AdditiveMeasure Sys) :
+    ¬ GlobalOrientsCtx Sys M.eval (· < ·) :=
+  no_global_orients_ctx_additive (C := ofClosedTransGen hcycle) M
+
+/-- Round-trip SCC wrapper for the additive raw-graph delayed-duplication barrier. -/
+theorem no_global_orients_ctx_additive_of_roundTrip
+    {i j : ι} (hij : Relation.TransGen Sys.Edge i j) (hji : Relation.TransGen Sys.Edge j i)
+    (M : GraphDupSystem.AdditiveMeasure Sys) :
+    ¬ GlobalOrientsCtx Sys M.eval (· < ·) :=
+  no_global_orients_ctx_additive (C := ofRoundTrip hij hji) M
+
+/-- Closed-path wrapper for the affine raw-graph delayed-duplication barrier. -/
+theorem no_global_orients_ctx_affine_of_unbounded_of_closedTransGen
+    {i : ι} (hcycle : Relation.TransGen Sys.Edge i i)
+    (M : GraphDupSystem.AffineMeasure Sys)
+    (hunbounded :
+      StepDuplicatingSchema.HasUnboundedRange
+        (AffineOps.toDupMeasure (GraphDupSystem.AffineMeasure.toNodeMeasure M i)
+          (ofClosedTransGen hcycle).copies (ofClosedTransGen hcycle).hcopies)) :
+    ¬ GlobalOrientsCtx Sys M.eval (· < ·) :=
+  no_global_orients_ctx_affine_of_unbounded (C := ofClosedTransGen hcycle) M hunbounded
+
+/-- Round-trip SCC wrapper for the affine raw-graph delayed-duplication barrier. -/
+theorem no_global_orients_ctx_affine_of_unbounded_of_roundTrip
+    {i j : ι} (hij : Relation.TransGen Sys.Edge i j) (hji : Relation.TransGen Sys.Edge j i)
+    (M : GraphDupSystem.AffineMeasure Sys)
+    (hunbounded :
+      StepDuplicatingSchema.HasUnboundedRange
+        (AffineOps.toDupMeasure (GraphDupSystem.AffineMeasure.toNodeMeasure M i)
+          (ofRoundTrip hij hji).copies (ofRoundTrip hij hji).hcopies)) :
+    ¬ GlobalOrientsCtx Sys M.eval (· < ·) :=
+  no_global_orients_ctx_affine_of_unbounded (C := ofRoundTrip hij hji) M hunbounded
+
+/-- Closed-path wrapper for the transparent raw-graph delayed-duplication barrier. -/
+theorem no_global_orients_ctx_compositional_transparent_of_closedTransGen
+    {i : ι} (hcycle : Relation.TransGen Sys.Edge i i)
+    (M : GraphDupSystem.CompositionalMeasure Sys)
+    (htrans : M.c_succ M.c_base = M.c_base) :
+    ¬ GlobalOrientsCtx Sys M.eval (· < ·) :=
+  no_global_orients_ctx_compositional_transparent (C := ofClosedTransGen hcycle) M htrans
+
+/-- Round-trip SCC wrapper for the transparent raw-graph delayed-duplication barrier. -/
+theorem no_global_orients_ctx_compositional_transparent_of_roundTrip
+    {i j : ι} (hij : Relation.TransGen Sys.Edge i j) (hji : Relation.TransGen Sys.Edge j i)
+    (M : GraphDupSystem.CompositionalMeasure Sys)
+    (htrans : M.c_succ M.c_base = M.c_base) :
+    ¬ GlobalOrientsCtx Sys M.eval (· < ·) :=
+  no_global_orients_ctx_compositional_transparent (C := ofRoundTrip hij hji) M htrans
+
+/-- Closed-path wrapper for the scalar-projection delayed-duplication barrier. -/
+theorem no_global_orients_ctx_of_scalar_projection_affine_of_unbounded_of_closedTransGen
+    {i : ι} (hcycle : Relation.TransGen Sys.Edge i i)
+    {α : Type} (μ : Sys.T → α) (R : α → α → Prop) (π : α → Nat)
+    (hproj : ∀ {u v : α}, R u v → π u < π v)
+    (A : StepDuplicatingSchema.AffineMeasure
+      (toDupSchema (Sys.toNodeSchema ((ofClosedTransGen hcycle).node 0))
+        (ofClosedTransGen hcycle).copies))
+    (hπ : ∀ t : Sys.T, π (μ t) = A.eval t)
+    (hunbounded : StepDuplicatingSchema.HasUnboundedRange A) :
+    ¬ DependencyPairsFragment.GlobalOrients (StepCtx Sys) μ R :=
+  no_global_orients_ctx_of_scalar_projection_affine_of_unbounded
+    (C := ofClosedTransGen hcycle) μ R π hproj A hπ hunbounded
+
+/-- Round-trip SCC wrapper for the scalar-projection delayed-duplication barrier. -/
+theorem no_global_orients_ctx_of_scalar_projection_affine_of_unbounded_of_roundTrip
+    {i j : ι} (hij : Relation.TransGen Sys.Edge i j) (hji : Relation.TransGen Sys.Edge j i)
+    {α : Type} (μ : Sys.T → α) (R : α → α → Prop) (π : α → Nat)
+    (hproj : ∀ {u v : α}, R u v → π u < π v)
+    (A : StepDuplicatingSchema.AffineMeasure
+      (toDupSchema (Sys.toNodeSchema ((ofRoundTrip hij hji).node 0))
+        (ofRoundTrip hij hji).copies))
+    (hπ : ∀ t : Sys.T, π (μ t) = A.eval t)
+    (hunbounded : StepDuplicatingSchema.HasUnboundedRange A) :
+    ¬ DependencyPairsFragment.GlobalOrients (StepCtx Sys) μ R :=
+  no_global_orients_ctx_of_scalar_projection_affine_of_unbounded
+    (C := ofRoundTrip hij hji) μ R π hproj A hπ hunbounded
+
+/-- Finite-round-trip wrapper for the additive delayed-duplication raw-graph barrier. -/
+theorem no_global_orients_ctx_additive_of_finiteRoundTrip
+    [Fintype ι] [DecidableEq ι] [DecidableRel Sys.Edge]
+    {i j : ι}
+    (hij : Reachable Sys.Edge i j) (hji : Reachable Sys.Edge j i) (hne : i ≠ j)
+    (M : GraphDupSystem.AdditiveMeasure Sys) :
+    ¬ GlobalOrientsCtx Sys M.eval (· < ·) := by
+  let hijT := transGen_of_reachable_of_ne (R := Sys.Edge) hij hne
+  let hjiT := transGen_of_reachable_of_ne (R := Sys.Edge) hji hne.symm
+  exact no_global_orients_ctx_additive_of_roundTrip hijT hjiT M
+
+/-- Finite-round-trip wrapper for the affine delayed-duplication raw-graph barrier. -/
+theorem no_global_orients_ctx_affine_of_unbounded_of_finiteRoundTrip
+    [Fintype ι] [DecidableEq ι] [DecidableRel Sys.Edge]
+    {i j : ι}
+    (hij : Reachable Sys.Edge i j) (hji : Reachable Sys.Edge j i) (hne : i ≠ j)
+    (M : GraphDupSystem.AffineMeasure Sys)
+    (hunbounded :
+      let hijT := transGen_of_reachable_of_ne (R := Sys.Edge) hij hne
+      let hjiT := transGen_of_reachable_of_ne (R := Sys.Edge) hji hne.symm
+      let C := ofRoundTrip hijT hjiT
+      StepDuplicatingSchema.HasUnboundedRange
+        (AffineOps.toDupMeasure (GraphDupSystem.AffineMeasure.toNodeMeasure M (C.node 0))
+          C.copies C.hcopies)) :
+    ¬ GlobalOrientsCtx Sys M.eval (· < ·) := by
+  let hijT := transGen_of_reachable_of_ne (R := Sys.Edge) hij hne
+  let hjiT := transGen_of_reachable_of_ne (R := Sys.Edge) hji hne.symm
+  simpa [hijT, hjiT] using
+    (no_global_orients_ctx_affine_of_unbounded_of_roundTrip
+      (i := i) (j := j) hijT hjiT M hunbounded)
+
+/-- Finite-round-trip wrapper for the transparent delayed-duplication raw-graph barrier. -/
+theorem no_global_orients_ctx_compositional_transparent_of_finiteRoundTrip
+    [Fintype ι] [DecidableEq ι] [DecidableRel Sys.Edge]
+    {i j : ι}
+    (hij : Reachable Sys.Edge i j) (hji : Reachable Sys.Edge j i) (hne : i ≠ j)
+    (M : GraphDupSystem.CompositionalMeasure Sys)
+    (htrans : M.c_succ M.c_base = M.c_base) :
+    ¬ GlobalOrientsCtx Sys M.eval (· < ·) := by
+  let hijT := transGen_of_reachable_of_ne (R := Sys.Edge) hij hne
+  let hjiT := transGen_of_reachable_of_ne (R := Sys.Edge) hji hne.symm
+  exact no_global_orients_ctx_compositional_transparent_of_roundTrip hijT hjiT M htrans
+
+/-- Finite-round-trip wrapper for the scalar-projection delayed-duplication barrier. -/
+theorem no_global_orients_ctx_of_scalar_projection_affine_of_unbounded_of_finiteRoundTrip
+    [Fintype ι] [DecidableEq ι] [DecidableRel Sys.Edge]
+    {i j : ι}
+    (hij : Reachable Sys.Edge i j) (hji : Reachable Sys.Edge j i) (hne : i ≠ j)
+    {α : Type} (μ : Sys.T → α) (R : α → α → Prop) (π : α → Nat)
+    (hproj : ∀ {u v : α}, R u v → π u < π v)
+    (A :
+      let hijT := transGen_of_reachable_of_ne (R := Sys.Edge) hij hne
+      let hjiT := transGen_of_reachable_of_ne (R := Sys.Edge) hji hne.symm
+      let C := ofRoundTrip hijT hjiT
+      StepDuplicatingSchema.AffineMeasure
+        (toDupSchema (Sys.toNodeSchema (C.node 0)) C.copies))
+    (hπ : ∀ t : Sys.T, π (μ t) = A.eval t)
+    (hunbounded : StepDuplicatingSchema.HasUnboundedRange A) :
+    ¬ DependencyPairsFragment.GlobalOrients (StepCtx Sys) μ R := by
+  let hijT := transGen_of_reachable_of_ne (R := Sys.Edge) hij hne
+  let hjiT := transGen_of_reachable_of_ne (R := Sys.Edge) hji hne.symm
+  simpa [hijT, hjiT] using
+    (no_global_orients_ctx_of_scalar_projection_affine_of_unbounded_of_roundTrip
+      (i := i) (j := j) hijT hjiT μ R π hproj A hπ hunbounded)
+
+/-- Finite-SCC wrapper for the additive delayed-duplication raw-graph barrier. -/
+theorem no_global_orients_ctx_additive_of_hasNontrivialSCC
+    [Fintype ι] [DecidableEq ι] [DecidableRel Sys.Edge]
+    (hSCC : HasNontrivialSCC Sys.Edge)
+    (M : GraphDupSystem.AdditiveMeasure Sys) :
+    ¬ GlobalOrientsCtx Sys M.eval (· < ·) :=
+  no_global_orients_ctx_additive_of_finiteRoundTrip
+    (i := witnessSrc Sys.Edge hSCC) (j := witnessDst Sys.Edge hSCC)
+    (reachable_witnessSrc_witnessDst (R := Sys.Edge) hSCC)
+    (reachable_witnessDst_witnessSrc (R := Sys.Edge) hSCC)
+    (witnessSrc_ne_witnessDst (R := Sys.Edge) hSCC)
+    M
+
+/-- Finite-SCC wrapper for the affine delayed-duplication raw-graph barrier. -/
+theorem no_global_orients_ctx_affine_of_unbounded_of_hasNontrivialSCC
+    [Fintype ι] [DecidableEq ι] [DecidableRel Sys.Edge]
+    (hSCC : HasNontrivialSCC Sys.Edge)
+    (M : GraphDupSystem.AffineMeasure Sys)
+    (hunbounded :
+      let hij := reachable_witnessSrc_witnessDst (R := Sys.Edge) hSCC
+      let hji := reachable_witnessDst_witnessSrc (R := Sys.Edge) hSCC
+      let C := ofRoundTrip
+        (transGen_of_reachable_of_ne (R := Sys.Edge) hij (witnessSrc_ne_witnessDst (R := Sys.Edge) hSCC))
+        (transGen_of_reachable_of_ne (R := Sys.Edge) hji (witnessSrc_ne_witnessDst (R := Sys.Edge) hSCC).symm)
+      StepDuplicatingSchema.HasUnboundedRange
+        (AffineOps.toDupMeasure (GraphDupSystem.AffineMeasure.toNodeMeasure M (C.node 0))
+          C.copies C.hcopies)) :
+    ¬ GlobalOrientsCtx Sys M.eval (· < ·) :=
+  no_global_orients_ctx_affine_of_unbounded_of_finiteRoundTrip
+    (i := witnessSrc Sys.Edge hSCC) (j := witnessDst Sys.Edge hSCC)
+    (reachable_witnessSrc_witnessDst (R := Sys.Edge) hSCC)
+    (reachable_witnessDst_witnessSrc (R := Sys.Edge) hSCC)
+    (witnessSrc_ne_witnessDst (R := Sys.Edge) hSCC)
+    M hunbounded
+
+/-- Finite-SCC wrapper for the transparent delayed-duplication raw-graph barrier. -/
+theorem no_global_orients_ctx_compositional_transparent_of_hasNontrivialSCC
+    [Fintype ι] [DecidableEq ι] [DecidableRel Sys.Edge]
+    (hSCC : HasNontrivialSCC Sys.Edge)
+    (M : GraphDupSystem.CompositionalMeasure Sys)
+    (htrans : M.c_succ M.c_base = M.c_base) :
+    ¬ GlobalOrientsCtx Sys M.eval (· < ·) :=
+  no_global_orients_ctx_compositional_transparent_of_finiteRoundTrip
+    (i := witnessSrc Sys.Edge hSCC) (j := witnessDst Sys.Edge hSCC)
+    (reachable_witnessSrc_witnessDst (R := Sys.Edge) hSCC)
+    (reachable_witnessDst_witnessSrc (R := Sys.Edge) hSCC)
+    (witnessSrc_ne_witnessDst (R := Sys.Edge) hSCC)
+    M htrans
+
+/-- Finite-SCC wrapper for the scalar-projection delayed-duplication barrier. -/
+theorem no_global_orients_ctx_of_scalar_projection_affine_of_unbounded_of_hasNontrivialSCC
+    [Fintype ι] [DecidableEq ι] [DecidableRel Sys.Edge]
+    (hSCC : HasNontrivialSCC Sys.Edge)
+    {α : Type} (μ : Sys.T → α) (R : α → α → Prop) (π : α → Nat)
+    (hproj : ∀ {u v : α}, R u v → π u < π v)
+    (A :
+      let hij := reachable_witnessSrc_witnessDst (R := Sys.Edge) hSCC
+      let hji := reachable_witnessDst_witnessSrc (R := Sys.Edge) hSCC
+      let C := ofRoundTrip
+        (transGen_of_reachable_of_ne (R := Sys.Edge) hij (witnessSrc_ne_witnessDst (R := Sys.Edge) hSCC))
+        (transGen_of_reachable_of_ne (R := Sys.Edge) hji (witnessSrc_ne_witnessDst (R := Sys.Edge) hSCC).symm)
+      StepDuplicatingSchema.AffineMeasure
+        (toDupSchema (Sys.toNodeSchema (C.node 0)) C.copies))
+    (hπ : ∀ t : Sys.T, π (μ t) = A.eval t)
+    (hunbounded : StepDuplicatingSchema.HasUnboundedRange A) :
+    ¬ DependencyPairsFragment.GlobalOrients (StepCtx Sys) μ R :=
+  no_global_orients_ctx_of_scalar_projection_affine_of_unbounded_of_finiteRoundTrip
+    (i := witnessSrc Sys.Edge hSCC) (j := witnessDst Sys.Edge hSCC)
+    (reachable_witnessSrc_witnessDst (R := Sys.Edge) hSCC)
+    (reachable_witnessDst_witnessSrc (R := Sys.Edge) hSCC)
+    (witnessSrc_ne_witnessDst (R := Sys.Edge) hSCC)
+    μ R π hproj A hπ hunbounded
+
+/-- Existential closed-cycle wrapper for the additive delayed-duplication raw-graph barrier. -/
+theorem no_global_orients_ctx_additive_of_exists_closedTransGen
+    {i : ι} (hex : ∃ _ : Relation.TransGen Sys.Edge i i, True)
+    (M : GraphDupSystem.AdditiveMeasure Sys) :
+    ¬ GlobalOrientsCtx Sys M.eval (· < ·) := by
+  rcases hex with ⟨hcycle, _⟩
+  exact no_global_orients_ctx_additive_of_closedTransGen hcycle M
+
+/-- Existential round-trip wrapper for the additive delayed-duplication raw-graph barrier. -/
+theorem no_global_orients_ctx_additive_of_exists_roundTrip
+    {i j : ι}
+    (hex : ∃ _ : Relation.TransGen Sys.Edge i j, Relation.TransGen Sys.Edge j i)
+    (M : GraphDupSystem.AdditiveMeasure Sys) :
+    ¬ GlobalOrientsCtx Sys M.eval (· < ·) := by
+  rcases hex with ⟨hij, hji⟩
+  exact no_global_orients_ctx_additive_of_roundTrip hij hji M
+
+/-- Existential closed-cycle wrapper for the affine delayed-duplication raw-graph barrier. -/
+theorem no_global_orients_ctx_affine_of_unbounded_of_exists_closedTransGen
+    {i : ι} (hex : ∃ _ : Relation.TransGen Sys.Edge i i, True)
+    (M : GraphDupSystem.AffineMeasure Sys)
+    (hunbounded :
+      let C := ofClosedTransGen (Classical.choose hex)
+      StepDuplicatingSchema.HasUnboundedRange
+        (AffineOps.toDupMeasure (GraphDupSystem.AffineMeasure.toNodeMeasure M (C.node 0))
+          C.copies C.hcopies)) :
+    ¬ GlobalOrientsCtx Sys M.eval (· < ·) := by
+  rcases hex with ⟨hcycle, _⟩
+  simpa [ofClosedTransGen] using
+    (no_global_orients_ctx_affine_of_unbounded_of_closedTransGen
+      (i := i) hcycle M hunbounded)
+
+/-- Existential round-trip wrapper for the affine delayed-duplication raw-graph barrier. -/
+theorem no_global_orients_ctx_affine_of_unbounded_of_exists_roundTrip
+    {i j : ι}
+    (hex : ∃ _ : Relation.TransGen Sys.Edge i j, Relation.TransGen Sys.Edge j i)
+    (M : GraphDupSystem.AffineMeasure Sys)
+    (hunbounded :
+      let hij := Classical.choose hex
+      let hji := Classical.choose_spec hex
+      let C := ofRoundTrip hij hji
+      StepDuplicatingSchema.HasUnboundedRange
+        (AffineOps.toDupMeasure (GraphDupSystem.AffineMeasure.toNodeMeasure M (C.node 0))
+          C.copies C.hcopies)) :
+    ¬ GlobalOrientsCtx Sys M.eval (· < ·) := by
+  rcases hex with ⟨hij, hji⟩
+  simpa [ofRoundTrip] using
+    (no_global_orients_ctx_affine_of_unbounded_of_roundTrip
+      (i := i) (j := j) hij hji M hunbounded)
+
+/-- Existential closed-cycle wrapper for the transparent delayed-duplication raw-graph barrier. -/
+theorem no_global_orients_ctx_compositional_transparent_of_exists_closedTransGen
+    {i : ι} (hex : ∃ _ : Relation.TransGen Sys.Edge i i, True)
+    (M : GraphDupSystem.CompositionalMeasure Sys)
+    (htrans : M.c_succ M.c_base = M.c_base) :
+    ¬ GlobalOrientsCtx Sys M.eval (· < ·) := by
+  rcases hex with ⟨hcycle, _⟩
+  exact no_global_orients_ctx_compositional_transparent_of_closedTransGen hcycle M htrans
+
+/-- Existential round-trip wrapper for the transparent delayed-duplication raw-graph barrier. -/
+theorem no_global_orients_ctx_compositional_transparent_of_exists_roundTrip
+    {i j : ι}
+    (hex : ∃ _ : Relation.TransGen Sys.Edge i j, Relation.TransGen Sys.Edge j i)
+    (M : GraphDupSystem.CompositionalMeasure Sys)
+    (htrans : M.c_succ M.c_base = M.c_base) :
+    ¬ GlobalOrientsCtx Sys M.eval (· < ·) := by
+  rcases hex with ⟨hij, hji⟩
+  exact no_global_orients_ctx_compositional_transparent_of_roundTrip hij hji M htrans
+
+/-- Existential closed-cycle wrapper for the scalar-projection delayed-duplication barrier. -/
+theorem no_global_orients_ctx_of_scalar_projection_affine_of_unbounded_of_exists_closedTransGen
+    {i : ι} (hex : ∃ _ : Relation.TransGen Sys.Edge i i, True)
+    {α : Type} (μ : Sys.T → α) (R : α → α → Prop) (π : α → Nat)
+    (hproj : ∀ {u v : α}, R u v → π u < π v)
+    (A :
+      let C := ofClosedTransGen (Classical.choose hex)
+      StepDuplicatingSchema.AffineMeasure
+        (toDupSchema (Sys.toNodeSchema (C.node 0)) C.copies))
+    (hπ : ∀ t : Sys.T, π (μ t) = A.eval t)
+    (hunbounded : StepDuplicatingSchema.HasUnboundedRange A) :
+    ¬ DependencyPairsFragment.GlobalOrients (StepCtx Sys) μ R := by
+  rcases hex with ⟨hcycle, _⟩
+  simpa [ofClosedTransGen] using
+    (no_global_orients_ctx_of_scalar_projection_affine_of_unbounded_of_closedTransGen
+      (i := i) hcycle μ R π hproj A hπ hunbounded)
+
+/-- Existential round-trip wrapper for the scalar-projection delayed-duplication barrier. -/
+theorem no_global_orients_ctx_of_scalar_projection_affine_of_unbounded_of_exists_roundTrip
+    {i j : ι}
+    (hex : ∃ _ : Relation.TransGen Sys.Edge i j, Relation.TransGen Sys.Edge j i)
+    {α : Type} (μ : Sys.T → α) (R : α → α → Prop) (π : α → Nat)
+    (hproj : ∀ {u v : α}, R u v → π u < π v)
+    (A :
+      let hij := Classical.choose hex
+      let hji := Classical.choose_spec hex
+      let C := ofRoundTrip hij hji
+      StepDuplicatingSchema.AffineMeasure
+        (toDupSchema (Sys.toNodeSchema (C.node 0)) C.copies))
+    (hπ : ∀ t : Sys.T, π (μ t) = A.eval t)
+    (hunbounded : StepDuplicatingSchema.HasUnboundedRange A) :
+    ¬ DependencyPairsFragment.GlobalOrients (StepCtx Sys) μ R := by
+  rcases hex with ⟨hij, hji⟩
+  simpa [ofRoundTrip] using
+    (no_global_orients_ctx_of_scalar_projection_affine_of_unbounded_of_roundTrip
+      (i := i) (j := j) hij hji μ R π hproj A hπ hunbounded)
+
+end CyclePath
+
+end GraphDupSystem
+
+end OperatorKO7.MutualDuplicationGraphCycle
+```
+
+---
+
+## OperatorKO7/Meta/MutualDuplication_KNode.lean
+
+**Lines:** 432
+
+```lean
+import OperatorKO7.Meta.StepDuplicatingSchema
+import OperatorKO7.Meta.DependencyPairs_Fragment
+
+/-!
+# Finite k-Node Delayed Duplication
+
+This module generalizes the bounded two-node delayed-duplication SCC to a finite
+cyclic family of `k + 1` recursors. One full cycle peels `k + 1` successors and
+accumulates `k + 1` nested wrappers around the duplicated payload.
+
+The file now treats the additive branch and the affine branch with the same
+reduction pattern: exact cycle realization first, then reduction to the existing
+schema-level barrier theorems.
+-/
+
+namespace OperatorKO7.MutualDuplicationKNode
+
+open OperatorKO7.StepDuplicating
+open OperatorKO7.DependencyPairsFragment
+
+/-- Shared constructor interface for a finite cyclic SCC with `k + 1` recursors. -/
+structure CyclicDupSchema (k : Nat) where
+  T : Type
+  base : T
+  succ : T → T
+  wrap : T → T → T
+  recur : Fin (k + 1) → T → T → T → T
+
+namespace CyclicDupSchema
+
+/-- Forget the cyclic index and expose the ordinary wrapper-pump interface. -/
+def toPumpSchema {k : Nat} (S : CyclicDupSchema k) : StepDuplicatingSchema where
+  T := S.T
+  base := S.base
+  succ := S.succ
+  wrap := S.wrap
+  recur := S.recur 0
+
+/-- Wrapper-chain pump inherited from the ordinary duplication schema. -/
+def wrapIter {k : Nat} (S : CyclicDupSchema k) : Nat → S.T :=
+  StepDuplicatingSchema.wrapIter S.toPumpSchema
+
+/-- Iterate the successor constructor. -/
+def succIter {k : Nat} (S : CyclicDupSchema k) : Nat → S.T → S.T
+  | 0, t => t
+  | n + 1, t => S.succ (S.succIter n t)
+
+/-- Repeatedly wrap the same payload on the left. The recursive orientation is
+chosen so that lifting a contextual step through the wrapper chain is definitional. -/
+def wrapNest {k : Nat} (S : CyclicDupSchema k) (s : S.T) : Nat → S.T → S.T
+  | 0, t => t
+  | n + 1, t => S.wrapNest s n (S.wrap s t)
+
+/-- One full cycle advances the recursor index by `n` modulo `k + 1`. -/
+def advance {k : Nat} (_S : CyclicDupSchema k) (i : Fin (k + 1)) (n : Nat) : Fin (k + 1) where
+  val := (i.1 + n) % (k + 1)
+  isLt := Nat.mod_lt _ (Nat.succ_pos _)
+
+/-- One full SCC cycle peels `k + 1` successors. -/
+def cycleSucc {k : Nat} (S : CyclicDupSchema k) (t : S.T) : S.T :=
+  S.succIter (k + 1) t
+
+/-- One full SCC cycle accumulates `k + 1` identical wrappers. -/
+def cycleWrap {k : Nat} (S : CyclicDupSchema k) (s t : S.T) : S.T :=
+  S.wrapNest s (k + 1) t
+
+lemma advance_zero {k : Nat} (S : CyclicDupSchema k) (i : Fin (k + 1)) :
+    S.advance i 0 = i := by
+  ext
+  simp [advance]
+
+lemma advance_add {k : Nat} (S : CyclicDupSchema k) (i : Fin (k + 1)) (m n : Nat) :
+    S.advance (S.advance i m) n = S.advance i (m + n) := by
+  ext
+  simp [advance, Nat.add_assoc, Nat.mod_add_mod]
+
+lemma advance_cycleLen {k : Nat} (S : CyclicDupSchema k) (i : Fin (k + 1)) :
+    S.advance i (k + 1) = i := by
+  ext
+  simp [advance]
+
+/-- Uniform additive constructor-local measures on the cyclic SCC schema. -/
+structure AdditiveMeasure {k : Nat} (S : CyclicDupSchema k) where
+  eval : S.T → Nat
+  w_base : Nat
+  w_succ : Nat
+  w_wrap : Nat
+  w_recur : Nat
+  eval_base : eval S.base = w_base
+  eval_succ : ∀ t, eval (S.succ t) = w_succ + eval t
+  eval_wrap : ∀ x y, eval (S.wrap x y) = w_wrap + eval x + eval y
+  eval_recur : ∀ i b s n, eval (S.recur i b s n) = w_recur + eval b + eval s + eval n
+  h_wrap_pos : 1 ≤ w_wrap
+
+/-- Uniform affine constructor-local measures on the cyclic SCC schema. -/
+structure AffineMeasure {k : Nat} (S : CyclicDupSchema k) where
+  eval : S.T → Nat
+  c_base : Nat
+  succ_bias : Nat
+  succ_scale : Nat
+  wrap_const : Nat
+  wrap_left : Nat
+  wrap_right : Nat
+  recur_const : Nat
+  recur_base : Nat
+  recur_step : Nat
+  recur_counter : Nat
+  eval_base : eval S.base = c_base
+  eval_succ : ∀ t, eval (S.succ t) = succ_bias + succ_scale * eval t
+  eval_wrap : ∀ x y, eval (S.wrap x y) = wrap_const + wrap_left * eval x + wrap_right * eval y
+  eval_recur :
+    ∀ i b s n,
+      eval (S.recur i b s n) =
+        recur_const + recur_base * eval b + recur_step * eval s + recur_counter * eval n
+  h_wrap_left_pos : 1 ≤ wrap_left
+  h_wrap_right_pos : 1 ≤ wrap_right
+
+/-- Derived one-cycle schema at a fixed SCC node. -/
+def toDupKSchemaAt {k : Nat} (S : CyclicDupSchema k) (i : Fin (k + 1)) : StepDuplicatingSchema where
+  T := S.T
+  base := S.base
+  succ := S.cycleSucc
+  wrap := S.cycleWrap
+  recur := S.recur i
+
+/-- Convert the cyclic additive measure to the ordinary wrapper-pump measure. -/
+def AdditiveMeasure.toPumpMeasure {k : Nat} {S : CyclicDupSchema k}
+    (M : AdditiveMeasure S) :
+    StepDuplicatingSchema.AdditiveMeasure S.toPumpSchema where
+  eval := M.eval
+  w_base := M.w_base
+  w_succ := M.w_succ
+  w_wrap := M.w_wrap
+  w_recur := M.w_recur
+  eval_base := M.eval_base
+  eval_succ := M.eval_succ
+  eval_wrap := M.eval_wrap
+  eval_recur := M.eval_recur 0
+  h_wrap_pos := M.h_wrap_pos
+
+lemma eval_wrapIter_ge {k : Nat} {S : CyclicDupSchema k} (M : AdditiveMeasure S) (n : Nat) :
+    M.eval (S.wrapIter n) ≥ n := by
+  simpa [CyclicDupSchema.wrapIter, AdditiveMeasure.toPumpMeasure] using
+    (StepDuplicatingSchema.eval_wrapIter_ge
+      (S := S.toPumpSchema) (M := M.toPumpMeasure) n)
+
+lemma eval_succIter {k : Nat} {S : CyclicDupSchema k} (M : AdditiveMeasure S) :
+    ∀ n t, M.eval (S.succIter n t) = n * M.w_succ + M.eval t
+  | 0, t => by simp [CyclicDupSchema.succIter]
+  | n + 1, t => by
+      rw [CyclicDupSchema.succIter, M.eval_succ, eval_succIter M n t]
+      ring
+
+lemma eval_wrapNest {k : Nat} {S : CyclicDupSchema k} (M : AdditiveMeasure S) :
+    ∀ n s t, M.eval (S.wrapNest s n t) = n * M.w_wrap + n * M.eval s + M.eval t
+  | 0, s, t => by simp [CyclicDupSchema.wrapNest]
+  | n + 1, s, t => by
+      rw [CyclicDupSchema.wrapNest, eval_wrapNest M n s (S.wrap s t), M.eval_wrap]
+      ring
+
+def AffineMeasure.succConst {k : Nat} {S : CyclicDupSchema k} (M : AffineMeasure S) : Nat → Nat
+  | 0 => 0
+  | n + 1 => M.succ_bias + M.succ_scale * M.succConst n
+
+def AffineMeasure.wrapRightIter {k : Nat} {S : CyclicDupSchema k}
+    (M : AffineMeasure S) : Nat → Nat
+  | 0 => 1
+  | n + 1 => M.wrapRightIter n * M.wrap_right
+
+def AffineMeasure.wrapConstIter {k : Nat} {S : CyclicDupSchema k}
+    (M : AffineMeasure S) : Nat → Nat
+  | 0 => 0
+  | n + 1 => M.wrapConstIter n + M.wrapRightIter n * M.wrap_const
+
+def AffineMeasure.wrapLeftIter {k : Nat} {S : CyclicDupSchema k}
+    (M : AffineMeasure S) : Nat → Nat
+  | 0 => 0
+  | n + 1 => M.wrapLeftIter n + M.wrapRightIter n * M.wrap_left
+
+lemma eval_succIter_affine {k : Nat} {S : CyclicDupSchema k} (M : AffineMeasure S) :
+    ∀ n t, M.eval (S.succIter n t) = M.succConst n + M.succ_scale ^ n * M.eval t
+  | 0, t => by simp [CyclicDupSchema.succIter, AffineMeasure.succConst]
+  | n + 1, t => by
+      rw [CyclicDupSchema.succIter, M.eval_succ, eval_succIter_affine M n t,
+        AffineMeasure.succConst, Nat.pow_succ]
+      ring
+
+lemma eval_wrapNest_affine {k : Nat} {S : CyclicDupSchema k} (M : AffineMeasure S) :
+    ∀ n s t,
+      M.eval (S.wrapNest s n t) =
+        M.wrapConstIter n + M.wrapLeftIter n * M.eval s + M.wrapRightIter n * M.eval t
+  | 0, s, t => by
+      simp [CyclicDupSchema.wrapNest, AffineMeasure.wrapConstIter, AffineMeasure.wrapLeftIter,
+        AffineMeasure.wrapRightIter]
+  | n + 1, s, t => by
+      rw [CyclicDupSchema.wrapNest, eval_wrapNest_affine M n s (S.wrap s t), M.eval_wrap]
+      simp [AffineMeasure.wrapConstIter, AffineMeasure.wrapLeftIter, AffineMeasure.wrapRightIter,
+        Nat.mul_add, Nat.add_mul]
+      ring
+
+lemma wrapRightIter_pos {k : Nat} {S : CyclicDupSchema k} (M : AffineMeasure S) :
+    ∀ n, 1 ≤ M.wrapRightIter n
+  | 0 => by simp [AffineMeasure.wrapRightIter]
+  | n + 1 => by
+      simp [AffineMeasure.wrapRightIter]
+      exact Nat.mul_le_mul (wrapRightIter_pos M n) M.h_wrap_right_pos
+
+lemma wrapLeftIter_pos {k : Nat} {S : CyclicDupSchema k} (M : AffineMeasure S) :
+    ∀ n, 0 < n → 1 ≤ M.wrapLeftIter n
+  | 0, h => by cases Nat.not_lt_zero _ h
+  | n + 1, _ => by
+      have hterm : 1 ≤ M.wrapRightIter n * M.wrap_left := by
+        exact Nat.mul_le_mul (wrapRightIter_pos M n) M.h_wrap_left_pos
+      have hsum : 1 ≤ M.wrapLeftIter n + M.wrapRightIter n * M.wrap_left := by
+        exact le_trans hterm (Nat.le_add_left _ _)
+      simpa [AffineMeasure.wrapLeftIter] using hsum
+
+/-- Transport a cyclic affine measure to the one-cycle derived schema at node `i`. -/
+def AffineMeasure.toDupKMeasureAt {k : Nat} {S : CyclicDupSchema k}
+    (M : AffineMeasure S) (i : Fin (k + 1)) :
+    StepDuplicatingSchema.AffineMeasure (S.toDupKSchemaAt i) where
+  eval := M.eval
+  c_base := M.c_base
+  succ_bias := M.succConst (k + 1)
+  succ_scale := M.succ_scale ^ (k + 1)
+  wrap_const := M.wrapConstIter (k + 1)
+  wrap_left := M.wrapLeftIter (k + 1)
+  wrap_right := M.wrapRightIter (k + 1)
+  recur_const := M.recur_const
+  recur_base := M.recur_base
+  recur_step := M.recur_step
+  recur_counter := M.recur_counter
+  eval_base := M.eval_base
+  eval_succ := by
+    intro t
+    simpa [CyclicDupSchema.toDupKSchemaAt, CyclicDupSchema.cycleSucc] using
+      eval_succIter_affine M (k + 1) t
+  eval_wrap := by
+    intro x y
+    simpa [CyclicDupSchema.toDupKSchemaAt, CyclicDupSchema.cycleWrap] using
+      eval_wrapNest_affine M (k + 1) x y
+  eval_recur := by
+    intro b s n
+    simpa [CyclicDupSchema.toDupKSchemaAt] using M.eval_recur i b s n
+  h_wrap_left_pos := by
+    exact wrapLeftIter_pos M (k + 1) (Nat.succ_pos _)
+  h_wrap_right_pos := by
+    exact wrapRightIter_pos M (k + 1)
+
+/-- One full cyclic duplicate already defeats any additive direct orienter on the
+derived composite profile. -/
+theorem no_additive_orients_cyclic_dup_composite
+    {k : Nat} {S : CyclicDupSchema k} (M : AdditiveMeasure S) :
+    ¬ (∀ (i : Fin (k + 1)) (b s n : S.T),
+      M.eval (S.cycleWrap s (S.recur i b s n)) <
+        M.eval (S.recur i b s (S.cycleSucc n))) := by
+  intro h
+  let nodes := k + 1
+  let sval := M.eval (S.wrapIter M.w_succ)
+  have hspec := h 0 S.base (S.wrapIter M.w_succ) S.base
+  have hspec' :
+      nodes * M.w_wrap + nodes * sval +
+          (M.w_recur + M.w_base + sval + M.w_base) <
+        nodes * M.w_succ + (M.w_recur + M.w_base + sval + M.w_base) := by
+    simpa [nodes, sval, CyclicDupSchema.cycleWrap, CyclicDupSchema.cycleSucc,
+      M.eval_base, M.eval_recur, eval_wrapNest, eval_succIter,
+      Nat.add_assoc, Nat.add_left_comm, Nat.add_comm, Nat.mul_add, Nat.add_mul,
+      Nat.mul_assoc, Nat.mul_left_comm, Nat.mul_comm] using hspec
+  have hdrop : nodes * M.w_wrap + nodes * sval < nodes * M.w_succ := by
+    exact Nat.lt_of_add_lt_add_right hspec'
+  have hsval : M.w_succ ≤ sval := by
+    simpa [sval] using eval_wrapIter_ge M M.w_succ
+  have hnodes : 1 ≤ nodes := by
+    omega
+  have hmul : nodes * M.w_succ ≤ nodes * sval := by
+    exact Nat.mul_le_mul_left _ hsval
+  have hwrap : 1 ≤ nodes * M.w_wrap := by
+    have hmul' : 1 * 1 ≤ nodes * M.w_wrap := Nat.mul_le_mul hnodes M.h_wrap_pos
+    simpa using hmul'
+  have hstrict : nodes * M.w_succ < nodes * M.w_wrap + nodes * sval := by
+    have hplus : nodes * sval < nodes * M.w_wrap + nodes * sval := by
+      exact Nat.lt_add_of_pos_left hwrap
+    exact lt_of_le_of_lt hmul hplus
+  exact Nat.not_lt_of_ge (Nat.le_of_lt hstrict) hdrop
+
+/-- One full cyclic duplicate also defeats any affine direct orienter on the
+derived composite profile at a fixed SCC node, provided the derived one-cycle
+schema admits the usual unbounded pump. -/
+theorem no_affine_orients_cyclic_dup_composite_of_unbounded
+    {k : Nat} {S : CyclicDupSchema k} (M : AffineMeasure S) (i : Fin (k + 1))
+    (hunbounded : StepDuplicatingSchema.HasUnboundedRange (M.toDupKMeasureAt i)) :
+    ¬ (∀ (b s n : S.T),
+      M.eval (S.cycleWrap s (S.recur i b s n)) <
+        M.eval (S.recur i b s (S.cycleSucc n))) := by
+  simpa [CyclicDupSchema.toDupKSchemaAt, CyclicDupSchema.cycleWrap, CyclicDupSchema.cycleSucc,
+    AffineMeasure.toDupKMeasureAt] using
+    (StepDuplicatingSchema.no_affine_orients_dup_step_of_unbounded
+      (S := S.toDupKSchemaAt i) (M := M.toDupKMeasureAt i) hunbounded)
+
+/-- A finite cyclic system whose delayed duplication appears only after one full SCC cycle. -/
+structure CyclicDupSystem (k : Nat) extends CyclicDupSchema k where
+  Step : T → T → Prop
+  step_succ :
+    ∀ (i : Fin (k + 1)) b s n,
+      Step (recur i b s (succ n)) (wrap s (recur (toCyclicDupSchema.advance i 1) b s n))
+
+/-- Minimal context closure needed for the SCC-cycle realization:
+root steps plus reduction under the right wrapper argument. -/
+inductive StepCtx {k : Nat} (Sys : CyclicDupSystem k) : Sys.T → Sys.T → Prop
+| root : ∀ {a b}, Sys.Step a b → StepCtx Sys a b
+| wrap_right : ∀ s {a b}, StepCtx Sys a b → StepCtx Sys (Sys.wrap s a) (Sys.wrap s b)
+
+/-- Orientation of the finite cyclic relation under the minimal context closure. -/
+def GlobalOrientsCtx {n : Nat} {α : Type} (Sys : CyclicDupSystem n) (m : Sys.T → α)
+    (lt : α → α → Prop) : Prop :=
+  ∀ {a b : Sys.T}, StepCtx Sys a b → lt (m b) (m a)
+
+namespace CyclicDupSystem
+
+lemma StepCtx.wrapNest_right {k : Nat} {Sys : CyclicDupSystem k}
+    (s : Sys.T) :
+    ∀ n {a b : Sys.T}, StepCtx Sys a b → StepCtx Sys (Sys.wrapNest s n a) (Sys.wrapNest s n b)
+  | 0, a, b, h => h
+  | n + 1, a, b, h => by
+      simpa [CyclicDupSchema.wrapNest] using
+        StepCtx.wrapNest_right (Sys := Sys) s n (StepCtx.wrap_right s h)
+
+/-- The `r`-step residual phase of one cyclic SCC pass. -/
+def phase {k : Nat} (Sys : CyclicDupSystem k) (i : Fin (k + 1))
+    (b s n : Sys.T) (r : Nat) : Sys.T :=
+  Sys.wrapNest s ((k + 1) - r)
+    (Sys.recur (Sys.advance i ((k + 1) - r)) b s (Sys.succIter r n))
+
+lemma phase_step {k : Nat} {Sys : CyclicDupSystem k} (i : Fin (k + 1))
+    (b s n : Sys.T) {r : Nat} (hr : r < k + 1) :
+    StepCtx Sys (phase Sys i b s n (r + 1)) (phase Sys i b s n r) := by
+  have hroot :
+      StepCtx Sys
+        (Sys.recur (Sys.advance i ((k + 1) - (r + 1))) b s (Sys.succ (Sys.succIter r n)))
+        (Sys.wrap s
+          (Sys.recur (Sys.advance i (((k + 1) - (r + 1)) + 1)) b s (Sys.succIter r n))) := by
+    apply StepCtx.root
+    simpa [CyclicDupSchema.advance_add, Nat.add_assoc, Nat.add_left_comm, Nat.add_comm] using
+      Sys.step_succ (Sys.advance i ((k + 1) - (r + 1))) b s (Sys.succIter r n)
+  have hlift :=
+      StepCtx.wrapNest_right (Sys := Sys) s ((k + 1) - (r + 1)) hroot
+  have hcount : (k + 1) - r = (k - r) + 1 := by
+    omega
+  simpa [phase, CyclicDupSchema.wrapNest, CyclicDupSchema.succIter, hcount,
+    Nat.add_assoc, Nat.add_left_comm, Nat.add_comm] using hlift
+
+/-- One full SCC cycle realizes the delayed duplicate for any starting node. -/
+theorem cycle_realized {k : Nat} (Sys : CyclicDupSystem k) (i : Fin (k + 1))
+    (b s n : Sys.T) :
+    Relation.TransGen (StepCtx Sys)
+      (Sys.recur i b s (Sys.cycleSucc n))
+      (Sys.cycleWrap s (Sys.recur i b s n)) := by
+  have hpath :
+      ∀ m, m < k + 1 →
+        Relation.TransGen (StepCtx Sys)
+          (phase Sys i b s n (m + 1))
+          (phase Sys i b s n 0) := by
+    intro m
+    induction m with
+    | zero =>
+        intro hm
+        have hstep : StepCtx Sys (phase Sys i b s n 1) (phase Sys i b s n 0) := by
+          exact phase_step (Sys := Sys) i b s n (r := 0) hm
+        simpa using Relation.TransGen.single hstep
+    | succ m ih =>
+        intro hm
+        have hstep : StepCtx Sys (phase Sys i b s n (m + 2)) (phase Sys i b s n (m + 1)) := by
+          exact phase_step (Sys := Sys) i b s n (r := m + 1) hm
+        have htail :
+            Relation.TransGen (StepCtx Sys)
+              (phase Sys i b s n (m + 1))
+              (phase Sys i b s n 0) := by
+          exact ih (by omega)
+        exact Relation.TransGen.trans (Relation.TransGen.single hstep) htail
+  simpa [phase, CyclicDupSchema.cycleSucc, CyclicDupSchema.cycleWrap,
+    CyclicDupSchema.advance_zero, CyclicDupSchema.advance_cycleLen] using
+    hpath k (Nat.lt_succ_self k)
+
+/-- The finite cyclic SCC theorem rules out any additive orientation of the whole
+minimal-context relation, because that would force the composite duplicate to decrease. -/
+theorem no_global_orients_ctx_additive
+    {k : Nat} {Sys : CyclicDupSystem k} (M : AdditiveMeasure Sys.toCyclicDupSchema) :
+    ¬ GlobalOrientsCtx Sys M.eval (· < ·) := by
+  intro h
+  have hcomp :
+      ∀ (i : Fin (k + 1)) (b s n : Sys.T),
+        M.eval (Sys.cycleWrap s (Sys.recur i b s n)) <
+          M.eval (Sys.recur i b s (Sys.cycleSucc n)) := by
+    intro i b s n
+    have horient : DependencyPairsFragment.GlobalOrients (StepCtx Sys) M.eval (· < ·) := by
+      intro a b hstep
+      exact h hstep
+    exact
+      DependencyPairsFragment.transGen_drop
+        (R := StepCtx Sys) (m := M.eval) horient
+        (cycle_realized Sys i b s n)
+  exact no_additive_orients_cyclic_dup_composite (S := Sys.toCyclicDupSchema) M hcomp
+
+/-- The finite cyclic SCC theorem also rules out affine orientation of the whole
+minimal-context relation, provided the derived one-cycle schema at node `0`
+admits the usual unbounded pump. -/
+theorem no_global_orients_ctx_affine_of_unbounded
+    {k : Nat} {Sys : CyclicDupSystem k} (M : AffineMeasure Sys.toCyclicDupSchema)
+    (hunbounded : StepDuplicatingSchema.HasUnboundedRange (M.toDupKMeasureAt 0)) :
+    ¬ GlobalOrientsCtx Sys M.eval (· < ·) := by
+  intro h
+  have hcomp :
+      ∀ (b s n : Sys.T),
+        M.eval (Sys.cycleWrap s (Sys.recur 0 b s n)) <
+          M.eval (Sys.recur 0 b s (Sys.cycleSucc n)) := by
+    intro b s n
+    have horient : DependencyPairsFragment.GlobalOrients (StepCtx Sys) M.eval (· < ·) := by
+      intro a b hstep
+      exact h hstep
+    exact
+      DependencyPairsFragment.transGen_drop
+        (R := StepCtx Sys) (m := M.eval) horient
+        (cycle_realized Sys 0 b s n)
+  exact
+    no_affine_orients_cyclic_dup_composite_of_unbounded
+      (S := Sys.toCyclicDupSchema) M 0 hunbounded hcomp
+
+end CyclicDupSystem
+
+end CyclicDupSchema
+
+end OperatorKO7.MutualDuplicationKNode
+```
+
+---
+
+## OperatorKO7/Meta/MutualDuplication_KNode_Abstract.lean
+
+**Lines:** 307
+
+```lean
+import OperatorKO7.Meta.MutualDuplication_CycleFlow
+import OperatorKO7.Meta.MutualDuplication_KNode
+
+/-!
+# Abstract Delayed-Cycle Instantiation for Finite k-Node SCCs
+
+This module shows that the finite delayed-duplication `k + 1`-node SCC development
+factors through the abstract one-cycle interface from
+`Meta/MutualDuplication_CycleFlow.lean`.
+-/
+
+namespace OperatorKO7.MutualDuplicationKNodeAbstract
+
+open OperatorKO7.DependencyPairsFragment
+open OperatorKO7.MutualDuplicationCycleFlow
+open OperatorKO7.MutualDuplicationKNode
+open OperatorKO7.StepDuplicating
+
+namespace CyclicDupSchema
+
+variable {k : Nat}
+
+/-- Fix a node of the cyclic SCC and forget the remaining recursors. -/
+def toNodeSchema (S : CyclicDupSchema k) (i : Fin (k + 1)) : StepDuplicatingSchema where
+  T := S.T
+  base := S.base
+  succ := S.succ
+  wrap := S.wrap
+  recur := S.recur i
+
+/-- Uniform transparent-compositional measures on the cyclic SCC schema. -/
+structure CompositionalMeasure (S : CyclicDupSchema k) where
+  eval : S.T → Nat
+  c_base : Nat
+  c_succ : Nat → Nat
+  c_wrap : Nat → Nat → Nat
+  c_recur : Nat → Nat → Nat → Nat
+  eval_base : eval S.base = c_base
+  eval_succ : ∀ t, eval (S.succ t) = c_succ (eval t)
+  eval_wrap : ∀ x y, eval (S.wrap x y) = c_wrap (eval x) (eval y)
+  eval_recur : ∀ i b s n, eval (S.recur i b s n) = c_recur (eval b) (eval s) (eval n)
+  wrap_subterm1 : ∀ x y, c_wrap x y > x
+  wrap_subterm2 : ∀ x y, c_wrap x y > y
+
+def AdditiveMeasure.toNodeMeasure {S : OperatorKO7.MutualDuplicationKNode.CyclicDupSchema k}
+    (M : OperatorKO7.MutualDuplicationKNode.CyclicDupSchema.AdditiveMeasure S) (i : Fin (k + 1)) :
+    StepDuplicatingSchema.AdditiveMeasure (toNodeSchema S i) where
+  eval := M.eval
+  w_base := M.w_base
+  w_succ := M.w_succ
+  w_wrap := M.w_wrap
+  w_recur := M.w_recur
+  eval_base := M.eval_base
+  eval_succ := M.eval_succ
+  eval_wrap := M.eval_wrap
+  eval_recur := M.eval_recur i
+  h_wrap_pos := M.h_wrap_pos
+
+def AffineMeasure.toNodeMeasure {S : OperatorKO7.MutualDuplicationKNode.CyclicDupSchema k}
+    (M : OperatorKO7.MutualDuplicationKNode.CyclicDupSchema.AffineMeasure S) (i : Fin (k + 1)) :
+    StepDuplicatingSchema.AffineMeasure (toNodeSchema S i) where
+  eval := M.eval
+  c_base := M.c_base
+  succ_bias := M.succ_bias
+  succ_scale := M.succ_scale
+  wrap_const := M.wrap_const
+  wrap_left := M.wrap_left
+  wrap_right := M.wrap_right
+  recur_const := M.recur_const
+  recur_base := M.recur_base
+  recur_step := M.recur_step
+  recur_counter := M.recur_counter
+  eval_base := M.eval_base
+  eval_succ := M.eval_succ
+  eval_wrap := M.eval_wrap
+  eval_recur := M.eval_recur i
+  h_wrap_left_pos := M.h_wrap_left_pos
+  h_wrap_right_pos := M.h_wrap_right_pos
+
+def CompositionalMeasure.toNodeMeasure {S : CyclicDupSchema k}
+    (M : CompositionalMeasure S) (i : Fin (k + 1)) :
+    StepDuplicatingSchema.CompositionalMeasure (toNodeSchema S i) where
+  eval := M.eval
+  c_base := M.c_base
+  c_succ := M.c_succ
+  c_wrap := M.c_wrap
+  c_recur := M.c_recur
+  eval_base := M.eval_base
+  eval_succ := M.eval_succ
+  eval_wrap := M.eval_wrap
+  eval_recur := M.eval_recur i
+  wrap_subterm1 := M.wrap_subterm1
+  wrap_subterm2 := M.wrap_subterm2
+
+end CyclicDupSchema
+
+namespace CyclicDupSystem
+
+variable {k : Nat}
+
+open CyclicDupSchema
+
+lemma cycleFlow_succIter_eq (Sys : CyclicDupSystem k) :
+    ∀ n t,
+      OperatorKO7.MutualDuplicationCycleFlow.succIterOn
+          (CyclicDupSchema.toNodeSchema Sys.toCyclicDupSchema (0 : Fin (k + 1))) n t =
+        Sys.toCyclicDupSchema.succIter n t
+  | 0, t => by rfl
+  | n + 1, t => by
+      rw [OperatorKO7.MutualDuplicationCycleFlow.succIterOn, CyclicDupSchema.succIter,
+        cycleFlow_succIter_eq Sys n]
+      rfl
+
+lemma cycleFlow_wrapNest_eq (Sys : CyclicDupSystem k) (s : Sys.T) :
+    ∀ n t,
+      OperatorKO7.MutualDuplicationCycleFlow.wrapNest
+          (CyclicDupSchema.toNodeSchema Sys.toCyclicDupSchema (0 : Fin (k + 1))) s n t =
+        Sys.toCyclicDupSchema.wrapNest s n t
+  | 0, t => by rfl
+  | n + 1, t => by
+      rw [OperatorKO7.MutualDuplicationCycleFlow.wrapNest, CyclicDupSchema.wrapNest,
+        cycleFlow_wrapNest_eq Sys s n]
+      rfl
+
+/-- The finite cyclic delayed-duplication system at node `0` as an abstract cycle witness. -/
+def cycleWitness (Sys : CyclicDupSystem k) :
+    MutualDuplicationCycleFlow.CycleWitness
+      (CyclicDupSchema.toNodeSchema Sys.toCyclicDupSchema (0 : Fin (k + 1))) (k + 1) where
+  StepCtx := StepCtx Sys
+  cycle_realized := by
+    intro b s n
+    simpa [OperatorKO7.MutualDuplicationCycleFlow.cycleSource,
+      OperatorKO7.MutualDuplicationCycleFlow.cycleTarget,
+      cycleFlow_succIter_eq Sys (k + 1) n, cycleFlow_wrapNest_eq Sys s (k + 1)] using
+      CyclicDupSchema.CyclicDupSystem.cycle_realized Sys (0 : Fin (k + 1)) b s n
+
+/-- The additive finite-cycle barrier factors through the abstract delayed-cycle layer. -/
+theorem no_global_orients_ctx_additive_via_cycleFlow
+    (Sys : CyclicDupSystem k) (M : CyclicDupSchema.AdditiveMeasure Sys.toCyclicDupSchema) :
+    ¬ GlobalOrientsCtx Sys M.eval (· < ·) := by
+  exact
+    MutualDuplicationCycleFlow.no_global_orients_ctx_additive
+      (W := cycleWitness Sys)
+      (M := CyclicDupSchema.AdditiveMeasure.toNodeMeasure M (0 : Fin (k + 1)))
+      (hcopies := Nat.succ_pos _)
+
+/-- The affine finite-cycle barrier also factors through the abstract delayed-cycle layer. -/
+theorem no_global_orients_ctx_affine_of_unbounded_via_cycleFlow
+    (Sys : CyclicDupSystem k) (M : CyclicDupSchema.AffineMeasure Sys.toCyclicDupSchema)
+    (hunbounded :
+      StepDuplicatingSchema.HasUnboundedRange
+        (OperatorKO7.MutualDuplicationCycleFlow.AffineOps.toDupMeasure
+          (CyclicDupSchema.AffineMeasure.toNodeMeasure M (0 : Fin (k + 1)))
+          (k + 1) (Nat.succ_pos _))) :
+    ¬ GlobalOrientsCtx Sys M.eval (· < ·) := by
+  exact
+    MutualDuplicationCycleFlow.no_global_orients_ctx_affine_of_unbounded
+      (W := cycleWitness Sys)
+      (M := CyclicDupSchema.AffineMeasure.toNodeMeasure M (0 : Fin (k + 1)))
+      (hcopies := Nat.succ_pos _)
+      (hunbounded := hunbounded)
+
+/-- The transparent-compositional finite-cycle barrier also factors through the abstract
+delayed-cycle layer. -/
+theorem no_global_orients_ctx_compositional_transparent_via_cycleFlow
+    (Sys : CyclicDupSystem k)
+    (M : CyclicDupSchema.CompositionalMeasure Sys.toCyclicDupSchema)
+    (htrans : M.c_succ M.c_base = M.c_base) :
+    ¬ GlobalOrientsCtx Sys M.eval (· < ·) := by
+  exact
+    MutualDuplicationCycleFlow.no_global_orients_ctx_compositional_transparent
+      (W := cycleWitness Sys)
+      (CM := CyclicDupSchema.CompositionalMeasure.toNodeMeasure M (0 : Fin (k + 1)))
+      (hcopies := Nat.succ_pos _)
+      (htrans := htrans)
+
+/-- A projected affine contradiction on the derived one-cycle schema also blocks any
+strict codomain order on the finite cyclic delayed-duplication relation. -/
+theorem no_global_orients_ctx_of_scalar_projection_affine_of_unbounded_via_cycleFlow
+    {α : Type}
+    (Sys : CyclicDupSystem k) (μ : Sys.T → α) (R : α → α → Prop) (π : α → Nat)
+    (hproj : ∀ {u v : α}, R u v → π u < π v)
+    (A :
+      StepDuplicatingSchema.AffineMeasure
+        (OperatorKO7.MutualDuplicationCycleFlow.toDupSchema
+          (CyclicDupSchema.toNodeSchema Sys.toCyclicDupSchema (0 : Fin (k + 1))) (k + 1)))
+    (hπ : ∀ t : Sys.T, π (μ t) = A.eval t)
+    (hunbounded : StepDuplicatingSchema.HasUnboundedRange A) :
+    ¬ DependencyPairsFragment.GlobalOrients (StepCtx Sys) μ R := by
+  exact
+    MutualDuplicationCycleFlow.no_global_orients_ctx_of_scalar_projection_affine_of_unbounded
+      (W := cycleWitness Sys) (μ := μ) (R := R) (π := π)
+      (hproj := hproj) (A := A) (hπ := hπ) (hunbounded := hunbounded)
+
+/-- Weighted functional matrix-style corollary obtained through the abstract delayed-cycle
+projection theorem. -/
+theorem no_global_orients_ctx_matrixFunctional_of_projected_unbounded_via_cycleFlow
+    {d : Nat}
+    (Sys : CyclicDupSystem k)
+    (M :
+      StepDuplicatingSchema.MatrixFunctionalMeasure
+        (OperatorKO7.MutualDuplicationCycleFlow.toDupSchema
+          (CyclicDupSchema.toNodeSchema Sys.toCyclicDupSchema (0 : Fin (k + 1))) (k + 1)) d)
+    (hunbounded : StepDuplicatingSchema.HasUnboundedWeightedRange M) :
+    ¬ DependencyPairsFragment.GlobalOrients
+        (StepCtx Sys) M.eval (fun u v => StepDuplicatingSchema.VecLt u v) := by
+  exact
+    no_global_orients_ctx_of_scalar_projection_affine_of_unbounded_via_cycleFlow
+      (Sys := Sys)
+      (μ := M.eval)
+      (R := fun u v => StepDuplicatingSchema.VecLt u v)
+      (π := StepDuplicatingSchema.weightedSum M.weight)
+      (hproj := by
+        intro u v h
+        exact StepDuplicatingSchema.weightedSum_lt_of_vecLt M.h_weight_support h)
+      (A := M.projectedAffine)
+      (hπ := by intro t; rfl)
+      (hunbounded := by
+        intro q
+        rcases hunbounded q with ⟨t, ht⟩
+        exact ⟨t, ht⟩)
+
+/-- Fixed-dimension tracked-component contextual corollary via the abstract delayed-cycle
+projection theorem. -/
+theorem no_global_orients_ctx_matrixD_of_componentwise_pump_via_cycleFlow
+    {d : Nat} {tracked : Fin d}
+    (Sys : CyclicDupSystem k)
+    (M :
+      StepDuplicatingSchema.MatrixMeasureD
+        (OperatorKO7.MutualDuplicationCycleFlow.toDupSchema
+          (CyclicDupSchema.toNodeSchema Sys.toCyclicDupSchema (0 : Fin (k + 1))) (k + 1)) d tracked)
+    (hunbounded : StepDuplicatingSchema.HasUnboundedRangeTracked M) :
+    ¬ DependencyPairsFragment.GlobalOrients
+        (StepCtx Sys) M.eval (fun u v => StepDuplicatingSchema.VecLt u v) := by
+  exact
+    no_global_orients_ctx_of_scalar_projection_affine_of_unbounded_via_cycleFlow
+      (Sys := Sys)
+      (μ := M.eval)
+      (R := fun u v => StepDuplicatingSchema.VecLt u v)
+      (π := fun v => v tracked)
+      (hproj := by
+        intro u v h
+        exact h tracked)
+      (A := M.trackedAffine)
+      (hπ := by intro t; rfl)
+      (hunbounded := by
+        intro q
+        rcases hunbounded q with ⟨t, ht⟩
+        exact ⟨t, ht⟩)
+
+/-- Dimension-2 tracked-component contextual corollary via the abstract delayed-cycle
+projection theorem. -/
+theorem no_global_orients_ctx_matrix2_of_componentwise_pump_via_cycleFlow
+    (Sys : CyclicDupSystem k)
+    (M :
+      StepDuplicatingSchema.MatrixMeasure2
+        (OperatorKO7.MutualDuplicationCycleFlow.toDupSchema
+          (CyclicDupSchema.toNodeSchema Sys.toCyclicDupSchema (0 : Fin (k + 1))) (k + 1)))
+    (hunbounded : StepDuplicatingSchema.HasUnboundedRange1 M) :
+    ¬ DependencyPairsFragment.GlobalOrients
+        (StepCtx Sys) M.eval StepDuplicatingSchema.PairLt := by
+  exact
+    no_global_orients_ctx_of_scalar_projection_affine_of_unbounded_via_cycleFlow
+      (Sys := Sys)
+      (μ := M.eval)
+      (R := StepDuplicatingSchema.PairLt)
+      (π := Prod.fst)
+      (hproj := by
+        intro u v h
+        exact h.1)
+      (A := M.fstAffine)
+      (hπ := by intro t; rfl)
+      (hunbounded := by
+        intro q
+        rcases hunbounded q with ⟨t, ht⟩
+        exact ⟨t, by simpa [StepDuplicatingSchema.MatrixMeasure2.fstAffine] using ht⟩)
+
+/-- Balanced mixed-coordinate contextual corollary via the abstract delayed-cycle projection
+theorem. -/
+theorem no_global_orients_ctx_matrixMix2_of_sum_pump_via_cycleFlow
+    (Sys : CyclicDupSystem k)
+    (M :
+      StepDuplicatingSchema.MatrixMix2Measure
+        (OperatorKO7.MutualDuplicationCycleFlow.toDupSchema
+          (CyclicDupSchema.toNodeSchema Sys.toCyclicDupSchema (0 : Fin (k + 1))) (k + 1)))
+    (hunbounded : StepDuplicatingSchema.HasUnboundedRangeSum M) :
+    ¬ DependencyPairsFragment.GlobalOrients
+        (StepCtx Sys) M.eval StepDuplicatingSchema.PairLt := by
+  exact
+    no_global_orients_ctx_of_scalar_projection_affine_of_unbounded_via_cycleFlow
+      (Sys := Sys)
+      (μ := M.eval)
+      (R := StepDuplicatingSchema.PairLt)
+      (π := StepDuplicatingSchema.vecSum)
+      (hproj := by
+        intro u v h
+        exact StepDuplicatingSchema.vecSum_lt_of_pairLt h)
+      (A := M.sumAffine)
+      (hπ := by intro t; rfl)
+      (hunbounded := by
+        intro q
+        rcases hunbounded q with ⟨t, ht⟩
+        exact ⟨t, ht⟩)
+
+end CyclicDupSystem
+
+end OperatorKO7.MutualDuplicationKNodeAbstract
+```
+
+---
+
+## OperatorKO7/Meta/MutualDuplication_PacketGraph.lean
+
+**Lines:** 664
+
+```lean
+import OperatorKO7.Meta.MutualDuplication_PayloadFlow
+import OperatorKO7.Meta.GraphPathExtraction
+import OperatorKO7.Meta.FiniteGraphReachability
+import OperatorKO7.Meta.FiniteGraphSCC
+
+/-!
+# Raw-Graph Preserving Packet SCC Barrier
+
+This module lifts the synchronized preserving SCC story from finite cyclic packet systems
+to an arbitrary directed graph equipped with:
+
+- a shared wrapper and empty payload state,
+- a family of graph-indexed recursors and packet constructors,
+- local packet-forwarding rules along graph edges, and
+- an explicit closed cycle witness in the raw graph.
+
+As with the delayed-duplication graph theorem, the result is witness-based rather than
+algorithmic. But once a concrete graph cycle with synchronized packet forwarding is
+certified, the additive, affine, transparent, and scalar-projection contextual barriers
+follow uniformly.
+-/
+
+namespace OperatorKO7.MutualDuplicationPacketGraph
+
+open OperatorKO7.DependencyPairsFragment
+open OperatorKO7.MutualDuplicationPayloadFlow
+open OperatorKO7.GraphPathExtraction
+open OperatorKO7.FiniteGraphReachability
+open OperatorKO7.FiniteGraphSCC
+
+/-- A synchronized packet system indexed by an arbitrary directed graph. -/
+structure GraphPacketSystem (ι : Type) where
+  T : Type
+  empty : T
+  wrap : T → T → T
+  recur : ι → T → T → T
+  packet : ι → Nat → T → T
+  packet_zero : ∀ i p, packet i 0 p = empty
+  Edge : ι → ι → Prop
+  Step : T → T → Prop
+  step_packet :
+    ∀ {i j}, Edge i j → ∀ ctx payload n,
+      Step (recur i ctx (packet i (n + 1) payload))
+        (wrap payload (recur j ctx (packet j n payload)))
+
+namespace GraphPacketSystem
+
+/-- The syntax at a fixed graph node as an abstract packet model. -/
+def toPacketModel {ι : Type} (Sys : GraphPacketSystem ι) (i : ι) : PacketModel Sys.T where
+  empty := Sys.empty
+  wrap := Sys.wrap
+  recur := Sys.recur i
+  packet := Sys.packet i
+
+/-- Minimal context closure: root steps plus right-wrapper descent. -/
+inductive StepCtx {ι : Type} (Sys : GraphPacketSystem ι) : Sys.T → Sys.T → Prop
+| root : ∀ {a b}, Sys.Step a b → StepCtx Sys a b
+| wrap_right : ∀ s {a b}, StepCtx Sys a b → StepCtx Sys (Sys.wrap s a) (Sys.wrap s b)
+
+/-- Orientation of the induced contextual relation. -/
+def GlobalOrientsCtx {ι : Type} (Sys : GraphPacketSystem ι) (m : Sys.T → Nat) : Prop :=
+  ∀ {a b : Sys.T}, StepCtx Sys a b → m b < m a
+
+/-- Generic wrapper nesting on the shared carrier. -/
+def wrapNest {ι : Type} (Sys : GraphPacketSystem ι) (p : Sys.T) : Nat → Sys.T → Sys.T
+  | 0, t => t
+  | n + 1, t => wrapNest Sys p n (Sys.wrap p t)
+
+namespace StepCtx
+
+lemma wrapNest_right {ι : Type} {Sys : GraphPacketSystem ι} (p : Sys.T) :
+    ∀ n {a b : Sys.T}, StepCtx Sys a b →
+      StepCtx Sys (GraphPacketSystem.wrapNest Sys p n a) (GraphPacketSystem.wrapNest Sys p n b)
+  | 0, _, _, h => by simpa [GraphPacketSystem.wrapNest] using h
+  | n + 1, _, _, h => by
+      simpa [GraphPacketSystem.wrapNest] using
+        wrapNest_right p n (StepCtx.wrap_right p h)
+
+end StepCtx
+
+/-- A certified closed cycle in the raw graph. -/
+structure CyclePath {ι : Type} (Sys : GraphPacketSystem ι) where
+  copies : Nat
+  hcopies : 0 < copies
+  node : Nat → ι
+  edge : ∀ r, r < copies → Sys.Edge (node r) (node (r + 1))
+  closed : node copies = node 0
+
+/-- Build a concrete graph cycle from any nonempty closed transitive-closure witness. -/
+noncomputable def ofClosedTransGen {ι : Type} {Sys : GraphPacketSystem ι} {i : ι}
+    (hcycle : Relation.TransGen Sys.Edge i i) : CyclePath Sys := by
+  let P := EdgePath.ofTransGen hcycle
+  refine
+    { copies := P.len
+      hcopies := P.hlen
+      node := P.node
+      edge := P.edge
+      closed := ?_ }
+  simpa [P.start] using P.finish
+
+/-- Build a concrete graph cycle from a round-trip SCC witness. -/
+noncomputable def ofRoundTrip {ι : Type} {Sys : GraphPacketSystem ι} {i j : ι}
+    (hij : Relation.TransGen Sys.Edge i j) (hji : Relation.TransGen Sys.Edge j i) :
+    CyclePath Sys := by
+  let P := EdgePath.ofRoundTrip hij hji
+  refine
+    { copies := P.len
+      hcopies := P.hlen
+      node := P.node
+      edge := P.edge
+      closed := ?_ }
+  simpa [P.start] using P.finish
+
+@[simp] theorem ofClosedTransGen_node0 {ι : Type} {Sys : GraphPacketSystem ι} {i : ι}
+    (hcycle : Relation.TransGen Sys.Edge i i) :
+    (ofClosedTransGen hcycle).node 0 = i := by
+  simpa [ofClosedTransGen] using (EdgePath.ofTransGen hcycle).start
+
+@[simp] theorem ofRoundTrip_node0 {ι : Type} {Sys : GraphPacketSystem ι} {i j : ι}
+    (hij : Relation.TransGen Sys.Edge i j) (hji : Relation.TransGen Sys.Edge j i) :
+    (ofRoundTrip hij hji).node 0 = i := by
+  simpa [ofRoundTrip] using (EdgePath.ofRoundTrip hij hji).start
+
+namespace CyclePath
+
+variable {ι : Type} {Sys : GraphPacketSystem ι}
+
+/-- Uniform additive measures on the graph-indexed packet SCC syntax. -/
+structure AdditiveMeasure (Sys : GraphPacketSystem ι) where
+  eval : Sys.T → Nat
+  w_empty : Nat
+  w_wrap : Nat
+  w_recur : Nat
+  eval_empty : eval Sys.empty = w_empty
+  eval_wrap : ∀ x y, eval (Sys.wrap x y) = w_wrap + eval x + eval y
+  eval_recur : ∀ i ctx packet, eval (Sys.recur i ctx packet) = w_recur + eval ctx + eval packet
+  eval_packet : ∀ i n p, eval (Sys.packet i n p) = n * eval p + w_empty
+  h_wrap_pos : 1 ≤ w_wrap
+
+/-- Uniform affine measures on the graph-indexed packet SCC syntax. -/
+structure AffineMeasure (Sys : GraphPacketSystem ι) where
+  eval : Sys.T → Nat
+  c_empty : Nat
+  wrap_const : Nat
+  wrap_left : Nat
+  wrap_right : Nat
+  recur_const : Nat
+  recur_ctx : Nat
+  recur_packet : Nat
+  eval_empty : eval Sys.empty = c_empty
+  eval_wrap :
+    ∀ x y, eval (Sys.wrap x y) = wrap_const + wrap_left * eval x + wrap_right * eval y
+  eval_recur :
+    ∀ i ctx packet,
+      eval (Sys.recur i ctx packet) = recur_const + recur_ctx * eval ctx + recur_packet * eval packet
+  eval_packet : ∀ i n p, eval (Sys.packet i n p) = n * eval p + c_empty
+  h_wrap_left_pos : 1 ≤ wrap_left
+  h_wrap_right_pos : 1 ≤ wrap_right
+
+/-- Uniform transparent packet-bookkeeping measures on the graph-indexed packet SCC syntax. -/
+structure TransparentMeasure (Sys : GraphPacketSystem ι) where
+  eval : Sys.T → Nat
+  c_empty : Nat
+  c_wrap : Nat → Nat → Nat
+  c_recur : Nat → Nat → Nat
+  eval_empty : eval Sys.empty = c_empty
+  eval_wrap : ∀ x y, eval (Sys.wrap x y) = c_wrap (eval x) (eval y)
+  eval_recur : ∀ i ctx packet, eval (Sys.recur i ctx packet) = c_recur (eval ctx) (eval packet)
+  eval_packet : ∀ i n p, eval (Sys.packet i n p) = c_empty
+  wrap_subterm2 : ∀ x y, c_wrap x y > y
+
+def AdditiveMeasure.toPacketModelMeasure (M : AdditiveMeasure Sys) (i : ι) :
+    MutualDuplicationPayloadFlow.AdditiveMeasure (Sys.toPacketModel i) where
+  eval := M.eval
+  w_empty := M.w_empty
+  w_wrap := M.w_wrap
+  w_recur := M.w_recur
+  eval_empty := M.eval_empty
+  eval_wrap := M.eval_wrap
+  eval_recur := M.eval_recur i
+  eval_packet := M.eval_packet i
+  h_wrap_pos := M.h_wrap_pos
+
+def AffineMeasure.toPacketModelMeasure (M : AffineMeasure Sys) (i : ι) :
+    MutualDuplicationPayloadFlow.AffineMeasure (Sys.toPacketModel i) where
+  eval := M.eval
+  c_empty := M.c_empty
+  wrap_const := M.wrap_const
+  wrap_left := M.wrap_left
+  wrap_right := M.wrap_right
+  recur_const := M.recur_const
+  recur_ctx := M.recur_ctx
+  recur_packet := M.recur_packet
+  eval_empty := M.eval_empty
+  eval_wrap := M.eval_wrap
+  eval_recur := M.eval_recur i
+  eval_packet := M.eval_packet i
+  h_wrap_left_pos := M.h_wrap_left_pos
+  h_wrap_right_pos := M.h_wrap_right_pos
+
+def TransparentMeasure.toPacketModelMeasure (M : TransparentMeasure Sys) (i : ι) :
+    MutualDuplicationPayloadFlow.TransparentMeasure (Sys.toPacketModel i) where
+  eval := M.eval
+  c_empty := M.c_empty
+  c_wrap := M.c_wrap
+  c_recur := M.c_recur
+  eval_empty := M.eval_empty
+  eval_wrap := M.eval_wrap
+  eval_recur := M.eval_recur i
+  eval_packet := M.eval_packet i
+  wrap_subterm2 := M.wrap_subterm2
+
+/-- Residual phase after `r` latent packets remain. -/
+def phase (C : CyclePath Sys) (ctx payload : Sys.T) (r : Nat) : Sys.T :=
+  GraphPacketSystem.wrapNest Sys payload (C.copies - r)
+    (Sys.recur (C.node (C.copies - r)) ctx (Sys.packet (C.node (C.copies - r)) r payload))
+
+lemma packetFlow_wrapNest_eq (C : CyclePath Sys) (payload : Sys.T) :
+    ∀ n t,
+      GraphPacketSystem.wrapNest Sys payload n t =
+        MutualDuplicationPayloadFlow.wrapNest Sys.wrap payload n t
+  | 0, t => by rfl
+  | n + 1, t => by
+      rw [GraphPacketSystem.wrapNest, MutualDuplicationPayloadFlow.wrapNest,
+        packetFlow_wrapNest_eq C payload n]
+
+lemma phase_step (C : CyclePath Sys) (ctx payload : Sys.T) {r : Nat} (hr : r < C.copies) :
+    StepCtx Sys (phase C ctx payload (r + 1)) (phase C ctx payload r) := by
+  let idx := C.copies - (r + 1)
+  have hidx : idx < C.copies := by
+    dsimp [idx]
+    omega
+  have hedge : Sys.Edge (C.node idx) (C.node (idx + 1)) := C.edge idx hidx
+  have hroot :
+      StepCtx Sys
+        (Sys.recur (C.node idx) ctx (Sys.packet (C.node idx) (r + 1) payload))
+        (Sys.wrap payload (Sys.recur (C.node (idx + 1)) ctx (Sys.packet (C.node (idx + 1)) r payload))) := by
+    exact StepCtx.root (Sys.step_packet hedge ctx payload r)
+  have hlift :=
+    StepCtx.wrapNest_right (Sys := Sys) payload (C.copies - (r + 1)) hroot
+  have hcount : C.copies - r = (C.copies - (r + 1)) + 1 := by
+    omega
+  have hnode : C.node ((C.copies - (r + 1)) + 1) = C.node (C.copies - r) := by
+    simp [hcount]
+  have hs :
+      phase C ctx payload (r + 1) =
+        GraphPacketSystem.wrapNest Sys payload (C.copies - (r + 1))
+          (Sys.recur (C.node idx) ctx (Sys.packet (C.node idx) (r + 1) payload)) := by
+    rfl
+  have ht :
+      phase C ctx payload r =
+        GraphPacketSystem.wrapNest Sys payload (C.copies - (r + 1))
+          (Sys.wrap payload
+            (Sys.recur (C.node ((C.copies - (r + 1)) + 1)) ctx
+              (Sys.packet (C.node ((C.copies - (r + 1)) + 1)) r payload))) := by
+    simp [phase, hcount, hnode, GraphPacketSystem.wrapNest]
+  rw [hs, ht]
+  exact hlift
+
+/-- One full certified graph cycle realizes the synchronized packet exposure. -/
+theorem cycle_realized (C : CyclePath Sys) (ctx payload : Sys.T) :
+    Relation.TransGen (StepCtx Sys)
+      (MutualDuplicationPayloadFlow.syncSource (Sys.toPacketModel (C.node 0)) C.copies ctx payload)
+      (MutualDuplicationPayloadFlow.syncTarget (Sys.toPacketModel (C.node 0)) C.copies ctx payload) := by
+  have hpath :
+      ∀ m, m < C.copies →
+        Relation.TransGen (StepCtx Sys) (phase C ctx payload (m + 1)) (phase C ctx payload 0) := by
+    intro m
+    induction m with
+    | zero =>
+        intro hm
+        exact Relation.TransGen.single (phase_step C ctx payload (r := 0) hm)
+    | succ m ih =>
+        intro hm
+        have hstep : StepCtx Sys (phase C ctx payload (m + 2)) (phase C ctx payload (m + 1)) := by
+          exact phase_step C ctx payload (r := m + 1) hm
+        have htail :
+            Relation.TransGen (StepCtx Sys) (phase C ctx payload (m + 1)) (phase C ctx payload 0) := by
+          exact ih (by omega)
+        exact Relation.TransGen.trans (Relation.TransGen.single hstep) htail
+  have hstart :
+      phase C ctx payload C.copies =
+        MutualDuplicationPayloadFlow.syncSource (Sys.toPacketModel (C.node 0)) C.copies ctx payload := by
+    simp [phase, GraphPacketSystem.toPacketModel, GraphPacketSystem.wrapNest,
+      MutualDuplicationPayloadFlow.syncSource]
+  have htarget :
+      phase C ctx payload 0 =
+        MutualDuplicationPayloadFlow.syncTarget (Sys.toPacketModel (C.node 0)) C.copies ctx payload := by
+    have hzero :
+        Sys.recur (C.node 0) ctx (Sys.packet (C.node 0) 0 payload) =
+          Sys.recur (C.node 0) ctx Sys.empty := by
+      simp [Sys.packet_zero (C.node 0) payload]
+    simpa [phase, GraphPacketSystem.toPacketModel, GraphPacketSystem.wrapNest,
+      MutualDuplicationPayloadFlow.syncTarget, C.closed,
+      packetFlow_wrapNest_eq C payload C.copies (Sys.recur (C.node 0) ctx Sys.empty)]
+      using congrArg (GraphPacketSystem.wrapNest Sys payload C.copies) hzero
+  rw [← hstart, ← htarget]
+  have hpred : C.copies - 1 < C.copies := by
+    simpa [Nat.pred_eq_sub_one] using Nat.pred_lt (Nat.ne_of_gt C.hcopies)
+  have hlast : C.copies - 1 + 1 = C.copies := by
+    exact Nat.sub_add_cancel (Nat.succ_le_of_lt C.hcopies)
+  simpa [hlast] using hpath (C.copies - 1) hpred
+
+def toCycleWitness (C : CyclePath Sys) :
+    MutualDuplicationPayloadFlow.CycleWitness (Sys.toPacketModel (C.node 0)) C.copies where
+  StepCtx := StepCtx Sys
+  cycle_realized := cycle_realized C
+
+theorem no_global_orients_ctx_additive
+    (C : CyclePath Sys) (M : AdditiveMeasure Sys) :
+    ¬ GlobalOrientsCtx Sys M.eval := by
+  intro h
+  have h' :
+      MutualDuplicationPayloadFlow.GlobalOrientsCtx
+        (toCycleWitness C) (AdditiveMeasure.toPacketModelMeasure M (C.node 0)).eval := by
+    intro a b hstep
+    exact h hstep
+  exact
+    MutualDuplicationPayloadFlow.no_global_orients_ctx_additive
+      (W := toCycleWitness C)
+      (A := AdditiveMeasure.toPacketModelMeasure M (C.node 0))
+      (hcopies := Nat.succ_le_of_lt C.hcopies) h'
+
+theorem no_global_orients_ctx_affine_of_wrapper_dominance
+    (C : CyclePath Sys) (M : AffineMeasure Sys)
+    (hdom :
+      MutualDuplicationPayloadFlow.WrapperDominance
+        (AffineMeasure.toPacketModelMeasure M (C.node 0)) C.copies)
+    (hunbounded : ∀ q : Nat, ∃ t : Sys.T, q ≤ M.eval t) :
+    ¬ GlobalOrientsCtx Sys M.eval := by
+  intro h
+  have h' :
+      MutualDuplicationPayloadFlow.GlobalOrientsCtx
+        (toCycleWitness C) (AffineMeasure.toPacketModelMeasure M (C.node 0)).eval := by
+    intro a b hstep
+    exact h hstep
+  exact
+    MutualDuplicationPayloadFlow.no_global_orients_ctx_affine_of_wrapper_dominance
+      (W := toCycleWitness C)
+      (A := AffineMeasure.toPacketModelMeasure M (C.node 0))
+      (hdom := hdom)
+      (hunbounded := hunbounded) h'
+
+theorem no_global_orients_ctx_transparent
+    (C : CyclePath Sys) (M : TransparentMeasure Sys) :
+    ¬ GlobalOrientsCtx Sys M.eval := by
+  intro h
+  have h' :
+      MutualDuplicationPayloadFlow.GlobalOrientsCtx
+        (toCycleWitness C) (TransparentMeasure.toPacketModelMeasure M (C.node 0)).eval := by
+    intro a b hstep
+    exact h hstep
+  exact
+    MutualDuplicationPayloadFlow.no_global_orients_ctx_transparent
+      (W := toCycleWitness C)
+      (A := TransparentMeasure.toPacketModelMeasure M (C.node 0))
+      (hcopies := C.hcopies) h'
+
+theorem no_global_orients_ctx_of_scalar_projection_transparent
+    (C : CyclePath Sys)
+    {α : Type} (μ : Sys.T → α) (R : α → α → Prop) (π : α → Nat)
+    (hproj : ∀ {u v : α}, R u v → π u < π v)
+    (M : TransparentMeasure Sys)
+    (hπ : ∀ t : Sys.T, π (μ t) = M.eval t) :
+    ¬ DependencyPairsFragment.GlobalOrients (StepCtx Sys) μ R := by
+  exact
+    MutualDuplicationPayloadFlow.no_global_orients_ctx_of_scalar_projection_transparent
+      (W := toCycleWitness C)
+      (μ := μ) (R := R) (π := π)
+      (hproj := hproj)
+      (A := TransparentMeasure.toPacketModelMeasure M (C.node 0))
+      (hπ := hπ)
+      (hcopies := C.hcopies)
+
+/-- Closed-path wrapper for the additive preserving raw-graph barrier. -/
+theorem no_global_orients_ctx_additive_of_closedTransGen
+    {i : ι} (hcycle : Relation.TransGen Sys.Edge i i)
+    (M : AdditiveMeasure Sys) :
+    ¬ GlobalOrientsCtx Sys M.eval :=
+  no_global_orients_ctx_additive (C := ofClosedTransGen hcycle) M
+
+/-- Round-trip SCC wrapper for the additive preserving raw-graph barrier. -/
+theorem no_global_orients_ctx_additive_of_roundTrip
+    {i j : ι} (hij : Relation.TransGen Sys.Edge i j) (hji : Relation.TransGen Sys.Edge j i)
+    (M : AdditiveMeasure Sys) :
+    ¬ GlobalOrientsCtx Sys M.eval :=
+  no_global_orients_ctx_additive (C := ofRoundTrip hij hji) M
+
+/-- Closed-path wrapper for the affine preserving raw-graph barrier. -/
+theorem no_global_orients_ctx_affine_of_wrapper_dominance_of_closedTransGen
+    {i : ι} (hcycle : Relation.TransGen Sys.Edge i i)
+    (M : AffineMeasure Sys)
+    (hdom :
+      MutualDuplicationPayloadFlow.WrapperDominance
+        (AffineMeasure.toPacketModelMeasure M ((ofClosedTransGen hcycle).node 0))
+        (ofClosedTransGen hcycle).copies)
+    (hunbounded : ∀ q : Nat, ∃ t : Sys.T, q ≤ M.eval t) :
+    ¬ GlobalOrientsCtx Sys M.eval :=
+  no_global_orients_ctx_affine_of_wrapper_dominance (C := ofClosedTransGen hcycle) M hdom hunbounded
+
+/-- Round-trip SCC wrapper for the affine preserving raw-graph barrier. -/
+theorem no_global_orients_ctx_affine_of_wrapper_dominance_of_roundTrip
+    {i j : ι} (hij : Relation.TransGen Sys.Edge i j) (hji : Relation.TransGen Sys.Edge j i)
+    (M : AffineMeasure Sys)
+    (hdom :
+      MutualDuplicationPayloadFlow.WrapperDominance
+        (AffineMeasure.toPacketModelMeasure M ((ofRoundTrip hij hji).node 0))
+        (ofRoundTrip hij hji).copies)
+    (hunbounded : ∀ q : Nat, ∃ t : Sys.T, q ≤ M.eval t) :
+    ¬ GlobalOrientsCtx Sys M.eval :=
+  no_global_orients_ctx_affine_of_wrapper_dominance (C := ofRoundTrip hij hji) M hdom hunbounded
+
+/-- Closed-path wrapper for the transparent preserving raw-graph barrier. -/
+theorem no_global_orients_ctx_transparent_of_closedTransGen
+    {i : ι} (hcycle : Relation.TransGen Sys.Edge i i)
+    (M : TransparentMeasure Sys) :
+    ¬ GlobalOrientsCtx Sys M.eval :=
+  no_global_orients_ctx_transparent (C := ofClosedTransGen hcycle) M
+
+/-- Round-trip SCC wrapper for the transparent preserving raw-graph barrier. -/
+theorem no_global_orients_ctx_transparent_of_roundTrip
+    {i j : ι} (hij : Relation.TransGen Sys.Edge i j) (hji : Relation.TransGen Sys.Edge j i)
+    (M : TransparentMeasure Sys) :
+    ¬ GlobalOrientsCtx Sys M.eval :=
+  no_global_orients_ctx_transparent (C := ofRoundTrip hij hji) M
+
+/-- Closed-path wrapper for the scalar-projection preserving raw-graph barrier. -/
+theorem no_global_orients_ctx_of_scalar_projection_transparent_of_closedTransGen
+    {i : ι} (hcycle : Relation.TransGen Sys.Edge i i)
+    {α : Type} (μ : Sys.T → α) (R : α → α → Prop) (π : α → Nat)
+    (hproj : ∀ {u v : α}, R u v → π u < π v)
+    (M : TransparentMeasure Sys)
+    (hπ : ∀ t : Sys.T, π (μ t) = M.eval t) :
+    ¬ DependencyPairsFragment.GlobalOrients (StepCtx Sys) μ R :=
+  no_global_orients_ctx_of_scalar_projection_transparent
+    (C := ofClosedTransGen hcycle) μ R π hproj M hπ
+
+/-- Round-trip SCC wrapper for the scalar-projection preserving raw-graph barrier. -/
+theorem no_global_orients_ctx_of_scalar_projection_transparent_of_roundTrip
+    {i j : ι} (hij : Relation.TransGen Sys.Edge i j) (hji : Relation.TransGen Sys.Edge j i)
+    {α : Type} (μ : Sys.T → α) (R : α → α → Prop) (π : α → Nat)
+    (hproj : ∀ {u v : α}, R u v → π u < π v)
+    (M : TransparentMeasure Sys)
+    (hπ : ∀ t : Sys.T, π (μ t) = M.eval t) :
+    ¬ DependencyPairsFragment.GlobalOrients (StepCtx Sys) μ R :=
+  no_global_orients_ctx_of_scalar_projection_transparent
+    (C := ofRoundTrip hij hji) μ R π hproj M hπ
+
+/-- Finite-round-trip wrapper for the additive preserving raw-graph barrier. -/
+theorem no_global_orients_ctx_additive_of_finiteRoundTrip
+    [Fintype ι] [DecidableEq ι] [DecidableRel Sys.Edge]
+    {i j : ι}
+    (hij : Reachable Sys.Edge i j) (hji : Reachable Sys.Edge j i) (hne : i ≠ j)
+    (M : AdditiveMeasure Sys) :
+    ¬ GlobalOrientsCtx Sys M.eval := by
+  let hijT := transGen_of_reachable_of_ne (R := Sys.Edge) hij hne
+  let hjiT := transGen_of_reachable_of_ne (R := Sys.Edge) hji hne.symm
+  exact no_global_orients_ctx_additive_of_roundTrip hijT hjiT M
+
+/-- Finite-round-trip wrapper for the affine preserving raw-graph barrier. -/
+theorem no_global_orients_ctx_affine_of_wrapper_dominance_of_finiteRoundTrip
+    [Fintype ι] [DecidableEq ι] [DecidableRel Sys.Edge]
+    {i j : ι}
+    (hij : Reachable Sys.Edge i j) (hji : Reachable Sys.Edge j i) (hne : i ≠ j)
+    (M : AffineMeasure Sys)
+    (hdom :
+      let hijT := transGen_of_reachable_of_ne (R := Sys.Edge) hij hne
+      let hjiT := transGen_of_reachable_of_ne (R := Sys.Edge) hji hne.symm
+      let C := ofRoundTrip hijT hjiT
+      MutualDuplicationPayloadFlow.WrapperDominance
+        (AffineMeasure.toPacketModelMeasure M (C.node 0)) C.copies)
+    (hunbounded : ∀ q : Nat, ∃ t : Sys.T, q ≤ M.eval t) :
+    ¬ GlobalOrientsCtx Sys M.eval := by
+  let hijT := transGen_of_reachable_of_ne (R := Sys.Edge) hij hne
+  let hjiT := transGen_of_reachable_of_ne (R := Sys.Edge) hji hne.symm
+  simpa [hijT, hjiT] using
+    (no_global_orients_ctx_affine_of_wrapper_dominance_of_roundTrip
+      (i := i) (j := j) hijT hjiT M hdom hunbounded)
+
+/-- Finite-round-trip wrapper for the transparent preserving raw-graph barrier. -/
+theorem no_global_orients_ctx_transparent_of_finiteRoundTrip
+    [Fintype ι] [DecidableEq ι] [DecidableRel Sys.Edge]
+    {i j : ι}
+    (hij : Reachable Sys.Edge i j) (hji : Reachable Sys.Edge j i) (hne : i ≠ j)
+    (M : TransparentMeasure Sys) :
+    ¬ GlobalOrientsCtx Sys M.eval := by
+  let hijT := transGen_of_reachable_of_ne (R := Sys.Edge) hij hne
+  let hjiT := transGen_of_reachable_of_ne (R := Sys.Edge) hji hne.symm
+  exact no_global_orients_ctx_transparent_of_roundTrip hijT hjiT M
+
+/-- Finite-round-trip wrapper for the scalar-projection preserving barrier. -/
+theorem no_global_orients_ctx_of_scalar_projection_transparent_of_finiteRoundTrip
+    [Fintype ι] [DecidableEq ι] [DecidableRel Sys.Edge]
+    {i j : ι}
+    (hij : Reachable Sys.Edge i j) (hji : Reachable Sys.Edge j i) (hne : i ≠ j)
+    {α : Type} (μ : Sys.T → α) (R : α → α → Prop) (π : α → Nat)
+    (hproj : ∀ {u v : α}, R u v → π u < π v)
+    (M : TransparentMeasure Sys)
+    (hπ : ∀ t : Sys.T, π (μ t) = M.eval t) :
+    ¬ DependencyPairsFragment.GlobalOrients (StepCtx Sys) μ R := by
+  let hijT := transGen_of_reachable_of_ne (R := Sys.Edge) hij hne
+  let hjiT := transGen_of_reachable_of_ne (R := Sys.Edge) hji hne.symm
+  exact no_global_orients_ctx_of_scalar_projection_transparent_of_roundTrip
+    hijT hjiT μ R π hproj M hπ
+
+/-- Finite-SCC wrapper for the additive preserving raw-graph barrier. -/
+theorem no_global_orients_ctx_additive_of_hasNontrivialSCC
+    [Fintype ι] [DecidableEq ι] [DecidableRel Sys.Edge]
+    (hSCC : HasNontrivialSCC Sys.Edge)
+    (M : AdditiveMeasure Sys) :
+    ¬ GlobalOrientsCtx Sys M.eval :=
+  no_global_orients_ctx_additive_of_finiteRoundTrip
+    (i := witnessSrc Sys.Edge hSCC) (j := witnessDst Sys.Edge hSCC)
+    (reachable_witnessSrc_witnessDst (R := Sys.Edge) hSCC)
+    (reachable_witnessDst_witnessSrc (R := Sys.Edge) hSCC)
+    (witnessSrc_ne_witnessDst (R := Sys.Edge) hSCC)
+    M
+
+/-- Finite-SCC wrapper for the affine preserving raw-graph barrier. -/
+theorem no_global_orients_ctx_affine_of_wrapper_dominance_of_hasNontrivialSCC
+    [Fintype ι] [DecidableEq ι] [DecidableRel Sys.Edge]
+    (hSCC : HasNontrivialSCC Sys.Edge)
+    (M : AffineMeasure Sys)
+    (hdom :
+      let hij := reachable_witnessSrc_witnessDst (R := Sys.Edge) hSCC
+      let hji := reachable_witnessDst_witnessSrc (R := Sys.Edge) hSCC
+      let C := ofRoundTrip
+        (transGen_of_reachable_of_ne (R := Sys.Edge) hij (witnessSrc_ne_witnessDst (R := Sys.Edge) hSCC))
+        (transGen_of_reachable_of_ne (R := Sys.Edge) hji (witnessSrc_ne_witnessDst (R := Sys.Edge) hSCC).symm)
+      MutualDuplicationPayloadFlow.WrapperDominance
+        (AffineMeasure.toPacketModelMeasure M (C.node 0)) C.copies)
+    (hunbounded : ∀ q : Nat, ∃ t : Sys.T, q ≤ M.eval t) :
+    ¬ GlobalOrientsCtx Sys M.eval :=
+  no_global_orients_ctx_affine_of_wrapper_dominance_of_finiteRoundTrip
+    (i := witnessSrc Sys.Edge hSCC) (j := witnessDst Sys.Edge hSCC)
+    (reachable_witnessSrc_witnessDst (R := Sys.Edge) hSCC)
+    (reachable_witnessDst_witnessSrc (R := Sys.Edge) hSCC)
+    (witnessSrc_ne_witnessDst (R := Sys.Edge) hSCC)
+    M hdom hunbounded
+
+/-- Finite-SCC wrapper for the transparent preserving raw-graph barrier. -/
+theorem no_global_orients_ctx_transparent_of_hasNontrivialSCC
+    [Fintype ι] [DecidableEq ι] [DecidableRel Sys.Edge]
+    (hSCC : HasNontrivialSCC Sys.Edge)
+    (M : TransparentMeasure Sys) :
+    ¬ GlobalOrientsCtx Sys M.eval :=
+  no_global_orients_ctx_transparent_of_finiteRoundTrip
+    (i := witnessSrc Sys.Edge hSCC) (j := witnessDst Sys.Edge hSCC)
+    (reachable_witnessSrc_witnessDst (R := Sys.Edge) hSCC)
+    (reachable_witnessDst_witnessSrc (R := Sys.Edge) hSCC)
+    (witnessSrc_ne_witnessDst (R := Sys.Edge) hSCC)
+    M
+
+/-- Finite-SCC wrapper for the scalar-projection preserving barrier. -/
+theorem no_global_orients_ctx_of_scalar_projection_transparent_of_hasNontrivialSCC
+    [Fintype ι] [DecidableEq ι] [DecidableRel Sys.Edge]
+    (hSCC : HasNontrivialSCC Sys.Edge)
+    {α : Type} (μ : Sys.T → α) (R : α → α → Prop) (π : α → Nat)
+    (hproj : ∀ {u v : α}, R u v → π u < π v)
+    (M : TransparentMeasure Sys)
+    (hπ : ∀ t : Sys.T, π (μ t) = M.eval t) :
+    ¬ DependencyPairsFragment.GlobalOrients (StepCtx Sys) μ R :=
+  no_global_orients_ctx_of_scalar_projection_transparent_of_finiteRoundTrip
+    (i := witnessSrc Sys.Edge hSCC) (j := witnessDst Sys.Edge hSCC)
+    (reachable_witnessSrc_witnessDst (R := Sys.Edge) hSCC)
+    (reachable_witnessDst_witnessSrc (R := Sys.Edge) hSCC)
+    (witnessSrc_ne_witnessDst (R := Sys.Edge) hSCC)
+    μ R π hproj M hπ
+
+/-- Existential closed-cycle wrapper for the additive preserving raw-graph barrier. -/
+theorem no_global_orients_ctx_additive_of_exists_closedTransGen
+    {i : ι} (hex : ∃ _ : Relation.TransGen Sys.Edge i i, True)
+    (M : AdditiveMeasure Sys) :
+    ¬ GlobalOrientsCtx Sys M.eval := by
+  rcases hex with ⟨hcycle, _⟩
+  exact no_global_orients_ctx_additive_of_closedTransGen hcycle M
+
+/-- Existential round-trip wrapper for the additive preserving raw-graph barrier. -/
+theorem no_global_orients_ctx_additive_of_exists_roundTrip
+    {i j : ι}
+    (hex : ∃ _ : Relation.TransGen Sys.Edge i j, Relation.TransGen Sys.Edge j i)
+    (M : AdditiveMeasure Sys) :
+    ¬ GlobalOrientsCtx Sys M.eval := by
+  rcases hex with ⟨hij, hji⟩
+  exact no_global_orients_ctx_additive_of_roundTrip hij hji M
+
+/-- Existential closed-cycle wrapper for the affine preserving raw-graph barrier. -/
+theorem no_global_orients_ctx_affine_of_wrapper_dominance_of_exists_closedTransGen
+    {i : ι} (hex : ∃ _ : Relation.TransGen Sys.Edge i i, True)
+    (M : AffineMeasure Sys)
+    (hdom :
+      let C := ofClosedTransGen (Classical.choose hex)
+      MutualDuplicationPayloadFlow.WrapperDominance
+        (AffineMeasure.toPacketModelMeasure M (C.node 0)) C.copies)
+    (hunbounded : ∀ q : Nat, ∃ t : Sys.T, q ≤ M.eval t) :
+    ¬ GlobalOrientsCtx Sys M.eval := by
+  rcases hex with ⟨hcycle, _⟩
+  simpa [ofClosedTransGen] using
+    (no_global_orients_ctx_affine_of_wrapper_dominance_of_closedTransGen
+      (i := i) hcycle M hdom hunbounded)
+
+/-- Existential round-trip wrapper for the affine preserving raw-graph barrier. -/
+theorem no_global_orients_ctx_affine_of_wrapper_dominance_of_exists_roundTrip
+    {i j : ι}
+    (hex : ∃ _ : Relation.TransGen Sys.Edge i j, Relation.TransGen Sys.Edge j i)
+    (M : AffineMeasure Sys)
+    (hdom :
+      let hij := Classical.choose hex
+      let hji := Classical.choose_spec hex
+      let C := ofRoundTrip hij hji
+      MutualDuplicationPayloadFlow.WrapperDominance
+        (AffineMeasure.toPacketModelMeasure M (C.node 0)) C.copies)
+    (hunbounded : ∀ q : Nat, ∃ t : Sys.T, q ≤ M.eval t) :
+    ¬ GlobalOrientsCtx Sys M.eval := by
+  rcases hex with ⟨hij, hji⟩
+  simpa [ofRoundTrip] using
+    (no_global_orients_ctx_affine_of_wrapper_dominance_of_roundTrip
+      (i := i) (j := j) hij hji M hdom hunbounded)
+
+/-- Existential closed-cycle wrapper for the transparent preserving raw-graph barrier. -/
+theorem no_global_orients_ctx_transparent_of_exists_closedTransGen
+    {i : ι} (hex : ∃ _ : Relation.TransGen Sys.Edge i i, True)
+    (M : TransparentMeasure Sys) :
+    ¬ GlobalOrientsCtx Sys M.eval := by
+  rcases hex with ⟨hcycle, _⟩
+  exact no_global_orients_ctx_transparent_of_closedTransGen hcycle M
+
+/-- Existential round-trip wrapper for the transparent preserving raw-graph barrier. -/
+theorem no_global_orients_ctx_transparent_of_exists_roundTrip
+    {i j : ι}
+    (hex : ∃ _ : Relation.TransGen Sys.Edge i j, Relation.TransGen Sys.Edge j i)
+    (M : TransparentMeasure Sys) :
+    ¬ GlobalOrientsCtx Sys M.eval := by
+  rcases hex with ⟨hij, hji⟩
+  exact no_global_orients_ctx_transparent_of_roundTrip hij hji M
+
+/-- Existential closed-cycle wrapper for the scalar-projection preserving barrier. -/
+theorem no_global_orients_ctx_of_scalar_projection_transparent_of_exists_closedTransGen
+    {i : ι} (hex : ∃ _ : Relation.TransGen Sys.Edge i i, True)
+    {α : Type} (μ : Sys.T → α) (R : α → α → Prop) (π : α → Nat)
+    (hproj : ∀ {u v : α}, R u v → π u < π v)
+    (M : TransparentMeasure Sys)
+    (hπ : ∀ t : Sys.T, π (μ t) = M.eval t) :
+    ¬ DependencyPairsFragment.GlobalOrients (StepCtx Sys) μ R := by
+  rcases hex with ⟨hcycle, _⟩
+  exact no_global_orients_ctx_of_scalar_projection_transparent_of_closedTransGen hcycle μ R π hproj M hπ
+
+/-- Existential round-trip wrapper for the scalar-projection preserving barrier. -/
+theorem no_global_orients_ctx_of_scalar_projection_transparent_of_exists_roundTrip
+    {i j : ι}
+    (hex : ∃ _ : Relation.TransGen Sys.Edge i j, Relation.TransGen Sys.Edge j i)
+    {α : Type} (μ : Sys.T → α) (R : α → α → Prop) (π : α → Nat)
+    (hproj : ∀ {u v : α}, R u v → π u < π v)
+    (M : TransparentMeasure Sys)
+    (hπ : ∀ t : Sys.T, π (μ t) = M.eval t) :
+    ¬ DependencyPairsFragment.GlobalOrients (StepCtx Sys) μ R := by
+  rcases hex with ⟨hij, hji⟩
+  exact no_global_orients_ctx_of_scalar_projection_transparent_of_roundTrip hij hji μ R π hproj M hπ
+
+end CyclePath
+
+end GraphPacketSystem
+
+end OperatorKO7.MutualDuplicationPacketGraph
+```
+
+---
+
+## OperatorKO7/Meta/MutualDuplication_PayloadFlow.lean
+
+**Lines:** 339
+
+```lean
+import Mathlib
+import OperatorKO7.Meta.DependencyPairs_Fragment
+
+/-!
+# Abstract Payload-Flow Barrier
+
+This module isolates the common proof pattern behind the synchronized preserving SCC
+results. The syntax-specific packet model is abstracted to:
+
+- an abstract latent packet constructor `packet n p`,
+- a visible wrapper constructor `wrap`,
+- a recursor-like carrier `recur`,
+- and a certified one-cycle path from `syncSource` to `syncTarget`.
+
+The resulting theorems are still concrete enough to recover additive and affine SCC
+barriers, but no longer depend on the explicit packet syntax used by the current
+finite-cycle implementations.
+-/
+
+namespace OperatorKO7.MutualDuplicationPayloadFlow
+
+open OperatorKO7.DependencyPairsFragment
+
+/-- Generic left-nested wrapper iteration. -/
+def wrapNest {T : Type} (wrap : T → T → T) (p : T) : Nat → T → T
+  | 0, t => t
+  | n + 1, t => wrapNest wrap p n (wrap p t)
+
+/-- Minimal syntax interface for a synchronized payload-flow cycle. -/
+structure PacketModel (T : Type) where
+  empty : T
+  wrap : T → T → T
+  recur : T → T → T
+  packet : Nat → T → T
+
+/-- Source state carrying a latent synchronized packet of `copies` payloads. -/
+def syncSource {T : Type} (M : PacketModel T) (copies : Nat) (ctx payload : T) : T :=
+  M.recur ctx (M.packet copies payload)
+
+/-- Target state after one full synchronized exposure cycle. -/
+def syncTarget {T : Type} (M : PacketModel T) (copies : Nat) (ctx payload : T) : T :=
+  wrapNest M.wrap payload copies (M.recur ctx M.empty)
+
+/-- One-cycle witness for the induced minimal contextual relation. -/
+structure CycleWitness {T : Type} (M : PacketModel T) (copies : Nat) where
+  StepCtx : T → T → Prop
+  cycle_realized :
+    ∀ ctx payload,
+      Relation.TransGen StepCtx
+        (syncSource M copies ctx payload)
+        (syncTarget M copies ctx payload)
+
+/-- Orientation of the induced contextual relation. -/
+def GlobalOrientsCtx {T : Type} {M : PacketModel T} {copies : Nat}
+    (W : CycleWitness M copies) (m : T → Nat) : Prop :=
+  ∀ {a b : T}, W.StepCtx a b → m b < m a
+
+/-- Additive direct measures for the abstract payload-flow interface. -/
+structure AdditiveMeasure {T : Type} (M : PacketModel T) where
+  eval : T → Nat
+  w_empty : Nat
+  w_wrap : Nat
+  w_recur : Nat
+  eval_empty : eval M.empty = w_empty
+  eval_wrap : ∀ x y, eval (M.wrap x y) = w_wrap + eval x + eval y
+  eval_recur : ∀ ctx packet, eval (M.recur ctx packet) = w_recur + eval ctx + eval packet
+  eval_packet : ∀ n p, eval (M.packet n p) = n * eval p + w_empty
+  h_wrap_pos : 1 ≤ w_wrap
+
+lemma eval_wrapNest {T : Type} {M : PacketModel T} (A : AdditiveMeasure M) (p : T) :
+    ∀ n t, A.eval (wrapNest M.wrap p n t) = n * A.w_wrap + n * A.eval p + A.eval t
+  | 0, t => by simp [wrapNest]
+  | n + 1, t => by
+      rw [wrapNest, eval_wrapNest A p n (M.wrap p t), A.eval_wrap]
+      ring
+
+theorem syncTarget_eval_gt {T : Type} {M : PacketModel T}
+    (A : AdditiveMeasure M) {copies : Nat} (hcopies : 1 ≤ copies) (ctx payload : T) :
+    A.eval (syncSource M copies ctx payload) < A.eval (syncTarget M copies ctx payload) := by
+  have hsrc :
+      A.eval (syncSource M copies ctx payload) =
+        A.w_recur + A.eval ctx + (copies * A.eval payload + A.w_empty) := by
+    simp [syncSource, A.eval_recur, A.eval_packet]
+  have htgt :
+      A.eval (syncTarget M copies ctx payload) =
+        copies * A.w_wrap + copies * A.eval payload +
+          (A.w_recur + A.eval ctx + A.w_empty) := by
+    simp [syncTarget, eval_wrapNest, A.eval_recur, A.eval_empty]
+  rw [hsrc, htgt]
+  have hwrap : 1 ≤ copies * A.w_wrap := by
+    exact Nat.mul_le_mul hcopies A.h_wrap_pos
+  omega
+
+theorem no_global_orients_ctx_additive {T : Type} {M : PacketModel T} {copies : Nat}
+    (W : CycleWitness M copies) (A : AdditiveMeasure M) (hcopies : 1 ≤ copies) :
+    ¬ GlobalOrientsCtx W A.eval := by
+  intro h
+  have horient : DependencyPairsFragment.GlobalOrients W.StepCtx A.eval (· < ·) := by
+    intro a b hstep
+    exact h hstep
+  have hpath :
+      Relation.TransGen W.StepCtx
+        (syncSource M copies M.empty M.empty)
+        (syncTarget M copies M.empty M.empty) := by
+    exact W.cycle_realized M.empty M.empty
+  have hcomp :
+      A.eval (syncTarget M copies M.empty M.empty) <
+        A.eval (syncSource M copies M.empty M.empty) := by
+    exact DependencyPairsFragment.transGen_drop (R := W.StepCtx) (m := A.eval) horient hpath
+  have hgt :
+      A.eval (syncSource M copies M.empty M.empty) <
+        A.eval (syncTarget M copies M.empty M.empty) := by
+    exact syncTarget_eval_gt A hcopies M.empty M.empty
+  exact Nat.lt_asymm hcomp hgt
+
+/-- Affine constructor-local measures on the abstract payload-flow interface. -/
+structure AffineMeasure {T : Type} (M : PacketModel T) where
+  eval : T → Nat
+  c_empty : Nat
+  wrap_const : Nat
+  wrap_left : Nat
+  wrap_right : Nat
+  recur_const : Nat
+  recur_ctx : Nat
+  recur_packet : Nat
+  eval_empty : eval M.empty = c_empty
+  eval_wrap :
+    ∀ x y, eval (M.wrap x y) = wrap_const + wrap_left * eval x + wrap_right * eval y
+  eval_recur :
+    ∀ ctx packet,
+      eval (M.recur ctx packet) = recur_const + recur_ctx * eval ctx + recur_packet * eval packet
+  eval_packet : ∀ n p, eval (M.packet n p) = n * eval p + c_empty
+  h_wrap_left_pos : 1 ≤ wrap_left
+  h_wrap_right_pos : 1 ≤ wrap_right
+
+def AffineMeasure.wrapRightIter {T : Type} {M : PacketModel T}
+    (A : AffineMeasure M) : Nat → Nat
+  | 0 => 1
+  | n + 1 => A.wrapRightIter n * A.wrap_right
+
+def AffineMeasure.wrapConstIter {T : Type} {M : PacketModel T}
+    (A : AffineMeasure M) : Nat → Nat
+  | 0 => 0
+  | n + 1 => A.wrapConstIter n + A.wrapRightIter n * A.wrap_const
+
+def AffineMeasure.wrapLeftIter {T : Type} {M : PacketModel T}
+    (A : AffineMeasure M) : Nat → Nat
+  | 0 => 0
+  | n + 1 => A.wrapLeftIter n + A.wrapRightIter n * A.wrap_left
+
+lemma eval_wrapNest_affine {T : Type} {M : PacketModel T} (A : AffineMeasure M) (p : T) :
+    ∀ n t,
+      A.eval (wrapNest M.wrap p n t) =
+        A.wrapConstIter n + A.wrapLeftIter n * A.eval p + A.wrapRightIter n * A.eval t
+  | 0, t => by
+      simp [wrapNest, AffineMeasure.wrapConstIter, AffineMeasure.wrapLeftIter,
+        AffineMeasure.wrapRightIter]
+  | n + 1, t => by
+      rw [wrapNest, eval_wrapNest_affine A p n (M.wrap p t), A.eval_wrap]
+      simp [AffineMeasure.wrapConstIter, AffineMeasure.wrapLeftIter, AffineMeasure.wrapRightIter,
+        Nat.mul_add, Nat.add_mul]
+      ring
+
+lemma wrapRightIter_pos {T : Type} {M : PacketModel T} (A : AffineMeasure M) :
+    ∀ n, 1 ≤ A.wrapRightIter n
+  | 0 => by simp [AffineMeasure.wrapRightIter]
+  | n + 1 => by
+      simp [AffineMeasure.wrapRightIter]
+      exact Nat.mul_le_mul (wrapRightIter_pos A n) A.h_wrap_right_pos
+
+lemma wrapLeftIter_pos {T : Type} {M : PacketModel T} (A : AffineMeasure M) :
+    ∀ n, 0 < n → 1 ≤ A.wrapLeftIter n
+  | 0, h => by cases Nat.not_lt_zero _ h
+  | n + 1, _ => by
+      have hterm : 1 ≤ A.wrapRightIter n * A.wrap_left := by
+        exact Nat.mul_le_mul (wrapRightIter_pos A n) A.h_wrap_left_pos
+      have hsum : 1 ≤ A.wrapLeftIter n + A.wrapRightIter n * A.wrap_left := by
+        exact le_trans hterm (Nat.le_add_left _ _)
+      simpa [AffineMeasure.wrapLeftIter] using hsum
+
+def WrapperDominance {T : Type} {M : PacketModel T}
+    (A : AffineMeasure M) (copies : Nat) : Prop :=
+  copies * A.recur_packet < A.wrapLeftIter copies
+
+theorem syncTarget_affine_eval_gt_of_wrapper_dominance
+    {T : Type} {M : PacketModel T} {copies : Nat}
+    (A : AffineMeasure M) (hdom : WrapperDominance A copies)
+    (hunbounded : ∀ q : Nat, ∃ t : T, q ≤ A.eval t) (ctx : T) :
+    ∃ payload,
+      A.eval (syncSource M copies ctx payload) < A.eval (syncTarget M copies ctx payload) := by
+  obtain ⟨payload, hpayload⟩ := hunbounded 1
+  refine ⟨payload, ?_⟩
+  have hsrc :
+      A.eval (syncSource M copies ctx payload) =
+        A.recur_const + A.recur_ctx * A.eval ctx +
+          A.recur_packet * (copies * A.eval payload + A.c_empty) := by
+    simp [syncSource, A.eval_recur, A.eval_packet]
+  have htgt :
+      A.eval (syncTarget M copies ctx payload) =
+        A.wrapConstIter copies + A.wrapLeftIter copies * A.eval payload +
+          A.wrapRightIter copies *
+            (A.recur_const + A.recur_ctx * A.eval ctx + A.recur_packet * A.c_empty) := by
+    simp [syncTarget, eval_wrapNest_affine, A.eval_recur, A.eval_empty]
+  rw [hsrc, htgt]
+  unfold WrapperDominance at hdom
+  have hcoeff : copies * A.recur_packet + 1 ≤ A.wrapLeftIter copies := by
+    omega
+  have hmul :
+      (copies * A.recur_packet + 1) * A.eval payload ≤
+        A.wrapLeftIter copies * A.eval payload := by
+    exact Nat.mul_le_mul_right (A.eval payload) hcoeff
+  have hpayloadPos : 1 ≤ A.eval payload := hpayload
+  have hsrc_lt :
+      A.recur_packet * (copies * A.eval payload + A.c_empty) <
+        (copies * A.recur_packet + 1) * A.eval payload + A.recur_packet * A.c_empty := by
+    have : (copies * A.recur_packet + 1) * A.eval payload + A.recur_packet * A.c_empty =
+        A.recur_packet * (copies * A.eval payload + A.c_empty) + A.eval payload := by
+      ring
+    rw [this]
+    exact Nat.lt_add_of_pos_right hpayloadPos
+  have hconst :
+      A.recur_const + A.recur_ctx * A.eval ctx + A.recur_packet * A.c_empty ≤
+        A.wrapConstIter copies + A.wrapRightIter copies *
+          (A.recur_const + A.recur_ctx * A.eval ctx + A.recur_packet * A.c_empty) := by
+    have hpow : 1 ≤ A.wrapRightIter copies := wrapRightIter_pos A copies
+    have hmul' :
+        A.recur_const + A.recur_ctx * A.eval ctx + A.recur_packet * A.c_empty ≤
+          A.wrapRightIter copies *
+            (A.recur_const + A.recur_ctx * A.eval ctx + A.recur_packet * A.c_empty) := by
+      calc
+        A.recur_const + A.recur_ctx * A.eval ctx + A.recur_packet * A.c_empty
+            = 1 * (A.recur_const + A.recur_ctx * A.eval ctx + A.recur_packet * A.c_empty) := by ring
+        _ ≤ A.wrapRightIter copies *
+              (A.recur_const + A.recur_ctx * A.eval ctx + A.recur_packet * A.c_empty) := by
+              exact Nat.mul_le_mul_right _ hpow
+    exact le_trans hmul' (Nat.le_add_left _ _)
+  omega
+
+theorem no_global_orients_ctx_affine_of_wrapper_dominance
+    {T : Type} {M : PacketModel T} {copies : Nat}
+    (W : CycleWitness M copies) (A : AffineMeasure M)
+    (hdom : WrapperDominance A copies)
+    (hunbounded : ∀ q : Nat, ∃ t : T, q ≤ A.eval t) :
+    ¬ GlobalOrientsCtx W A.eval := by
+  intro h
+  obtain ⟨payload, hgt⟩ :=
+    syncTarget_affine_eval_gt_of_wrapper_dominance A hdom hunbounded M.empty
+  have horient : DependencyPairsFragment.GlobalOrients W.StepCtx A.eval (· < ·) := by
+    intro a b hstep
+    exact h hstep
+  have hpath :
+      Relation.TransGen W.StepCtx
+        (syncSource M copies M.empty payload)
+        (syncTarget M copies M.empty payload) := by
+    exact W.cycle_realized M.empty payload
+  have hcomp :
+      A.eval (syncTarget M copies M.empty payload) <
+        A.eval (syncSource M copies M.empty payload) := by
+    exact DependencyPairsFragment.transGen_drop (R := W.StepCtx) (m := A.eval) horient hpath
+  exact Nat.lt_asymm hcomp hgt
+
+/-- Transparent packet-bookkeeping measures on the abstract payload-flow interface. -/
+structure TransparentMeasure {T : Type} (M : PacketModel T) where
+  eval : T → Nat
+  c_empty : Nat
+  c_wrap : Nat → Nat → Nat
+  c_recur : Nat → Nat → Nat
+  eval_empty : eval M.empty = c_empty
+  eval_wrap : ∀ x y, eval (M.wrap x y) = c_wrap (eval x) (eval y)
+  eval_recur : ∀ ctx packet, eval (M.recur ctx packet) = c_recur (eval ctx) (eval packet)
+  eval_packet : ∀ n p, eval (M.packet n p) = c_empty
+  wrap_subterm2 : ∀ x y, c_wrap x y > y
+
+lemma eval_wrapNest_gt {T : Type} {M : PacketModel T} (A : TransparentMeasure M) (p : T) :
+    ∀ n t, 0 < n → A.eval t < A.eval (wrapNest M.wrap p n t)
+  | 0, t, h => by
+      cases Nat.not_lt_zero _ h
+  | 1, t, _ => by
+      simpa [wrapNest, A.eval_wrap] using A.wrap_subterm2 (A.eval p) (A.eval t)
+  | n + 2, t, _ => by
+      have hbase : A.eval t < A.eval (M.wrap p t) := by
+        rw [A.eval_wrap]
+        exact A.wrap_subterm2 (A.eval p) (A.eval t)
+      have htail :
+          A.eval (M.wrap p t) < A.eval (wrapNest M.wrap p (n + 1) (M.wrap p t)) := by
+        exact eval_wrapNest_gt A p (n + 1) (M.wrap p t) (Nat.succ_pos _)
+      rw [wrapNest]
+      exact Nat.lt_trans hbase htail
+
+theorem syncTarget_eval_gt_transparent
+    {T : Type} {M : PacketModel T} {copies : Nat}
+    (A : TransparentMeasure M) (hcopies : 0 < copies) (ctx payload : T) :
+    A.eval (syncSource M copies ctx payload) < A.eval (syncTarget M copies ctx payload) := by
+  rw [syncTarget, syncSource, A.eval_recur, A.eval_packet]
+  have hwrap :
+      A.eval (M.recur ctx M.empty) < A.eval (wrapNest M.wrap payload copies (M.recur ctx M.empty)) := by
+    exact eval_wrapNest_gt A payload copies (M.recur ctx M.empty) hcopies
+  simpa [A.eval_recur, A.eval_empty] using hwrap
+
+theorem no_global_orients_ctx_transparent
+    {T : Type} {M : PacketModel T} {copies : Nat}
+    (W : CycleWitness M copies) (A : TransparentMeasure M) (hcopies : 0 < copies) :
+    ¬ GlobalOrientsCtx W A.eval := by
+  intro h
+  have horient : DependencyPairsFragment.GlobalOrients W.StepCtx A.eval (· < ·) := by
+    intro a b hstep
+    exact h hstep
+  have hpath :
+      Relation.TransGen W.StepCtx
+        (syncSource M copies M.empty M.empty)
+        (syncTarget M copies M.empty M.empty) := by
+    exact W.cycle_realized M.empty M.empty
+  have hcomp :
+      A.eval (syncTarget M copies M.empty M.empty) <
+        A.eval (syncSource M copies M.empty M.empty) := by
+    exact DependencyPairsFragment.transGen_drop (R := W.StepCtx) (m := A.eval) horient hpath
+  have hgt :
+      A.eval (syncSource M copies M.empty M.empty) <
+        A.eval (syncTarget M copies M.empty M.empty) := by
+    exact syncTarget_eval_gt_transparent A hcopies M.empty M.empty
+  exact Nat.lt_asymm hcomp hgt
+
+theorem no_global_orients_ctx_of_scalar_projection_transparent
+    {T α : Type} {M : PacketModel T} {copies : Nat}
+    (W : CycleWitness M copies)
+    (μ : T → α) (R : α → α → Prop) (π : α → Nat)
+    (hproj : ∀ {u v : α}, R u v → π u < π v)
+    (A : TransparentMeasure M)
+    (hπ : ∀ t : T, π (μ t) = A.eval t)
+    (hcopies : 0 < copies) :
+    ¬ DependencyPairsFragment.GlobalOrients W.StepCtx μ R := by
+  intro h
+  have hscalar : GlobalOrientsCtx W A.eval := by
+    intro a b hstep
+    have hlt : π (μ b) < π (μ a) := hproj (h hstep)
+    simpa [hπ a, hπ b] using hlt
+  exact no_global_orients_ctx_transparent W A hcopies hscalar
+
+end OperatorKO7.MutualDuplicationPayloadFlow
 ```
 
 ---
@@ -11074,6 +18132,1459 @@ theorem no_affine_orients_synchronized_cycle_of_wrapper_dominance
   omega
 
 end OperatorKO7.MutualDuplicationPreserving
+```
+
+---
+
+## OperatorKO7/Meta/MutualDuplication_Preserving_Abstract.lean
+
+**Lines:** 197
+
+```lean
+import OperatorKO7.Meta.MutualDuplication_PayloadFlow
+import OperatorKO7.Meta.MutualDuplication_Preserving_KNode
+import OperatorKO7.Meta.MutualDuplication_Preserving_Transparent
+
+/-!
+# Abstract Payload-Flow Instantiation for Finite Preserving Cycles
+
+This module shows that the finite synchronized-packet preserving SCC development factors
+through the abstract payload-flow metatheorems. The explicit packet syntax remains the
+concrete witness, but the additive and affine global barriers are now recovered from a
+smaller abstract cycle interface.
+-/
+
+namespace OperatorKO7.MutualDuplicationPreservingAbstract
+
+open OperatorKO7.DependencyPairsFragment
+open OperatorKO7.MutualDuplicationPayloadFlow
+open OperatorKO7.MutualDuplicationPreservingKNode
+
+namespace SyncTerm
+
+variable {k : Nat}
+
+open OperatorKO7.MutualDuplicationPreservingKNode.SyncTerm
+
+/-- The finite preserving syntax at a fixed cycle index as an abstract packet model. -/
+def packetModel (i : Fin (k + 1)) :
+    PacketModel (OperatorKO7.MutualDuplicationPreservingKNode.SyncTerm k) where
+  empty := empty
+  wrap := wrap
+  recur := recur i
+  packet := syncPacket i
+
+lemma payloadFlow_wrapNest_eq (p : OperatorKO7.MutualDuplicationPreservingKNode.SyncTerm k) :
+    ∀ n t,
+      OperatorKO7.MutualDuplicationPayloadFlow.wrapNest wrap p n t =
+        OperatorKO7.MutualDuplicationPreservingKNode.SyncTerm.wrapNest p n t
+  | 0, t => by rfl
+  | n + 1, t => by
+      simp [OperatorKO7.MutualDuplicationPayloadFlow.wrapNest,
+        OperatorKO7.MutualDuplicationPreservingKNode.SyncTerm.wrapNest,
+        payloadFlow_wrapNest_eq p n (wrap p t)]
+
+/-- The exact one-cycle path for the finite preserving system in abstract form. -/
+def cycleWitness (i : Fin (k + 1)) :
+    CycleWitness (packetModel (k := k) i) (k + 1) where
+  StepCtx := StepCtx
+  cycle_realized := by
+    intro ctx p
+    simpa [packetModel,
+      OperatorKO7.MutualDuplicationPayloadFlow.syncSource,
+      OperatorKO7.MutualDuplicationPayloadFlow.syncTarget,
+      OperatorKO7.MutualDuplicationPreservingKNode.SyncTerm.syncSource,
+      OperatorKO7.MutualDuplicationPreservingKNode.SyncTerm.syncTarget,
+      payloadFlow_wrapNest_eq] using
+      synchronized_cycle_realized i ctx p
+
+/-- The explicit additive preserving measure as an abstract payload-flow measure. -/
+def AdditiveMeasure.toPayloadFlow (M : AdditiveMeasure (k := k)) (i : Fin (k + 1)) :
+    MutualDuplicationPayloadFlow.AdditiveMeasure (packetModel (k := k) i) where
+  eval := M.eval
+  w_empty := M.w_empty
+  w_wrap := M.w_wrap
+  w_recur := M.w_recur
+  eval_empty := M.eval_empty
+  eval_wrap := M.eval_wrap
+  eval_recur := M.eval_recur i
+  eval_packet := eval_syncPacket M i
+  h_wrap_pos := M.h_wrap_pos
+
+/-- The explicit affine preserving measure as an abstract payload-flow measure. -/
+def AffineMeasure.toPayloadFlow (M : AffineMeasure (k := k)) (i : Fin (k + 1)) :
+    MutualDuplicationPayloadFlow.AffineMeasure (packetModel (k := k) i) where
+  eval := M.eval
+  c_empty := M.c_empty
+  wrap_const := M.wrap_const
+  wrap_left := M.wrap_left
+  wrap_right := M.wrap_right
+  recur_const := M.recur_const
+  recur_ctx := M.recur_ctx
+  recur_packet := M.recur_packet
+  eval_empty := M.eval_empty
+  eval_wrap := M.eval_wrap
+  eval_recur := M.eval_recur i
+  eval_packet := eval_syncPacket_affine M i
+  h_wrap_left_pos := M.h_wrap_left_pos
+  h_wrap_right_pos := M.h_wrap_right_pos
+
+lemma toPayloadFlow_wrapRightIter (M : AffineMeasure (k := k)) (i : Fin (k + 1)) :
+    ∀ n,
+      (AffineMeasure.toPayloadFlow M i).wrapRightIter n =
+        OperatorKO7.MutualDuplicationPreservingKNode.SyncTerm.AffineMeasure.wrapRightIter M n
+  | 0 => by rfl
+  | n + 1 => by
+      rw [MutualDuplicationPayloadFlow.AffineMeasure.wrapRightIter,
+        OperatorKO7.MutualDuplicationPreservingKNode.SyncTerm.AffineMeasure.wrapRightIter,
+        toPayloadFlow_wrapRightIter M i n]
+      rfl
+
+lemma toPayloadFlow_wrapLeftIter (M : AffineMeasure (k := k)) (i : Fin (k + 1)) :
+    ∀ n,
+      (AffineMeasure.toPayloadFlow M i).wrapLeftIter n =
+        OperatorKO7.MutualDuplicationPreservingKNode.SyncTerm.AffineMeasure.wrapLeftIter M n
+  | 0 => by rfl
+  | n + 1 => by
+      rw [MutualDuplicationPayloadFlow.AffineMeasure.wrapLeftIter,
+        OperatorKO7.MutualDuplicationPreservingKNode.SyncTerm.AffineMeasure.wrapLeftIter,
+        toPayloadFlow_wrapLeftIter M i n, toPayloadFlow_wrapRightIter M i n]
+      rfl
+
+/-- The concrete packet-transparent measure as an abstract payload-flow transparent measure. -/
+def PacketTransparentMeasure.toPayloadFlow
+    (M :
+      OperatorKO7.MutualDuplicationPreservingTransparent.PreservingKNode.PacketTransparentMeasure
+        (k := k))
+    (i : Fin (k + 1)) :
+    MutualDuplicationPayloadFlow.TransparentMeasure (packetModel (k := k) i) where
+  eval := M.eval
+  c_empty := M.c_empty
+  c_wrap := M.c_wrap
+  c_recur := M.c_recur
+  eval_empty := M.eval_empty
+  eval_wrap := M.eval_wrap
+  eval_recur := M.eval_recur i
+  eval_packet :=
+    OperatorKO7.MutualDuplicationPreservingTransparent.PreservingKNode.eval_syncPacket_eq_empty M i
+  wrap_subterm2 := M.wrap_subterm2
+
+/-- The additive finite-cycle preserving barrier factors through the abstract payload-flow
+metatheorem. -/
+theorem no_global_orients_ctx_additive_via_payloadFlow
+    (M : AdditiveMeasure (k := k)) :
+    ¬ GlobalOrientsCtx M.eval := by
+  exact
+    MutualDuplicationPayloadFlow.no_global_orients_ctx_additive
+      (W := cycleWitness (k := k) (0 : Fin (k + 1)))
+      (A := AdditiveMeasure.toPayloadFlow M (0 : Fin (k + 1)))
+      (hcopies := by omega)
+
+/-- The affine finite-cycle preserving barrier also factors through the abstract
+payload-flow metatheorem. -/
+theorem no_global_orients_ctx_affine_of_wrapper_dominance_via_payloadFlow
+    (M : AffineMeasure (k := k))
+    (hdom : SyncTerm.WrapperDominance M)
+    (hunbounded : ∀ q : Nat, ∃ t : SyncTerm k, q ≤ M.eval t) :
+    ¬ GlobalOrientsCtx M.eval := by
+  exact
+    MutualDuplicationPayloadFlow.no_global_orients_ctx_affine_of_wrapper_dominance
+      (W := cycleWitness (k := k) (0 : Fin (k + 1)))
+      (A := AffineMeasure.toPayloadFlow M (0 : Fin (k + 1)))
+      (hdom := by
+        simpa [OperatorKO7.MutualDuplicationPayloadFlow.WrapperDominance,
+          SyncTerm.WrapperDominance, toPayloadFlow_wrapLeftIter M (0 : Fin (k + 1)) (k + 1)] using hdom)
+      (hunbounded := hunbounded)
+
+/-- The packet-transparent preserving barrier also factors through the abstract
+payload-flow metatheorem. -/
+theorem no_global_orients_ctx_packetTransparent_via_payloadFlow
+    (M :
+      OperatorKO7.MutualDuplicationPreservingTransparent.PreservingKNode.PacketTransparentMeasure
+        (k := k)) :
+    ¬ GlobalOrientsCtx M.eval := by
+  exact
+    MutualDuplicationPayloadFlow.no_global_orients_ctx_transparent
+      (W := cycleWitness (k := k) (0 : Fin (k + 1)))
+      (A := PacketTransparentMeasure.toPayloadFlow M (0 : Fin (k + 1)))
+      (hcopies := Nat.succ_pos _)
+
+/-- The projected packet-transparent preserving barrier also factors through the abstract
+payload-flow scalar-projection theorem. -/
+theorem no_global_orients_ctx_matrixFunctional_of_projected_packetTransparent_via_payloadFlow
+    {d : Nat} (μ : SyncTerm k → Fin d → Nat) (weight : Fin d → Nat)
+    (hsupport : ∃ i : Fin d, 1 ≤ weight i)
+    (M :
+      OperatorKO7.MutualDuplicationPreservingTransparent.PreservingKNode.PacketTransparentMeasure
+        (k := k))
+    (hπ :
+      ∀ t : SyncTerm k,
+        OperatorKO7.StepDuplicating.StepDuplicatingSchema.weightedSum weight (μ t) = M.eval t) :
+    ¬ DependencyPairsFragment.GlobalOrients
+        StepCtx μ (fun u v => OperatorKO7.StepDuplicating.StepDuplicatingSchema.VecLt u v) := by
+  exact
+    MutualDuplicationPayloadFlow.no_global_orients_ctx_of_scalar_projection_transparent
+      (W := cycleWitness (k := k) (0 : Fin (k + 1)))
+      (μ := μ)
+      (R := fun u v => OperatorKO7.StepDuplicating.StepDuplicatingSchema.VecLt u v)
+      (π := fun v => OperatorKO7.StepDuplicating.StepDuplicatingSchema.weightedSum weight v)
+      (hproj := fun h =>
+        OperatorKO7.StepDuplicating.StepDuplicatingSchema.weightedSum_lt_of_vecLt
+          hsupport h)
+      (A := PacketTransparentMeasure.toPayloadFlow M (0 : Fin (k + 1)))
+      (hπ := hπ)
+      (hcopies := Nat.succ_pos _)
+
+end SyncTerm
+
+end OperatorKO7.MutualDuplicationPreservingAbstract
+```
+
+---
+
+## OperatorKO7/Meta/MutualDuplication_Preserving_KNode.lean
+
+**Lines:** 465
+
+```lean
+import Mathlib
+import OperatorKO7.Meta.DependencyPairs_Fragment
+
+/-!
+# Finite k-Node Multiplicity-Preserving Synchronized SCCs
+
+This module generalizes the preserving synchronized SCC barrier from the two-node
+worked construction to a finite cyclic `k + 1`-node family.
+
+The mechanism is intentionally explicit. A recursor at node `i` carries a packet of
+latent payload channels tagged by the cycle index. One root step exposes the current
+payload under a visible wrapper and forwards the remaining latent packet to node
+`i + 1`. Payload multiplicity is preserved exactly at every step.
+
+The file proves the additive branch and a conditional affine extension under a
+generalized wrapper-dominance hypothesis.
+-/
+
+namespace OperatorKO7.MutualDuplicationPreservingKNode
+
+open OperatorKO7.DependencyPairsFragment
+
+/-- Syntax for a finite cyclic preserving SCC with explicit latent packets. -/
+inductive SyncTerm (k : Nat) : Type
+| base : SyncTerm k
+| payload : SyncTerm k
+| empty : SyncTerm k
+| slot : Fin (k + 1) → SyncTerm k → SyncTerm k
+| cons : SyncTerm k → SyncTerm k → SyncTerm k
+| wrap : SyncTerm k → SyncTerm k → SyncTerm k
+| recur : Fin (k + 1) → SyncTerm k → SyncTerm k → SyncTerm k
+deriving DecidableEq, Repr
+
+namespace SyncTerm
+
+variable {k : Nat}
+
+open SyncTerm
+
+/-- Advance the cycle index modulo `k + 1`. -/
+def advance (i : Fin (k + 1)) (n : Nat) : Fin (k + 1) where
+  val := (i.1 + n) % (k + 1)
+  isLt := Nat.mod_lt _ (Nat.succ_pos _)
+
+lemma advance_zero (i : Fin (k + 1)) : advance i 0 = i := by
+  ext
+  simp [advance]
+
+lemma advance_add (i : Fin (k + 1)) (m n : Nat) :
+    advance (advance i m) n = advance i (m + n) := by
+  ext
+  simp [advance, Nat.add_assoc, Nat.mod_add_mod]
+
+lemma advance_cycleLen (i : Fin (k + 1)) : advance i (k + 1) = i := by
+  ext
+  simp [advance]
+
+/-- Repeatedly wrap the same payload on the left. -/
+def wrapNest (p : SyncTerm k) : Nat → SyncTerm k → SyncTerm k
+  | 0, t => t
+  | n + 1, t => wrapNest p n (wrap p t)
+
+/-- Synchronized latent packet of length `n`, starting at node `i`. -/
+def syncPacket (i : Fin (k + 1)) : Nat → SyncTerm k → SyncTerm k
+  | 0, _ => empty
+  | n + 1, p => cons (slot i p) (syncPacket (advance i 1) n p)
+
+/-- Synchronized source for one full cycle starting at node `i`. -/
+def syncSource (i : Fin (k + 1)) (ctx payloadTerm : SyncTerm k) : SyncTerm k :=
+  recur i ctx (syncPacket i (k + 1) payloadTerm)
+
+/-- Composite target after one full synchronized cycle. -/
+def syncTarget (i : Fin (k + 1)) (ctx payloadTerm : SyncTerm k) : SyncTerm k :=
+  wrapNest payloadTerm (k + 1) (recur i ctx empty)
+
+/-- Count the tracked payload multiplicity. -/
+@[simp] def payloadCount : SyncTerm k → Nat
+  | base => 0
+  | payload => 1
+  | empty => 0
+  | slot _ t => payloadCount t
+  | cons x xs => payloadCount x + payloadCount xs
+  | wrap x y => payloadCount x + payloadCount y
+  | recur _ _ packet => payloadCount packet
+
+/-- Count payload that has become visible as a wrapper-left argument. -/
+@[simp] def visiblePayloadCount : SyncTerm k → Nat
+  | wrap x y => payloadCount x + visiblePayloadCount y
+  | _ => 0
+
+lemma payloadCount_syncPacket (i : Fin (k + 1)) :
+    ∀ n, ∀ p : SyncTerm k, payloadCount (syncPacket i n p) = n * payloadCount p
+  | 0, p => by simp [syncPacket]
+  | n + 1, p => by
+      simp [syncPacket, payloadCount_syncPacket (advance i 1) n p]
+      ring
+
+lemma visible_syncSource (i : Fin (k + 1)) (ctx payloadTerm : SyncTerm k) :
+    visiblePayloadCount (syncSource i ctx payloadTerm) = 0 := by
+  simp [syncSource]
+
+lemma visible_wrapNest (p : SyncTerm k) :
+    ∀ n t, visiblePayloadCount (wrapNest p n t) = n * payloadCount p + visiblePayloadCount t
+  | 0, t => by simp [wrapNest]
+  | n + 1, t => by
+      simp [wrapNest, visible_wrapNest p n (wrap p t)]
+      ring
+
+lemma visible_syncTarget (i : Fin (k + 1)) (ctx payloadTerm : SyncTerm k) :
+    visiblePayloadCount (syncTarget i ctx payloadTerm) = (k + 1) * payloadCount payloadTerm := by
+  simp [syncTarget, visible_wrapNest]
+
+theorem synchronized_cycle_exposes_payload (i : Fin (k + 1)) (ctx payloadTerm : SyncTerm k)
+    (hpayload : 0 < payloadCount payloadTerm) :
+    visiblePayloadCount (syncSource i ctx payloadTerm) <
+      visiblePayloadCount (syncTarget i ctx payloadTerm) := by
+  rw [visible_syncSource, visible_syncTarget]
+  have hnodes : 0 < k + 1 := Nat.succ_pos _
+  exact Nat.mul_pos hnodes hpayload
+
+/-- Root rules of the preserving SCC. One step exposes the current latent channel and
+forwards the remaining synchronized packet to the next node. -/
+inductive Step : SyncTerm k → SyncTerm k → Prop
+| expose :
+    ∀ (i : Fin (k + 1)) ctx p rest,
+      Step (recur i ctx (cons (slot i p) rest)) (wrap p (recur (advance i 1) ctx rest))
+
+/-- Minimal context closure needed to realize one full SCC cycle. -/
+inductive StepCtx : SyncTerm k → SyncTerm k → Prop
+| root : ∀ {a b}, Step a b → StepCtx a b
+| wrap_right : ∀ s {a b}, StepCtx a b → StepCtx (wrap s a) (wrap s b)
+
+/-- Orientation of the induced SCC context relation. -/
+def GlobalOrientsCtx (m : SyncTerm k → Nat) : Prop :=
+  ∀ {a b : SyncTerm k}, StepCtx a b → m b < m a
+
+theorem step_preserves_payloadCount :
+    ∀ {a b : SyncTerm k}, Step a b → payloadCount a = payloadCount b := by
+  intro a b h
+  cases h
+  simp [payloadCount]
+
+theorem stepCtx_preserves_payloadCount :
+    ∀ {a b : SyncTerm k}, StepCtx a b → payloadCount a = payloadCount b := by
+  intro a b h
+  induction h with
+  | root hstep =>
+      exact step_preserves_payloadCount hstep
+  | wrap_right s h ih =>
+      simp [ih]
+
+lemma StepCtx.wrapNest_right (p : SyncTerm k) :
+    ∀ n {a b : SyncTerm k}, StepCtx a b → StepCtx (wrapNest p n a) (wrapNest p n b)
+  | 0, a, b, h => h
+  | n + 1, a, b, h => by
+      simpa [wrapNest] using
+        StepCtx.wrapNest_right p n (StepCtx.wrap_right p h)
+
+/-- Residual phase after `r` synchronized exposures. -/
+def phase (i : Fin (k + 1)) (ctx payloadTerm : SyncTerm k) (r : Nat) : SyncTerm k :=
+  wrapNest payloadTerm r
+    (recur (advance i r) ctx (syncPacket (advance i r) ((k + 1) - r) payloadTerm))
+
+lemma phase_step (i : Fin (k + 1)) (ctx payloadTerm : SyncTerm k) {r : Nat}
+    (hr : r < k + 1) :
+    StepCtx (phase i ctx payloadTerm r) (phase i ctx payloadTerm (r + 1)) := by
+  have hroot :
+      StepCtx
+        (recur (advance i r) ctx
+          (cons (slot (advance i r) payloadTerm)
+            (syncPacket (advance (advance i r) 1) (((k + 1) - r) - 1) payloadTerm)))
+        (wrap payloadTerm
+          (recur (advance (advance i r) 1) ctx
+            (syncPacket (advance (advance i r) 1) (((k + 1) - r) - 1) payloadTerm))) := by
+    exact StepCtx.root (Step.expose (advance i r) ctx payloadTerm
+      (syncPacket (advance (advance i r) 1) (((k + 1) - r) - 1) payloadTerm))
+  have hlift := StepCtx.wrapNest_right payloadTerm r hroot
+  have hcount : (k + 1) - r = Nat.succ (((k + 1) - r) - 1) := by
+    omega
+  have hnext : advance (advance i r) 1 = advance i (r + 1) := by
+    simpa [Nat.add_assoc] using advance_add i r 1
+  have htail : ((k + 1) - r) - 1 = (k + 1) - (r + 1) := by
+    omega
+  change
+    StepCtx
+      (wrapNest payloadTerm r
+        (recur (advance i r) ctx
+          (syncPacket (advance i r) ((k + 1) - r) payloadTerm)))
+      (phase i ctx payloadTerm (r + 1))
+  rw [hcount, syncPacket]
+  simpa [phase, wrapNest, hnext, htail] using hlift
+
+theorem synchronized_cycle_realized (i : Fin (k + 1)) (ctx payloadTerm : SyncTerm k) :
+    Relation.TransGen StepCtx (syncSource i ctx payloadTerm) (syncTarget i ctx payloadTerm) := by
+  have hpath :
+      ∀ m, m ≤ k →
+        Relation.TransGen StepCtx (phase i ctx payloadTerm 0) (phase i ctx payloadTerm (m + 1)) := by
+    intro m hm
+    induction m with
+    | zero =>
+        exact Relation.TransGen.single (phase_step i ctx payloadTerm (r := 0) (by omega))
+    | succ m ih =>
+        have hprefix :
+            Relation.TransGen StepCtx (phase i ctx payloadTerm 0) (phase i ctx payloadTerm (m + 1)) := by
+          exact ih (by omega)
+        have hstep : StepCtx (phase i ctx payloadTerm (m + 1)) (phase i ctx payloadTerm (m + 2)) := by
+          exact phase_step i ctx payloadTerm (r := m + 1) (by omega)
+        exact Relation.TransGen.trans hprefix (Relation.TransGen.single hstep)
+  simpa [syncSource, syncTarget, phase, advance_zero, advance_cycleLen] using
+    hpath k (Nat.le_refl _)
+
+/-- Additive direct measures on the preserving SCC syntax. Slots are transparent and the
+packet constructor is pure aggregation. -/
+structure AdditiveMeasure where
+  eval : SyncTerm k → Nat
+  w_base : Nat
+  w_payload : Nat
+  w_empty : Nat
+  w_wrap : Nat
+  w_recur : Nat
+  eval_base : eval base = w_base
+  eval_payload : eval payload = w_payload
+  eval_empty : eval empty = w_empty
+  eval_slot : ∀ i t, eval (slot i t) = eval t
+  eval_cons : ∀ x xs, eval (cons x xs) = eval x + eval xs
+  eval_wrap : ∀ x y, eval (wrap x y) = w_wrap + eval x + eval y
+  eval_recur : ∀ i ctx packet, eval (recur i ctx packet) = w_recur + eval ctx + eval packet
+  h_wrap_pos : 1 ≤ w_wrap
+
+lemma eval_syncPacket (M : AdditiveMeasure (k := k)) (i : Fin (k + 1)) :
+    ∀ n, ∀ p : SyncTerm k, M.eval (syncPacket i n p) = n * M.eval p + M.w_empty
+  | 0, p => by simp [syncPacket, M.eval_empty]
+  | n + 1, p => by
+      rw [syncPacket, M.eval_cons, M.eval_slot, eval_syncPacket M (advance i 1) n p]
+      ring
+
+lemma eval_wrapNest (M : AdditiveMeasure (k := k)) (p : SyncTerm k) :
+    ∀ n t, M.eval (wrapNest p n t) = n * M.w_wrap + n * M.eval p + M.eval t
+  | 0, t => by simp [wrapNest]
+  | n + 1, t => by
+      rw [wrapNest, eval_wrapNest M p n (wrap p t), M.eval_wrap]
+      ring
+
+theorem syncTarget_eval_gt (M : AdditiveMeasure (k := k)) (i : Fin (k + 1))
+    (ctx payloadTerm : SyncTerm k) :
+    M.eval (syncSource i ctx payloadTerm) < M.eval (syncTarget i ctx payloadTerm) := by
+  have hsrc :
+      M.eval (syncSource i ctx payloadTerm) =
+        M.w_recur + M.eval ctx + ((k + 1) * M.eval payloadTerm + M.w_empty) := by
+    simp [syncSource, M.eval_recur, eval_syncPacket]
+  have htgt :
+      M.eval (syncTarget i ctx payloadTerm) =
+        (k + 1) * M.w_wrap + (k + 1) * M.eval payloadTerm +
+          (M.w_recur + M.eval ctx + M.w_empty) := by
+    simp [syncTarget, eval_wrapNest, M.eval_recur, M.eval_empty]
+  rw [hsrc, htgt]
+  have hnodes : 1 ≤ k + 1 := by omega
+  have hwrap : 1 ≤ (k + 1) * M.w_wrap := by
+    exact Nat.mul_le_mul hnodes M.h_wrap_pos
+  omega
+
+theorem no_additive_orients_synchronized_cycle (M : AdditiveMeasure (k := k)) :
+    ¬ (∀ (i : Fin (k + 1)) (ctx payloadTerm : SyncTerm k),
+      M.eval (syncTarget i ctx payloadTerm) < M.eval (syncSource i ctx payloadTerm)) := by
+  intro h
+  have hspec := h (0 : Fin (k + 1)) base payload
+  have hgt := syncTarget_eval_gt M (0 : Fin (k + 1)) base payload
+  exact Nat.lt_asymm hspec hgt
+
+theorem no_global_orients_ctx_additive (M : AdditiveMeasure (k := k)) :
+    ¬ GlobalOrientsCtx M.eval := by
+  intro h
+  have horient : DependencyPairsFragment.GlobalOrients StepCtx M.eval (· < ·) := by
+    intro a b hstep
+    exact h hstep
+  have hpath :
+      Relation.TransGen StepCtx
+        (syncSource (0 : Fin (k + 1)) base payload)
+        (syncTarget (0 : Fin (k + 1)) base payload) :=
+    synchronized_cycle_realized (0 : Fin (k + 1)) base payload
+  have hcomp :
+      M.eval (syncTarget (0 : Fin (k + 1)) base payload) <
+        M.eval (syncSource (0 : Fin (k + 1)) base payload) := by
+    exact DependencyPairsFragment.transGen_drop (R := StepCtx) (m := M.eval) horient hpath
+  have hgt :
+      M.eval (syncSource (0 : Fin (k + 1)) base payload) <
+        M.eval (syncTarget (0 : Fin (k + 1)) base payload) := by
+    exact syncTarget_eval_gt M (0 : Fin (k + 1)) base payload
+  exact Nat.lt_asymm hcomp hgt
+
+/-! ## Conditional affine extension -/
+
+/-- Affine constructor-local measures on the preserving finite-cycle syntax.
+
+The packet constructors remain additive/transparent bookkeeping, while `wrap` and
+`recur` carry the scaling coefficients.
+-/
+structure AffineMeasure where
+  eval : SyncTerm k → Nat
+  c_base : Nat
+  c_payload : Nat
+  c_empty : Nat
+  wrap_const : Nat
+  wrap_left : Nat
+  wrap_right : Nat
+  recur_const : Nat
+  recur_ctx : Nat
+  recur_packet : Nat
+  eval_base : eval base = c_base
+  eval_payload : eval payload = c_payload
+  eval_empty : eval empty = c_empty
+  eval_slot : ∀ i t, eval (slot i t) = eval t
+  eval_cons : ∀ x xs, eval (cons x xs) = eval x + eval xs
+  eval_wrap : ∀ x y, eval (wrap x y) = wrap_const + wrap_left * eval x + wrap_right * eval y
+  eval_recur :
+    ∀ i ctx packet,
+      eval (recur i ctx packet) = recur_const + recur_ctx * eval ctx + recur_packet * eval packet
+  h_wrap_left_pos : 1 ≤ wrap_left
+  h_wrap_right_pos : 1 ≤ wrap_right
+
+def AffineMeasure.wrapRightIter (M : AffineMeasure (k := k)) : Nat → Nat
+  | 0 => 1
+  | n + 1 => M.wrapRightIter n * M.wrap_right
+
+def AffineMeasure.wrapConstIter (M : AffineMeasure (k := k)) : Nat → Nat
+  | 0 => 0
+  | n + 1 => M.wrapConstIter n + M.wrapRightIter n * M.wrap_const
+
+def AffineMeasure.wrapLeftIter (M : AffineMeasure (k := k)) : Nat → Nat
+  | 0 => 0
+  | n + 1 => M.wrapLeftIter n + M.wrapRightIter n * M.wrap_left
+
+lemma eval_syncPacket_affine (M : AffineMeasure (k := k)) (i : Fin (k + 1)) :
+    ∀ n, ∀ p : SyncTerm k, M.eval (syncPacket i n p) = n * M.eval p + M.c_empty
+  | 0, p => by simp [syncPacket, M.eval_empty]
+  | n + 1, p => by
+      rw [syncPacket, M.eval_cons, M.eval_slot, eval_syncPacket_affine M (advance i 1) n p]
+      ring
+
+lemma eval_wrapNest_affine (M : AffineMeasure (k := k)) (p : SyncTerm k) :
+    ∀ n t,
+      M.eval (wrapNest p n t) =
+        M.wrapConstIter n + M.wrapLeftIter n * M.eval p + M.wrapRightIter n * M.eval t
+  | 0, t => by
+      simp [wrapNest, AffineMeasure.wrapConstIter, AffineMeasure.wrapLeftIter,
+        AffineMeasure.wrapRightIter]
+  | n + 1, t => by
+      rw [wrapNest, eval_wrapNest_affine M p n (wrap p t), M.eval_wrap]
+      simp [AffineMeasure.wrapConstIter, AffineMeasure.wrapLeftIter, AffineMeasure.wrapRightIter,
+        Nat.mul_add, Nat.add_mul]
+      ring
+
+lemma wrapRightIter_pos (M : AffineMeasure (k := k)) : ∀ n, 1 ≤ M.wrapRightIter n
+  | 0 => by simp [AffineMeasure.wrapRightIter]
+  | n + 1 => by
+      simp [AffineMeasure.wrapRightIter]
+      exact Nat.mul_le_mul (wrapRightIter_pos M n) M.h_wrap_right_pos
+
+lemma wrapLeftIter_pos (M : AffineMeasure (k := k)) :
+    ∀ n, 0 < n → 1 ≤ M.wrapLeftIter n
+  | 0, h => by cases Nat.not_lt_zero _ h
+  | n + 1, _ => by
+      have hterm : 1 ≤ M.wrapRightIter n * M.wrap_left := by
+        exact Nat.mul_le_mul (wrapRightIter_pos M n) M.h_wrap_left_pos
+      have hsum : 1 ≤ M.wrapLeftIter n + M.wrapRightIter n * M.wrap_left := by
+        exact le_trans hterm (Nat.le_add_left _ _)
+      simpa [AffineMeasure.wrapLeftIter] using hsum
+
+def WrapperDominance (M : AffineMeasure (k := k)) : Prop :=
+  (k + 1) * M.recur_packet < M.wrapLeftIter (k + 1)
+
+theorem syncTarget_affine_eval_gt_of_wrapper_dominance
+    (M : AffineMeasure (k := k)) (i : Fin (k + 1))
+    (hdom : WrapperDominance M)
+    (hunbounded : ∀ q : Nat, ∃ t : SyncTerm k, q ≤ M.eval t)
+    (ctx : SyncTerm k) :
+    ∃ payloadTerm,
+      M.eval (syncSource i ctx payloadTerm) < M.eval (syncTarget i ctx payloadTerm) := by
+  obtain ⟨payloadTerm, hpayload⟩ := hunbounded 1
+  refine ⟨payloadTerm, ?_⟩
+  have hsrc :
+      M.eval (syncSource i ctx payloadTerm) =
+        M.recur_const + M.recur_ctx * M.eval ctx +
+          M.recur_packet * ((k + 1) * M.eval payloadTerm + M.c_empty) := by
+    simp [syncSource, M.eval_recur, eval_syncPacket_affine]
+  have htgt :
+      M.eval (syncTarget i ctx payloadTerm) =
+        M.wrapConstIter (k + 1) + M.wrapLeftIter (k + 1) * M.eval payloadTerm +
+          M.wrapRightIter (k + 1) *
+            (M.recur_const + M.recur_ctx * M.eval ctx + M.recur_packet * M.c_empty) := by
+    simp [syncTarget, eval_wrapNest_affine, M.eval_recur, M.eval_empty]
+  rw [hsrc, htgt]
+  unfold WrapperDominance at hdom
+  have hcoeff : (k + 1) * M.recur_packet + 1 ≤ M.wrapLeftIter (k + 1) := by
+    omega
+  have hmul :
+      ((k + 1) * M.recur_packet + 1) * M.eval payloadTerm ≤
+        M.wrapLeftIter (k + 1) * M.eval payloadTerm := by
+    exact Nat.mul_le_mul_right (M.eval payloadTerm) hcoeff
+  have hpayloadPos : 1 ≤ M.eval payloadTerm := hpayload
+  have hsrc_lt :
+      M.recur_packet * ((k + 1) * M.eval payloadTerm + M.c_empty) <
+        ((k + 1) * M.recur_packet + 1) * M.eval payloadTerm + M.recur_packet * M.c_empty := by
+    have : ((k + 1) * M.recur_packet + 1) * M.eval payloadTerm + M.recur_packet * M.c_empty =
+        M.recur_packet * ((k + 1) * M.eval payloadTerm + M.c_empty) + M.eval payloadTerm := by
+      ring
+    rw [this]
+    exact Nat.lt_add_of_pos_right hpayloadPos
+  have hconst :
+      M.recur_const + M.recur_ctx * M.eval ctx + M.recur_packet * M.c_empty ≤
+        M.wrapConstIter (k + 1) + M.wrapRightIter (k + 1) *
+          (M.recur_const + M.recur_ctx * M.eval ctx + M.recur_packet * M.c_empty) := by
+    have hpow : 1 ≤ M.wrapRightIter (k + 1) := wrapRightIter_pos M (k + 1)
+    have hmul' :
+        M.recur_const + M.recur_ctx * M.eval ctx + M.recur_packet * M.c_empty ≤
+          M.wrapRightIter (k + 1) *
+            (M.recur_const + M.recur_ctx * M.eval ctx + M.recur_packet * M.c_empty) := by
+      calc
+        M.recur_const + M.recur_ctx * M.eval ctx + M.recur_packet * M.c_empty
+            = 1 * (M.recur_const + M.recur_ctx * M.eval ctx + M.recur_packet * M.c_empty) := by ring
+        _ ≤ M.wrapRightIter (k + 1) *
+              (M.recur_const + M.recur_ctx * M.eval ctx + M.recur_packet * M.c_empty) := by
+              exact Nat.mul_le_mul_right _ hpow
+    exact le_trans hmul' (Nat.le_add_left _ _)
+  omega
+
+theorem no_affine_orients_synchronized_cycle_of_wrapper_dominance
+    (M : AffineMeasure (k := k))
+    (hdom : WrapperDominance M)
+    (hunbounded : ∀ q : Nat, ∃ t : SyncTerm k, q ≤ M.eval t) :
+    ¬ (∀ (i : Fin (k + 1)) (ctx payloadTerm : SyncTerm k),
+      M.eval (syncTarget i ctx payloadTerm) < M.eval (syncSource i ctx payloadTerm)) := by
+  intro h
+  obtain ⟨payloadTerm, hgt⟩ :=
+    syncTarget_affine_eval_gt_of_wrapper_dominance
+      M (0 : Fin (k + 1)) hdom hunbounded base
+  have hspec := h (0 : Fin (k + 1)) base payloadTerm
+  exact Nat.lt_asymm hspec hgt
+
+theorem no_global_orients_ctx_affine_of_wrapper_dominance
+    (M : AffineMeasure (k := k))
+    (hdom : WrapperDominance M)
+    (hunbounded : ∀ q : Nat, ∃ t : SyncTerm k, q ≤ M.eval t) :
+    ¬ GlobalOrientsCtx M.eval := by
+  intro h
+  obtain ⟨payloadTerm, hgt⟩ :=
+    syncTarget_affine_eval_gt_of_wrapper_dominance
+      M (0 : Fin (k + 1)) hdom hunbounded base
+  have horient : DependencyPairsFragment.GlobalOrients StepCtx M.eval (· < ·) := by
+    intro a b hstep
+    exact h hstep
+  have hpath :
+      Relation.TransGen StepCtx
+        (syncSource (0 : Fin (k + 1)) base payloadTerm)
+        (syncTarget (0 : Fin (k + 1)) base payloadTerm) :=
+    synchronized_cycle_realized (0 : Fin (k + 1)) base payloadTerm
+  have hcomp :
+      M.eval (syncTarget (0 : Fin (k + 1)) base payloadTerm) <
+        M.eval (syncSource (0 : Fin (k + 1)) base payloadTerm) := by
+    exact DependencyPairsFragment.transGen_drop (R := StepCtx) (m := M.eval) horient hpath
+  exact Nat.lt_asymm hcomp hgt
+
+end SyncTerm
+
+end OperatorKO7.MutualDuplicationPreservingKNode
+```
+
+---
+
+## OperatorKO7/Meta/MutualDuplication_Preserving_Transparent.lean
+
+**Lines:** 152
+
+```lean
+import OperatorKO7.Meta.MutualDuplication_Preserving_KNode
+import OperatorKO7.Meta.MatrixBarrierFunctional
+
+/-!
+# Packet-Transparent Preserving SCC Extension
+
+This module adds a narrow Tier-2 style corollary for the finite synchronized-packet
+preserving SCCs. The latent packet constructors are treated as evaluation-transparent
+bookkeeping, so one full synchronized cycle is still blocked by the visible wrapper
+exposure.
+-/
+
+namespace OperatorKO7.MutualDuplicationPreservingTransparent
+
+open OperatorKO7.DependencyPairsFragment
+
+namespace PreservingKNode
+
+variable {k : Nat}
+
+/-- Local alias for the preserving finite-cycle syntax. -/
+abbrev KTerm (k : Nat) := OperatorKO7.MutualDuplicationPreservingKNode.SyncTerm k
+
+open OperatorKO7.MutualDuplicationPreservingKNode.SyncTerm
+  (base payload empty slot cons wrap recur advance syncPacket syncSource syncTarget wrapNest
+   synchronized_cycle_realized StepCtx GlobalOrientsCtx)
+
+/-- Transparent compositional measures that ignore the packet bookkeeping layer. -/
+structure PacketTransparentMeasure where
+  eval : KTerm k → Nat
+  c_base : Nat
+  c_payload : Nat
+  c_empty : Nat
+  c_wrap : Nat → Nat → Nat
+  c_recur : Nat → Nat → Nat
+  eval_base : eval base = c_base
+  eval_payload : eval payload = c_payload
+  eval_empty : eval empty = c_empty
+  eval_slot : ∀ i t, eval (slot i t) = eval t
+  eval_cons : ∀ x xs, eval (cons x xs) = eval xs
+  eval_wrap : ∀ x y, eval (wrap x y) = c_wrap (eval x) (eval y)
+  eval_recur : ∀ i ctx packet, eval (recur i ctx packet) = c_recur (eval ctx) (eval packet)
+  wrap_subterm2 : ∀ x y, c_wrap x y > y
+
+lemma eval_syncPacket_eq_empty (CM : PacketTransparentMeasure (k := k)) (i : Fin (k + 1)) :
+    ∀ n, ∀ p : KTerm k, CM.eval (syncPacket i n p) = CM.c_empty
+  | 0, p => by simp [syncPacket, CM.eval_empty]
+  | n + 1, p => by
+      rw [syncPacket, CM.eval_cons, eval_syncPacket_eq_empty CM (advance i 1) n p]
+
+lemma syncSource_eval_eq_empty_packet (CM : PacketTransparentMeasure (k := k))
+    (i : Fin (k + 1)) (ctx payloadTerm : KTerm k) :
+    CM.eval (syncSource i ctx payloadTerm) = CM.c_recur (CM.eval ctx) CM.c_empty := by
+  rw [syncSource, CM.eval_recur, eval_syncPacket_eq_empty CM i (k + 1) payloadTerm]
+
+lemma wrapNest_strict_mono_right (CM : PacketTransparentMeasure (k := k)) (p : KTerm k) :
+    ∀ n t, 0 < n → CM.eval t < CM.eval (wrapNest p n t)
+  | 0, t, h => by
+      cases Nat.not_lt_zero _ h
+  | 1, t, _ => by
+      simpa [wrapNest, CM.eval_wrap] using
+        CM.wrap_subterm2 (CM.eval p) (CM.eval t)
+  | n + 2, t, _ => by
+      have hbase : CM.eval t < CM.eval (wrap p t) := by
+        rw [CM.eval_wrap]
+        exact CM.wrap_subterm2 (CM.eval p) (CM.eval t)
+      have htail :
+          CM.eval (wrap p t) < CM.eval (wrapNest p (n + 1) (wrap p t)) := by
+        exact wrapNest_strict_mono_right CM p (n + 1) (wrap p t) (Nat.succ_pos _)
+      rw [wrapNest]
+      exact Nat.lt_trans hbase htail
+
+theorem syncTarget_eval_gt_packetTransparent (CM : PacketTransparentMeasure (k := k))
+    (i : Fin (k + 1)) (ctx payloadTerm : KTerm k) :
+    CM.eval (syncSource i ctx payloadTerm) < CM.eval (syncTarget i ctx payloadTerm) := by
+  rw [syncTarget]
+  rw [syncSource_eval_eq_empty_packet CM i ctx payloadTerm]
+  have hwrap :
+      CM.eval (recur i ctx empty) < CM.eval (wrapNest payloadTerm (k + 1) (recur i ctx empty)) := by
+    exact wrapNest_strict_mono_right CM payloadTerm (k + 1) (recur i ctx empty) (Nat.succ_pos _)
+  simpa [CM.eval_recur, CM.eval_empty] using hwrap
+
+theorem no_compositional_orients_synchronized_cycle_packetTransparent
+    (CM : PacketTransparentMeasure (k := k)) :
+    ¬ (∀ (i : Fin (k + 1)) (ctx payloadTerm : KTerm k),
+      CM.eval (syncTarget i ctx payloadTerm) < CM.eval (syncSource i ctx payloadTerm)) := by
+  intro h
+  have hspec := h (0 : Fin (k + 1)) base payload
+  have hgt := syncTarget_eval_gt_packetTransparent CM (0 : Fin (k + 1)) base payload
+  exact Nat.lt_asymm hspec hgt
+
+theorem no_global_orients_ctx_packetTransparent
+    (CM : PacketTransparentMeasure (k := k)) :
+    ¬ GlobalOrientsCtx (k := k) CM.eval := by
+  intro h
+  have horient :
+      DependencyPairsFragment.GlobalOrients StepCtx CM.eval (· < ·) := by
+    intro a b hstep
+    exact h hstep
+  have hpath :
+      Relation.TransGen StepCtx
+        (syncSource (0 : Fin (k + 1)) base payload)
+        (syncTarget (0 : Fin (k + 1)) base payload) :=
+    synchronized_cycle_realized (0 : Fin (k + 1)) base payload
+  have hcomp :
+      CM.eval (syncTarget (0 : Fin (k + 1)) base payload) <
+        CM.eval (syncSource (0 : Fin (k + 1)) base payload) := by
+    exact DependencyPairsFragment.transGen_drop (R := StepCtx) (m := CM.eval) horient hpath
+  have hgt :
+      CM.eval (syncSource (0 : Fin (k + 1)) base payload) <
+        CM.eval (syncTarget (0 : Fin (k + 1)) base payload) := by
+    exact syncTarget_eval_gt_packetTransparent CM (0 : Fin (k + 1)) base payload
+  exact Nat.lt_asymm hcomp hgt
+
+/-- Generic scalar-projection lift for the packet-transparent preserving SCC barrier. -/
+theorem no_global_orients_ctx_of_scalar_projection
+    {α : Type} (μ : KTerm k → α) (R : α → α → Prop) (π : α → Nat)
+    (hproj : ∀ {u v : α}, R u v → π u < π v)
+    (CM : PacketTransparentMeasure (k := k))
+    (hπ : ∀ t : KTerm k, π (μ t) = CM.eval t) :
+    ¬ DependencyPairsFragment.GlobalOrients StepCtx μ R := by
+  intro h
+  have hscalar : GlobalOrientsCtx (k := k) CM.eval := by
+    intro a b hstep
+    have hlt : π (μ b) < π (μ a) := hproj (h hstep)
+    simpa [hπ a, hπ b] using hlt
+  exact no_global_orients_ctx_packetTransparent CM hscalar
+
+/-- Weighted componentwise matrix-style extension of the packet-transparent preserving SCC barrier. -/
+theorem no_global_orients_ctx_matrixFunctional_of_projected_packetTransparent
+    {d : Nat} (μ : KTerm k → Fin d → Nat) (weight : Fin d → Nat)
+    (hsupport : ∃ i : Fin d, 1 ≤ weight i)
+    (CM : PacketTransparentMeasure (k := k))
+    (hπ :
+      ∀ t : KTerm k,
+        OperatorKO7.StepDuplicating.StepDuplicatingSchema.weightedSum weight (μ t) = CM.eval t) :
+    ¬ DependencyPairsFragment.GlobalOrients
+        StepCtx μ (fun u v => OperatorKO7.StepDuplicating.StepDuplicatingSchema.VecLt u v) := by
+  exact
+    no_global_orients_ctx_of_scalar_projection
+      (μ := μ)
+      (R := fun u v => OperatorKO7.StepDuplicating.StepDuplicatingSchema.VecLt u v)
+      (π := fun v => OperatorKO7.StepDuplicating.StepDuplicatingSchema.weightedSum weight v)
+      (hproj := fun h =>
+        OperatorKO7.StepDuplicating.StepDuplicatingSchema.weightedSum_lt_of_vecLt
+          hsupport h)
+      (CM := CM)
+      (hπ := hπ)
+
+end PreservingKNode
+
+end OperatorKO7.MutualDuplicationPreservingTransparent
+```
+
+---
+
+## OperatorKO7/Meta/MutualDuplication_RelationalGraph.lean
+
+**Lines:** 603
+
+```lean
+import OperatorKO7.Meta.MutualDuplication_GraphCycle
+import OperatorKO7.Meta.MutualDuplication_PacketGraph
+import OperatorKO7.Meta.StepDuplicatingSchema
+import OperatorKO7.Meta.FiniteGraphSCC
+
+/-!
+# Relational Construction of Raw-Graph SCC Systems
+
+This module removes the last hand-written graph packaging layer for the SCC barrier story.
+Instead of first building a `GraphDupSystem` or `GraphPacketSystem` manually, a caller can
+start from a smaller relation-level presentation:
+
+- a node type and edge relation,
+- the shared constructor interface, and
+- a local edge-realization theorem for the delayed or preserving step pattern.
+
+From that smaller presentation we construct the raw-graph system automatically and then
+re-export the existing round-trip / finite-round-trip SCC barrier wrappers.
+-/
+
+namespace OperatorKO7.MutualDuplicationRelationalGraph
+
+open OperatorKO7.DependencyPairsFragment
+
+namespace Delayed
+
+open OperatorKO7.MutualDuplicationGraphCycle
+open OperatorKO7.FiniteGraphSCC
+
+/-- Minimal delayed-duplication presentation over an arbitrary relation `R`. -/
+structure Presentation (ι : Type) (R : ι → ι → Prop) where
+  T : Type
+  base : T
+  succ : T → T
+  wrap : T → T → T
+  recur : ι → T → T → T → T
+  Step : T → T → Prop
+  step_succ :
+    ∀ {i j}, R i j → ∀ b s n,
+      Step (recur i b s (succ n)) (wrap s (recur j b s n))
+
+namespace Presentation
+
+variable {ι : Type} {R : ι → ι → Prop} (P : Presentation ι R)
+
+/-- Automatically assembled raw-graph delayed-duplication system. -/
+def toGraphSystem : GraphDupSystem ι where
+  T := P.T
+  base := P.base
+  succ := P.succ
+  wrap := P.wrap
+  recur := P.recur
+  Edge := R
+  Step := P.Step
+  step_succ := P.step_succ
+
+instance instDecidableRelToGraphSystem [DecidableRel R] : DecidableRel P.toGraphSystem.Edge := by
+  simpa [Presentation.toGraphSystem]
+
+abbrev GlobalOrientsCtx {α : Type} (m : P.T → α) (lt : α → α → Prop) : Prop :=
+  GraphDupSystem.GlobalOrientsCtx P.toGraphSystem m lt
+
+abbrev AdditiveMeasure := GraphDupSystem.AdditiveMeasure P.toGraphSystem
+abbrev AffineMeasure := GraphDupSystem.AffineMeasure P.toGraphSystem
+abbrev CompositionalMeasure := GraphDupSystem.CompositionalMeasure P.toGraphSystem
+
+/-- Round-trip SCC wrapper for the additive delayed barrier from a relation-level presentation. -/
+theorem no_global_orients_ctx_additive_of_roundTrip
+    {i j : ι} (hij : Relation.TransGen R i j) (hji : Relation.TransGen R j i)
+    (M : P.AdditiveMeasure) :
+    ¬ P.GlobalOrientsCtx M.eval (· < ·) :=
+  GraphDupSystem.CyclePath.no_global_orients_ctx_additive_of_roundTrip
+    (Sys := P.toGraphSystem) hij hji M
+
+/-- Finite-round-trip SCC wrapper for the additive delayed barrier from a relation-level
+presentation. -/
+theorem no_global_orients_ctx_additive_of_finiteRoundTrip
+    [Fintype ι] [DecidableEq ι] [DecidableRel R]
+    {i j : ι}
+    (hij : FiniteGraphReachability.Reachable R i j)
+    (hji : FiniteGraphReachability.Reachable R j i) (hne : i ≠ j)
+    (M : P.AdditiveMeasure) :
+    ¬ P.GlobalOrientsCtx M.eval (· < ·) :=
+  GraphDupSystem.CyclePath.no_global_orients_ctx_additive_of_finiteRoundTrip
+    (Sys := P.toGraphSystem) hij hji hne M
+
+/-- Round-trip SCC wrapper for the affine delayed barrier from a relation-level presentation. -/
+theorem no_global_orients_ctx_affine_of_unbounded_of_roundTrip
+    {i j : ι} (hij : Relation.TransGen R i j) (hji : Relation.TransGen R j i)
+    (M : P.AffineMeasure)
+    (hunbounded :
+      let C := GraphDupSystem.ofRoundTrip (Sys := P.toGraphSystem) hij hji
+      OperatorKO7.StepDuplicating.StepDuplicatingSchema.HasUnboundedRange
+        (MutualDuplicationCycleFlow.AffineOps.toDupMeasure
+          (GraphDupSystem.AffineMeasure.toNodeMeasure M (C.node 0))
+          C.copies C.hcopies)) :
+    ¬ P.GlobalOrientsCtx M.eval (· < ·) :=
+  GraphDupSystem.CyclePath.no_global_orients_ctx_affine_of_unbounded_of_roundTrip
+    (Sys := P.toGraphSystem) hij hji M hunbounded
+
+/-- Finite-round-trip SCC wrapper for the affine delayed barrier from a relation-level
+presentation. -/
+theorem no_global_orients_ctx_affine_of_unbounded_of_finiteRoundTrip
+    [Fintype ι] [DecidableEq ι] [DecidableRel R]
+    {i j : ι}
+    (hij : FiniteGraphReachability.Reachable R i j)
+    (hji : FiniteGraphReachability.Reachable R j i) (hne : i ≠ j)
+    (M : P.AffineMeasure)
+    (hunbounded :
+      let hijT := FiniteGraphReachability.transGen_of_reachable_of_ne (R := R) hij hne
+      let hjiT := FiniteGraphReachability.transGen_of_reachable_of_ne (R := R) hji hne.symm
+      let C := GraphDupSystem.ofRoundTrip (Sys := P.toGraphSystem) hijT hjiT
+      OperatorKO7.StepDuplicating.StepDuplicatingSchema.HasUnboundedRange
+        (MutualDuplicationCycleFlow.AffineOps.toDupMeasure
+          (GraphDupSystem.AffineMeasure.toNodeMeasure M (C.node 0))
+          C.copies C.hcopies)) :
+    ¬ P.GlobalOrientsCtx M.eval (· < ·) :=
+  GraphDupSystem.CyclePath.no_global_orients_ctx_affine_of_unbounded_of_finiteRoundTrip
+    (Sys := P.toGraphSystem) hij hji hne M hunbounded
+
+/-- Round-trip SCC wrapper for the transparent delayed barrier from a relation-level
+presentation. -/
+theorem no_global_orients_ctx_compositional_transparent_of_roundTrip
+    {i j : ι} (hij : Relation.TransGen R i j) (hji : Relation.TransGen R j i)
+    (M : P.CompositionalMeasure)
+    (htrans : M.c_succ M.c_base = M.c_base) :
+    ¬ P.GlobalOrientsCtx M.eval (· < ·) :=
+  GraphDupSystem.CyclePath.no_global_orients_ctx_compositional_transparent_of_roundTrip
+    (Sys := P.toGraphSystem) hij hji M htrans
+
+/-- Finite-round-trip SCC wrapper for the transparent delayed barrier from a relation-level
+presentation. -/
+theorem no_global_orients_ctx_compositional_transparent_of_finiteRoundTrip
+    [Fintype ι] [DecidableEq ι] [DecidableRel R]
+    {i j : ι}
+    (hij : FiniteGraphReachability.Reachable R i j)
+    (hji : FiniteGraphReachability.Reachable R j i) (hne : i ≠ j)
+    (M : P.CompositionalMeasure)
+    (htrans : M.c_succ M.c_base = M.c_base) :
+    ¬ P.GlobalOrientsCtx M.eval (· < ·) :=
+  GraphDupSystem.CyclePath.no_global_orients_ctx_compositional_transparent_of_finiteRoundTrip
+    (Sys := P.toGraphSystem) hij hji hne M htrans
+
+/-- Round-trip scalar-projection wrapper for the delayed barrier from a relation-level
+presentation. -/
+theorem no_global_orients_ctx_of_scalar_projection_affine_of_unbounded_of_roundTrip
+    {i j : ι} (hij : Relation.TransGen R i j) (hji : Relation.TransGen R j i)
+    {α : Type} (μ : P.T → α) (Q : α → α → Prop) (π : α → Nat)
+    (hproj : ∀ {u v : α}, Q u v → π u < π v)
+    (A :
+      let C := GraphDupSystem.ofRoundTrip (Sys := P.toGraphSystem) hij hji
+      OperatorKO7.StepDuplicating.StepDuplicatingSchema.AffineMeasure
+        (MutualDuplicationCycleFlow.toDupSchema (P.toGraphSystem.toNodeSchema (C.node 0)) C.copies))
+    (hπ : ∀ t : P.T, π (μ t) = A.eval t)
+    (hunbounded : OperatorKO7.StepDuplicating.StepDuplicatingSchema.HasUnboundedRange A) :
+    ¬ DependencyPairsFragment.GlobalOrients (GraphDupSystem.StepCtx P.toGraphSystem) μ Q :=
+  GraphDupSystem.CyclePath.no_global_orients_ctx_of_scalar_projection_affine_of_unbounded_of_roundTrip
+    (Sys := P.toGraphSystem) hij hji μ Q π hproj A hπ hunbounded
+
+/-- Finite-round-trip scalar-projection wrapper for the delayed barrier from a relation-level
+presentation. -/
+theorem no_global_orients_ctx_of_scalar_projection_affine_of_unbounded_of_finiteRoundTrip
+    [Fintype ι] [DecidableEq ι] [DecidableRel R]
+    {i j : ι}
+    (hij : FiniteGraphReachability.Reachable R i j)
+    (hji : FiniteGraphReachability.Reachable R j i) (hne : i ≠ j)
+    {α : Type} (μ : P.T → α) (Q : α → α → Prop) (π : α → Nat)
+    (hproj : ∀ {u v : α}, Q u v → π u < π v)
+    (A :
+      let hijT := FiniteGraphReachability.transGen_of_reachable_of_ne (R := R) hij hne
+      let hjiT := FiniteGraphReachability.transGen_of_reachable_of_ne (R := R) hji hne.symm
+      let C := GraphDupSystem.ofRoundTrip (Sys := P.toGraphSystem) hijT hjiT
+      OperatorKO7.StepDuplicating.StepDuplicatingSchema.AffineMeasure
+        (MutualDuplicationCycleFlow.toDupSchema (P.toGraphSystem.toNodeSchema (C.node 0)) C.copies))
+    (hπ : ∀ t : P.T, π (μ t) = A.eval t)
+    (hunbounded : OperatorKO7.StepDuplicating.StepDuplicatingSchema.HasUnboundedRange A) :
+    ¬ DependencyPairsFragment.GlobalOrients (GraphDupSystem.StepCtx P.toGraphSystem) μ Q :=
+  GraphDupSystem.CyclePath.no_global_orients_ctx_of_scalar_projection_affine_of_unbounded_of_finiteRoundTrip
+    (Sys := P.toGraphSystem) hij hji hne μ Q π hproj A hπ hunbounded
+
+/-- Finite-SCC wrapper for the additive delayed barrier from a relation-level presentation. -/
+theorem no_global_orients_ctx_additive_of_hasNontrivialSCC
+    [Fintype ι] [DecidableEq ι] [DecidableRel R]
+    (hSCC : HasNontrivialSCC R)
+    (M : P.AdditiveMeasure) :
+    ¬ P.GlobalOrientsCtx M.eval (· < ·) := by
+  simpa [Presentation.toGraphSystem] using
+    (GraphDupSystem.CyclePath.no_global_orients_ctx_additive_of_hasNontrivialSCC
+      (Sys := P.toGraphSystem) hSCC M)
+
+/-- Finite-SCC wrapper for the affine delayed barrier from a relation-level presentation. -/
+theorem no_global_orients_ctx_affine_of_unbounded_of_hasNontrivialSCC
+    [Fintype ι] [DecidableEq ι] [DecidableRel R]
+    (hSCC : HasNontrivialSCC R)
+    (M : P.AffineMeasure)
+    (hunbounded :
+      let hij := reachable_witnessSrc_witnessDst (R := R) hSCC
+      let hji := reachable_witnessDst_witnessSrc (R := R) hSCC
+      let C := GraphDupSystem.ofRoundTrip (Sys := P.toGraphSystem)
+        (FiniteGraphReachability.transGen_of_reachable_of_ne (R := R) hij
+          (witnessSrc_ne_witnessDst (R := R) hSCC))
+        (FiniteGraphReachability.transGen_of_reachable_of_ne (R := R) hji
+          (witnessSrc_ne_witnessDst (R := R) hSCC).symm)
+      OperatorKO7.StepDuplicating.StepDuplicatingSchema.HasUnboundedRange
+        (MutualDuplicationCycleFlow.AffineOps.toDupMeasure
+          (GraphDupSystem.AffineMeasure.toNodeMeasure M (C.node 0))
+          C.copies C.hcopies)) :
+    ¬ P.GlobalOrientsCtx M.eval (· < ·) := by
+  simpa [Presentation.toGraphSystem] using
+    (GraphDupSystem.CyclePath.no_global_orients_ctx_affine_of_unbounded_of_hasNontrivialSCC
+      (Sys := P.toGraphSystem) hSCC M hunbounded)
+
+/-- Finite-SCC wrapper for the transparent delayed barrier from a relation-level
+presentation. -/
+theorem no_global_orients_ctx_compositional_transparent_of_hasNontrivialSCC
+    [Fintype ι] [DecidableEq ι] [DecidableRel R]
+    (hSCC : HasNontrivialSCC R)
+    (M : P.CompositionalMeasure)
+    (htrans : M.c_succ M.c_base = M.c_base) :
+    ¬ P.GlobalOrientsCtx M.eval (· < ·) := by
+  simpa [Presentation.toGraphSystem] using
+    (GraphDupSystem.CyclePath.no_global_orients_ctx_compositional_transparent_of_hasNontrivialSCC
+      (Sys := P.toGraphSystem) hSCC M htrans)
+
+/-- Finite-SCC wrapper for the scalar-projection delayed barrier from a relation-level
+presentation. -/
+theorem no_global_orients_ctx_of_scalar_projection_affine_of_unbounded_of_hasNontrivialSCC
+    [Fintype ι] [DecidableEq ι] [DecidableRel R]
+    (hSCC : HasNontrivialSCC R)
+    {α : Type} (μ : P.T → α) (Q : α → α → Prop) (π : α → Nat)
+    (hproj : ∀ {u v : α}, Q u v → π u < π v)
+    (A :
+      let hij := reachable_witnessSrc_witnessDst (R := R) hSCC
+      let hji := reachable_witnessDst_witnessSrc (R := R) hSCC
+      let C := GraphDupSystem.ofRoundTrip (Sys := P.toGraphSystem)
+        (FiniteGraphReachability.transGen_of_reachable_of_ne (R := R) hij
+          (witnessSrc_ne_witnessDst (R := R) hSCC))
+        (FiniteGraphReachability.transGen_of_reachable_of_ne (R := R) hji
+          (witnessSrc_ne_witnessDst (R := R) hSCC).symm)
+      OperatorKO7.StepDuplicating.StepDuplicatingSchema.AffineMeasure
+        (MutualDuplicationCycleFlow.toDupSchema (P.toGraphSystem.toNodeSchema (C.node 0)) C.copies))
+    (hπ : ∀ t : P.T, π (μ t) = A.eval t)
+    (hunbounded :
+      OperatorKO7.StepDuplicating.StepDuplicatingSchema.HasUnboundedRange A) :
+    ¬ DependencyPairsFragment.GlobalOrients (GraphDupSystem.StepCtx P.toGraphSystem) μ Q := by
+  simpa [Presentation.toGraphSystem] using
+    (GraphDupSystem.CyclePath.no_global_orients_ctx_of_scalar_projection_affine_of_unbounded_of_hasNontrivialSCC
+      (Sys := P.toGraphSystem) hSCC μ Q π hproj A hπ hunbounded)
+
+/-- Search-based finite-SCC wrapper for the additive delayed barrier from a relation-level
+presentation. -/
+theorem no_global_orients_ctx_additive_of_exists_findNontrivialSCCPair?
+    [Fintype ι] [DecidableEq ι] [DecidableRel R]
+    (hfind : ∃ p : ι × ι, findNontrivialSCCPair? (R := R) = some p)
+    (M : P.AdditiveMeasure) :
+    ¬ P.GlobalOrientsCtx M.eval (· < ·) :=
+  no_global_orients_ctx_additive_of_hasNontrivialSCC
+    (P := P)
+    ((hasNontrivialSCC_iff_exists_findNontrivialSCCPair? (R := R)).2 hfind)
+    M
+
+/-- Search-based finite-SCC wrapper for the affine delayed barrier from a relation-level
+presentation. -/
+theorem no_global_orients_ctx_affine_of_unbounded_of_exists_findNontrivialSCCPair?
+    [Fintype ι] [DecidableEq ι] [DecidableRel R]
+    (hfind : ∃ p : ι × ι, findNontrivialSCCPair? (R := R) = some p)
+    (M : P.AffineMeasure)
+    (hunbounded :
+      let hSCC := (hasNontrivialSCC_iff_exists_findNontrivialSCCPair? (R := R)).2 hfind
+      let hij := reachable_witnessSrc_witnessDst (R := R) hSCC
+      let hji := reachable_witnessDst_witnessSrc (R := R) hSCC
+      let C := GraphDupSystem.ofRoundTrip (Sys := P.toGraphSystem)
+        (FiniteGraphReachability.transGen_of_reachable_of_ne (R := R) hij
+          (witnessSrc_ne_witnessDst (R := R) hSCC))
+        (FiniteGraphReachability.transGen_of_reachable_of_ne (R := R) hji
+          (witnessSrc_ne_witnessDst (R := R) hSCC).symm)
+      OperatorKO7.StepDuplicating.StepDuplicatingSchema.HasUnboundedRange
+        (MutualDuplicationCycleFlow.AffineOps.toDupMeasure
+          (GraphDupSystem.AffineMeasure.toNodeMeasure M (C.node 0))
+          C.copies C.hcopies)) :
+    ¬ P.GlobalOrientsCtx M.eval (· < ·) :=
+  no_global_orients_ctx_affine_of_unbounded_of_hasNontrivialSCC
+    (P := P)
+    ((hasNontrivialSCC_iff_exists_findNontrivialSCCPair? (R := R)).2 hfind)
+    M hunbounded
+
+/-- Search-based finite-SCC wrapper for the transparent delayed barrier from a relation-level
+presentation. -/
+theorem no_global_orients_ctx_compositional_transparent_of_exists_findNontrivialSCCPair?
+    [Fintype ι] [DecidableEq ι] [DecidableRel R]
+    (hfind : ∃ p : ι × ι, findNontrivialSCCPair? (R := R) = some p)
+    (M : P.CompositionalMeasure)
+    (htrans : M.c_succ M.c_base = M.c_base) :
+    ¬ P.GlobalOrientsCtx M.eval (· < ·) :=
+  no_global_orients_ctx_compositional_transparent_of_hasNontrivialSCC
+    (P := P)
+    ((hasNontrivialSCC_iff_exists_findNontrivialSCCPair? (R := R)).2 hfind)
+    M htrans
+
+/-- Search-based finite-SCC wrapper for the scalar-projection delayed barrier from a
+relation-level presentation. -/
+theorem no_global_orients_ctx_of_scalar_projection_affine_of_unbounded_of_exists_findNontrivialSCCPair?
+    [Fintype ι] [DecidableEq ι] [DecidableRel R]
+    (hfind : ∃ p : ι × ι, findNontrivialSCCPair? (R := R) = some p)
+    {α : Type} (μ : P.T → α) (Q : α → α → Prop) (π : α → Nat)
+    (hproj : ∀ {u v : α}, Q u v → π u < π v)
+    (A :
+      let hSCC := (hasNontrivialSCC_iff_exists_findNontrivialSCCPair? (R := R)).2 hfind
+      let hij := reachable_witnessSrc_witnessDst (R := R) hSCC
+      let hji := reachable_witnessDst_witnessSrc (R := R) hSCC
+      let C := GraphDupSystem.ofRoundTrip (Sys := P.toGraphSystem)
+        (FiniteGraphReachability.transGen_of_reachable_of_ne (R := R) hij
+          (witnessSrc_ne_witnessDst (R := R) hSCC))
+        (FiniteGraphReachability.transGen_of_reachable_of_ne (R := R) hji
+          (witnessSrc_ne_witnessDst (R := R) hSCC).symm)
+      OperatorKO7.StepDuplicating.StepDuplicatingSchema.AffineMeasure
+        (MutualDuplicationCycleFlow.toDupSchema (P.toGraphSystem.toNodeSchema (C.node 0)) C.copies))
+    (hπ : ∀ t : P.T, π (μ t) = A.eval t)
+    (hunbounded :
+      OperatorKO7.StepDuplicating.StepDuplicatingSchema.HasUnboundedRange A) :
+    ¬ DependencyPairsFragment.GlobalOrients (GraphDupSystem.StepCtx P.toGraphSystem) μ Q :=
+  no_global_orients_ctx_of_scalar_projection_affine_of_unbounded_of_hasNontrivialSCC
+    (P := P)
+    ((hasNontrivialSCC_iff_exists_findNontrivialSCCPair? (R := R)).2 hfind)
+    μ Q π hproj A hπ hunbounded
+
+end Presentation
+
+end Delayed
+
+namespace Preserving
+
+open OperatorKO7.MutualDuplicationPacketGraph
+open OperatorKO7.FiniteGraphSCC
+
+/-- Minimal synchronized-packet presentation over an arbitrary relation `R`. -/
+structure Presentation (ι : Type) (R : ι → ι → Prop) where
+  T : Type
+  empty : T
+  wrap : T → T → T
+  recur : ι → T → T → T
+  packet : ι → Nat → T → T
+  packet_zero : ∀ i p, packet i 0 p = empty
+  Step : T → T → Prop
+  step_packet :
+    ∀ {i j}, R i j → ∀ ctx payload n,
+      Step (recur i ctx (packet i (n + 1) payload))
+        (wrap payload (recur j ctx (packet j n payload)))
+
+namespace Presentation
+
+variable {ι : Type} {R : ι → ι → Prop} (P : Presentation ι R)
+
+/-- Automatically assembled raw-graph preserving packet system. -/
+def toGraphSystem : GraphPacketSystem ι where
+  T := P.T
+  empty := P.empty
+  wrap := P.wrap
+  recur := P.recur
+  packet := P.packet
+  packet_zero := P.packet_zero
+  Edge := R
+  Step := P.Step
+  step_packet := P.step_packet
+
+instance instDecidableRelToGraphSystem [DecidableRel R] : DecidableRel P.toGraphSystem.Edge := by
+  simpa [Presentation.toGraphSystem]
+
+abbrev GlobalOrientsCtx (m : P.T → Nat) : Prop :=
+  GraphPacketSystem.GlobalOrientsCtx P.toGraphSystem m
+
+abbrev AdditiveMeasure := GraphPacketSystem.CyclePath.AdditiveMeasure P.toGraphSystem
+abbrev AffineMeasure := GraphPacketSystem.CyclePath.AffineMeasure P.toGraphSystem
+abbrev TransparentMeasure := GraphPacketSystem.CyclePath.TransparentMeasure P.toGraphSystem
+
+/-- Round-trip SCC wrapper for the additive preserving barrier from a relation-level
+presentation. -/
+theorem no_global_orients_ctx_additive_of_roundTrip
+    {i j : ι} (hij : Relation.TransGen R i j) (hji : Relation.TransGen R j i)
+    (M : P.AdditiveMeasure) :
+    ¬ P.GlobalOrientsCtx M.eval :=
+  GraphPacketSystem.CyclePath.no_global_orients_ctx_additive_of_roundTrip
+    (Sys := P.toGraphSystem) hij hji M
+
+/-- Finite-round-trip SCC wrapper for the additive preserving barrier from a relation-level
+presentation. -/
+theorem no_global_orients_ctx_additive_of_finiteRoundTrip
+    [Fintype ι] [DecidableEq ι] [DecidableRel R]
+    {i j : ι}
+    (hij : FiniteGraphReachability.Reachable R i j)
+    (hji : FiniteGraphReachability.Reachable R j i) (hne : i ≠ j)
+    (M : P.AdditiveMeasure) :
+    ¬ P.GlobalOrientsCtx M.eval :=
+  GraphPacketSystem.CyclePath.no_global_orients_ctx_additive_of_finiteRoundTrip
+    (Sys := P.toGraphSystem) hij hji hne M
+
+/-- Round-trip SCC wrapper for the affine preserving barrier from a relation-level
+presentation. -/
+theorem no_global_orients_ctx_affine_of_wrapper_dominance_of_roundTrip
+    {i j : ι} (hij : Relation.TransGen R i j) (hji : Relation.TransGen R j i)
+    (M : P.AffineMeasure)
+    (hdom :
+      let C := GraphPacketSystem.ofRoundTrip (Sys := P.toGraphSystem) hij hji
+      MutualDuplicationPayloadFlow.WrapperDominance
+        (GraphPacketSystem.CyclePath.AffineMeasure.toPacketModelMeasure M (C.node 0)) C.copies)
+    (hunbounded : ∀ q : Nat, ∃ t : P.T, q ≤ M.eval t) :
+    ¬ P.GlobalOrientsCtx M.eval :=
+  GraphPacketSystem.CyclePath.no_global_orients_ctx_affine_of_wrapper_dominance_of_roundTrip
+    (Sys := P.toGraphSystem) hij hji M hdom hunbounded
+
+/-- Finite-round-trip SCC wrapper for the affine preserving barrier from a relation-level
+presentation. -/
+theorem no_global_orients_ctx_affine_of_wrapper_dominance_of_finiteRoundTrip
+    [Fintype ι] [DecidableEq ι] [DecidableRel R]
+    {i j : ι}
+    (hij : FiniteGraphReachability.Reachable R i j)
+    (hji : FiniteGraphReachability.Reachable R j i) (hne : i ≠ j)
+    (M : P.AffineMeasure)
+    (hdom :
+      let hijT := FiniteGraphReachability.transGen_of_reachable_of_ne (R := R) hij hne
+      let hjiT := FiniteGraphReachability.transGen_of_reachable_of_ne (R := R) hji hne.symm
+      let C := GraphPacketSystem.ofRoundTrip (Sys := P.toGraphSystem) hijT hjiT
+      MutualDuplicationPayloadFlow.WrapperDominance
+        (GraphPacketSystem.CyclePath.AffineMeasure.toPacketModelMeasure M (C.node 0)) C.copies)
+    (hunbounded : ∀ q : Nat, ∃ t : P.T, q ≤ M.eval t) :
+    ¬ P.GlobalOrientsCtx M.eval :=
+  GraphPacketSystem.CyclePath.no_global_orients_ctx_affine_of_wrapper_dominance_of_finiteRoundTrip
+    (Sys := P.toGraphSystem) hij hji hne M hdom hunbounded
+
+/-- Round-trip SCC wrapper for the transparent preserving barrier from a relation-level
+presentation. -/
+theorem no_global_orients_ctx_transparent_of_roundTrip
+    {i j : ι} (hij : Relation.TransGen R i j) (hji : Relation.TransGen R j i)
+    (M : P.TransparentMeasure) :
+    ¬ P.GlobalOrientsCtx M.eval :=
+  GraphPacketSystem.CyclePath.no_global_orients_ctx_transparent_of_roundTrip
+    (Sys := P.toGraphSystem) hij hji M
+
+/-- Finite-round-trip SCC wrapper for the transparent preserving barrier from a relation-level
+presentation. -/
+theorem no_global_orients_ctx_transparent_of_finiteRoundTrip
+    [Fintype ι] [DecidableEq ι] [DecidableRel R]
+    {i j : ι}
+    (hij : FiniteGraphReachability.Reachable R i j)
+    (hji : FiniteGraphReachability.Reachable R j i) (hne : i ≠ j)
+    (M : P.TransparentMeasure) :
+    ¬ P.GlobalOrientsCtx M.eval :=
+  GraphPacketSystem.CyclePath.no_global_orients_ctx_transparent_of_finiteRoundTrip
+    (Sys := P.toGraphSystem) hij hji hne M
+
+/-- Round-trip scalar-projection wrapper for the preserving barrier from a relation-level
+presentation. -/
+theorem no_global_orients_ctx_of_scalar_projection_transparent_of_roundTrip
+    {i j : ι} (hij : Relation.TransGen R i j) (hji : Relation.TransGen R j i)
+    {α : Type} (μ : P.T → α) (Q : α → α → Prop) (π : α → Nat)
+    (hproj : ∀ {u v : α}, Q u v → π u < π v)
+    (M : P.TransparentMeasure)
+    (hπ : ∀ t : P.T, π (μ t) = M.eval t) :
+    ¬ DependencyPairsFragment.GlobalOrients (GraphPacketSystem.StepCtx P.toGraphSystem) μ Q :=
+  GraphPacketSystem.CyclePath.no_global_orients_ctx_of_scalar_projection_transparent_of_roundTrip
+    (Sys := P.toGraphSystem) hij hji μ Q π hproj M hπ
+
+/-- Finite-round-trip scalar-projection wrapper for the preserving barrier from a relation-level
+presentation. -/
+theorem no_global_orients_ctx_of_scalar_projection_transparent_of_finiteRoundTrip
+    [Fintype ι] [DecidableEq ι] [DecidableRel R]
+    {i j : ι}
+    (hij : FiniteGraphReachability.Reachable R i j)
+    (hji : FiniteGraphReachability.Reachable R j i) (hne : i ≠ j)
+    {α : Type} (μ : P.T → α) (Q : α → α → Prop) (π : α → Nat)
+    (hproj : ∀ {u v : α}, Q u v → π u < π v)
+    (M : P.TransparentMeasure)
+    (hπ : ∀ t : P.T, π (μ t) = M.eval t) :
+    ¬ DependencyPairsFragment.GlobalOrients (GraphPacketSystem.StepCtx P.toGraphSystem) μ Q :=
+  GraphPacketSystem.CyclePath.no_global_orients_ctx_of_scalar_projection_transparent_of_finiteRoundTrip
+    (Sys := P.toGraphSystem) hij hji hne μ Q π hproj M hπ
+
+/-- Finite-SCC wrapper for the additive preserving barrier from a relation-level
+presentation. -/
+theorem no_global_orients_ctx_additive_of_hasNontrivialSCC
+    [Fintype ι] [DecidableEq ι] [DecidableRel R]
+    (hSCC : HasNontrivialSCC R)
+    (M : P.AdditiveMeasure) :
+    ¬ P.GlobalOrientsCtx M.eval := by
+  simpa [Presentation.toGraphSystem] using
+    (GraphPacketSystem.CyclePath.no_global_orients_ctx_additive_of_hasNontrivialSCC
+      (Sys := P.toGraphSystem) hSCC M)
+
+/-- Finite-SCC wrapper for the affine preserving barrier from a relation-level
+presentation. -/
+theorem no_global_orients_ctx_affine_of_wrapper_dominance_of_hasNontrivialSCC
+    [Fintype ι] [DecidableEq ι] [DecidableRel R]
+    (hSCC : HasNontrivialSCC R)
+    (M : P.AffineMeasure)
+    (hdom :
+      let hij := reachable_witnessSrc_witnessDst (R := R) hSCC
+      let hji := reachable_witnessDst_witnessSrc (R := R) hSCC
+      let C := GraphPacketSystem.ofRoundTrip (Sys := P.toGraphSystem)
+        (FiniteGraphReachability.transGen_of_reachable_of_ne (R := R) hij
+          (witnessSrc_ne_witnessDst (R := R) hSCC))
+        (FiniteGraphReachability.transGen_of_reachable_of_ne (R := R) hji
+          (witnessSrc_ne_witnessDst (R := R) hSCC).symm)
+      MutualDuplicationPayloadFlow.WrapperDominance
+        (GraphPacketSystem.CyclePath.AffineMeasure.toPacketModelMeasure M (C.node 0)) C.copies)
+    (hunbounded : ∀ q : Nat, ∃ t : P.T, q ≤ M.eval t) :
+    ¬ P.GlobalOrientsCtx M.eval := by
+  simpa [Presentation.toGraphSystem] using
+    (GraphPacketSystem.CyclePath.no_global_orients_ctx_affine_of_wrapper_dominance_of_hasNontrivialSCC
+      (Sys := P.toGraphSystem) hSCC M hdom hunbounded)
+
+/-- Finite-SCC wrapper for the transparent preserving barrier from a relation-level
+presentation. -/
+theorem no_global_orients_ctx_transparent_of_hasNontrivialSCC
+    [Fintype ι] [DecidableEq ι] [DecidableRel R]
+    (hSCC : HasNontrivialSCC R)
+    (M : P.TransparentMeasure) :
+    ¬ P.GlobalOrientsCtx M.eval := by
+  simpa [Presentation.toGraphSystem] using
+    (GraphPacketSystem.CyclePath.no_global_orients_ctx_transparent_of_hasNontrivialSCC
+      (Sys := P.toGraphSystem) hSCC M)
+
+/-- Finite-SCC wrapper for the scalar-projection preserving barrier from a relation-level
+presentation. -/
+theorem no_global_orients_ctx_of_scalar_projection_transparent_of_hasNontrivialSCC
+    [Fintype ι] [DecidableEq ι] [DecidableRel R]
+    (hSCC : HasNontrivialSCC R)
+    {α : Type} (μ : P.T → α) (Q : α → α → Prop) (π : α → Nat)
+    (hproj : ∀ {u v : α}, Q u v → π u < π v)
+    (M : P.TransparentMeasure)
+    (hπ : ∀ t : P.T, π (μ t) = M.eval t) :
+    ¬ DependencyPairsFragment.GlobalOrients (GraphPacketSystem.StepCtx P.toGraphSystem) μ Q := by
+  simpa [Presentation.toGraphSystem] using
+    (GraphPacketSystem.CyclePath.no_global_orients_ctx_of_scalar_projection_transparent_of_hasNontrivialSCC
+      (Sys := P.toGraphSystem) hSCC μ Q π hproj M hπ)
+
+/-- Search-based finite-SCC wrapper for the additive preserving barrier from a relation-level
+presentation. -/
+theorem no_global_orients_ctx_additive_of_exists_findNontrivialSCCPair?
+    [Fintype ι] [DecidableEq ι] [DecidableRel R]
+    (hfind : ∃ p : ι × ι, findNontrivialSCCPair? (R := R) = some p)
+    (M : P.AdditiveMeasure) :
+    ¬ P.GlobalOrientsCtx M.eval :=
+  no_global_orients_ctx_additive_of_hasNontrivialSCC
+    (P := P)
+    ((hasNontrivialSCC_iff_exists_findNontrivialSCCPair? (R := R)).2 hfind)
+    M
+
+/-- Search-based finite-SCC wrapper for the affine preserving barrier from a relation-level
+presentation. -/
+theorem no_global_orients_ctx_affine_of_wrapper_dominance_of_exists_findNontrivialSCCPair?
+    [Fintype ι] [DecidableEq ι] [DecidableRel R]
+    (hfind : ∃ p : ι × ι, findNontrivialSCCPair? (R := R) = some p)
+    (M : P.AffineMeasure)
+    (hdom :
+      let hSCC := (hasNontrivialSCC_iff_exists_findNontrivialSCCPair? (R := R)).2 hfind
+      let hij := reachable_witnessSrc_witnessDst (R := R) hSCC
+      let hji := reachable_witnessDst_witnessSrc (R := R) hSCC
+      let C := GraphPacketSystem.ofRoundTrip (Sys := P.toGraphSystem)
+        (FiniteGraphReachability.transGen_of_reachable_of_ne (R := R) hij
+          (witnessSrc_ne_witnessDst (R := R) hSCC))
+        (FiniteGraphReachability.transGen_of_reachable_of_ne (R := R) hji
+          (witnessSrc_ne_witnessDst (R := R) hSCC).symm)
+      MutualDuplicationPayloadFlow.WrapperDominance
+        (GraphPacketSystem.CyclePath.AffineMeasure.toPacketModelMeasure M (C.node 0)) C.copies)
+    (hunbounded : ∀ q : Nat, ∃ t : P.T, q ≤ M.eval t) :
+    ¬ P.GlobalOrientsCtx M.eval :=
+  no_global_orients_ctx_affine_of_wrapper_dominance_of_hasNontrivialSCC
+    (P := P)
+    ((hasNontrivialSCC_iff_exists_findNontrivialSCCPair? (R := R)).2 hfind)
+    M hdom hunbounded
+
+/-- Search-based finite-SCC wrapper for the transparent preserving barrier from a relation-level
+presentation. -/
+theorem no_global_orients_ctx_transparent_of_exists_findNontrivialSCCPair?
+    [Fintype ι] [DecidableEq ι] [DecidableRel R]
+    (hfind : ∃ p : ι × ι, findNontrivialSCCPair? (R := R) = some p)
+    (M : P.TransparentMeasure) :
+    ¬ P.GlobalOrientsCtx M.eval :=
+  no_global_orients_ctx_transparent_of_hasNontrivialSCC
+    (P := P)
+    ((hasNontrivialSCC_iff_exists_findNontrivialSCCPair? (R := R)).2 hfind)
+    M
+
+/-- Search-based finite-SCC wrapper for the scalar-projection preserving barrier from a
+relation-level presentation. -/
+theorem no_global_orients_ctx_of_scalar_projection_transparent_of_exists_findNontrivialSCCPair?
+    [Fintype ι] [DecidableEq ι] [DecidableRel R]
+    (hfind : ∃ p : ι × ι, findNontrivialSCCPair? (R := R) = some p)
+    {α : Type} (μ : P.T → α) (Q : α → α → Prop) (π : α → Nat)
+    (hproj : ∀ {u v : α}, Q u v → π u < π v)
+    (M : P.TransparentMeasure)
+    (hπ : ∀ t : P.T, π (μ t) = M.eval t) :
+    ¬ DependencyPairsFragment.GlobalOrients (GraphPacketSystem.StepCtx P.toGraphSystem) μ Q :=
+  no_global_orients_ctx_of_scalar_projection_transparent_of_hasNontrivialSCC
+    (P := P)
+    ((hasNontrivialSCC_iff_exists_findNontrivialSCCPair? (R := R)).2 hfind)
+    μ Q π hproj M hπ
+
+end Presentation
+
+end Preserving
+
+end OperatorKO7.MutualDuplicationRelationalGraph
 ```
 
 ---
@@ -16200,6 +24711,419 @@ end MetaSN_KO7
 
 ---
 
+## OperatorKO7/Meta/SafeStepCtx_Complexity_Cichon.lean
+
+**Lines:** 72
+
+```lean
+import OperatorKO7.Meta.SafeStepCtx_Complexity_Exponential
+import OperatorKO7.Meta.SafeStep_Complexity_MW_Root
+
+/-!
+# Finite-note Cichon packaging of the sharpened contextual bound
+
+This module repackages the new single-exponential `SafeStepCtx` bound in the
+same ordinal/Cichon vocabulary used elsewhere in the artifact.
+
+Unlike the conservative `mwCtxBound` theorem, this file does not lift an
+existing ordinal calibration block. Instead it attaches the already-proved
+single-exponential size bound to a finite note and observes that the
+corresponding `cichon` value agrees exactly with that finite payload.
+
+So this is a proof-theoretic wrapper around the sharpened contextual theorem,
+not a new tighter extraction argument.
+-/
+
+open OperatorKO7
+open OperatorKO7.Trace
+open scoped Classical
+open Ordinal
+
+namespace MetaSN_KO7
+
+open OperatorKO7.OrdinalHierarchy
+open OperatorKO7.MetaDM
+open ONote
+open NONote
+
+/-- Finite note carrying the already-proved single-exponential contextual bound. -/
+def ctxExpNote (t : Trace) : NONote :=
+  lex3Note (0, ((0 : Multiset Nat), contextualExpBound (termSize t)))
+
+/-- Cichon packaging of the sharpened contextual exponential bound. -/
+def ctxExpCichonBound (t : Trace) : Nat :=
+  OperatorKO7.OrdinalHierarchy.cichon (ctxExpNote t).1 0
+
+theorem repr_ctxExpNote (t : Trace) :
+    NONote.repr (ctxExpNote t) = (contextualExpBound (termSize t) : Ordinal) := by
+  simp [ctxExpNote, repr_lex3Note, MetaDM.lex3cToOrd, MetaDM.lexDMToOrd]
+
+theorem ctxExpNote_lt_omega (t : Trace) :
+    NONote.repr (ctxExpNote t) < (ω : Ordinal) := by
+  rw [repr_ctxExpNote]
+  exact Ordinal.nat_lt_omega0 (contextualExpBound (termSize t))
+
+theorem contextualExpBound_le_ctxExpCichonBound (t : Trace) :
+    contextualExpBound (termSize t) ≤ ctxExpCichonBound t := by
+  unfold ctxExpCichonBound ctxExpNote
+  simpa [Nat.zero_add] using
+    (OperatorKO7.OrdinalHierarchy.exactControlledPow_length_le_cichon
+      (exactControlledPow_tau_drop
+        (δ := 0) (τ := 0) (m := contextualExpBound (termSize t))
+        (k := 0) (κ := (0 : Multiset Nat))))
+
+/-- The new single-exponential contextual theorem packaged through the Cichon hierarchy
+on a finite note carrying the already-proved explicit exponential bound. -/
+theorem safeStepCtx_length_le_ctxExpCichonBound (t u : Trace) (n : Nat)
+    (h : SafeStepCtxPow n t u) :
+    n + 1 ≤ ctxExpCichonBound t := by
+  exact le_trans (safeStepCtx_length_le_contextualExpBound t u n h)
+    (contextualExpBound_le_ctxExpCichonBound t)
+
+/-- Paper-facing alias for the finite-note Cichon wrapper around the sharpened
+single-exponential contextual theorem. -/
+theorem safestepctx_length_le_ctxExpCichonBound (t u : Trace) (n : Nat)
+    (h : SafeStepCtxPow n t u) :
+    n + 1 ≤ ctxExpCichonBound t := by
+  exact safeStepCtx_length_le_ctxExpCichonBound t u n h
+
+end MetaSN_KO7
+```
+
+---
+
+## OperatorKO7/Meta/SafeStepCtx_Complexity_Exponential.lean
+
+**Lines:** 92
+
+```lean
+import OperatorKO7.Meta.ContextualCopyBudget
+
+/-!
+# Single-Exponential Contextual Complexity Bound
+
+This module packages the positive outcome of the contextual copy-budget analysis.
+The constructive measure now lives in `ContextualCopyBudget.lean`, while the
+discarded auxiliary coordinates and no-go results were split into
+`ContextualCopyBudget_NoGo.lean`. Here we expose only the resulting upper-bound
+interface:
+
+- `contextualExpBound n = 2^(2n)`
+- `ctxDupPotential t + 1 ≤ contextualExpBound (termSize t)`
+- any exact-length `SafeStepCtx` chain from `t` has length at most
+  `contextualExpBound (termSize t)`
+
+So the context-closed guarded relation `SafeStepCtx` admits a concrete
+single-exponential structural size bound.
+-/
+
+open OperatorKO7 Trace
+
+namespace MetaSN_KO7
+
+/-- Public single-exponential contextual complexity envelope. -/
+def contextualExpBound (n : Nat) : Nat := 2 ^ (2 * n)
+
+private theorem nat_le_two_pow (n : Nat) : n ≤ 2 ^ n := by
+  induction n with
+  | zero =>
+      simp
+  | succ n ih =>
+      rw [pow_succ]
+      have hpow : 1 ≤ 2 ^ n := Nat.one_le_pow n 2 (by omega)
+      omega
+
+theorem contextualExpBound_le_complexity_bound (n : Nat) :
+    contextualExpBound n ≤ complexity_bound n := by
+  induction n with
+  | zero =>
+      simp [contextualExpBound, complexity_bound, towerBound]
+  | succ n ih =>
+      have hpow :
+          4 * towerBound n ≤ 2 ^ (2 * towerBound n + 5) := by
+        have hnat : towerBound n ≤ 2 ^ towerBound n := nat_le_two_pow (towerBound n)
+        have hmul : 4 * towerBound n ≤ 4 * 2 ^ towerBound n := Nat.mul_le_mul_left 4 hnat
+        have hpow2 : (2 ^ (2 : Nat)) = 4 := by decide
+        have hmono : 2 ^ (towerBound n + 2) ≤ 2 ^ (2 * towerBound n + 5) := by
+          exact Nat.pow_le_pow_right (by decide) (by omega)
+        have hfour : 4 * 2 ^ towerBound n = 2 ^ (towerBound n + 2) := by
+          calc
+            4 * 2 ^ towerBound n = 2 ^ towerBound n * 4 := by ac_rfl
+            _ = 2 ^ towerBound n * 2 ^ 2 := by rw [← hpow2]
+            _ = 2 ^ (towerBound n + 2) := by rw [← Nat.pow_add]
+        exact le_trans (by simpa [hfour] using hmul) hmono
+      have hexp : contextualExpBound (n + 1) = 4 * contextualExpBound n := by
+        have hpow2 : (2 ^ (2 : Nat)) = 4 := by decide
+        have htwo : 2 * (n + 1) = 2 * n + 2 := by omega
+        calc
+          contextualExpBound (n + 1)
+              = 2 ^ (2 * n + 2) := by simp [contextualExpBound, htwo]
+          _ = 2 ^ (2 * n) * 2 ^ 2 := by rw [Nat.pow_add]
+          _ = 4 * contextualExpBound n := by
+                simp [contextualExpBound, hpow2, Nat.mul_comm]
+      have hstep :
+          4 * complexity_bound n ≤ 2 ^ (2 * towerBound n + 5) + towerBound n + 1 := by
+        simp [complexity_bound]
+        omega
+      calc
+        contextualExpBound (n + 1) = 4 * contextualExpBound n := hexp
+        _ ≤ 4 * complexity_bound n := Nat.mul_le_mul_left 4 ih
+        _ ≤ 2 ^ (2 * towerBound n + 5) + towerBound n + 1 := hstep
+        _ = complexity_bound (n + 1) := by
+              simp [complexity_bound, towerBound]
+
+theorem ctxDupPotential_add_one_le_contextualExpBound (t : Trace) :
+    ctxDupPotential t + 1 ≤ contextualExpBound (termSize t) := by
+  simpa [contextualExpBound] using ctxDupPotential_add_one_le_two_pow_double_termSize t
+
+theorem safeStepCtx_length_le_contextualExpBound (t u : Trace) (n : Nat)
+    (h : SafeStepCtxPow n t u) :
+    n + 1 ≤ contextualExpBound (termSize t) := by
+  simpa [contextualExpBound] using safeStepCtx_length_le_two_pow_double_termSize t u n h
+
+/-- Paper-facing alias: the full context-closed guarded derivation length is
+single-exponential in structural term size. -/
+theorem safeStepCtx_length_le_singleExponential (t u : Trace) (n : Nat)
+    (h : SafeStepCtxPow n t u) :
+    n + 1 ≤ 2 ^ (2 * termSize t) :=
+  safeStepCtx_length_le_two_pow_double_termSize t u n h
+
+end MetaSN_KO7
+```
+
+---
+
+## OperatorKO7/Meta/SafeStepCtx_Complexity_LowerBound.lean
+
+**Lines:** 222
+
+```lean
+import OperatorKO7.Meta.SafeStepCtx_Complexity_Exponential
+
+/-!
+# Exponential Lower Family for `SafeStepCtx`
+
+This module complements the single-exponential upper bound for the guarded
+context-closed relation `SafeStepCtx` with an explicit lower family.
+
+The family is
+
+* `ctxLowerFamily 0 = merge void void`
+* `ctxLowerFamily (n+1) = recΔ void (ctxLowerFamily n) (delta (delta void))`
+
+Each outer `rec_succ` step duplicates the payload once, yielding the exact
+length recurrence
+
+* `ctxLowerLen 0 = 1`
+* `ctxLowerLen (n+1) = 2 * ctxLowerLen n + 3`
+
+while structural size grows only linearly:
+
+* `termSize (ctxLowerFamily n) = 5 * n + 3`.
+
+So the guarded context-closed derivational complexity is not merely bounded
+above by a single exponential; it also has a concrete single-exponential lower
+family.
+-/
+
+open OperatorKO7 Trace
+
+namespace MetaSN_KO7
+
+/-- Concatenate exact-length `SafeStepCtxPow` chains. -/
+theorem safeStepCtxPow_trans {a b c : Trace} {m n : Nat}
+    (hab : SafeStepCtxPow m a b) (hbc : SafeStepCtxPow n b c) :
+    SafeStepCtxPow (m + n) a c := by
+  induction m generalizing a b c with
+  | zero =>
+      cases hab
+      simpa using hbc
+  | succ m ih =>
+      rcases hab with ⟨v, hav, hvb⟩
+      simpa [Nat.succ_add] using
+        (show SafeStepCtxPow (Nat.succ (m + n)) a c from
+          ⟨v, hav, ih hvb hbc⟩)
+
+/-- Lift an exact-length contextual chain through the left side of `app`. -/
+theorem safeStepCtxPow_appL {a a' b : Trace} {n : Nat}
+    (haa' : SafeStepCtxPow n a a') :
+    SafeStepCtxPow n (app a b) (app a' b) := by
+  induction n generalizing a a' with
+  | zero =>
+      cases haa'
+      rfl
+  | succ n ih =>
+      rcases haa' with ⟨v, hav, hva'⟩
+      exact ⟨app v b, SafeStepCtx.appL hav, ih hva'⟩
+
+/-- Lift an exact-length contextual chain through the right side of `app`. -/
+theorem safeStepCtxPow_appR {a b b' : Trace} {n : Nat}
+    (hbb' : SafeStepCtxPow n b b') :
+    SafeStepCtxPow n (app a b) (app a b') := by
+  induction n generalizing b b' with
+  | zero =>
+      cases hbb'
+      rfl
+  | succ n ih =>
+      rcases hbb' with ⟨v, hbv, hvb'⟩
+      exact ⟨app a v, SafeStepCtx.appR hbv, ih hvb'⟩
+
+/-- Contextual lower-bound source family. -/
+@[simp] def ctxLowerFamily : Nat → Trace
+| 0 => merge void void
+| n + 1 => recΔ void (ctxLowerFamily n) (delta (delta void))
+
+/-- Explicit target normal form for the lower-bound family. -/
+@[simp] def ctxLowerNF : Nat → Trace
+| 0 => void
+| n + 1 => app (ctxLowerNF n) (app (ctxLowerNF n) void)
+
+/-- Exact contextual derivation length of the lower-bound family. -/
+@[simp] def ctxLowerLen : Nat → Nat
+| 0 => 1
+| n + 1 => 2 * ctxLowerLen n + 3
+
+/-- The exact target normal forms also have exponential structural size. -/
+@[simp] theorem termSize_ctxLowerNF (n : Nat) :
+    termSize (ctxLowerNF n) = 2 ^ (n + 2) - 3 := by
+  induction n with
+  | zero =>
+      simp [ctxLowerNF, termSize]
+  | succ n ih =>
+      calc
+        termSize (ctxLowerNF (n + 1))
+            = 2 * termSize (ctxLowerNF n) + 3 := by
+                simp [ctxLowerNF, termSize]
+                omega
+        _ = 2 * (2 ^ (n + 2) - 3) + 3 := by rw [ih]
+        _ = 2 ^ (n + 3) - 3 := by
+              have hpow : 4 ≤ 2 ^ (n + 2) := by
+                calc
+                  4 = 2 ^ 2 := by decide
+                  _ ≤ 2 ^ (n + 2) := by
+                    exact Nat.pow_le_pow_right (by decide) (by omega)
+              calc
+                2 * (2 ^ (n + 2) - 3) + 3 = 2 * 2 ^ (n + 2) - 3 := by omega
+                _ = 2 ^ (n + 2) * 2 - 3 := by rw [Nat.mul_comm]
+                _ = 2 ^ (n + 3) - 3 := by
+                  simp [pow_succ, Nat.mul_comm]
+
+/-- Structural size of the lower-bound family grows linearly. -/
+@[simp] theorem termSize_ctxLowerFamily (n : Nat) :
+    termSize (ctxLowerFamily n) = 5 * n + 3 := by
+  induction n with
+  | zero =>
+      simp [ctxLowerFamily, termSize]
+  | succ n ih =>
+      simp [ctxLowerFamily, termSize, ih]
+      omega
+
+/-- The lower-bound family realizes its exact contextual derivation length. -/
+theorem ctxLowerFamily_pow_nf (n : Nat) :
+    SafeStepCtxPow (ctxLowerLen n) (ctxLowerFamily n) (ctxLowerNF n) := by
+  induction n with
+  | zero =>
+      refine ⟨void, ?_, rfl⟩
+      refine SafeStepCtx.root ?_
+      simpa [ctxLowerFamily] using (SafeStep.R_merge_void_left void rfl)
+  | succ n ih =>
+      let T := ctxLowerFamily n
+      let N := ctxLowerNF n
+      let f := ctxLowerLen n
+      let s1 : Trace := app T (recΔ void T (delta void))
+      let s2 : Trace := app T (app T (recΔ void T void))
+      let s3 : Trace := app T (app T void)
+      have h1 : SafeStepCtxPow 1 (ctxLowerFamily (n + 1)) s1 := by
+        refine ⟨s1, ?_, rfl⟩
+        refine SafeStepCtx.root ?_
+        simpa [ctxLowerFamily, s1, T] using (SafeStep.R_rec_succ void T (delta void))
+      have h2 : SafeStepCtxPow 1 s1 s2 := by
+        refine ⟨s2, ?_, rfl⟩
+        refine SafeStepCtx.appR ?_
+        refine SafeStepCtx.root ?_
+        simpa [s1, s2, T] using (SafeStep.R_rec_succ void T void)
+      have h3 : SafeStepCtxPow 1 s2 s3 := by
+        refine ⟨s3, ?_, rfl⟩
+        refine SafeStepCtx.appR ?_
+        refine SafeStepCtx.appR ?_
+        refine SafeStepCtx.root ?_
+        simpa [s2, s3, T] using (SafeStep.R_rec_zero void T rfl)
+      have hleft : SafeStepCtxPow f s3 (app N (app T void)) := by
+        simpa [s3, T, N] using (safeStepCtxPow_appL (b := app T void) ih)
+      have hrightInner : SafeStepCtxPow f (app T void) (app N void) := by
+        simpa [T, N] using (safeStepCtxPow_appL (b := void) ih)
+      have hright : SafeStepCtxPow f (app N (app T void)) (app N (app N void)) := by
+        simpa [T, N] using (safeStepCtxPow_appR (a := N) hrightInner)
+      have h123 : SafeStepCtxPow 3 (ctxLowerFamily (n + 1)) s3 := by
+        have h12 : SafeStepCtxPow 2 (ctxLowerFamily (n + 1)) s2 := by
+          simpa using safeStepCtxPow_trans h1 h2
+        simpa [Nat.add_assoc] using safeStepCtxPow_trans h12 h3
+      have h123left : SafeStepCtxPow (3 + f) (ctxLowerFamily (n + 1)) (app N (app T void)) := by
+        simpa [Nat.add_assoc] using safeStepCtxPow_trans h123 hleft
+      have hfinal : SafeStepCtxPow ((3 + f) + f) (ctxLowerFamily (n + 1)) (ctxLowerNF (n + 1)) := by
+        simpa [ctxLowerNF, N, Nat.add_assoc] using safeStepCtxPow_trans h123left hright
+      simpa [ctxLowerLen, f, Nat.two_mul, Nat.add_assoc, Nat.add_left_comm, Nat.add_comm] using hfinal
+
+/-- The exact lower-family length dominates `2^n`, so the family is exponentially long. -/
+theorem two_pow_le_ctxLowerLen (n : Nat) :
+    2 ^ n ≤ ctxLowerLen n := by
+  induction n with
+  | zero =>
+      simp [ctxLowerLen]
+  | succ n ih =>
+      calc
+        2 ^ (n + 1) = 2 * 2 ^ n := by
+          rw [pow_succ]
+          ac_rfl
+        _ ≤ 2 * ctxLowerLen n := Nat.mul_le_mul_left 2 ih
+        _ ≤ 2 * ctxLowerLen n + 3 := by omega
+        _ = ctxLowerLen (n + 1) := by simp [ctxLowerLen]
+
+/-- Public existence theorem: guarded context-closed reduction has an explicit
+single-exponential lower family with linear source size. -/
+theorem safeStepCtx_has_singleExponential_lower_family (n : Nat) :
+    ∃ t u : Trace, ∃ m : Nat,
+      termSize t = 5 * n + 3 ∧
+      SafeStepCtxPow m t u ∧
+      2 ^ n ≤ m := by
+  refine ⟨ctxLowerFamily n, ctxLowerNF n, ctxLowerLen n, ?_, ?_, ?_⟩
+  · exact termSize_ctxLowerFamily n
+  · exact ctxLowerFamily_pow_nf n
+  · exact two_pow_le_ctxLowerLen n
+
+/-- The lower family also lies under the already exported single-exponential
+upper envelope, pinning the guarded contextual complexity class between
+matching exponentials up to constant factors in the exponent. -/
+theorem safeStepCtx_has_singleExponential_size_family (n : Nat) :
+    ∃ t u : Trace, ∃ m : Nat,
+      termSize t = 5 * n + 3 ∧
+      SafeStepCtxPow m t u ∧
+      2 ^ n ≤ m ∧
+      m + 1 ≤ contextualExpBound (termSize t) := by
+  refine ⟨ctxLowerFamily n, ctxLowerNF n, ctxLowerLen n, ?_, ?_, ?_, ?_⟩
+  · exact termSize_ctxLowerFamily n
+  · exact ctxLowerFamily_pow_nf n
+  · exact two_pow_le_ctxLowerLen n
+  · exact safeStepCtx_length_le_contextualExpBound _ _ _ (ctxLowerFamily_pow_nf n)
+
+/-- The same lower family also yields exponential normal-form size from a
+linear-size guarded source. This gives a direct duplication-growth witness
+without appealing to any external match-bound metatheory. -/
+theorem safeStepCtx_has_singleExponential_output_family (n : Nat) :
+    ∃ t u : Trace, ∃ m : Nat,
+      termSize t = 5 * n + 3 ∧
+      SafeStepCtxPow m t u ∧
+      termSize u = 2 ^ (n + 2) - 3 := by
+  refine ⟨ctxLowerFamily n, ctxLowerNF n, ctxLowerLen n, ?_, ?_, ?_⟩
+  · exact termSize_ctxLowerFamily n
+  · exact ctxLowerFamily_pow_nf n
+  · exact termSize_ctxLowerNF n
+
+end MetaSN_KO7
+```
+
+---
+
 ## OperatorKO7/Meta/SafeStepCtx_Confluence.lean
 
 **Lines:** 511
@@ -18309,9 +27233,168 @@ end OperatorKO7.TypedBarrierSurvival
 
 ---
 
+## OperatorKO7/Meta/WPO_PolynomialBarrier.lean
+
+**Lines:** 150
+
+```lean
+import OperatorKO7.Meta.PolynomialBarrierGeneral
+
+/-!
+# WPO-Facing Polynomial-Algebra Barrier Corollary
+
+This module does **not** formalize generic weighted path order metatheory.
+Instead, it packages a narrow consequence of the existing generalized bounded
+polynomial barrier:
+
+- if a direct order certifies strict comparison by a bounded-degree
+  constructor-local polynomial algebra, then the polynomial barrier already
+  blocks that direct order on the duplicating schema step.
+
+This is intended as a WPO-facing corollary for the direct polynomial-algebra
+branch used in tool implementations, not as a theorem about recursive path
+descent, max branches, or full WPO completeness.
+-/
+
+namespace OperatorKO7.StepDuplicating.StepDuplicatingSchema
+
+/-- Minimal WPO-facing abstraction for the direct polynomial-algebra branch.
+The only assumption is that the strict comparison is sound with respect to an
+already formalized bounded polynomial measure. -/
+structure WPOPolynomialDirectOrder (S : StepDuplicatingSchema) where
+  measure : BoundedPolynomialMeasure S
+  gt : S.T → S.T → Prop
+  sound : ∀ {x y : S.T}, gt x y → measure.eval y < measure.eval x
+
+/-- Any direct WPO-style order certified by a bounded polynomial algebra inherits
+the generalized polynomial barrier on the duplicating schema step. -/
+theorem no_wpoPolynomialDirect_orients_dup_step_of_unbounded
+    {S : StepDuplicatingSchema} (W : WPOPolynomialDirectOrder S)
+    (hunbounded : HasUnboundedRangePoly W.measure)
+    (hdom : EventuallyDominatedAtBase W.measure) :
+    ¬ (∀ (b s n : S.T),
+      W.gt (S.recur b s (S.succ n)) (S.wrap s (S.recur b s n))) := by
+  intro h
+  apply no_polynomial_orients_dup_step_of_unbounded (M := W.measure) hunbounded hdom
+  intro b s n
+  exact W.sound (h b s n)
+
+/-- Successor-pump specialization of the WPO-facing polynomial barrier. -/
+theorem no_wpoPolynomialDirect_orients_dup_step_of_succ_pump
+    {S : StepDuplicatingSchema} (W : WPOPolynomialDirectOrder S)
+    (h_succ_bias : 1 ≤ W.measure.succ_bias) (h_succ_scale : 1 ≤ W.measure.succ_scale)
+    (hdom : EventuallyDominatedAtBase W.measure) :
+    ¬ (∀ (b s n : S.T),
+      W.gt (S.recur b s (S.succ n)) (S.wrap s (S.recur b s n))) := by
+  intro h
+  apply
+    no_polynomial_orients_dup_step_of_succ_pump
+      (M := W.measure) h_succ_bias h_succ_scale hdom
+  intro b s n
+  exact W.sound (h b s n)
+
+/-- Wrap-pump specialization of the WPO-facing polynomial barrier. -/
+theorem no_wpoPolynomialDirect_orients_dup_step_of_wrap_pump
+    {S : StepDuplicatingSchema} (W : WPOPolynomialDirectOrder S)
+    (h_wrap_bias : 1 ≤ W.measure.wrap_const + W.measure.wrap_right * W.measure.c_base)
+    (hdom : EventuallyDominatedAtBase W.measure) :
+    ¬ (∀ (b s n : S.T),
+      W.gt (S.recur b s (S.succ n)) (S.wrap s (S.recur b s n))) := by
+  intro h
+  apply no_polynomial_orients_dup_step_of_wrap_pump (M := W.measure) h_wrap_bias hdom
+  intro b s n
+  exact W.sound (h b s n)
+
+/-- Any successful direct polynomial-branch orienter must violate the same
+frozen base-dominance condition as the underlying bounded polynomial measure. -/
+theorem wpoPolynomialDirect_escape_requires_failure_of_base_dominance
+    {S : StepDuplicatingSchema} (W : WPOPolynomialDirectOrder S)
+    (hunbounded : HasUnboundedRangePoly W.measure)
+    (horient : ∀ (b s n : S.T),
+      W.gt (S.recur b s (S.succ n)) (S.wrap s (S.recur b s n))) :
+    ¬ EventuallyDominatedAtBase W.measure := by
+  apply polynomial_escape_requires_failure_of_base_dominance (M := W.measure) hunbounded
+  intro b s n
+  exact W.sound (horient b s n)
+
+/-- The WPO-facing polynomial branch also fails globally on any system
+containing the duplicating step. -/
+theorem no_global_orients_wpoPolynomialDirect_of_unbounded
+    {Sys : StepDuplicatingSystem}
+    (W : WPOPolynomialDirectOrder Sys.toStepDuplicatingSchema)
+    (hunbounded : HasUnboundedRangePoly W.measure)
+    (hdom : EventuallyDominatedAtBase W.measure) :
+    ¬ GlobalOrients Sys (fun t => t) (fun x y => W.gt y x) := by
+  intro h
+  apply no_wpoPolynomialDirect_orients_dup_step_of_unbounded W hunbounded hdom
+  intro b s n
+  exact h (Sys.dup_step b s n)
+
+end OperatorKO7.StepDuplicating.StepDuplicatingSchema
+
+namespace OperatorKO7.WPOPolynomialBarrier
+
+open OperatorKO7
+open OperatorKO7.StepDuplicating
+open OperatorKO7.CompositionalImpossibility
+
+/-- KO7-facing WPO polynomial-branch corollary under an unbounded direct algebra. -/
+theorem no_global_step_orientation_wpoPolynomialDirect_of_unbounded
+    (W : StepDuplicatingSchema.WPOPolynomialDirectOrder ko7Schema)
+    (hunbounded : StepDuplicatingSchema.HasUnboundedRangePoly W.measure)
+    (hdom : StepDuplicatingSchema.EventuallyDominatedAtBase W.measure) :
+    ¬ StepDuplicatingSchema.GlobalOrients ko7System (fun t => t) (fun x y => W.gt y x) := by
+  exact
+    StepDuplicatingSchema.no_global_orients_wpoPolynomialDirect_of_unbounded
+      (Sys := ko7System) W hunbounded hdom
+
+/-- KO7 successor-pump specialization for the direct polynomial branch. -/
+theorem no_global_step_orientation_wpoPolynomialDirect_of_succ_pump
+    (W : StepDuplicatingSchema.WPOPolynomialDirectOrder ko7Schema)
+    (h_succ_bias : 1 ≤ W.measure.succ_bias) (h_succ_scale : 1 ≤ W.measure.succ_scale)
+    (hdom : StepDuplicatingSchema.EventuallyDominatedAtBase W.measure) :
+    ¬ StepDuplicatingSchema.GlobalOrients ko7System (fun t => t) (fun x y => W.gt y x) := by
+  intro h
+  apply
+    StepDuplicatingSchema.no_wpoPolynomialDirect_orients_dup_step_of_succ_pump
+      (W := W) h_succ_bias h_succ_scale hdom
+  intro b s n
+  exact h (ko7System.dup_step b s n)
+
+/-- KO7 wrap-pump specialization for the direct polynomial branch. -/
+theorem no_global_step_orientation_wpoPolynomialDirect_of_wrap_pump
+    (W : StepDuplicatingSchema.WPOPolynomialDirectOrder ko7Schema)
+    (h_wrap_bias : 1 ≤ W.measure.wrap_const + W.measure.wrap_right * W.measure.c_base)
+    (hdom : StepDuplicatingSchema.EventuallyDominatedAtBase W.measure) :
+    ¬ StepDuplicatingSchema.GlobalOrients ko7System (fun t => t) (fun x y => W.gt y x) := by
+  intro h
+  apply
+    StepDuplicatingSchema.no_wpoPolynomialDirect_orients_dup_step_of_wrap_pump
+      (W := W) h_wrap_bias hdom
+  intro b s n
+  exact h (ko7System.dup_step b s n)
+
+/-- KO7-facing necessary condition for any successful direct WPO-style escape
+through a bounded polynomial algebra branch. -/
+theorem wpoPolynomialDirect_escape_requires_failure_of_base_dominance
+    (W : StepDuplicatingSchema.WPOPolynomialDirectOrder ko7Schema)
+    (hunbounded : StepDuplicatingSchema.HasUnboundedRangePoly W.measure)
+    (horient : StepDuplicatingSchema.GlobalOrients ko7System (fun t => t) (fun x y => W.gt y x)) :
+    ¬ StepDuplicatingSchema.EventuallyDominatedAtBase W.measure := by
+  apply
+    StepDuplicatingSchema.wpoPolynomialDirect_escape_requires_failure_of_base_dominance
+      (W := W) hunbounded
+  intro b s n
+  exact horient (ko7System.dup_step b s n)
+
+end OperatorKO7.WPOPolynomialBarrier
+```
+
+---
+
 ## OperatorKO7/SchemaAPI.lean
 
-**Lines:** 88
+**Lines:** 92
 
 ```lean
 -- Core schema and barrier theorems
@@ -18322,6 +27405,7 @@ import OperatorKO7.Meta.QuadraticBarrier
 import OperatorKO7.Meta.QuadraticCrossTermBarrier
 import OperatorKO7.Meta.MultilinearBarrier
 import OperatorKO7.Meta.PolynomialBarrierGeneral
+import OperatorKO7.Meta.WPO_PolynomialBarrier
 import OperatorKO7.Meta.MaxBarrier
 import OperatorKO7.Meta.ArcticBarrier
 
@@ -18344,6 +27428,7 @@ import OperatorKO7.Meta.StandardPumpLemmas
 -- Executable boundary tooling
 import OperatorKO7.Meta.BarrierWitness
 import OperatorKO7.Meta.BarrierWitness_Extended
+import OperatorKO7.Meta.BarrierWitness_Budgets
 import OperatorKO7.Meta.SynthesisOracle
 import OperatorKO7.Meta.BarrierClass_Classifier
 
@@ -18368,6 +27453,7 @@ Barrier theorems (schema-level):
 - Restricted quadratic, bounded cross-term quadratic barriers
 - Bounded multilinear barrier
 - Generalized degree-bounded polynomial barrier
+- WPO-facing polynomial-branch corollary built on that bounded polynomial barrier
 - Max-plus barrier and arctic primary-projection corollary
 - Fixed-dimension tracked componentwise vector barrier
 - Dimension-2 lexicographic pair barrier
@@ -18383,6 +27469,7 @@ Strengthened subclasses and pump infrastructure:
 Executable boundary tooling:
 - Computable barrier-witness extractors (`additive_witness`, etc.)
 - Extended witness extractors for quadratic, max-plus, and projected matrix families
+- Canonical witness-budget theorems for the current extractor layer
 - Synthesis-oracle interface
 - Decidable coefficient-table classifier
 

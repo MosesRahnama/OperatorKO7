@@ -13,7 +13,20 @@ import OperatorKO7.Meta.AffineThresholdSharpness
 import OperatorKO7.Meta.ObjectAxiom_Ablation
 import OperatorKO7.Meta.MutualDuplication_Case
 import OperatorKO7.Meta.MutualDuplication_General
+import OperatorKO7.Meta.MutualDuplication_CycleFlow
+import OperatorKO7.Meta.MutualDuplication_KNode
+import OperatorKO7.Meta.MutualDuplication_KNode_Abstract
+import OperatorKO7.Meta.GraphPathExtraction
+import OperatorKO7.Meta.FiniteGraphReachability
+import OperatorKO7.Meta.FiniteGraphSCC
+import OperatorKO7.Meta.MutualDuplication_GraphCycle
 import OperatorKO7.Meta.MutualDuplication_Preserving
+import OperatorKO7.Meta.MutualDuplication_PayloadFlow
+import OperatorKO7.Meta.MutualDuplication_Preserving_KNode
+import OperatorKO7.Meta.MutualDuplication_Preserving_Abstract
+import OperatorKO7.Meta.MutualDuplication_Preserving_Transparent
+import OperatorKO7.Meta.MutualDuplication_PacketGraph
+import OperatorKO7.Meta.MutualDuplication_RelationalGraph
 import OperatorKO7.Meta.MutualDuplication_Transparent
 import OperatorKO7.Meta.MatrixBarrier2
 import OperatorKO7.Meta.MatrixBarrierD
@@ -30,6 +43,7 @@ import OperatorKO7.Meta.SymbolicComparatorBarrier
 import OperatorKO7.Meta.KBO_Impossible
 import OperatorKO7.Meta.ScalarProjectionBarrier
 import OperatorKO7.Meta.BarrierClass_Classifier
+import OperatorKO7.Meta.BarrierWitness_Budgets
 import OperatorKO7.Meta.SynthesisOracle
 import OperatorKO7.Meta.PumpedBarrierClasses
 import OperatorKO7.Meta.StandardPumpLemmas
@@ -41,8 +55,25 @@ import OperatorKO7.Meta.ManySortedBarrierSurvival
 import OperatorKO7.Meta.TextbookDupInstance
 import OperatorKO7.Meta.TPDB_Export
 import OperatorKO7.Meta.DependencyPairs_Fragment
+import OperatorKO7.Meta.DependencyPairs_FiniteGraph
+import OperatorKO7.Meta.DependencyPairs_CallGraph
+import OperatorKO7.Meta.DependencyPairs_ExtractedCallGraph
+import OperatorKO7.Meta.DependencyPairs_TPDBExtraction
+import OperatorKO7.Meta.DependencyPairs_FirstOrderExtraction
+import OperatorKO7.Meta.DependencyPairs_FirstOrderFrontend
+import OperatorKO7.Meta.DependencyPairs_FirstOrderEngine
+import OperatorKO7.Meta.DependencyPairs_FirstOrderView
+import OperatorKO7.Meta.DependencyPairs_FirstOrderTermView
+import OperatorKO7.Meta.DependencyPairs_HeadView
+import OperatorKO7.Meta.DependencyPairs_FiniteCarrierView
+import OperatorKO7.Meta.DependencyPairs_FiniteCarrierRawView
+import OperatorKO7.Meta.DependencyPairs_FiniteCarrierHeadView
+import OperatorKO7.Meta.DependencyPairs_FiniteCarrierExtractedView
+import OperatorKO7.Meta.DependencyPairs_KernelFirstOrder
 import OperatorKO7.Meta.DependencyPairs_Works
 import OperatorKO7.Meta.DP_BaseOrder_Boundary
+import OperatorKO7.Meta.MutualDuplication_CallGraph
+import OperatorKO7.Meta.MutualDuplication_ExtractedCallGraph
 import OperatorKO7.Meta.ContextClosed_SN
 import OperatorKO7.Meta.NormalizeSafe_LowerBound
 import OperatorKO7.Meta.EqW_Guard_Barrier
@@ -78,6 +109,6 @@ Why this file exists:
 - Includes the computable-measure verification suite in the default build path.
 - Includes ordinal calibration upper-bound lemmas (`DM_OrderType`) in the default build path.
 - Includes Phase-B lower-bound scaffolding (`DM_OrderType_LowerBound`) in the default build path.
-- Additional modules (normalizer, confluence) are imported directly where needed
-  (e.g. in `OperatorKO7/Meta/Examples_Publish.lean`).
+- Additional modules (normalizer, confluence, contextual complexity refinements)
+  are imported directly where needed.
 -/

@@ -193,6 +193,10 @@ Artifact-facing docs:
 - `OperatorKO7/Meta/BarrierWitness_Extended.lean`:
   extended witness extractors for restricted quadratic, max-plus, and projected
   matrix-side families, with bundled failure certificates.
+- `OperatorKO7/Meta/BarrierWitness_Budgets.lean`:
+  canonical witness-budget theorems showing that the extracted payload is always
+  `base`, `succIter k`, or `wrapIter k`, with an explicit computable budget `k`
+  read off from the measure data.
 - `OperatorKO7/Meta/Impossibility_Lemmas.lean`:
   machine-checked failed-measure catalog.
 - `OperatorKO7/Meta/Conjecture_Boundary.lean`:
@@ -252,8 +256,38 @@ Artifact-facing docs:
   concrete alternating worked instance.
 - `OperatorKO7/Meta/MutualDuplication_General.lean`:
   bounded two-node SCC composite-duplication theorems.
+- `OperatorKO7/Meta/MutualDuplication_CycleFlow.lean`:
+  abstract delayed-duplication cycle metatheorems, packaging additive, affine, transparent-compositional, and scalar-projection contextual barriers from a certified one-cycle witness.
+- `OperatorKO7/Meta/MutualDuplication_KNode.lean`:
+  finite cyclic `k + 1`-node delayed-duplication generalization with additive and affine SCC barriers.
+- `OperatorKO7/Meta/MutualDuplication_KNode_Abstract.lean`:
+  bridge showing the finite delayed-duplication `k + 1`-node SCC factors through the abstract delayed-cycle layer, rederiving additive, affine, transparent-compositional, and projected matrix-style corollaries.
+- `OperatorKO7/Meta/GraphPathExtraction.lean`:
+  generic utility extracting concrete edge paths from nonempty transitive-closure proofs, used to turn closed-path and round-trip SCC witnesses into raw-graph cycle data automatically.
+- `OperatorKO7/Meta/FiniteGraphReachability.lean`:
+  bounded successor-closure reachability for finite decidable directed graphs, proving that `Fintype.card` rounds capture the full reflexive transitive closure and supporting finite round-trip SCC wrappers without explicit path proofs.
+- `OperatorKO7/Meta/FiniteGraphSCC.lean`:
+  finite-graph SCC witness packaging and search layer; from a finite decidable edge relation it defines the finite candidate-pair search surface `sccPairs` / `findNontrivialSCCPair?`, proves that search success is equivalent to `HasNontrivialSCC`, and then chooses a concrete pair and both reachability directions internally so the graph-level barrier wrappers no longer require hand-written round-trip packaging.
+- `OperatorKO7/Meta/MutualDuplication_GraphCycle.lean`:
+  raw-graph delayed-duplication metatheorems for arbitrary node/edge systems; a closed path or round-trip SCC witness is automatically converted to the required cycle data, existential convenience wrappers let callers package the same input without naming the extracted witness explicitly, finite-round-trip wrappers let callers work directly from bounded reachability facts on finite decidable graphs, and `HasNontrivialSCC` wrappers internalize the remaining pair-selection / round-trip packaging step, after which the additive, affine, transparent-compositional, and scalar-projection contextual barriers follow uniformly.
 - `OperatorKO7/Meta/MutualDuplication_Preserving.lean`:
   multiplicity-preserving synchronized SCC barrier.
+- `OperatorKO7/Meta/MutualDuplication_Preserving_KNode.lean`:
+  finite cyclic `k + 1`-node synchronized-packet preserving SCC generalization with additive and conditional affine barriers.
+- `OperatorKO7/Meta/MutualDuplication_PayloadFlow.lean`:
+  abstract payload-flow metatheorems isolating the additive and affine synchronized-exposure barrier pattern.
+- `OperatorKO7/Meta/MutualDuplication_Preserving_Abstract.lean`:
+  bridge showing the finite synchronized-packet SCC theorems factor through the abstract payload-flow layer, including additive, affine, packet-transparent, and scalar-projection corollaries.
+- `OperatorKO7/Meta/MutualDuplication_Preserving_Transparent.lean`:
+  packet-transparent compositional and scalar-projection extension of the finite synchronized-packet preserving SCC barrier.
+- `OperatorKO7/Meta/MutualDuplication_PacketGraph.lean`:
+  raw-graph synchronized-packet metatheorems for arbitrary node/edge systems; a closed path or round-trip SCC witness is automatically converted to the required cycle data, existential convenience wrappers let callers package the same input without naming the extracted witness explicitly, finite-round-trip wrappers let callers work directly from bounded reachability facts on finite decidable graphs, and `HasNontrivialSCC` wrappers internalize the remaining pair-selection / round-trip packaging step, after which the additive, affine, transparent, and scalar-projection contextual barriers follow uniformly.
+- `OperatorKO7/Meta/MutualDuplication_RelationalGraph.lean`:
+  relation-level construction layer that removes the last hand-built raw-graph packaging step; from a node type, edge relation, constructor interface, and local edge-realization theorem, it builds the delayed or preserving raw-graph system automatically and reexports the round-trip, finite-round-trip, `HasNontrivialSCC`, and finite-search-result SCC barrier wrappers.
+- `OperatorKO7/Meta/MutualDuplication_CallGraph.lean`:
+  call-graph construction layer; from a finite node type together with extracted `nodeKey` / `succKeys` data and the local edge-realization theorem, it builds the delayed or preserving relation-level SCC system automatically and reexports the same finite-search-result contextual barrier wrappers.
+- `OperatorKO7/Meta/MutualDuplication_ExtractedCallGraph.lean`:
+  array-backed extracted-data construction layer; from raw extracted node data stored in an array and the local delayed or preserving edge-realization theorem indexed by `Fin nodes.size`, it builds the call-graph SCC system automatically and reexports the same finite-search-result contextual barrier wrappers.
 - `OperatorKO7/Meta/MutualDuplication_Transparent.lean`:
   transparent-compositional and projected matrix-style extensions of the bounded two-node SCC barrier.
 - `OperatorKO7/Meta/EscapeTrichotomy.lean`:
@@ -267,6 +301,36 @@ Artifact-facing docs:
 
 - `OperatorKO7/Meta/DependencyPairs_Fragment.lean`:
   reusable narrow DP layer (`DPProjection`, `SCCCycle`).
+- `OperatorKO7/Meta/DependencyPairs_FiniteGraph.lean`:
+  finite dependency-pair graph interface; reuses the finite SCC search layer on a finite decidable pair relation, repackages a discovered SCC as the fragment's standard `SCCCycle`, and exposes direct contradiction theorems from the search result itself.
+- `OperatorKO7/Meta/DependencyPairs_CallGraph.lean`:
+  finite dependency-pair call-graph interface; builds the pair relation automatically from extracted `nodeKey` / `succKeys` data and reuses the same finite-SCC search / `SCCCycle` packaging surface.
+- `OperatorKO7/Meta/DependencyPairs_ExtractedCallGraph.lean`:
+  array-backed extracted dependency-pair call-graph interface; generates the node type as `Fin nodes.size`, builds the finite call graph automatically from raw extracted node data, and reuses the same SCC search / contradiction surface.
+- `OperatorKO7/Meta/DependencyPairs_TPDBExtraction.lean`:
+  concrete TPDB-side dependency-pair extraction layer; starting from a finite array of TPDB rules, it computes the defined heads, extracts right-hand-side call heads, and builds the array-backed call graph automatically.
+- `OperatorKO7/Meta/DependencyPairs_FirstOrderExtraction.lean`:
+  generic first-order dependency-pair extraction layer over arbitrary symbol and variable types; computes defined heads, extracted call-head nodes, and the array-backed call graph for any finite first-order TRS, with TPDB and KO7-specific frontends as instances.
+- `OperatorKO7/Meta/DependencyPairs_FirstOrderFrontend.lean`:
+  rule-record frontend for the generic first-order extraction layer; given any finite array of engine-specific rules together with `lhs` / `rhs` extractors into `FOTerm`, it builds the same defined-head, extracted-node, array-backed call-graph, and finite-SCC search / contradiction surface without first repackaging rules as `FORule`.
+- `OperatorKO7/Meta/DependencyPairs_FirstOrderEngine.lean`:
+  engine-level frontend for the same extractor; packages an internal first-order TRS / DP engine as one object carrying `Rule`, `rules`, `lhs`, and `rhs`, then reexports the same extracted-call-graph and SCC-search / contradiction surface directly from that engine object.
+- `OperatorKO7/Meta/DependencyPairs_FirstOrderView.lean`:
+  typeclass-based internal-engine view; an engine type with a fixed rule representation can expose one `HasFiniteFirstOrderView` instance, and the same packaged-engine, extracted-call-graph, and SCC-search surface is then available directly from values of that type.
+- `OperatorKO7/Meta/DependencyPairs_FirstOrderTermView.lean`:
+  raw-term bridge for internal engines with their own first-order term syntax; a `HasFirstOrderTermView` conversion plus a `HasFiniteRawFirstOrderView` instance automatically induces the canonical `HasFiniteFirstOrderView` surface.
+- `OperatorKO7/Meta/DependencyPairs_HeadView.lean`:
+  minimal head/call-head bridge for internal engines that expose only root-head and recursive-call-head data; packages the same extracted-call-graph surface without requiring a full first-order term conversion, exposes a typeclass-level `HasFiniteHeadRuleView` packaging layer, and provides explicit generic adapters from both the first-order and raw-term engine views.
+- `OperatorKO7/Meta/DependencyPairs_FiniteCarrierView.lean`:
+  finite-rule-carrier bridge for internal engines whose rules already form a finite type; removes the explicit rule-array layer by enumerating the carrier, then reexports both the canonical first-order engine surface and the smaller head-view surface.
+- `OperatorKO7/Meta/DependencyPairs_FiniteCarrierRawView.lean`:
+  finite raw rule-carrier bridge for internal engines whose rules already form a finite type and whose terms stay in an internal syntax; a raw term conversion now induces the canonical finite-carrier first-order surface automatically, and an explicit adapter rederives the smaller head-view surface.
+- `OperatorKO7/Meta/DependencyPairs_FiniteCarrierHeadView.lean`:
+  smallest finite dependency-pair frontend in the artifact; starts from only a finite rule carrier and the minimal head/call-head term view, with no explicit rule array and no full `FOTerm` conversion.
+- `OperatorKO7/Meta/DependencyPairs_FiniteCarrierExtractedView.lean`:
+  finite extracted-data carrier bridge; starts from only a finite rule carrier plus already-extracted `nodeKey?` / `succKeys` data, with no term interface at all, and recovers the array-backed extracted call graph together with the finite-SCC search surface.
+- `OperatorKO7/Meta/DependencyPairs_KernelFirstOrder.lean`:
+  internal KO7-symbol frontend for the generic first-order extraction layer; packages the eight full KO7 root rules over an internal symbol type, exposes them through `HasFiniteRawFirstOrderView`, derives the smaller `HasFiniteHeadRuleView` via the generic head-view adapter, packages the same system through a finite rule carrier (`RuleId`), then through the finite raw rule-carrier layer, the finite head-carrier layer, and finally the finite extracted-data carrier layer before recovering the derived surfaces without relying on TPDB syntax or stringly symbol names.
 - `OperatorKO7/Meta/DependencyPairs_Works.lean`:
   extracted DP pair for `rec_succ`; projection decrease and DP-chain well-foundedness (`wf_DPPairRev`).
 - `OperatorKO7/Meta/DP_BaseOrder_Boundary.lean`:

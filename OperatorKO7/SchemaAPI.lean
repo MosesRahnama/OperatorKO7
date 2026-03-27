@@ -29,6 +29,7 @@ import OperatorKO7.Meta.StandardPumpLemmas
 -- Executable boundary tooling
 import OperatorKO7.Meta.BarrierWitness
 import OperatorKO7.Meta.BarrierWitness_Extended
+import OperatorKO7.Meta.BarrierWitness_Budgets
 import OperatorKO7.Meta.SynthesisOracle
 import OperatorKO7.Meta.BarrierClass_Classifier
 
@@ -69,6 +70,7 @@ Strengthened subclasses and pump infrastructure:
 Executable boundary tooling:
 - Computable barrier-witness extractors (`additive_witness`, etc.)
 - Extended witness extractors for quadratic, max-plus, and projected matrix families
+- Canonical witness-budget theorems for the current extractor layer
 - Synthesis-oracle interface
 - Decidable coefficient-table classifier
 

@@ -29,14 +29,8 @@ theorem no_kbo_orients_dup_step (K : KBOStyleOrder) :
   not_orients_dup_rule K
 
 /-- No KBO-style order exists that orients the duplicating schema step. -/
-theorem no_kbo_orients_dup_step_exists :
-    ¬ ∃ K : KBOStyleOrder, K.gt dupSrc dupTgt :=
-  no_symbolic_variable_condition_orients_dup_step
-
-/-- The KO7 `rec_succ` rule is an instance of the symbolic duplicating schema.
-This theorem packages the impossibility under an explicit KO7-facing name. -/
 theorem no_kbo_orients_ko7_rec_succ :
     ¬ ∃ K : KBOStyleOrder, K.gt dupSrc dupTgt :=
-  no_kbo_orients_dup_step_exists
+  no_symbolic_variable_condition_orients_dup_step
 
 end OperatorKO7.KBOImpossible
