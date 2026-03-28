@@ -1,7 +1,7 @@
 {
   "artifact": "OperatorKO7",
-  "paper": "Rahnama_KO7_Restructured.tex",
-  "updated": "2026-03-18",
+  "paper": "Rahnama_The_Orientation_Boundary.tex",
+  "updated": "2026-03-28",
   "paper_to_lean": [
     {
       "label": "thm:schema-barrier",

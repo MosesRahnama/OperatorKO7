@@ -47,12 +47,10 @@ python scripts/stage_tpdb_submission.py
 ```
 
 Artifact-facing docs:
-- `artifact/REPRODUCIBILITY.md`:
+- `Artifacts/REPRODUCIBILITY.md`:
   exact toolchain pins, local replay path, and referee-bundle generation.
-- `artifact/MICRO_BENCHMARKS.md`:
+- `Artifacts/MICRO_BENCHMARKS.md`:
   local Lean replay timings, selected module check times, and archived TTT2 timings.
-- `artifact/TPDB_SUBMISSION_PREP.md`:
-  staged prep notes for a future TPDB submission; not the submission itself.
 - `Artifacts/ttt2/README.md`:
   archived TTT2/CeTA trail and source files already stored in the repository.
 - `.github/workflows/build.yml`:
@@ -79,8 +77,7 @@ Artifact-facing docs:
 
 - `OperatorKO7.lean`: library entrypoint imports.
 - `OperatorKO7/`: Lean source tree.
-- `Artifacts/`: external tool artifacts.
-- `artifact/`: artifact-facing reproducibility notes and generated bundle staging area.
+- `Artifacts/`: external tool artifacts, reproducibility notes, and generated bundle staging area.
 - `Archive/`: archived or superseded working material.
 - `.github/`: workflow and repository metadata.
 - `scripts/`: small helper scripts for referee-bundle generation and TPDB-prep staging.
@@ -94,9 +91,6 @@ Artifact-facing docs:
 - `scripts/validate_manuscript_refs.py`:
   validates manuscript `\path{...}` references against the public repo, checking
   both file/module paths and declaration-style citations.
-- `artifact/S160_MATHLIB_UPSTREAM_PREP.md`:
-  upstream-prep note for staging the general Dershowitz-Manna multiset-order /
-  order-type package toward a future Mathlib contribution.
 - `VerifyTpdbExport.lean`: runnable TPDB exporter/file verifier.
 - `generate_docs.py`: documentation-generation script.
 - `OperatorKO7_Complete_Documentation.md`: extended file-level map.

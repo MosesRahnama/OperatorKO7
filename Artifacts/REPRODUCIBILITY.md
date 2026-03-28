@@ -58,8 +58,8 @@ python scripts/make_referee_bundle.py
 
 Default output:
 
-- `artifact/referee-bundles/<timestamped bundle dir>`
-- `artifact/referee-bundles/<timestamped bundle zip>`
+- `Artifacts/referee-bundles/<timestamped bundle dir>`
+- `Artifacts/referee-bundles/<timestamped bundle zip>`
 
 The bundle contains:
 
@@ -87,7 +87,7 @@ script is complementary: it packages the material reviewers need to inspect and 
 
 Replay-cost notes for the active artifact state are recorded in:
 
-- `artifact/MICRO_BENCHMARKS.md`
+- `Artifacts/MICRO_BENCHMARKS.md`
 
 That file reports local Lean replay timings together with the archived TTT2 run times
 already stored in `Artifacts/ttt2/`.

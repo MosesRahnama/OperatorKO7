@@ -1,5 +1,5 @@
 # OperatorKO7 Complete Documentation
-Generated: 2026-03-27 16:40:36 +0330
+Generated: 2026-03-28 12:14:04 +0330
 Source files: 117
 Total source lines: 26221
 Scope: active `.lean` files in the repository
@@ -10260,7 +10260,7 @@ What’s inside (all self‑contained, kernel unchanged)
 - Duplication stress identity (toy calculus): additive counter non‑drop, plus
   DM and MPO orientation witnesses.
 - Historical dead-end notes are recorded separately in
-  `Notes/Impossibility_DeadEnds.md`.
+  `Docs/Impossibility_DeadEnds.md`.
 
 Note
 - Live theorems/examples compile and can be cited in the paper/docs.
