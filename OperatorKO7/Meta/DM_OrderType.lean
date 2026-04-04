@@ -11,11 +11,13 @@ import Mathlib.SetTheory.Ordinal.Rank
 import Mathlib.SetTheory.Ordinal.Veblen
 
 /-!
-# DM Order-Type Upper-Bound Calibration
+# DM Order-Type Calibration
 
 This file provides an ordinal calibration layer for the KO7 computable measure stack.
-It is intentionally scoped to an upper-bound embedding discussion (not an exact order-type
-isomorphism).
+It proves strict monotonicity, order reflection, and the `ω^ω` upper bound for the
+DM multiset embedding `dmOrdEmbed`, together with the `ω^ω · 2` trace-level bound
+and the `ε₀` bridge for the triple-lex measure `mu3c`. The exact `ω^ω` order-type
+isomorphism (surjectivity + reflection) is completed in `DM_OrderType_LowerBound.lean`.
 -/
 
 namespace OperatorKO7.MetaDM

@@ -11,8 +11,9 @@ The family is
 * `ctxLowerFamily 0 = merge void void`
 * `ctxLowerFamily (n+1) = recΔ void (ctxLowerFamily n) (delta (delta void))`
 
-Each outer `rec_succ` step duplicates the payload once, yielding the exact
-length recurrence
+Each outer `rec_succ` step duplicates the payload once. The file proves a
+certified contextual derivation of length `ctxLowerLen n` for each family
+member, where `ctxLowerLen` satisfies the recurrence
 
 * `ctxLowerLen 0 = 1`
 * `ctxLowerLen (n+1) = 2 * ctxLowerLen n + 3`

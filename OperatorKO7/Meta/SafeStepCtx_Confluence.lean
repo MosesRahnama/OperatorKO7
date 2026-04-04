@@ -5,14 +5,13 @@ import OperatorKO7.Meta.SafeStep_Ctx
 /-!
 # Newman Layer for `SafeStepCtx`
 
-This file factors the open `SafeStepCtx` confluence problem into the standard two
-pieces:
+This file factors the `SafeStepCtx` confluence proof into the standard two pieces:
 - strong normalization, already proved in `ContextClosed_SN.lean`
 - local joinability for the one-step contextual relation
 
-We do not discharge the global local-join hypothesis here. The point is to make
-the remaining proof obligation explicit and machine-check the exact Newman layer
-it would feed into.
+The global local-join hypothesis is discharged exhaustively (`localJoinAll_ctx`),
+yielding unconditional `SafeStepCtx` confluence (`confluentSafeCtx`) together with
+the exact Newman equivalence (`confluentSafeCtx_iff_localJoinAll`).
 -/
 
 open Classical

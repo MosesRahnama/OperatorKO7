@@ -24,9 +24,11 @@ open OperatorKO7 Trace
 
 namespace MetaSN_KO7
 
-/-- Root local-join property at `a` for the KO7 safe relation. -/
-def LocalJoinAt (a : Trace) : Prop :=
-  ∀ {b c}, SafeStep a b → SafeStep a c → ∃ d, SafeStepStar b d ∧ SafeStepStar c d
+/-- Root local-join property at `a` for the KO7 safe relation.
+This is intentionally the same predicate as `LocalJoinSafe` from `Confluence_Safe`;
+it is re-exported here under a Newman-facing name so the confluence section and the
+Newman section can each name the property in their own vocabulary. -/
+abbrev LocalJoinAt := LocalJoinSafe
 
 /-- Church–Rosser (confluence) for the safe star closure. -/
 def ConfluentSafe : Prop :=
@@ -173,9 +175,8 @@ theorem normalizeSafe_eq_of_star_of_loc
   simp [eq₁, eq₂]
 
 /-- Global local-join discharge for `SafeStep`, imported from `Confluence_Safe`. -/
-theorem locAll_safe : ∀ a, LocalJoinAt a := by
-  intro a b c hb hc
-  exact (MetaSN_KO7.localJoin_all_safe a) hb hc
+theorem locAll_safe : ∀ a, LocalJoinAt a :=
+  MetaSN_KO7.localJoin_all_safe
 
 /-- Unconditional confluence for the safe fragment (`SafeStep`). -/
 theorem confluentSafe : ConfluentSafe :=

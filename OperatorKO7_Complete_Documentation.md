@@ -1,7 +1,7 @@
 # OperatorKO7 Complete Documentation
-Generated: 2026-03-28 12:14:04 +0330
+Generated: 2026-04-02 13:33:30 +0330
 Source files: 117
-Total source lines: 26221
+Total source lines: 26223
 Scope: active `.lean` files in the repository
 
 ## Table of Contents
@@ -7506,7 +7506,7 @@ end OperatorKO7.DepthBarrier
 
 ## OperatorKO7/Meta/DM_OrderType.lean
 
-**Lines:** 1148
+**Lines:** 1150
 
 ```lean
 import OperatorKO7.Meta.ComputableMeasure
@@ -7522,11 +7522,13 @@ import Mathlib.SetTheory.Ordinal.Rank
 import Mathlib.SetTheory.Ordinal.Veblen
 
 /-!
-# DM Order-Type Upper-Bound Calibration
+# DM Order-Type Calibration
 
 This file provides an ordinal calibration layer for the KO7 computable measure stack.
-It is intentionally scoped to an upper-bound embedding discussion (not an exact order-type
-isomorphism).
+It proves strict monotonicity, order reflection, and the `ω^ω` upper bound for the
+DM multiset embedding `dmOrdEmbed`, together with the `ω^ω · 2` trace-level bound
+and the `ε₀` bridge for the triple-lex measure `mu3c`. The exact `ω^ω` order-type
+isomorphism (surjectivity + reflection) is completed in `DM_OrderType_LowerBound.lean`.
 -/
 
 namespace OperatorKO7.MetaDM
@@ -24755,7 +24757,7 @@ end MetaSN_KO7
 
 ## OperatorKO7/Meta/SafeStepCtx_Complexity_LowerBound.lean
 
-**Lines:** 222
+**Lines:** 223
 
 ```lean
 import OperatorKO7.Meta.SafeStepCtx_Complexity_Exponential
@@ -24771,8 +24773,9 @@ The family is
 * `ctxLowerFamily 0 = merge void void`
 * `ctxLowerFamily (n+1) = recΔ void (ctxLowerFamily n) (delta (delta void))`
 
-Each outer `rec_succ` step duplicates the payload once, yielding the exact
-length recurrence
+Each outer `rec_succ` step duplicates the payload once. The file proves a
+certified contextual derivation of length `ctxLowerLen n` for each family
+member, where `ctxLowerLen` satisfies the recurrence
 
 * `ctxLowerLen 0 = 1`
 * `ctxLowerLen (n+1) = 2 * ctxLowerLen n + 3`
@@ -24986,7 +24989,7 @@ end MetaSN_KO7
 
 ## OperatorKO7/Meta/SafeStepCtx_Confluence.lean
 
-**Lines:** 511
+**Lines:** 510
 
 ```lean
 import OperatorKO7.Meta.ContextClosed_SN
@@ -24996,14 +24999,13 @@ import OperatorKO7.Meta.SafeStep_Ctx
 /-!
 # Newman Layer for `SafeStepCtx`
 
-This file factors the open `SafeStepCtx` confluence problem into the standard two
-pieces:
+This file factors the `SafeStepCtx` confluence proof into the standard two pieces:
 - strong normalization, already proved in `ContextClosed_SN.lean`
 - local joinability for the one-step contextual relation
 
-We do not discharge the global local-join hypothesis here. The point is to make
-the remaining proof obligation explicit and machine-check the exact Newman layer
-it would feed into.
+The global local-join hypothesis is discharged exhaustively (`localJoinAll_ctx`),
+yielding unconditional `SafeStepCtx` confluence (`confluentSafeCtx`) together with
+the exact Newman equivalence (`confluentSafeCtx_iff_localJoinAll`).
 -/
 
 open Classical
