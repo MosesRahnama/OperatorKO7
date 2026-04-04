@@ -1,7 +1,7 @@
 # OperatorKO7 Complete Documentation
-Generated: 2026-04-02 13:33:30 +0330
+Generated: 2026-04-04 14:24:41 +0330
 Source files: 117
-Total source lines: 26223
+Total source lines: 26224
 Scope: active `.lean` files in the repository
 
 ## Table of Contents
@@ -19629,7 +19629,7 @@ end OperatorKO7.MutualDuplicationTransparent
 
 ## OperatorKO7/Meta/Newman_Safe.lean
 
-**Lines:** 231
+**Lines:** 232
 
 ```lean
 import OperatorKO7.Kernel
@@ -19658,9 +19658,11 @@ open OperatorKO7 Trace
 
 namespace MetaSN_KO7
 
-/-- Root local-join property at `a` for the KO7 safe relation. -/
-def LocalJoinAt (a : Trace) : Prop :=
-  ∀ {b c}, SafeStep a b → SafeStep a c → ∃ d, SafeStepStar b d ∧ SafeStepStar c d
+/-- Root local-join property at `a` for the KO7 safe relation.
+This is intentionally the same predicate as `LocalJoinSafe` from `Confluence_Safe`;
+it is re-exported here under a Newman-facing name so the confluence section and the
+Newman section can each name the property in their own vocabulary. -/
+abbrev LocalJoinAt := LocalJoinSafe
 
 /-- Church–Rosser (confluence) for the safe star closure. -/
 def ConfluentSafe : Prop :=
@@ -19807,9 +19809,8 @@ theorem normalizeSafe_eq_of_star_of_loc
   simp [eq₁, eq₂]
 
 /-- Global local-join discharge for `SafeStep`, imported from `Confluence_Safe`. -/
-theorem locAll_safe : ∀ a, LocalJoinAt a := by
-  intro a b c hb hc
-  exact (MetaSN_KO7.localJoin_all_safe a) hb hc
+theorem locAll_safe : ∀ a, LocalJoinAt a :=
+  MetaSN_KO7.localJoin_all_safe
 
 /-- Unconditional confluence for the safe fragment (`SafeStep`). -/
 theorem confluentSafe : ConfluentSafe :=
