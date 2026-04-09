@@ -1,12 +1,13 @@
 # OperatorKO7 Complete Documentation
-Generated: 2026-04-04 14:24:41 +0330
-Source files: 117
-Total source lines: 26224
+Generated: 2026-04-09 14:38:33 +0330
+Source files: 118
+Total source lines: 26275
 Scope: active `.lean` files in the repository
 
 ## Table of Contents
 - [lakefile.lean](#lakefilelean)
 - [OperatorKO7.lean](#operatorko7lean)
+- [VerifyTpdbExport.lean](#verifytpdbexportlean)
 - [OperatorKO7/Kernel.lean](#operatorko7kernellean)
 - [OperatorKO7/Meta/AffineThresholdSharpness.lean](#operatorko7metaaffinethresholdsharpnesslean)
 - [OperatorKO7/Meta/ArcticBarrier.lean](#operatorko7metaarcticbarrierlean)
@@ -276,6 +277,33 @@ Why this file exists:
 - Additional modules (normalizer, confluence, contextual complexity refinements)
   are imported directly where needed.
 -/
+```
+
+---
+
+## VerifyTpdbExport.lean
+
+**Lines:** 18
+
+```lean
+import OperatorKO7.Meta.TPDB_Export
+
+open OperatorKO7
+
+/-- Runnable artifact check for the KO7 TPDB export bridge.
+It verifies the exporter text against both the embedded checked literal and the
+on-disk `Artifacts/ttt2/KO7_full_step.trs` file. -/
+def main : IO UInt32 := do
+  let artifactPath := "Artifacts/ttt2/KO7_full_step.trs"
+  let onDisk <- IO.FS.readFile artifactPath
+  if ko7_full_step_tpdb != ko7_full_step_tpdb_artifact_text then
+    IO.eprintln "Exporter does not match embedded artifact text."
+    return 1
+  if onDisk != ko7_full_step_tpdb_artifact_text then
+    IO.eprintln s!"On-disk artifact mismatch: {artifactPath}"
+    return 1
+  IO.println s!"TPDB export verified against embedded text and {artifactPath}."
+  return 0
 ```
 
 ---
@@ -909,9 +937,9 @@ compositional, or affine), the extractors produce a concrete instantiation
 
 Main definitions:
 
-* `additive_witness`       — Tier 1 counterexample extractor
-* `compositional_witness`  — Tier 2 counterexample extractor (with transparency)
-* `affine_witness`         — Affine/linear counterexample extractor (with pump term)
+* `additive_witness`: Tier 1 counterexample extractor
+* `compositional_witness`: Tier 2 counterexample extractor (with transparency)
+* `affine_witness`: affine/linear counterexample extractor (with pump term)
 
 Each returns a bundled triple with a proof that orientation fails on that triple.
 -/
@@ -2062,8 +2090,8 @@ Weight design:
 
 /-- **Dershowitz-Manna multiset order (DM)**
 
-The well-founded multiset order that correctly handles duplication.
-Crucial for rules like merge_cancel and eq_refl.
+The well-founded multiset order that handles duplication.
+Used by rules like merge_cancel and eq_refl.
 -/
 def DM (X Y : Multiset Nat) : Prop :=
   Multiset.IsDershowitzMannaLT X Y
@@ -3518,8 +3546,8 @@ theorem no_global_step_orientation_polyMul (w : Nat) :
 /-! ## Naive multiset barrier (#7: duplication inflates element count)
 
 A naive multiset measure collects subterm weights into a bag and compares
-by sum (or cardinality). Unlike the Dershowitz-Manna ordering — which
-permits replacing one large element with multiple SMALLER elements —
+by sum (or cardinality). Unlike the Dershowitz-Manna ordering (which
+permits replacing one large element with multiple SMALLER elements),
 naive comparison has no mechanism to absorb duplication. When `rec_succ`
 duplicates `s`, the bag gains an extra copy of `s`'s weight, and the
 sum/cardinality strictly increases.
@@ -3565,7 +3593,7 @@ theorem no_global_step_orientation_nodeCount :
 
 /-! ## The Boundary Between Code and Meta-Theory (Path Orders)
 
-CRITICAL NOTE: This file does NOT demonstrate that full Lexicographic Path Ordering (LPO)
+Scope note: this file does not show that full Lexicographic Path Ordering (LPO)
 or Multiset Path Ordering (MPO) fails to orient the KO7 calculus. Both full LPO and
 full MPO *succeed* in orienting the unrestricted system: LPO is CeTA-certified (external),
 and MPO orientation is Lean-mechanized in `Meta/MPO_FullStep.lean` (`mpo_orients_step`).
@@ -10494,7 +10522,7 @@ def toConstellation : Trace → Constellation
   | .eqW a b => .eqNode (toConstellation a) (toConstellation b)
 
 /-- The δ-duplication step produces structurally different constellations.
-    The RHS has `appNode` at the root while LHS has `recNode` — no simple ordering works. -/
+    The RHS has `appNode` at the root while LHS has `recNode`, so no simple ordering works. -/
 theorem constellation_shapes_differ (b s n : Trace) :
     toConstellation (app s (recΔ b s n)) ≠ toConstellation (recΔ b s (delta n)) := by
   simp only [toConstellation]
@@ -10586,7 +10614,7 @@ end OperatorKO7
 
 ## OperatorKO7/Meta/KBO_Impossible.lean
 
-**Lines:** 36
+**Lines:** 70
 
 ```lean
 import OperatorKO7.Meta.SymbolicComparatorBarrier
@@ -10594,16 +10622,35 @@ import OperatorKO7.Meta.SymbolicComparatorBarrier
 /-!
 # Explicit KBO-Style Impossibility Corollary
 
-The symbolic variable-condition barrier already shows that any direct comparator
-respecting the standard variable condition fails on the duplicating schema step.
-This file records that consequence under KBO-facing names so the paper can cite a
-concrete KO7 corollary rather than only the abstract symbolic barrier.
+Architectural status: paper-facing renaming layer.
+This module is intentionally thin. The substantive mathematical obstruction is
+the variable-condition barrier in `Meta/SymbolicComparatorBarrier.lean`
+(`not_orients_dup_rule`), which proves once and for all that any comparator
+respecting the standard variable condition cannot orient a rule whose right-hand
+side strictly increases the count of any variable. The KO7 `rec_succ` rule
+duplicates `s` from one occurrence on the LHS to two on the RHS, so the
+abstraction applies directly.
+
+This file exists so that the paper can cite a corollary under a *KBO-facing
+name* (`no_kbo_orients_ko7_rec_succ`, `no_kbo_orients_ko7_rec_succ_trace`),
+rather than forcing every reviewer to translate from the symbolic abstraction
+themselves. Concretely, the file contributes:
+
+1. A type alias `KBOStyleOrder := VariableConditionOrder`.
+2. Two one-line forwarding theorems (`no_kbo_orients_dup_step`,
+   `no_kbo_orients_ko7_rec_succ`) that re-export the abstract obstruction under
+   KBO-facing names.
+3. One new bridge theorem (`no_kbo_orients_ko7_rec_succ_trace`) that
+   lifts the schema-level statement to the concrete `Trace`-level KO7 rule via
+   the `instantiate` map from `SymbolicComparatorBarrier`.
 
 Scope note:
 - We do not formalize the full Knuth-Bendix order metatheory here.
 - Instead, we isolate the single KBO property that matters for this rule:
   the variable condition.
 - Any KBO instance therefore induces a value of `KBOStyleOrder` below.
+- Readers wanting the actual proof of the obstruction should look at
+  `Meta/SymbolicComparatorBarrier.lean`, not at this file.
 -/
 
 namespace OperatorKO7.KBOImpossible
@@ -10623,6 +10670,21 @@ theorem no_kbo_orients_dup_step (K : KBOStyleOrder) :
 theorem no_kbo_orients_ko7_rec_succ :
     ¬ ∃ K : KBOStyleOrder, K.gt dupSrc dupTgt :=
   no_symbolic_variable_condition_orients_dup_step
+
+/-- Trace-level bridge for the KO7 `rec_succ` rule: if a concrete comparator on
+instantiated schema terms satisfies the standard variable condition there, it
+cannot orient the concrete rule instance. -/
+theorem no_kbo_orients_ko7_rec_succ_trace
+    (gtT : Trace → Trace → Prop) (bT sT nT : Trace)
+    (hvar : ∀ {x y : STerm} {v : SchemaVar},
+      gtT (instantiate bT sT nT x) (instantiate bT sT nT y) →
+        countVar v y ≤ countVar v x) :
+    ¬ gtT (Trace.recΔ bT sT (Trace.delta nT)) (Trace.app sT (Trace.recΔ bT sT nT)) := by
+  intro hgt
+  have hs : countVar SchemaVar.s dupTgt ≤ countVar SchemaVar.s dupSrc := by
+    apply hvar (x := dupSrc) (y := dupTgt) (v := SchemaVar.s)
+    simpa [instantiate_dupSrc, instantiate_dupTgt] using hgt
+  simp [countVar_dupSrc_s, countVar_dupTgt_s] at hs
 
 end OperatorKO7.KBOImpossible
 ```
@@ -17889,11 +17951,11 @@ theorem no_global_orients_ctx_additive (M : AdditiveMeasure) :
 The affine extension reveals a genuine structural difference from both the additive preserving
 case and the affine bounded-composite case (in `MutualDuplication_General.lean`).
 
-**Key finding:** The affine barrier holds for the preserving SCC when the wrapper's
-payload coefficient exceeds the recursor's, i.e., `wrap_left * (1 + wrap_right) > recurA_p + recurA_q`.
-When this condition fails, affine measures with large recursor coefficients CAN orient the
-synchronized cycle. This precisely delineates the affine boundary for SCC-synchronized
-duplication: the barrier is conditional on wrapper-dominance over the recursor payload coefficients.
+The affine barrier holds for the preserving SCC when the wrapper's payload coefficient
+exceeds the recursor's, i.e., `wrap_left * (1 + wrap_right) > recurA_p + recurA_q`.
+When this condition fails, affine measures with large recursor coefficients can orient the
+synchronized cycle. So the affine boundary for SCC-synchronized duplication is conditional
+on wrapper-dominance over the recursor payload coefficients.
 
 The additive case avoids this issue because all coefficients are 1, so the wrapper's
 contribution (two extra `w_wrap` constants) always dominates. -/
@@ -20774,12 +20836,12 @@ import Mathlib.Tactic.Linarith
 
 This module defines a nonlinear polynomial interpretation `W : Trace → Nat`
 that strictly orients all 8 KO7 root rules.  This shows that the
-full unguarded system is terminating by a direct global measure—provided
+full unguarded system is terminating by a direct global measure, provided
 the measure lies outside every formalized barrier class.
 
 The interpretation uses:
-- `W(recΔ b s n) = (W(n) + 1) * (W(s) + W(b) + 1)` — nonlinear coupling
-- `W(delta t) = W(t) + 1` — non-transparent (≠ W(t))
+- `W(recΔ b s n) = (W(n) + 1) * (W(s) + W(b) + 1)` (nonlinear coupling)
+- `W(delta t) = W(t) + 1` (non-transparent, since W(δt) ≠ W(t))
 
 These two properties place `W` outside:
 - Tier 1 (additivity violated by the multiplicative recursor)
@@ -21721,7 +21783,7 @@ end OperatorKO7.PumpedBarrierClasses
 
 ## OperatorKO7/Meta/QuadraticBarrier.lean
 
-**Lines:** 248
+**Lines:** 247
 
 ```lean
 import OperatorKO7.Meta.CompositionalMeasure_Impossibility
@@ -21737,9 +21799,8 @@ extra pure counter-square term:
 
 `eval (recur b s n) = const + base*B + step*S + counter*N + quad*N^2`.
 
-Crucially, there is **no step-counter cross term**. This keeps the theorem safely outside the
-existing RecΔ-core witness, whose escape mechanism depends on coupling the step payload to the
-counter growth.
+There is no step-counter cross term. This keeps the theorem outside the existing RecΔ-core
+witness, whose escape mechanism depends on coupling the step payload to the counter growth.
 -/
 
 namespace OperatorKO7.StepDuplicating
@@ -23180,7 +23241,7 @@ import OperatorKO7.Meta.SafeStep_Complexity_Ordinal
 /-!
 # Direct exact controlled descent for `SafeStepCtx`
 
-This module gives a genuinely direct contextual fundamental-sequence extraction,
+This module gives a direct contextual fundamental-sequence extraction,
 but on a new contextual note package rather than on the root-calibrated `mwRootNote`.
 
 The note family is intentionally simple: we use the already-certified contextual
@@ -27296,7 +27357,7 @@ import OperatorKO7.Meta.SynthesisOracle
 import OperatorKO7.Meta.BarrierClass_Classifier
 
 /-!
-# Public Schema API — Reusable Barrier Theory for Step-Duplicating Recursors
+# Public Schema API: Reusable Barrier Theory for Step-Duplicating Recursors
 
 This module is the **stable public entry point** for the reusable schema-level
 barrier theory. It re-exports the generic impossibility theorems, escape
@@ -27306,9 +27367,9 @@ characterization infrastructure, and executable boundary tooling that apply to
 What this module provides:
 
 Core schema definition:
-- `StepDuplicatingSchema` — the four-role schema (base/succ/wrap/recur)
-- `StepDuplicatingSystem` — schema + a step relation containing the dup rule
-- `GlobalOrients` — the property that a measure globally orients a relation
+- `StepDuplicatingSchema`: the four-role schema (base/succ/wrap/recur)
+- `StepDuplicatingSystem`: schema + a step relation containing the dup rule
+- `GlobalOrients`: the property that a measure globally orients a relation
 
 Barrier theorems (schema-level):
 - Additive and transparent-compositional impossibility

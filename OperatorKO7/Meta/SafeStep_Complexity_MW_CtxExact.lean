@@ -4,7 +4,7 @@ import OperatorKO7.Meta.SafeStep_Complexity_Ordinal
 /-!
 # Direct exact controlled descent for `SafeStepCtx`
 
-This module gives a genuinely direct contextual fundamental-sequence extraction,
+This module gives a direct contextual fundamental-sequence extraction,
 but on a new contextual note package rather than on the root-calibrated `mwRootNote`.
 
 The note family is intentionally simple: we use the already-certified contextual

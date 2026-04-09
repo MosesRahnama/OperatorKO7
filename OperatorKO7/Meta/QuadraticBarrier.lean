@@ -11,9 +11,8 @@ extra pure counter-square term:
 
 `eval (recur b s n) = const + base*B + step*S + counter*N + quad*N^2`.
 
-Crucially, there is **no step-counter cross term**. This keeps the theorem safely outside the
-existing RecΔ-core witness, whose escape mechanism depends on coupling the step payload to the
-counter growth.
+There is no step-counter cross term. This keeps the theorem outside the existing RecΔ-core
+witness, whose escape mechanism depends on coupling the step payload to the counter growth.
 -/
 
 namespace OperatorKO7.StepDuplicating

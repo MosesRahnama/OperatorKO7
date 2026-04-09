@@ -7,12 +7,12 @@ import Mathlib.Tactic.Linarith
 
 This module defines a nonlinear polynomial interpretation `W : Trace → Nat`
 that strictly orients all 8 KO7 root rules.  This shows that the
-full unguarded system is terminating by a direct global measure—provided
+full unguarded system is terminating by a direct global measure, provided
 the measure lies outside every formalized barrier class.
 
 The interpretation uses:
-- `W(recΔ b s n) = (W(n) + 1) * (W(s) + W(b) + 1)` — nonlinear coupling
-- `W(delta t) = W(t) + 1` — non-transparent (≠ W(t))
+- `W(recΔ b s n) = (W(n) + 1) * (W(s) + W(b) + 1)` (nonlinear coupling)
+- `W(delta t) = W(t) + 1` (non-transparent, since W(δt) ≠ W(t))
 
 These two properties place `W` outside:
 - Tier 1 (additivity violated by the multiplicative recursor)

@@ -52,7 +52,8 @@ Artifact-facing docs:
 - `Artifacts/MICRO_BENCHMARKS.md`:
   local Lean replay timings, selected module check times, and archived TTT2 timings.
 - `Artifacts/ttt2/README.md`:
-  archived TTT2/CeTA trail and source files already stored in the repository.
+  archived TTT2/CeTA trail, source files already stored in the repository, and
+  the narrow scope of the Lean-side FAST replay.
 - `.github/workflows/build.yml`:
   repository CI build path.
 
@@ -95,6 +96,8 @@ Artifact-facing docs:
 - `generate_docs.py`: documentation-generation script.
 - `OperatorKO7_Complete_Documentation.md`: extended file-level map.
 - `Docs/KO7_BLUEPRINT.md` and `Docs/ko7_blueprint.json`: proof-dependency map from paper labels to Lean declarations and back.
+  These are review-facing claim maps kept aligned with the current manuscript labels,
+  not automatically extracted kernel dependency graphs.
 
 ## Lean Source Layout
 
@@ -288,8 +291,19 @@ Artifact-facing docs:
   explicit direct-universe escape trichotomy, now including the generalized bounded-polynomial family, plus the projection-based extension for weighted functional and balanced mixed-coordinate matrix families.
 - `OperatorKO7/Meta/SymbolicComparatorBarrier.lean`:
   symbolic variable-condition barrier for direct duplication-sensitive comparators.
+  **This is where the actual KBO obstruction lives** (`not_orients_dup_rule`):
+  any comparator respecting the standard variable condition cannot orient a
+  rule whose right-hand side strictly increases the count of any variable.
 - `OperatorKO7/Meta/KBO_Impossible.lean`:
-  explicit KO7 KBO-style impossibility corollary extracted from the symbolic barrier.
+  **paper-facing renaming layer** over `Meta/SymbolicComparatorBarrier.lean`.
+  This file is intentionally thin: it contributes a type alias
+  `KBOStyleOrder := VariableConditionOrder`, two one-line forwarding theorems
+  under KBO-facing names (`no_kbo_orients_dup_step`,
+  `no_kbo_orients_ko7_rec_succ`), and one genuinely-new bridge theorem
+  (`no_kbo_orients_ko7_rec_succ_trace`) that lifts the schema-level statement
+  to the concrete `Trace`-level KO7 rule via the `instantiate` map. Readers
+  searching for the actual proof of the variable-condition obstruction should
+  look at `Meta/SymbolicComparatorBarrier.lean`, not at this file.
 
 #### Dependency pairs, ordinal calibration, and full-step orienters
 

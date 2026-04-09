@@ -294,8 +294,8 @@ theorem no_global_step_orientation_polyMul (w : Nat) :
 /-! ## Naive multiset barrier (#7: duplication inflates element count)
 
 A naive multiset measure collects subterm weights into a bag and compares
-by sum (or cardinality). Unlike the Dershowitz-Manna ordering — which
-permits replacing one large element with multiple SMALLER elements —
+by sum (or cardinality). Unlike the Dershowitz-Manna ordering (which
+permits replacing one large element with multiple SMALLER elements),
 naive comparison has no mechanism to absorb duplication. When `rec_succ`
 duplicates `s`, the bag gains an extra copy of `s`'s weight, and the
 sum/cardinality strictly increases.
@@ -341,7 +341,7 @@ theorem no_global_step_orientation_nodeCount :
 
 /-! ## The Boundary Between Code and Meta-Theory (Path Orders)
 
-CRITICAL NOTE: This file does NOT demonstrate that full Lexicographic Path Ordering (LPO)
+Scope note: this file does not show that full Lexicographic Path Ordering (LPO)
 or Multiset Path Ordering (MPO) fails to orient the KO7 calculus. Both full LPO and
 full MPO *succeed* in orienting the unrestricted system: LPO is CeTA-certified (external),
 and MPO orientation is Lean-mechanized in `Meta/MPO_FullStep.lean` (`mpo_orients_step`).

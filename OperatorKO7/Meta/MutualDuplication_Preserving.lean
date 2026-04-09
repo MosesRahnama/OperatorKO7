@@ -190,11 +190,11 @@ theorem no_global_orients_ctx_additive (M : AdditiveMeasure) :
 The affine extension reveals a genuine structural difference from both the additive preserving
 case and the affine bounded-composite case (in `MutualDuplication_General.lean`).
 
-**Key finding:** The affine barrier holds for the preserving SCC when the wrapper's
-payload coefficient exceeds the recursor's, i.e., `wrap_left * (1 + wrap_right) > recurA_p + recurA_q`.
-When this condition fails, affine measures with large recursor coefficients CAN orient the
-synchronized cycle. This precisely delineates the affine boundary for SCC-synchronized
-duplication: the barrier is conditional on wrapper-dominance over the recursor payload coefficients.
+The affine barrier holds for the preserving SCC when the wrapper's payload coefficient
+exceeds the recursor's, i.e., `wrap_left * (1 + wrap_right) > recurA_p + recurA_q`.
+When this condition fails, affine measures with large recursor coefficients can orient the
+synchronized cycle. So the affine boundary for SCC-synchronized duplication is conditional
+on wrapper-dominance over the recursor payload coefficients.
 
 The additive case avoids this issue because all coefficients are 1, so the wrapper's
 contribution (two extra `w_wrap` constants) always dominates. -/

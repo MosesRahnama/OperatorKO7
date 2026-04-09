@@ -12,9 +12,9 @@ compositional, or affine), the extractors produce a concrete instantiation
 
 Main definitions:
 
-* `additive_witness`       — Tier 1 counterexample extractor
-* `compositional_witness`  — Tier 2 counterexample extractor (with transparency)
-* `affine_witness`         — Affine/linear counterexample extractor (with pump term)
+* `additive_witness`: Tier 1 counterexample extractor
+* `compositional_witness`: Tier 2 counterexample extractor (with transparency)
+* `affine_witness`: affine/linear counterexample extractor (with pump term)
 
 Each returns a bundled triple with a proof that orientation fails on that triple.
 -/

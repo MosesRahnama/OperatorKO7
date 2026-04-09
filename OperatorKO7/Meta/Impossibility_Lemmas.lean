@@ -250,7 +250,7 @@ def toConstellation : Trace → Constellation
   | .eqW a b => .eqNode (toConstellation a) (toConstellation b)
 
 /-- The δ-duplication step produces structurally different constellations.
-    The RHS has `appNode` at the root while LHS has `recNode` — no simple ordering works. -/
+    The RHS has `appNode` at the root while LHS has `recNode`, so no simple ordering works. -/
 theorem constellation_shapes_differ (b s n : Trace) :
     toConstellation (app s (recΔ b s n)) ≠ toConstellation (recΔ b s (delta n)) := by
   simp only [toConstellation]

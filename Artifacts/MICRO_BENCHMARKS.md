@@ -11,16 +11,16 @@ This note records lightweight artifact-facing replay costs for the active reposi
 
 ## Lean Replay Timings
 
-Measured as single warm-cache runs from the repository root on 2026-03-20.
+Measured as single warm-cache runs from the repository root on 2026-04-09.
 
 | Command | Time |
 |---|---:|
-| `lake build OperatorKO7` | `9.281s` |
-| `lake build OperatorKO7.SchemaAPI` | `8.460s` |
-| `lake exe verifyTpdbExport` | `3.480s` |
-| `lake build OperatorKO7.Meta.DM_OrderType_LowerBound` | `4.412s` |
-| `lake build OperatorKO7.Meta.ContextClosed_SN_Full` | `4.510s` |
-| `lake build OperatorKO7.Meta.MPO_ProofTheoreticBound` | `9.817s` |
+| `lake build OperatorKO7` | `208.171s` |
+| `lake build OperatorKO7.SchemaAPI` | `43.536s` |
+| `lake exe verifyTpdbExport` | `5.837s` |
+| `lake build OperatorKO7.Meta.DM_OrderType_LowerBound` | `4.489s` |
+| `lake build OperatorKO7.Meta.ContextClosed_SN_Full` | `4.698s` |
+| `lake build OperatorKO7.Meta.MPO_ProofTheoreticBound` | `7.138s` |
 
 These numbers are intended as reviewer guidance, not as a performance claim. They are
 single-run wall-clock measurements in an already-initialized local workspace.

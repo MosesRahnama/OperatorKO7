@@ -35,6 +35,15 @@ What this covers:
   checks the Lean-side TPDB exporter text against both the embedded checked literal
   and the on-disk `Artifacts/ttt2/KO7_full_step.trs` artifact.
 
+Optional documentation refresh:
+
+```bash
+python generate_docs.py
+```
+
+This regenerates `OperatorKO7_Complete_Documentation.md`, the public file-level map
+bundled by the referee snapshot script.
+
 ## External Validation Trail
 
 The archived external tool trail lives in `Artifacts/ttt2/` and includes:
@@ -47,6 +56,9 @@ The archived external tool trail lives in `Artifacts/ttt2/` and includes:
 
 This trail is archived and bundled for review. It is not claimed as a Lean theorem
 layer; it is an external validation layer attached to the main formal artifact.
+The Lean file `Meta/TTT2_CertificateReplay.lean` is only a narrow replay of the
+FAST certificate core under Lean definitions, not a CPF parser or a general CeTA
+reimplementation.
 
 ## Referee Bundle
 
@@ -60,6 +72,8 @@ Default output:
 
 - `Artifacts/referee-bundles/<timestamped bundle dir>`
 - `Artifacts/referee-bundles/<timestamped bundle zip>`
+
+These paths are generated on demand and are not part of the committed repository tree.
 
 The bundle contains:
 

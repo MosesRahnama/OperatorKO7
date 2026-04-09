@@ -1,6 +1,6 @@
 # TTT2 Artifacts (KO7 Full Step)
 
-This folder stores reproducibility artifacts for the KO7 full-step TRS.
+This folder stores the archived external validation trail for the KO7 full-step TRS.
 
 ## Input
 - `KO7_full_step.trs`: input TRS (8 rules, 7 constructors)
@@ -32,19 +32,21 @@ Note: Human-readable text outputs are preserved only for FAST and POLY. Timings 
 
 ## Generation
 
-TTT2 1.20 on WSL:
+From a local TTT2 1.20 checkout, point `<TRS>` to `Artifacts/ttt2/KO7_full_step.trs`
+or to an equivalent local copy of that file:
+
 ```bash
-cd /mnt/c/Users/Moses/OperatorKO7/Comments/ttt2-1.20/ttt2
-./ttt2 -cpf <TRS>                              # FAST (default)
-./ttt2 -cpf -s lpo <TRS>                       # LPO
-./ttt2 -cpf -s 'dp;...' <TRS>                  # COMP (full strategy string in certification log)
-./ttt2 -cpf -s kbo <TRS>                       # KBO
+./ttt2 -cpf <TRS>                                  # FAST (default)
+./ttt2 -cpf -s lpo <TRS>                           # LPO
+./ttt2 -cpf -s 'dp;...' <TRS>                      # COMP (full strategy string in certification log)
+./ttt2 -cpf -s kbo <TRS>                           # KBO
 ./ttt2 -cpf -s 'poly -direct -ib 5 -ob 6' <TRS>   # POLY
 ./ttt2 -cpf -s 'matrix -dim 2 -ib 2 -ob 2' <TRS>  # MAT(2)
 ./ttt2 -cpf -s 'matrix -dim 3 -ib 2 -ob 2' <TRS>  # MAT(3)
 ```
 
-Post-processing: raw TTT2 output has a `YES`/`MAYBE` line before XML; CPF files here have that line stripped.
+Post-processing: raw TTT2 output has a `YES`/`MAYBE` line before XML; the CPF files
+archived here have that line stripped.
 
 ## CeTA Certification (2026-03-04)
 
@@ -62,3 +64,10 @@ CeTA 2.36 via web interface at http://138.232.18.220/tool/ceta.
 | FBI | MAYBE | N/A |
 
 All modular/structural methods certify. All global/compositional methods fail.
+
+## Lean-side relation to this folder
+
+The repository also includes `Meta/TTT2_CertificateReplay.lean`, but that file is not
+a CPF parser. It is a narrow Lean-side replay of the mathematical core of the FAST
+certificate: the single recursive SCC, the projected argument, and the resulting
+well-founded DP-pair proof.

@@ -84,8 +84,8 @@ Weight design:
 
 /-- **Dershowitz-Manna multiset order (DM)**
 
-The well-founded multiset order that correctly handles duplication.
-Crucial for rules like merge_cancel and eq_refl.
+The well-founded multiset order that handles duplication.
+Used by rules like merge_cancel and eq_refl.
 -/
 def DM (X Y : Multiset Nat) : Prop :=
   Multiset.IsDershowitzMannaLT X Y

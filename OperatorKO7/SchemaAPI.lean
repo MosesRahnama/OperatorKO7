@@ -34,7 +34,7 @@ import OperatorKO7.Meta.SynthesisOracle
 import OperatorKO7.Meta.BarrierClass_Classifier
 
 /-!
-# Public Schema API — Reusable Barrier Theory for Step-Duplicating Recursors
+# Public Schema API: Reusable Barrier Theory for Step-Duplicating Recursors
 
 This module is the **stable public entry point** for the reusable schema-level
 barrier theory. It re-exports the generic impossibility theorems, escape
@@ -44,9 +44,9 @@ characterization infrastructure, and executable boundary tooling that apply to
 What this module provides:
 
 Core schema definition:
-- `StepDuplicatingSchema` — the four-role schema (base/succ/wrap/recur)
-- `StepDuplicatingSystem` — schema + a step relation containing the dup rule
-- `GlobalOrients` — the property that a measure globally orients a relation
+- `StepDuplicatingSchema`: the four-role schema (base/succ/wrap/recur)
+- `StepDuplicatingSystem`: schema + a step relation containing the dup rule
+- `GlobalOrients`: the property that a measure globally orients a relation
 
 Barrier theorems (schema-level):
 - Additive and transparent-compositional impossibility

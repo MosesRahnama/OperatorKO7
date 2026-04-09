@@ -1,7 +1,7 @@
 {
   "artifact": "OperatorKO7",
   "paper": "Rahnama_The_Orientation_Boundary.tex",
-  "updated": "2026-03-28",
+  "updated": "2026-04-09",
   "paper_to_lean": [
     {
       "label": "thm:schema-barrier",
@@ -65,6 +65,18 @@
       ],
       "depends_on": [
         "thm:multilinear-barrier"
+      ]
+    },
+    {
+      "label": "cor:wpo-polynomial-branch",
+      "module": "OperatorKO7/Meta/WPO_PolynomialBarrier.lean",
+      "declarations": [
+        "no_wpoPolynomialDirect_orients_dup_step_of_unbounded",
+        "no_global_step_orientation_wpoPolynomialDirect_of_succ_pump",
+        "wpoPolynomialDirect_escape_requires_failure_of_base_dominance"
+      ],
+      "depends_on": [
+        "thm:polynomial-general-barrier"
       ]
     },
     {
@@ -159,6 +171,27 @@
       ]
     },
     {
+      "label": "cor:context-closed-barrier",
+      "module": "OperatorKO7/Meta/ContextClosedBarrier.lean",
+      "declarations": [
+        "stepCtxFull_orientation_implies_root",
+        "no_stepCtxFull_orientation_additive_compositional",
+        "no_stepCtxFull_orientation_compositional_transparent_delta",
+        "no_stepCtxFull_orientation_affine_with_pump",
+        "no_stepCtxFull_orientation_quadratic_with_pump",
+        "no_stepCtxFull_orientation_cross_quadratic_with_pump",
+        "no_stepCtxFull_orientation_multilinear_with_pump",
+        "no_stepCtxFull_orientation_max_with_pump",
+        "no_stepCtxFull_orientation_matrix2_with_primary_pump",
+        "no_stepCtxFull_orientation_matrix2_lex_with_primary_pump",
+        "no_stepCtxFull_orientation_matrixFunctional_with_projected_affine_pump",
+        "no_stepCtxFull_orientation_matrixMix2_with_sum_pump"
+      ],
+      "depends_on": [
+        "cor:pumped-subclasses"
+      ]
+    },
+    {
       "label": "thm:escape-trichotomy",
       "module": "OperatorKO7/Meta/EscapeTrichotomy.lean",
       "declarations": [
@@ -176,10 +209,25 @@
       "label": "cor:kbo-impossible",
       "module": "OperatorKO7/Meta/KBO_Impossible.lean",
       "declarations": [
-        "no_kbo_orients_ko7_rec_succ"
+        "no_kbo_orients_ko7_rec_succ",
+        "no_kbo_orients_ko7_rec_succ_trace"
       ],
       "depends_on": [
         "thm:symbolic-variable-barrier"
+      ],
+      "note": "Paper-facing renaming layer over Meta/SymbolicComparatorBarrier.lean. The substantive proof of the variable-condition obstruction is `not_orients_dup_rule` in the symbolic barrier file. This module contributes a type alias, two one-line forwarding theorems under KBO-facing names, and one new concrete-trace bridge theorem (`no_kbo_orients_ko7_rec_succ_trace`)."
+    },
+    {
+      "label": "cor:nonrepresentable",
+      "module": "OperatorKO7/Meta/StepDuplicatingSchema.lean",
+      "declarations": [
+        "no_global_orients_additive",
+        "no_global_orients_compositional_transparent_succ",
+        "no_global_orients_affine_of_unbounded"
+      ],
+      "depends_on": [
+        "thm:schema-barrier",
+        "thm:affine-barrier"
       ]
     },
     {
@@ -196,6 +244,17 @@
       "module": "OperatorKO7/Meta/RecCore.lean",
       "declarations": [
         "transparency_is_essential_for_tier2"
+      ],
+      "depends_on": [
+        "thm:schema-barrier"
+      ]
+    },
+    {
+      "label": "thm:impossibility",
+      "module": "OperatorKO7/Meta/CompositionalMeasure_Impossibility.lean",
+      "declarations": [
+        "no_additive_compositional_orients_rec_succ",
+        "no_compositional_orients_rec_succ_transparent_delta"
       ],
       "depends_on": [
         "thm:schema-barrier"
@@ -221,6 +280,14 @@
       "depends_on": [
         "thm:dp-escape"
       ]
+    },
+    {
+      "label": "prop:eqw-guard-necessity",
+      "module": "OperatorKO7/Meta/EqW_Guard_Barrier.lean",
+      "declarations": [
+        "not_localJoinStep_eqW_refl"
+      ],
+      "depends_on": []
     },
     {
       "label": "thm:delayed-duplication",
@@ -279,9 +346,11 @@
       ]
     },
     {
-      "label": "prop:safestepctx-obstruction",
+      "label": "prop:safestepctx-confluence",
       "module": "OperatorKO7/Meta/SafeStepCtx_Confluence.lean",
       "declarations": [
+        "localJoinAll_ctx",
+        "confluentSafeCtx",
         "confluentSafeCtx_iff_localJoinAll",
         "newman_safeCtx"
       ],
@@ -296,6 +365,18 @@
         "wf_StepCtxFullRev_poly"
       ],
       "depends_on": [
+        "prop:poly-full-step"
+      ]
+    },
+    {
+      "label": "prop:full-context-complexity",
+      "module": "OperatorKO7/Meta/SafeRoot_Complexity.lean",
+      "declarations": [
+        "stepCtxFullPow_length_le_W",
+        "stepCtxFullPow_length_lt_W"
+      ],
+      "depends_on": [
+        "thm:full-context-closed-sn",
         "prop:poly-full-step"
       ]
     },
@@ -325,14 +406,127 @@
       ]
     },
     {
-      "label": "prop:safestep-complexity",
-      "module": "OperatorKO7/Meta/SafeStep_Complexity_Ordinal.lean",
+      "label": "prop:mu3c-image-lower",
+      "module": "OperatorKO7/Meta/Mu3c_Image_LowerBound.lean",
       "declarations": [
-        "safestep_length_bounded_by_size"
+        "payloadTower_mu3c_lower",
+        "payloadTower_mu3c_lt_block_cap",
+        "flaggedTower_mu3c_lower",
+        "flaggedTower_mu3c_lt_two_block_cap",
+        "mu3c_lower_family_block0",
+        "mu3c_lower_family_block1"
       ],
       "depends_on": [
         "thm:ordinal-calibration",
         "thm:phase-b-cnf-scaffold"
+      ]
+    },
+    {
+      "label": "prop:safestep-complexity",
+      "module": "OperatorKO7/Meta/SafeStepCtx_Complexity_Exponential.lean",
+      "declarations": [
+        "ctxDupPotential",
+        "ctxDupPotential_decreases_ctx",
+        "copyBudget_le_termSize",
+        "ctxDupPotential_add_one_le_two_pow_double_termSize",
+        "safeStepCtx_length_le_two_pow_double_termSize",
+        "contextualExpBound",
+        "contextualExpBound_le_complexity_bound",
+        "safeStepCtx_length_le_contextualExpBound"
+      ],
+      "depends_on": [
+        "thm:ordinal-calibration",
+        "thm:phase-b-cnf-scaffold"
+      ]
+    },
+    {
+      "label": "prop:safestep-complexity-lower",
+      "module": "OperatorKO7/Meta/SafeStepCtx_Complexity_LowerBound.lean",
+      "declarations": [
+        "ctxLowerFamily",
+        "ctxLowerNF",
+        "ctxLowerLen",
+        "termSize_ctxLowerFamily",
+        "termSize_ctxLowerNF",
+        "ctxLowerFamily_pow_nf",
+        "two_pow_le_ctxLowerLen",
+        "safeStepCtx_has_singleExponential_lower_family",
+        "safeStepCtx_has_singleExponential_output_family"
+      ],
+      "depends_on": [
+        "prop:safestep-complexity"
+      ]
+    },
+    {
+      "label": "prop:safestep-fastgrow",
+      "module": "OperatorKO7/Meta/SafeStep_Complexity_FastGrowing.lean",
+      "declarations": [
+        "fgOmegaEnvelope",
+        "towerBound_le_fgOmegaEnvelope",
+        "safestep_length_bounded_by_fgOmegaEnvelope"
+      ],
+      "depends_on": [
+        "prop:safestep-complexity"
+      ]
+    },
+    {
+      "label": "prop:safestep-mw-complexity",
+      "module": "OperatorKO7/Meta/SafeStep_Complexity_MW_Ctx.lean",
+      "declarations": [
+        "mwCtxNote",
+        "mwCtxBound",
+        "mwCtxNote_lt_opow_omega_mul_two",
+        "ctxFuel_le_mwCtxBound",
+        "safestepctx_length_le_mwCtxBound",
+        "not_all_safeStepCtx_rootNote_drop"
+      ],
+      "depends_on": [
+        "prop:safestep-complexity"
+      ]
+    },
+    {
+      "label": "prop:safestep-mw-context-exact",
+      "module": "OperatorKO7/Meta/SafeStep_Complexity_MW_CtxExact.lean",
+      "declarations": [
+        "ctxExactNote",
+        "ctxExactBound",
+        "ctxExactNote_lt_omega",
+        "safeStepCtx_exact_step",
+        "safeStepCtxPow_exact_drop",
+        "safestepctx_length_le_ctxExactBound"
+      ],
+      "depends_on": [
+        "prop:safestep-complexity"
+      ]
+    },
+    {
+      "label": "prop:normalizer-lower-bound",
+      "module": "OperatorKO7/Meta/NormalizeSafe_LowerBound.lean",
+      "declarations": [
+        "mergeVoidChain_pow_void",
+        "normalizeSafe_mergeVoidChain",
+        "normalizeSafeSteps_mergeVoidChain"
+      ],
+      "depends_on": [
+        "cor:sn"
+      ]
+    },
+    {
+      "label": "prop:root-normalizer-envelope",
+      "module": "OperatorKO7/Meta/SafeRoot_Complexity.lean",
+      "declarations": [
+        "tau_add_two_le_two_mul_termSize",
+        "normalizeSafeSteps_realized",
+        "normalizeSafeSteps_le_linear_termSize",
+        "normalizeSafeSteps_le_ctxFuel",
+        "normalizeSafeSteps_le_complexity_bound",
+        "normalizeSafeSteps_le_mwRootBound",
+        "termSize_mergeVoidChain",
+        "normalizeSafeSteps_has_linear_lower_family",
+        "normalizeSafeSteps_has_linear_size_family"
+      ],
+      "depends_on": [
+        "cor:sn"
       ]
     },
     {
