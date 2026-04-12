@@ -94,6 +94,9 @@ import OperatorKO7.Meta.PolyInterpretation_FullStep
 import OperatorKO7.Meta.TTT2_CertificateReplay
 import OperatorKO7.Meta.TropicalBarrier
 import OperatorKO7.Meta.SharingBarrierLift
+import OperatorKO7.Meta.WitnessOrder
+import OperatorKO7.Meta.OperationalIncompleteness
+import OperatorKO7.Meta.BenchmarkedPrimitiveRecursionFamily
 
 /-!
 Public entrypoint for the `OperatorKO7` Lean library.
