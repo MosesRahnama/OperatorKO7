@@ -1,4 +1,8 @@
 import OperatorKO7.Meta.DependencyPairs_Works
+import OperatorKO7.Meta.DependencyPairs_TPDBExtraction
+import OperatorKO7.Meta.DependencyPairs_FirstOrderExtraction
+import OperatorKO7.Meta.DependencyPairs_KernelFirstOrder
+import OperatorKO7.Meta.TPDB_Export
 
 /-!
 # Narrow Lean-side replay of the FAST TTT2 certificate core
@@ -50,6 +54,76 @@ theorem ko7FastReplay_singletonRealScc :
 /-- The Lean replay uses the same extracted recursive pair as the external FAST proof. -/
 theorem ko7FastReplay_uses_recSucc_pair :
     ko7FastReplay.projectionProblem.Pair = DPPair := rfl
+
+/-- The exported KO7 TPDB problem text matches the checked artifact text
+exactly. This is the first half of the external bridge: the Lean exporter and
+the file submitted to TTT2 / CeTA are the same concrete problem. -/
+theorem ko7FastReplay_export_text_matches_artifact :
+    OperatorKO7.ko7_full_step_tpdb = OperatorKO7.ko7_full_step_tpdb_artifact_text :=
+  OperatorKO7.ko7_full_step_tpdb_matches_artifact_text
+
+/-- The concrete TPDB extraction surface for the exported KO7 problem already
+exhibits the same single recursive self-call head that the replay packages as
+the internal dependency-pair problem. -/
+theorem ko7FastReplay_export_has_recD_successor :
+    ∃ n ∈ OperatorKO7.DependencyPairsFragment.ko7FullStepExtractedNodes.toList,
+      n.nodeKey = "recD" ∧ n.succKeys = ({ "recD" } : Finset String) := by
+  exact OperatorKO7.DependencyPairsFragment.ko7_full_step_has_recD_successor
+
+/-- Export-side correspondence bundle: the exact exported TPDB text matches the
+checked artifact, the extracted TPDB call-graph surface contains the unique
+recursive `recD -> recD` successor pattern, and the replay packages that same
+pattern as the internal KO7 dependency-pair problem. -/
+theorem ko7FastReplay_matches_export_surface :
+    OperatorKO7.ko7_full_step_tpdb = OperatorKO7.ko7_full_step_tpdb_artifact_text ∧
+      (∃ n ∈ OperatorKO7.DependencyPairsFragment.ko7FullStepExtractedNodes.toList,
+        n.nodeKey = "recD" ∧ n.succKeys = ({ "recD" } : Finset String)) ∧
+      ko7FastReplay.projectionProblem.Pair = DPPair := by
+  exact ⟨ko7FastReplay_export_text_matches_artifact,
+    ko7FastReplay_export_has_recD_successor,
+    ko7FastReplay_uses_recSucc_pair⟩
+
+/-- Stronger correspondence bundle across the three extraction surfaces already
+present in the formal artifact:
+
+* the concrete TPDB-side extraction surface;
+* the generic first-order string-symbol surface;
+* the internal kernel-symbol first-order surface.
+
+Each surface exhibits the same single recursive `recD -> recD` head pattern,
+and the replay packages that pattern as the internal KO7 dependency-pair
+problem. -/
+theorem ko7FastReplay_matches_all_extraction_surfaces :
+    OperatorKO7.ko7_full_step_tpdb = OperatorKO7.ko7_full_step_tpdb_artifact_text ∧
+      OperatorKO7.DependencyPairsFragment.tpdbDefinedHeads
+        OperatorKO7.ko7FullStepTpdbRules.toArray =
+        ({ "integrate", "merge", "recD", "eqW" } : Finset String) ∧
+      OperatorKO7.DependencyPairsFragment.foDefinedHeads
+        OperatorKO7.DependencyPairsFragment.KO7FirstOrder.ko7FullStepFORules =
+        ({ "integrate", "merge", "recD", "eqW" } : Finset String) ∧
+      OperatorKO7.DependencyPairsFragment.KernelFirstOrder.ko7Engine.definedHeads =
+        ({ OperatorKO7.DependencyPairsFragment.KernelFirstOrder.Symbol.integrate,
+           OperatorKO7.DependencyPairsFragment.KernelFirstOrder.Symbol.merge,
+           OperatorKO7.DependencyPairsFragment.KernelFirstOrder.Symbol.recD,
+           OperatorKO7.DependencyPairsFragment.KernelFirstOrder.Symbol.eqW } :
+          Finset OperatorKO7.DependencyPairsFragment.KernelFirstOrder.Symbol) ∧
+      (∃ n ∈ OperatorKO7.DependencyPairsFragment.ko7FullStepExtractedNodes.toList,
+        n.nodeKey = "recD" ∧ n.succKeys = ({ "recD" } : Finset String)) ∧
+      (∃ n ∈ OperatorKO7.DependencyPairsFragment.KO7FirstOrder.ko7FullStepExtractedNodes.toList,
+        n.nodeKey = "recD" ∧ n.succKeys = ({ "recD" } : Finset String)) ∧
+      (∃ n ∈ OperatorKO7.DependencyPairsFragment.KernelFirstOrder.ko7FullStepExtractedNodes.toList,
+        n.nodeKey = OperatorKO7.DependencyPairsFragment.KernelFirstOrder.Symbol.recD ∧
+          n.succKeys =
+            ({ OperatorKO7.DependencyPairsFragment.KernelFirstOrder.Symbol.recD } :
+              Finset OperatorKO7.DependencyPairsFragment.KernelFirstOrder.Symbol)) ∧
+      ko7FastReplay.projectionProblem.Pair = DPPair := by
+  refine ⟨ko7FastReplay_export_text_matches_artifact, ?_, ?_, ?_, ?_, ?_, ?_, ko7FastReplay_uses_recSucc_pair⟩
+  · exact OperatorKO7.DependencyPairsFragment.ko7_full_step_defined_heads
+  · exact OperatorKO7.DependencyPairsFragment.KO7FirstOrder.ko7_full_step_defined_heads
+  · exact OperatorKO7.DependencyPairsFragment.KernelFirstOrder.ko7_full_step_defined_heads
+  · exact ko7FastReplay_export_has_recD_successor
+  · exact OperatorKO7.DependencyPairsFragment.KO7FirstOrder.ko7_full_step_has_recD_successor
+  · exact OperatorKO7.DependencyPairsFragment.KernelFirstOrder.ko7_full_step_has_recD_successor
 
 /-- The Lean replay uses the same projection-rank drop as the external FAST proof. -/
 theorem ko7FastReplay_subterm_drop :

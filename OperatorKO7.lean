@@ -97,6 +97,7 @@ import OperatorKO7.Meta.SharingBarrierLift
 import OperatorKO7.Meta.WitnessOrder
 import OperatorKO7.Meta.OperationalIncompleteness
 import OperatorKO7.Meta.BenchmarkedPrimitiveRecursionFamily
+import OperatorKO7.Meta.BoundaryFactorization
 
 /-!
 Public entrypoint for the `OperatorKO7` Lean library.
