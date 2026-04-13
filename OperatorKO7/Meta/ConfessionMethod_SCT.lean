@@ -1,0 +1,119 @@
+import OperatorKO7.Meta.ConfessionMethod
+import OperatorKO7.Meta.ConfessionMethod_DP
+
+/-!
+# Confession Method Instance: Size-Change Termination (SCT)
+
+Size-Change Termination (Lee, Jones, Ben-Amram 2001) constructs size-change
+graphs for each recursive call site and checks that every infinite call
+multipath contains an infinitely descending thread.
+
+For the step-duplicating schema:
+- There is one recursive call: `recur(b, s, succ(n))` calls `recur(b, s, n)`
+- The size-change graph has one arc: argument 3 decreases strictly (↓)
+- Arguments 1 and 2 are non-increasing (≥)
+- Since every call path passes through this single graph, and the graph has
+  a strict descent arc on argument 3, SCT certifies termination
+
+The SCT rank on this schema is the same counter-projection rank used by
+dependency pairs. What differs is:
+- **Extraction:** SCT builds a call graph from the rule structure; DP extracts
+  marked dependency-pair symbols
+- **Descent check:** SCT checks for an infinitely descending thread in the
+  graph monoid closure; DP applies the subterm criterion on a specific
+  argument position
+- **Soundness license:** Lee-Jones-Ben-Amram 2001, not Arts-Giesl 2000
+
+This module formalizes a minimal representation of SCT graphs sufficient to
+state and prove the criterion for the step-duplicating schema. It does not
+formalize the full SCT theory (monoid closures, idempotent analysis for
+multi-call systems).
+-/
+
+namespace OperatorKO7.ConfessionMethodFamily
+
+open OperatorKO7.StepDuplicating
+open OperatorKO7.CompositionalImpossibility
+
+/-- A size-change arc records the relationship between a caller argument
+    and a callee argument across a recursive call. -/
+inductive SCArc
+  | strictDecrease   -- ↓ : callee value is strictly smaller than caller value
+  | nonIncreasing    -- ≥ : callee value is at most the caller value
+  | untracked        -- no relation asserted between this pair
+  deriving DecidableEq, Repr
+
+/-- A size-change graph for a function with `arity` arguments is a matrix
+    of arcs from caller argument positions to callee argument positions.
+    Entry `(i, j)` records the size-change relation between the caller's
+    `i`-th argument and the callee's `j`-th argument. -/
+structure SizeChangeGraph (arity : Nat) where
+  arcs : Fin arity → Fin arity → SCArc
+
+/-- The size-change graph for the schema's single recursive call site.
+
+    The schema has arity 3 for the recursor:
+    - Position 0 (b, the base value): caller b maps to callee b (non-increasing)
+    - Position 1 (s, the step argument): caller s maps to callee s (non-increasing)
+    - Position 2 (n, the counter): caller succ(n) maps to callee n (strict decrease)
+
+    Off-diagonal entries are untracked (no cross-argument size relations). -/
+def schemaRecCallGraph : SizeChangeGraph 3 where
+  arcs := fun i j =>
+    if i = j then
+      if i.val = 2 then SCArc.strictDecrease
+      else SCArc.nonIncreasing
+    else SCArc.untracked
+
+/-- The schema's size-change graph has a strict decrease on the diagonal
+    entry for argument position 2 (the counter). -/
+theorem schemaRecCallGraph_counter_descent :
+    schemaRecCallGraph.arcs ⟨2, by omega⟩ ⟨2, by omega⟩ = SCArc.strictDecrease := by
+  native_decide
+
+/-- Argument positions 0 and 1 are non-increasing on the diagonal. -/
+theorem schemaRecCallGraph_base_nonincreasing :
+    schemaRecCallGraph.arcs ⟨0, by omega⟩ ⟨0, by omega⟩ = SCArc.nonIncreasing := by
+  native_decide
+
+theorem schemaRecCallGraph_step_nonincreasing :
+    schemaRecCallGraph.arcs ⟨1, by omega⟩ ⟨1, by omega⟩ = SCArc.nonIncreasing := by
+  native_decide
+
+/-- The SCT criterion for a single-call-site system: the call graph has at
+    least one strict decrease on the diagonal. For multi-call-site systems,
+    the criterion is stronger (every idempotent in the graph monoid closure
+    must contain a diagonal strict decrease), but for a single graph it
+    reduces to the existence check below. -/
+def sctSatisfied (G : SizeChangeGraph n) : Prop :=
+  ∃ i : Fin n, G.arcs i i = SCArc.strictDecrease
+
+/-- The schema's SCT criterion is satisfied: the counter coordinate
+    provides the required strict descent arc. -/
+theorem schema_sct_satisfied : sctSatisfied schemaRecCallGraph :=
+  ⟨⟨2, by omega⟩, schemaRecCallGraph_counter_descent⟩
+
+/-- No other diagonal entry is a strict decrease (only the counter is). -/
+theorem schema_sct_unique_descent :
+    ∀ i : Fin 3, schemaRecCallGraph.arcs i i = SCArc.strictDecrease → i = ⟨2, by omega⟩ := by
+  intro i h
+  match i with
+  | ⟨0, _⟩ => simp [schemaRecCallGraph] at h
+  | ⟨1, _⟩ => simp [schemaRecCallGraph] at h
+  | ⟨2, _⟩ => rfl
+
+/-- SCT as a confession method on the KO7 schema. The rank is the same
+    counter-projection rank that DP uses; the license is
+    Lee-Jones-Ben-Amram 2001. -/
+def sctConfession : ConfessionMethod ko7Schema where
+  toProjectionRank := dpProjectionRank
+  license := SoundnessLicense.leeJonesBenAmram2001
+
+/-- On the step-duplicating schema, SCT and DP produce the same rank.
+    This is because the schema has a single recursive call with a single
+    strictly decreasing argument, so every method that extracts the
+    recursive-call structure finds the same descent coordinate. -/
+theorem sct_eq_dp_rank :
+    sctConfession.rank = dpConfession.rank := rfl
+
+end OperatorKO7.ConfessionMethodFamily

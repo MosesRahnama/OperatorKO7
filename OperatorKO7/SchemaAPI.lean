@@ -33,6 +33,14 @@ import OperatorKO7.Meta.BarrierWitness_Budgets
 import OperatorKO7.Meta.SynthesisOracle
 import OperatorKO7.Meta.BarrierClass_Classifier
 
+-- Confession method family (escape side)
+import OperatorKO7.Meta.ConfessionMethod
+import OperatorKO7.Meta.ConfessionMethod_DP
+import OperatorKO7.Meta.ConfessionMethod_CounterProjection
+import OperatorKO7.Meta.ConfessionMethod_SCT
+import OperatorKO7.Meta.ConfessionMethod_ArgumentFiltering
+import OperatorKO7.Meta.ConfessionMethod_Family
+
 /-!
 # Public Schema API: Reusable Barrier Theory for Step-Duplicating Recursors
 
