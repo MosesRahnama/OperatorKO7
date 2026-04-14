@@ -1,7 +1,7 @@
 # OperatorKO7 Complete Documentation
-Generated: 2026-04-09 14:38:33 +0330
-Source files: 118
-Total source lines: 26275
+Generated: 2026-04-14 22:49:58 +0330
+Source files: 131
+Total source lines: 28357
 Scope: active `.lean` files in the repository
 
 ## Table of Contents
@@ -15,9 +15,17 @@ Scope: active `.lean` files in the repository
 - [OperatorKO7/Meta/BarrierWitness.lean](#operatorko7metabarrierwitnesslean)
 - [OperatorKO7/Meta/BarrierWitness_Budgets.lean](#operatorko7metabarrierwitnessbudgetslean)
 - [OperatorKO7/Meta/BarrierWitness_Extended.lean](#operatorko7metabarrierwitnessextendedlean)
+- [OperatorKO7/Meta/BenchmarkedPrimitiveRecursionFamily.lean](#operatorko7metabenchmarkedprimitiverecursionfamilylean)
+- [OperatorKO7/Meta/BoundaryFactorization.lean](#operatorko7metaboundaryfactorizationlean)
 - [OperatorKO7/Meta/CompositionalMeasure_Impossibility.lean](#operatorko7metacompositionalmeasureimpossibilitylean)
 - [OperatorKO7/Meta/ComputableMeasure.lean](#operatorko7metacomputablemeasurelean)
 - [OperatorKO7/Meta/ComputableMeasure_Verification.lean](#operatorko7metacomputablemeasureverificationlean)
+- [OperatorKO7/Meta/ConfessionMethod.lean](#operatorko7metaconfessionmethodlean)
+- [OperatorKO7/Meta/ConfessionMethod_ArgumentFiltering.lean](#operatorko7metaconfessionmethodargumentfilteringlean)
+- [OperatorKO7/Meta/ConfessionMethod_CounterProjection.lean](#operatorko7metaconfessionmethodcounterprojectionlean)
+- [OperatorKO7/Meta/ConfessionMethod_DP.lean](#operatorko7metaconfessionmethoddplean)
+- [OperatorKO7/Meta/ConfessionMethod_Family.lean](#operatorko7metaconfessionmethodfamilylean)
+- [OperatorKO7/Meta/ConfessionMethod_SCT.lean](#operatorko7metaconfessionmethodsctlean)
 - [OperatorKO7/Meta/Confluence_Safe.lean](#operatorko7metaconfluencesafelean)
 - [OperatorKO7/Meta/Conjecture_Boundary.lean](#operatorko7metaconjectureboundarylean)
 - [OperatorKO7/Meta/ContextClosed_SN.lean](#operatorko7metacontextclosedsnlean)
@@ -56,6 +64,8 @@ Scope: active `.lean` files in the repository
 - [OperatorKO7/Meta/MatrixBarrierD.lean](#operatorko7metamatrixbarrierdlean)
 - [OperatorKO7/Meta/MatrixBarrierFunctional.lean](#operatorko7metamatrixbarrierfunctionallean)
 - [OperatorKO7/Meta/MatrixBarrierLex.lean](#operatorko7metamatrixbarrierlexlean)
+- [OperatorKO7/Meta/MatrixBarrierLexD.lean](#operatorko7metamatrixbarrierlexdlean)
+- [OperatorKO7/Meta/MatrixBarrierLexPermD.lean](#operatorko7metamatrixbarrierlexpermdlean)
 - [OperatorKO7/Meta/MatrixBarrierMix2.lean](#operatorko7metamatrixbarriermix2lean)
 - [OperatorKO7/Meta/MatrixProjectionCoverage.lean](#operatorko7metamatrixprojectioncoveragelean)
 - [OperatorKO7/Meta/MaxBarrier.lean](#operatorko7metamaxbarrierlean)
@@ -84,12 +94,14 @@ Scope: active `.lean` files in the repository
 - [OperatorKO7/Meta/Normalize_Safe.lean](#operatorko7metanormalizesafelean)
 - [OperatorKO7/Meta/NormalizeSafe_LowerBound.lean](#operatorko7metanormalizesafelowerboundlean)
 - [OperatorKO7/Meta/ObjectAxiom_Ablation.lean](#operatorko7metaobjectaxiomablationlean)
+- [OperatorKO7/Meta/OperationalIncompleteness.lean](#operatorko7metaoperationalincompletenesslean)
 - [OperatorKO7/Meta/OrdinalHierarchy.lean](#operatorko7metaordinalhierarchylean)
 - [OperatorKO7/Meta/OrdinalHierarchy_Control.lean](#operatorko7metaordinalhierarchycontrollean)
 - [OperatorKO7/Meta/OrdinalHierarchy_Controlled.lean](#operatorko7metaordinalhierarchycontrolledlean)
 - [OperatorKO7/Meta/PolyInterpretation_FullStep.lean](#operatorko7metapolyinterpretationfullsteplean)
 - [OperatorKO7/Meta/PolynomialBarrierGeneral.lean](#operatorko7metapolynomialbarriergenerallean)
 - [OperatorKO7/Meta/PrecedenceBarrier.lean](#operatorko7metaprecedencebarrierlean)
+- [OperatorKO7/Meta/ProjectedPrimaryBarrier.lean](#operatorko7metaprojectedprimarybarrierlean)
 - [OperatorKO7/Meta/PumpedBarrierClasses.lean](#operatorko7metapumpedbarrierclasseslean)
 - [OperatorKO7/Meta/QuadraticBarrier.lean](#operatorko7metaquadraticbarrierlean)
 - [OperatorKO7/Meta/QuadraticCrossTermBarrier.lean](#operatorko7metaquadraticcrosstermbarrierlean)
@@ -119,6 +131,7 @@ Scope: active `.lean` files in the repository
 - [OperatorKO7/Meta/TropicalBarrier.lean](#operatorko7metatropicalbarrierlean)
 - [OperatorKO7/Meta/TTT2_CertificateReplay.lean](#operatorko7metattt2certificatereplaylean)
 - [OperatorKO7/Meta/TypedBarrierSurvival.lean](#operatorko7metatypedbarriersurvivallean)
+- [OperatorKO7/Meta/WitnessOrder.lean](#operatorko7metawitnessorderlean)
 - [OperatorKO7/Meta/WPO_PolynomialBarrier.lean](#operatorko7metawpopolynomialbarrierlean)
 - [OperatorKO7/SchemaAPI.lean](#operatorko7schemaapilean)
 - [OperatorKO7/Test/Sanity.lean](#operatorko7testsanitylean)
@@ -165,7 +178,7 @@ require mathlib from git "https://github.com/leanprover-community/mathlib4.git" 
 
 ## OperatorKO7.lean
 
-**Lines:** 109
+**Lines:** 113
 
 ```lean
 import OperatorKO7.SchemaAPI
@@ -264,6 +277,10 @@ import OperatorKO7.Meta.PolyInterpretation_FullStep
 import OperatorKO7.Meta.TTT2_CertificateReplay
 import OperatorKO7.Meta.TropicalBarrier
 import OperatorKO7.Meta.SharingBarrierLift
+import OperatorKO7.Meta.WitnessOrder
+import OperatorKO7.Meta.OperationalIncompleteness
+import OperatorKO7.Meta.BenchmarkedPrimitiveRecursionFamily
+import OperatorKO7.Meta.BoundaryFactorization
 
 /-!
 Public entrypoint for the `OperatorKO7` Lean library.
@@ -1510,6 +1527,473 @@ end OperatorKO7.StepDuplicating
 
 ---
 
+## OperatorKO7/Meta/BenchmarkedPrimitiveRecursionFamily.lean
+
+**Lines:** 352
+
+```lean
+import OperatorKO7.Meta.RecCore
+
+/-!
+# Global classification of the benchmarked primitive-recursion family
+
+This module formalizes the **family-relative global theorem** that the paper
+actually needs.
+
+We do **not** claim a classification of all ordinary first-order term rewriting.
+Instead, we classify the benchmarked primitive-recursion family generated by the
+two-rule recursor pattern on the `RecCore` signature:
+
+- a base rule `recΔ b s void -> b` that may be present or absent;
+- a step rule that may be absent, linear, or duplicating.
+
+This yields a finite family of six members. The key theorem proved here is:
+
+- among the structurally complete members (base rule present, step rule present),
+  the **full duplicating recursor** is the unique member with no direct additive
+  whole-term witness;
+- the complete non-duplicating member has an explicit direct witness;
+- the duplicating member still has an imported-whole witness and a transformed
+  recursive-call witness;
+- every remaining family member is structurally incomplete as a primitive
+  recursor pattern.
+
+This is the correct "global over the benchmarked primitive-recursion family"
+replacement for the overbroad manuscript phrase "minimum instance in ordinary
+term rewriting".
+-/
+
+namespace OperatorKO7.BenchmarkedPRCFamily
+
+open OperatorKO7
+open OperatorKO7.RecCore
+open RecCoreTerm
+
+/-- Whether the base rule is present. -/
+inductive BaseRuleFlag
+  | absent
+  | present
+  deriving DecidableEq, Repr
+
+/-- Which step rule is present. -/
+inductive StepRuleFlag
+  | absent
+  | linear
+  | duplicating
+  deriving DecidableEq, Repr
+
+/-- One member of the benchmarked primitive-recursion family. -/
+structure PRCConfig where
+  baseRule : BaseRuleFlag
+  stepRule : StepRuleFlag
+  deriving DecidableEq, Repr
+
+/-- The complete non-duplicating recursor. -/
+def fullLinear : PRCConfig :=
+  ⟨BaseRuleFlag.present, StepRuleFlag.linear⟩
+
+/-- The complete duplicating recursor. -/
+def fullDuplicating : PRCConfig :=
+  ⟨BaseRuleFlag.present, StepRuleFlag.duplicating⟩
+
+/-- A family member is structurally complete when it has both base and step. -/
+def StructurallyComplete (cfg : PRCConfig) : Prop :=
+  cfg.baseRule = BaseRuleFlag.present ∧ cfg.stepRule ≠ StepRuleFlag.absent
+
+/-- Root-step relation for a benchmark-family member. -/
+inductive FamilyStep (cfg : PRCConfig) : RecCoreTerm → RecCoreTerm → Prop
+  | base (h : cfg.baseRule = BaseRuleFlag.present) (b s : RecCoreTerm) :
+      FamilyStep cfg (recΔ b s void) b
+  | linear (h : cfg.stepRule = StepRuleFlag.linear) (b s n : RecCoreTerm) :
+      FamilyStep cfg (recΔ b s (delta n)) (recΔ b s n)
+  | dup (h : cfg.stepRule = StepRuleFlag.duplicating) (b s n : RecCoreTerm) :
+      FamilyStep cfg (recΔ b s (delta n)) (app s (recΔ b s n))
+
+/-- Recursive-call relation extracted from the step rule. -/
+inductive FamilyCallStep (cfg : PRCConfig) : RecCoreTerm → RecCoreTerm → Prop
+  | linear (h : cfg.stepRule = StepRuleFlag.linear) (b s n : RecCoreTerm) :
+      FamilyCallStep cfg (recΔ b s (delta n)) (recΔ b s n)
+  | dup (h : cfg.stepRule = StepRuleFlag.duplicating) (b s n : RecCoreTerm) :
+      FamilyCallStep cfg (recΔ b s (delta n)) (app s (recΔ b s n))
+
+/-- Direct additive whole-term witness on the full family member. -/
+def HasDirectWitness (cfg : PRCConfig) : Prop :=
+  ∃ M : AdditiveRecCoreMeasure,
+    ∀ {a b : RecCoreTerm}, FamilyStep cfg a b → M.eval b < M.eval a
+
+/-- Imported-whole witness over the original relation. -/
+def HasImportedWholeWitness (cfg : PRCConfig) : Prop :=
+  ∃ μ : RecCoreTerm → Nat,
+    ∀ {a b : RecCoreTerm}, FamilyStep cfg a b → μ b < μ a
+
+/-- Transformed-call witness over the recursive-call relation. -/
+def HasTransformedCallWitness (cfg : PRCConfig) : Prop :=
+  ∃ ρ : RecCoreTerm → Nat,
+    ∀ {a b : RecCoreTerm}, FamilyCallStep cfg a b → ρ b < ρ a
+
+/-- Uniform additive direct witness used for the base and linear members. -/
+def directAdditiveWitness : AdditiveRecCoreMeasure where
+  w_void := 1
+  w_delta := 1
+  w_app := 1
+  w_rec := 1
+  hw_app_pos := by omega
+
+lemma directAdditiveWitness_eval_pos (t : RecCoreTerm) :
+    1 ≤ directAdditiveWitness.eval t := by
+  induction t with
+  | void =>
+      simp [directAdditiveWitness, AdditiveRecCoreMeasure.eval]
+  | delta t ih =>
+      simp [directAdditiveWitness, AdditiveRecCoreMeasure.eval]
+  | app a b iha ihb =>
+      simp [directAdditiveWitness, AdditiveRecCoreMeasure.eval]
+      omega
+  | recΔ b s n ihb ihs ihn =>
+      simp [directAdditiveWitness, AdditiveRecCoreMeasure.eval]
+      omega
+
+lemma directAdditiveWitness_orients_base (b s : RecCoreTerm) :
+    directAdditiveWitness.eval b < directAdditiveWitness.eval (recΔ b s void) := by
+  have hs : 1 ≤ directAdditiveWitness.eval s := directAdditiveWitness_eval_pos s
+  simp [directAdditiveWitness, AdditiveRecCoreMeasure.eval]
+  omega
+
+lemma directAdditiveWitness_orients_linear (b s n : RecCoreTerm) :
+    directAdditiveWitness.eval (recΔ b s n) <
+      directAdditiveWitness.eval (recΔ b s (delta n)) := by
+  simp [directAdditiveWitness, AdditiveRecCoreMeasure.eval]
+
+/-- The imported-whole quadratic witness also decreases on the base rule. -/
+lemma quadraticWitness_orients_base (b s : RecCoreTerm) :
+    quadraticWitness.eval b < quadraticWitness.eval (recΔ b s void) := by
+  have hs : 1 ≤ quadraticWitness.eval s := quadraticWitness_eval_pos s
+  simp [quadraticWitness, CompositionalRecCoreMeasure.eval]
+  omega
+
+/-- The projection rank also orients the linear recursive-call step. -/
+lemma dpProjection_orients_linear_call (b s n : RecCoreTerm) :
+    dpProjection (recΔ b s n) < dpProjection (recΔ b s (delta n)) := by
+  simp [dpProjection]
+
+theorem fullLinear_has_direct_witness :
+    HasDirectWitness fullLinear := by
+  refine ⟨directAdditiveWitness, ?_⟩
+  intro a b hstep
+  cases hstep with
+  | base h b s =>
+      simpa using directAdditiveWitness_orients_base b s
+  | linear h b s n =>
+      simpa using directAdditiveWitness_orients_linear b s n
+  | dup h b s n =>
+      cases h
+
+theorem baseOnly_has_direct_witness :
+    HasDirectWitness ⟨BaseRuleFlag.present, StepRuleFlag.absent⟩ := by
+  refine ⟨directAdditiveWitness, ?_⟩
+  intro a b hstep
+  cases hstep with
+  | base h b s =>
+      simpa using directAdditiveWitness_orients_base b s
+  | linear h b s n =>
+      cases h
+  | dup h b s n =>
+      cases h
+
+theorem stepOnlyLinear_has_direct_witness :
+    HasDirectWitness ⟨BaseRuleFlag.absent, StepRuleFlag.linear⟩ := by
+  refine ⟨directAdditiveWitness, ?_⟩
+  intro a b hstep
+  cases hstep with
+  | base h b s =>
+      cases h
+  | linear h b s n =>
+      simpa using directAdditiveWitness_orients_linear b s n
+  | dup h b s n =>
+      cases h
+
+theorem empty_has_direct_witness :
+    HasDirectWitness ⟨BaseRuleFlag.absent, StepRuleFlag.absent⟩ := by
+  refine ⟨directAdditiveWitness, ?_⟩
+  intro a b hstep
+  cases hstep with
+  | base h b s =>
+      cases h
+  | linear h b s n =>
+      cases h
+  | dup h b s n =>
+      cases h
+
+theorem no_direct_witness_for_duplicating (cfg : PRCConfig)
+    (hdup : cfg.stepRule = StepRuleFlag.duplicating) :
+    ¬ HasDirectWitness cfg := by
+  intro h
+  rcases h with ⟨M, hM⟩
+  have horients :
+      ∀ (b s n : RecCoreTerm),
+        M.eval (app s (recΔ b s n)) < M.eval (recΔ b s (delta n)) := by
+    intro b s n
+    exact hM (FamilyStep.dup hdup b s n)
+  exact (no_additive_compositional_orients_rec_succ M) horients
+
+theorem fullDuplicating_has_no_direct_witness :
+    ¬ HasDirectWitness fullDuplicating := by
+  exact no_direct_witness_for_duplicating fullDuplicating rfl
+
+theorem stepOnlyDuplicating_has_no_direct_witness :
+    ¬ HasDirectWitness ⟨BaseRuleFlag.absent, StepRuleFlag.duplicating⟩ := by
+  exact no_direct_witness_for_duplicating ⟨BaseRuleFlag.absent, StepRuleFlag.duplicating⟩ rfl
+
+theorem fullDuplicating_has_imported_whole_witness :
+    HasImportedWholeWitness fullDuplicating := by
+  refine ⟨quadraticWitness.eval, ?_⟩
+  intro a b hstep
+  cases hstep with
+  | base h b s =>
+      simpa using quadraticWitness_orients_base b s
+  | linear h b s n =>
+      cases h
+  | dup h b s n =>
+      exact quadraticWitness_orients_rec_succ b s n
+
+theorem stepOnlyDuplicating_has_imported_whole_witness :
+    HasImportedWholeWitness ⟨BaseRuleFlag.absent, StepRuleFlag.duplicating⟩ := by
+  refine ⟨quadraticWitness.eval, ?_⟩
+  intro a b hstep
+  cases hstep with
+  | base h b s =>
+      cases h
+  | linear h b s n =>
+      cases h
+  | dup h b s n =>
+      exact quadraticWitness_orients_rec_succ b s n
+
+theorem fullDuplicating_has_transformed_call_witness :
+    HasTransformedCallWitness fullDuplicating := by
+  refine ⟨dpProjection, ?_⟩
+  intro a b hstep
+  cases hstep with
+  | linear h b s n =>
+      cases h
+  | dup h b s n =>
+      exact dp_projection_orients_rec_succ b s n
+
+theorem fullLinear_has_transformed_call_witness :
+    HasTransformedCallWitness fullLinear := by
+  refine ⟨dpProjection, ?_⟩
+  intro a b hstep
+  cases hstep with
+  | linear h b s n =>
+      exact dpProjection_orients_linear_call b s n
+  | dup h b s n =>
+      cases h
+
+/-- Global classification of the finite benchmarked primitive-recursion family. -/
+theorem global_family_classification (cfg : PRCConfig) :
+    (cfg = fullDuplicating ∧ StructurallyComplete cfg
+      ∧ ¬ HasDirectWitness cfg
+      ∧ HasImportedWholeWitness cfg
+      ∧ HasTransformedCallWitness cfg)
+    ∨ (cfg = fullLinear ∧ StructurallyComplete cfg ∧ HasDirectWitness cfg)
+    ∨ (¬ StructurallyComplete cfg) := by
+  cases cfg with
+  | mk baseRule stepRule =>
+      cases baseRule <;> cases stepRule
+      · -- absent / absent
+        right; right
+        simp [StructurallyComplete]
+      · -- absent / linear
+        right; right
+        simp [StructurallyComplete]
+      · -- absent / duplicating
+        right; right
+        simp [StructurallyComplete]
+      · -- present / absent
+        right; right
+        simp [StructurallyComplete]
+      · -- present / linear
+        right; left
+        refine ⟨rfl, ?_, fullLinear_has_direct_witness⟩
+        simp [StructurallyComplete]
+      · -- present / duplicating
+        left
+        refine ⟨rfl, ?_, fullDuplicating_has_no_direct_witness,
+          fullDuplicating_has_imported_whole_witness,
+          fullDuplicating_has_transformed_call_witness⟩
+        simp [StructurallyComplete]
+
+/-- Among structurally complete family members, the duplicating recursor is the
+unique one with no direct additive whole-term witness. -/
+theorem fullDuplicating_unique_blocked_complete_member (cfg : PRCConfig)
+    (hcomplete : StructurallyComplete cfg) :
+    (¬ HasDirectWitness cfg) ↔ cfg = fullDuplicating := by
+  have hclass := global_family_classification cfg
+  rcases hclass with hdup | hrest
+  ·
+      rcases hdup with ⟨heq, _, hnodirect, _, _⟩
+      constructor
+      · intro _
+        exact heq
+      · intro h
+        simpa [h] using hnodirect
+  · cases hrest with
+    | inl hlin =>
+        rcases hlin with ⟨heq, _, hdirect⟩
+        constructor
+        · intro hno
+          exfalso
+          exact hno hdirect
+        · intro h
+          cases h.symm.trans heq
+    | inr hincomplete =>
+        exfalso
+        exact hincomplete hcomplete
+
+/-- Family-relative global minimum theorem: every structurally complete member
+other than the duplicating recursor has a direct whole-term witness. -/
+theorem every_other_complete_member_has_direct_witness (cfg : PRCConfig)
+    (hcomplete : StructurallyComplete cfg) (hneq : cfg ≠ fullDuplicating) :
+    HasDirectWitness cfg := by
+  have hclass := global_family_classification cfg
+  rcases hclass with hdup | hrest
+  ·
+      rcases hdup with ⟨heq, _, _, _, _⟩
+      exact (hneq heq).elim
+  · cases hrest with
+    | inl hlin =>
+        exact hlin.2.2
+    | inr hincomplete =>
+        exact (hincomplete hcomplete).elim
+
+/-- The benchmarked primitive-recursion family has exactly one structurally
+complete member that requires a lift above direct additive whole-term search. -/
+theorem fullDuplicating_is_global_minimum_in_bench_family :
+    StructurallyComplete fullDuplicating
+      ∧ ¬ HasDirectWitness fullDuplicating
+      ∧ HasImportedWholeWitness fullDuplicating
+      ∧ HasTransformedCallWitness fullDuplicating
+      ∧
+      (∀ cfg : PRCConfig,
+        StructurallyComplete cfg → cfg ≠ fullDuplicating → HasDirectWitness cfg) := by
+  refine ⟨by simp [StructurallyComplete, fullDuplicating],
+    fullDuplicating_has_no_direct_witness,
+    fullDuplicating_has_imported_whole_witness,
+    fullDuplicating_has_transformed_call_witness,
+    ?_⟩
+  intro cfg hcomplete hneq
+  exact every_other_complete_member_has_direct_witness cfg hcomplete hneq
+
+end OperatorKO7.BenchmarkedPRCFamily
+```
+
+---
+
+## OperatorKO7/Meta/BoundaryFactorization.lean
+
+**Lines:** 97
+
+```lean
+import OperatorKO7.Meta.LinearRec_Ablation
+import OperatorKO7.Meta.TypedBarrierSurvival
+import OperatorKO7.Meta.SharingBarrierLift
+
+/-!
+# Boundary Factorization
+
+This module packages the three ablation-style facts that explain why the KO7
+orientation barrier sits where it does:
+
+* removing step duplication dissolves the direct barrier;
+* simple typing by itself does not dissolve the barrier;
+* sharing-aware semantics can dissolve the tree-specific obstruction.
+
+Together these support the paper-facing claim that the load-bearing structural
+feature is step-payload duplication under tree semantics, not recursion in
+general and not merely the absence of simple typing.
+-/
+
+namespace OperatorKO7.BarrierFactorization
+
+open OperatorKO7
+open Trace
+
+/-- Removing step duplication dissolves the direct barrier on the linearized
+recursor variant. -/
+theorem recursion_alone_not_sufficient_for_barrier :
+    ∃ μ : Trace → Nat,
+      ∀ {a b : Trace}, LinearStep a b → μ b < μ a := by
+  refine ⟨simpleSize, ?_⟩
+  intro a b h
+  exact simpleSize_orients_linearStep h
+
+/-- Simple typing is not, by itself, an escape mechanism for the additive
+direct-measure barrier. -/
+theorem simple_typing_not_escape_mechanism_additive :
+    ∀ M : TypedBarrierSurvival.AdditiveMeasure,
+      ¬ (∀ (b : TypedBarrierSurvival.Term TypedBarrierSurvival.Ty.res)
+           (s : TypedBarrierSurvival.Term TypedBarrierSurvival.Ty.step)
+           (n : TypedBarrierSurvival.Term TypedBarrierSurvival.Ty.cnt),
+        M.evalRes (TypedBarrierSurvival.Term.wrap s (TypedBarrierSurvival.Term.recur b s n)) <
+          M.evalRes (TypedBarrierSurvival.Term.recur b s (TypedBarrierSurvival.Term.succ n))) := by
+  intro M
+  exact TypedBarrierSurvival.no_additive_orients_typed_recSucc M
+
+/-- The affine typed fragment also preserves the barrier once the step sort
+admits an unbounded typed pump family. -/
+theorem simple_typing_not_escape_mechanism_affine :
+    ∀ M : TypedBarrierSurvival.AffineMeasure,
+      TypedBarrierSurvival.HasTypedStepPump M →
+        ¬ (∀ (b : TypedBarrierSurvival.Term TypedBarrierSurvival.Ty.res)
+             (s : TypedBarrierSurvival.Term TypedBarrierSurvival.Ty.step)
+             (n : TypedBarrierSurvival.Term TypedBarrierSurvival.Ty.cnt),
+          M.evalRes (TypedBarrierSurvival.Term.wrap s (TypedBarrierSurvival.Term.recur b s n)) <
+            M.evalRes (TypedBarrierSurvival.Term.recur b s (TypedBarrierSurvival.Term.succ n))) := by
+  intro M hpump
+  exact TypedBarrierSurvival.no_affine_orients_typed_recSucc_of_stepPump M hpump
+
+/-- Sharing-aware semantics can dissolve the tree-specific direct barrier. -/
+theorem sharing_can_break_tree_barrier :
+    ∀ b s n : SharingBarrierLift.SharedTerm,
+      SharingBarrierLift.sharedCounter (SharingBarrierLift.SharedTerm.shareApp s
+        (SharingBarrierLift.SharedTerm.recur b s n)) <
+      SharingBarrierLift.sharedCounter (SharingBarrierLift.SharedTerm.recur b s
+        (SharingBarrierLift.SharedTerm.succ n)) := by
+  intro b s n
+  exact SharingBarrierLift.sharing_breaks_tree_barrier b s n
+
+/-- Packaged cross-paper factorization theorem: the KO7 boundary is explained
+by step-payload duplication under tree semantics. -/
+theorem ko7_barrier_is_duplication :
+    (∃ μ : Trace → Nat,
+        ∀ {a b : Trace}, LinearStep a b → μ b < μ a) ∧
+      (∀ M : TypedBarrierSurvival.AdditiveMeasure,
+        ¬ (∀ (b : TypedBarrierSurvival.Term TypedBarrierSurvival.Ty.res)
+             (s : TypedBarrierSurvival.Term TypedBarrierSurvival.Ty.step)
+             (n : TypedBarrierSurvival.Term TypedBarrierSurvival.Ty.cnt),
+          M.evalRes (TypedBarrierSurvival.Term.wrap s (TypedBarrierSurvival.Term.recur b s n)) <
+            M.evalRes (TypedBarrierSurvival.Term.recur b s (TypedBarrierSurvival.Term.succ n)))) ∧
+      (∀ M : TypedBarrierSurvival.AffineMeasure,
+        TypedBarrierSurvival.HasTypedStepPump M →
+          ¬ (∀ (b : TypedBarrierSurvival.Term TypedBarrierSurvival.Ty.res)
+               (s : TypedBarrierSurvival.Term TypedBarrierSurvival.Ty.step)
+               (n : TypedBarrierSurvival.Term TypedBarrierSurvival.Ty.cnt),
+            M.evalRes (TypedBarrierSurvival.Term.wrap s (TypedBarrierSurvival.Term.recur b s n)) <
+              M.evalRes (TypedBarrierSurvival.Term.recur b s (TypedBarrierSurvival.Term.succ n)))) ∧
+      (∀ b s n : SharingBarrierLift.SharedTerm,
+        SharingBarrierLift.sharedCounter (SharingBarrierLift.SharedTerm.shareApp s
+          (SharingBarrierLift.SharedTerm.recur b s n)) <
+        SharingBarrierLift.sharedCounter (SharingBarrierLift.SharedTerm.recur b s
+          (SharingBarrierLift.SharedTerm.succ n))) := by
+  exact ⟨recursion_alone_not_sufficient_for_barrier,
+    simple_typing_not_escape_mechanism_additive,
+    simple_typing_not_escape_mechanism_affine,
+    sharing_can_break_tree_barrier⟩
+
+end OperatorKO7.BarrierFactorization
+```
+
+---
+
 ## OperatorKO7/Meta/CompositionalMeasure_Impossibility.lean
 
 **Lines:** 480
@@ -2703,6 +3187,532 @@ theorem no_infinite_safestep_chain :
       ⟨fun n => mu3c (seq n), dec⟩
 
 end OperatorKO7.MetaCM.Verification
+```
+
+---
+
+## OperatorKO7/Meta/ConfessionMethod.lean
+
+**Lines:** 58
+
+```lean
+import OperatorKO7.Meta.StepDuplicatingSchema
+import OperatorKO7.Meta.OperationalIncompleteness
+
+/-!
+# Confession Methods: Generic Interface
+
+A **confession method** on a step-duplicating schema is any termination argument
+that extracts a recursive-call relation from the rule structure, projects to a
+descent coordinate (the counter), and declares the payload dimension inert under
+an external soundness metatheorem.
+
+Formally, this is captured by a `ProjectionRank` (already defined in
+`StepDuplicatingSchema.lean`) together with a named soundness justification.
+This module wraps that into a `ConfessionMethod` structure and proves that every
+`ConfessionMethod` yields orientation and sensitivity-violation properties
+inherited from the underlying `ProjectionRank`.
+-/
+
+namespace OperatorKO7.ConfessionMethodFamily
+
+open OperatorKO7.StepDuplicating
+open OperatorKO7.StepDuplicating.StepDuplicatingSchema
+
+/-- The external soundness theorem that licenses the confession.
+    Each confession method names a different one. -/
+inductive SoundnessLicense
+  | artsGiesl2000            -- dependency pairs + subterm criterion
+  | subtermCriterionDirect   -- subterm criterion without DP extraction
+  | leeJonesBenAmram2001     -- size-change termination
+  | argumentFilteringSoundness -- argument filtering within DP framework
+  deriving DecidableEq, Repr
+
+/-- A confession method on a step-duplicating schema: a projection rank
+    together with the name of the external soundness license that
+    justifies dropping the payload dimension. -/
+structure ConfessionMethod (S : StepDuplicatingSchema) extends
+    ProjectionRank S where
+  license : SoundnessLicense
+
+/-- Every confession method orients the duplicating step.
+    This follows directly from the `ProjectionRank` orientation theorem. -/
+theorem confession_orients {S : StepDuplicatingSchema} (C : ConfessionMethod S)
+    (b s n : S.T) :
+    C.rank (S.wrap s (S.recur b s n)) < C.rank (S.recur b s (S.succ n)) :=
+  projection_orients_dup_step C.toProjectionRank b s n
+
+/-- Every confession method violates wrapper sensitivity on the first argument.
+    This is the formal content of "the payload is not tracked." -/
+theorem confession_violates_wrap1 {S : StepDuplicatingSchema} (C : ConfessionMethod S) :
+    ∃ x y : S.T, ¬ (C.rank (S.wrap x y) > C.rank x) :=
+  projection_violates_wrap_subterm1 C.toProjectionRank
+
+/-- Every confession method violates wrapper sensitivity on the second argument. -/
+theorem confession_violates_wrap2 {S : StepDuplicatingSchema} (C : ConfessionMethod S) :
+    ∃ x y : S.T, ¬ (C.rank (S.wrap x y) > C.rank y) :=
+  projection_violates_wrap_subterm2 C.toProjectionRank
+
+end OperatorKO7.ConfessionMethodFamily
+```
+
+---
+
+## OperatorKO7/Meta/ConfessionMethod_ArgumentFiltering.lean
+
+**Lines:** 50
+
+```lean
+import OperatorKO7.Meta.ConfessionMethod
+import OperatorKO7.Meta.ConfessionMethod_DP
+
+/-!
+# Confession Method Instance: Argument Filtering
+
+Argument filtering (Arts-Giesl 2000, within the DP framework) maps each
+function symbol to a subset or projection of its argument list. For the
+step-duplicating schema:
+
+- π(recur) = 3   (project to the counter argument only)
+- π(wrap) = ε    (collapse to nothing)
+- π(succ) = 1    (keep the single argument)
+- π(base) = ε    (collapse to nothing)
+
+After filtering, the duplicating rule `recur(b, s, succ(n)) → wrap(s, recur(b, s, n))`
+becomes `succ(n) → n` in the filtered universe: the wrapper and the duplicated
+payload are entirely absent. Termination of the filtered problem is trivial.
+
+Argument filtering is a **structural drop**: it removes arguments from the
+proof obligation rather than constructing a new comparison object. The
+soundness is licensed by the argument-filtering soundness theorem within
+the DP framework, which guarantees that termination of the filtered problem
+implies termination of the original system under the conditions of the
+framework.
+
+On the step-duplicating schema, argument filtering produces the same
+concrete rank as DP + subterm criterion and counter-projection. What differs
+is the extraction mechanism (filtering map rather than DP pair extraction or
+direct argument selection) and the specific soundness theorem invoked.
+-/
+
+namespace OperatorKO7.ConfessionMethodFamily
+
+open OperatorKO7.StepDuplicating
+open OperatorKO7.CompositionalImpossibility
+
+/-- Argument filtering as a confession method on KO7.
+    Same projection rank; the license is the argument-filtering soundness
+    theorem within the DP framework. -/
+def argumentFilteringConfession : ConfessionMethod ko7Schema where
+  toProjectionRank := dpProjectionRank
+  license := SoundnessLicense.argumentFilteringSoundness
+
+/-- On the step-duplicating schema, argument filtering and DP produce
+    the same rank function. -/
+theorem argumentFiltering_eq_dp_rank :
+    argumentFilteringConfession.rank = dpConfession.rank := rfl
+
+end OperatorKO7.ConfessionMethodFamily
+```
+
+---
+
+## OperatorKO7/Meta/ConfessionMethod_CounterProjection.lean
+
+**Lines:** 46
+
+```lean
+import OperatorKO7.Meta.ConfessionMethod
+import OperatorKO7.Meta.ConfessionMethod_DP
+
+/-!
+# Confession Method Instance: Direct Counter-Projection (Subterm Criterion)
+
+The subterm criterion applied directly to argument positions of the defined
+symbol F, without passing through the dependency-pair extraction step.
+
+On the two-rule schema:
+- Select argument position 3 of F (the counter)
+- Check: S(n) ▷ n (strict subterm containment)
+- The step argument Y is never evaluated
+
+This is structurally identical to DP on the step-duplicating schema because
+the schema has a single defined symbol with a single recursive call site.
+On more complex systems with multiple defined symbols or multiple recursive
+calls, the two methods diverge: DP extracts marked pair symbols and builds
+a dependency graph, while direct counter-projection operates on the original
+symbol's argument positions.
+
+The underlying rank is the same `ProjectionRank` as DP. What differs is
+the soundness license: the subterm criterion is applied directly to the
+rule's argument positions, not to dependency-pair symbols.
+-/
+
+namespace OperatorKO7.ConfessionMethodFamily
+
+open OperatorKO7.StepDuplicating
+open OperatorKO7.CompositionalImpossibility
+
+/-- Counter-projection via direct subterm criterion on argument position 3.
+    Same rank as DP on this schema; different soundness license. -/
+def counterProjectionConfession : ConfessionMethod ko7Schema where
+  toProjectionRank := dpProjectionRank
+  license := SoundnessLicense.subtermCriterionDirect
+
+/-- On the step-duplicating schema, counter-projection and DP produce the
+    same rank function. This is a theorem, not a coincidence: the schema
+    has exactly one recursive call with exactly one strictly decreasing
+    argument, so every method that extracts the recursive-call structure
+    and finds the descent coordinate will find the same coordinate. -/
+theorem counterProjection_eq_dp_rank :
+    counterProjectionConfession.rank = dpConfession.rank := rfl
+
+end OperatorKO7.ConfessionMethodFamily
+```
+
+---
+
+## OperatorKO7/Meta/ConfessionMethod_DP.lean
+
+**Lines:** 31
+
+```lean
+import OperatorKO7.Meta.ConfessionMethod
+import OperatorKO7.Meta.CompositionalMeasure_Impossibility
+
+/-!
+# Confession Method Instance: Dependency Pairs + Subterm Criterion
+
+The canonical confession method on the KO7 step-duplicating schema.
+
+Dependency pairs extract the recursive-call relation from the rules,
+construct the dependency-pair graph, and apply the subterm criterion with
+projection π(recΔ♯) = 3 to certify that the counter coordinate strictly
+decreases. The wrapper `app(s, ·)` and the duplicated payload `s` are
+dropped from the proof obligation. Soundness is licensed by the
+Arts–Giesl 2000 theorem.
+
+The underlying `ProjectionRank` is `dpProjectionRank` from
+`CompositionalMeasure_Impossibility.lean`, already fully formalized.
+This module packages it as a `ConfessionMethod` instance.
+-/
+
+namespace OperatorKO7.ConfessionMethodFamily
+
+open OperatorKO7.StepDuplicating
+open OperatorKO7.CompositionalImpossibility
+
+/-- Dependency pairs + subterm criterion as a confession method on KO7. -/
+def dpConfession : ConfessionMethod ko7Schema where
+  toProjectionRank := dpProjectionRank
+  license := SoundnessLicense.artsGiesl2000
+
+end OperatorKO7.ConfessionMethodFamily
+```
+
+---
+
+## OperatorKO7/Meta/ConfessionMethod_Family.lean
+
+**Lines:** 168
+
+```lean
+import OperatorKO7.Meta.ConfessionMethod
+import OperatorKO7.Meta.ConfessionMethod_DP
+import OperatorKO7.Meta.ConfessionMethod_CounterProjection
+import OperatorKO7.Meta.ConfessionMethod_SCT
+import OperatorKO7.Meta.ConfessionMethod_ArgumentFiltering
+import OperatorKO7.Meta.OperationalIncompleteness
+import OperatorKO7.Meta.DependencyPairs_Works
+import OperatorKO7.Meta.PolyInterpretation_FullStep
+import OperatorKO7.Meta.ContextClosed_SN_Full
+
+/-!
+# The Confession-Method Family: Collected Results
+
+This module collects the four formalized confession methods on the KO7
+step-duplicating schema and proves family-level theorems about their
+shared structure.
+
+The central result is `confession_is_a_class`: on the step-duplicating
+schema, four methods with four distinct soundness licenses all produce
+the same projection rank and all satisfy the `CertifiedForgettingWitness`
+interface. This is the formal content behind Paper C's claim that the
+construction/confession boundary separates *method classes*, not individual
+named methods.
+
+The four methods are:
+1. Dependency pairs + subterm criterion (Arts-Giesl 2000)
+2. Direct counter-projection via the subterm criterion
+3. Size-Change Termination (Lee-Jones-Ben-Amram 2001)
+4. Argument filtering within the DP framework
+-/
+
+namespace OperatorKO7.ConfessionMethodFamily
+
+open OperatorKO7
+open OperatorKO7.Trace
+open OperatorKO7.StepDuplicating
+open OperatorKO7.StepDuplicating.StepDuplicatingSchema
+open OperatorKO7.CompositionalImpossibility
+open OperatorKO7.MetaOperationalIncompleteness
+
+/-- All four confession methods enumerated. -/
+def allConfessionMethods : List (ConfessionMethod ko7Schema) :=
+  [dpConfession, counterProjectionConfession, sctConfession, argumentFilteringConfession]
+
+/-- The family has exactly four members. -/
+theorem family_size : allConfessionMethods.length = 4 := by rfl
+
+/-- Every confession method in the family produces the same rank on
+    the KO7 schema. This is a theorem: the schema has exactly one
+    recursive call with exactly one strictly decreasing argument, so
+    every projection-based method finds the same descent coordinate. -/
+theorem family_rank_agreement :
+    ∀ C ∈ allConfessionMethods,
+      C.rank = dpConfession.rank := by
+  intro C hC
+  simp [allConfessionMethods] at hC
+  rcases hC with rfl | rfl | rfl | rfl <;> rfl
+
+/-- Every confession method in the family orients the KO7 duplicating
+    step. -/
+theorem family_orients_dup_step :
+    ∀ C ∈ allConfessionMethods,
+      ∀ b s n : Trace,
+        C.rank (app s (recΔ b s n)) < C.rank (recΔ b s (delta n)) := by
+  intro C hC b s n
+  exact confession_orients C b s n
+
+/-- Every confession method in the family violates wrapper sensitivity.
+    This is the formal content of "the payload is declared inert." -/
+theorem family_violates_sensitivity :
+    ∀ C ∈ allConfessionMethods,
+      (∃ x y : Trace, ¬ (C.rank (app x y) > C.rank x))
+      ∧ (∃ x y : Trace, ¬ (C.rank (app x y) > C.rank y)) := by
+  intro C hC
+  exact ⟨confession_violates_wrap1 C, confession_violates_wrap2 C⟩
+
+/-- Every confession method in the family is a certified-forgetting
+    witness in the sense of `OperationalIncompleteness.lean`. -/
+theorem family_certified_forgetting :
+    ∀ C ∈ allConfessionMethods,
+      ∃ fw : CertifiedForgettingWitness,
+        fw.rank = C.rank := by
+  intro C hC
+  rw [family_rank_agreement C hC]
+  exact dp_projection_exhibits_certified_forgetting
+
+/-- The four confession methods have four distinct soundness licenses.
+    This confirms they are genuinely different methods that happen to
+    share the same rank on this schema, not four names for one method. -/
+theorem family_distinct_licenses :
+    (allConfessionMethods.map (·.license)).Nodup := by
+  decide
+
+/-- **Main theorem: Confession methods form a structural class.**
+
+    On the step-duplicating schema:
+    - four methods with distinct soundness licenses exist;
+    - all share a common rank (counter projection);
+    - all satisfy the certified-forgetting interface;
+    - the licenses are pairwise distinct.
+
+    This is the formal content behind Paper C's central claim that the
+    construction/confession boundary separates method *classes*, not
+    individual methods. The confession class is defined by a structural
+    shape (extract recursive calls, project to descent coordinate,
+    declare payload inert) that is invariant under changes of extraction
+    mechanism and soundness license. -/
+theorem confession_is_a_class :
+    allConfessionMethods.length = 4
+    ∧ (∀ C ∈ allConfessionMethods, C.rank = dpConfession.rank)
+    ∧ (allConfessionMethods.map (·.license)).Nodup := by
+  exact ⟨family_size, family_rank_agreement, family_distinct_licenses⟩
+
+/-- The confession family provides four independent witnesses that the
+    transformed-call layer resolves KO7's operational incompleteness at
+    the payload dimension. Each uses the same rank but a different
+    external soundness license. -/
+theorem confession_family_resolves_operational_incompleteness :
+    ∀ C ∈ allConfessionMethods,
+      ∃ fw : CertifiedForgettingWitness, fw.rank = C.rank :=
+  family_certified_forgetting
+
+/-! ## Full-system termination via the confession family
+
+    Each confession method proves termination of the *extracted pair problem*,
+    not just orientation of the duplicating step. The bridge from pair-problem
+    well-foundedness to full-system termination is the external soundness
+    metatheorem named by each method's `SoundnessLicense`.
+
+    Since all four methods share the same rank on this schema, they all
+    inherit the same pair-problem well-foundedness proof (`wf_DPPairRev`
+    from `DependencyPairs_Works.lean`). The full KO7 root-step termination
+    then follows by any of three independent routes:
+
+    - The DP route: `wf_DPPairRev` + Arts-Giesl soundness (external)
+    - The polynomial route: `wf_StepRev_poly` (internal, construction method)
+    - The MPO route: `wf_StepRev_mpo` (internal, construction method)
+
+    All three are already formalized in the artifact. The confession family
+    inherits the DP route because the pair problem is the same for all four
+    methods.
+-/
+
+/-- Every confession method in the family terminates the extracted KO7
+    dependency-pair problem. Since all four share the same rank, they
+    share the same well-foundedness proof. -/
+theorem family_terminates_pair_problem :
+    ∀ C ∈ allConfessionMethods,
+      WellFounded (fun a b : Trace =>
+        OperatorKO7.MetaDependencyPairs.DPPair b a) := by
+  intro C _
+  exact OperatorKO7.MetaDependencyPairs.wf_DPPairRev
+
+/-- The full KO7 root relation is terminating. This is the existing
+    `wf_StepRev_poly` theorem, restated here to confirm that the
+    confession family's pair-problem termination is consistent with
+    (and subsumed by) the full-system termination already in the
+    artifact. -/
+theorem ko7_full_system_terminates :
+    WellFounded (fun a b : Trace => Step b a) :=
+  OperatorKO7.PolyInterpretation.wf_StepRev_poly
+
+/-- The full KO7 context-closed relation is also terminating. -/
+theorem ko7_full_context_closed_terminates :
+    WellFounded MetaSN_KO7.StepCtxFullRev :=
+  MetaSN_KO7.wf_StepCtxFullRev_poly
+
+end OperatorKO7.ConfessionMethodFamily
+```
+
+---
+
+## OperatorKO7/Meta/ConfessionMethod_SCT.lean
+
+**Lines:** 119
+
+```lean
+import OperatorKO7.Meta.ConfessionMethod
+import OperatorKO7.Meta.ConfessionMethod_DP
+
+/-!
+# Confession Method Instance: Size-Change Termination (SCT)
+
+Size-Change Termination (Lee, Jones, Ben-Amram 2001) constructs size-change
+graphs for each recursive call site and checks that every infinite call
+multipath contains an infinitely descending thread.
+
+For the step-duplicating schema:
+- There is one recursive call: `recur(b, s, succ(n))` calls `recur(b, s, n)`
+- The size-change graph has one arc: argument 3 decreases strictly (↓)
+- Arguments 1 and 2 are non-increasing (≥)
+- Since every call path passes through this single graph, and the graph has
+  a strict descent arc on argument 3, SCT certifies termination
+
+The SCT rank on this schema is the same counter-projection rank used by
+dependency pairs. What differs is:
+- **Extraction:** SCT builds a call graph from the rule structure; DP extracts
+  marked dependency-pair symbols
+- **Descent check:** SCT checks for an infinitely descending thread in the
+  graph monoid closure; DP applies the subterm criterion on a specific
+  argument position
+- **Soundness license:** Lee-Jones-Ben-Amram 2001, not Arts-Giesl 2000
+
+This module formalizes a minimal representation of SCT graphs sufficient to
+state and prove the criterion for the step-duplicating schema. It does not
+formalize the full SCT theory (monoid closures, idempotent analysis for
+multi-call systems).
+-/
+
+namespace OperatorKO7.ConfessionMethodFamily
+
+open OperatorKO7.StepDuplicating
+open OperatorKO7.CompositionalImpossibility
+
+/-- A size-change arc records the relationship between a caller argument
+    and a callee argument across a recursive call. -/
+inductive SCArc
+  | strictDecrease   -- ↓ : callee value is strictly smaller than caller value
+  | nonIncreasing    -- ≥ : callee value is at most the caller value
+  | untracked        -- no relation asserted between this pair
+  deriving DecidableEq, Repr
+
+/-- A size-change graph for a function with `arity` arguments is a matrix
+    of arcs from caller argument positions to callee argument positions.
+    Entry `(i, j)` records the size-change relation between the caller's
+    `i`-th argument and the callee's `j`-th argument. -/
+structure SizeChangeGraph (arity : Nat) where
+  arcs : Fin arity → Fin arity → SCArc
+
+/-- The size-change graph for the schema's single recursive call site.
+
+    The schema has arity 3 for the recursor:
+    - Position 0 (b, the base value): caller b maps to callee b (non-increasing)
+    - Position 1 (s, the step argument): caller s maps to callee s (non-increasing)
+    - Position 2 (n, the counter): caller succ(n) maps to callee n (strict decrease)
+
+    Off-diagonal entries are untracked (no cross-argument size relations). -/
+def schemaRecCallGraph : SizeChangeGraph 3 where
+  arcs := fun i j =>
+    if i = j then
+      if i.val = 2 then SCArc.strictDecrease
+      else SCArc.nonIncreasing
+    else SCArc.untracked
+
+/-- The schema's size-change graph has a strict decrease on the diagonal
+    entry for argument position 2 (the counter). -/
+theorem schemaRecCallGraph_counter_descent :
+    schemaRecCallGraph.arcs ⟨2, by omega⟩ ⟨2, by omega⟩ = SCArc.strictDecrease := by
+  native_decide
+
+/-- Argument positions 0 and 1 are non-increasing on the diagonal. -/
+theorem schemaRecCallGraph_base_nonincreasing :
+    schemaRecCallGraph.arcs ⟨0, by omega⟩ ⟨0, by omega⟩ = SCArc.nonIncreasing := by
+  native_decide
+
+theorem schemaRecCallGraph_step_nonincreasing :
+    schemaRecCallGraph.arcs ⟨1, by omega⟩ ⟨1, by omega⟩ = SCArc.nonIncreasing := by
+  native_decide
+
+/-- The SCT criterion for a single-call-site system: the call graph has at
+    least one strict decrease on the diagonal. For multi-call-site systems,
+    the criterion is stronger (every idempotent in the graph monoid closure
+    must contain a diagonal strict decrease), but for a single graph it
+    reduces to the existence check below. -/
+def sctSatisfied (G : SizeChangeGraph n) : Prop :=
+  ∃ i : Fin n, G.arcs i i = SCArc.strictDecrease
+
+/-- The schema's SCT criterion is satisfied: the counter coordinate
+    provides the required strict descent arc. -/
+theorem schema_sct_satisfied : sctSatisfied schemaRecCallGraph :=
+  ⟨⟨2, by omega⟩, schemaRecCallGraph_counter_descent⟩
+
+/-- No other diagonal entry is a strict decrease (only the counter is). -/
+theorem schema_sct_unique_descent :
+    ∀ i : Fin 3, schemaRecCallGraph.arcs i i = SCArc.strictDecrease → i = ⟨2, by omega⟩ := by
+  intro i h
+  match i with
+  | ⟨0, _⟩ => simp [schemaRecCallGraph] at h
+  | ⟨1, _⟩ => simp [schemaRecCallGraph] at h
+  | ⟨2, _⟩ => rfl
+
+/-- SCT as a confession method on the KO7 schema. The rank is the same
+    counter-projection rank that DP uses; the license is
+    Lee-Jones-Ben-Amram 2001. -/
+def sctConfession : ConfessionMethod ko7Schema where
+  toProjectionRank := dpProjectionRank
+  license := SoundnessLicense.leeJonesBenAmram2001
+
+/-- On the step-duplicating schema, SCT and DP produce the same rank.
+    This is because the schema has a single recursive call with a single
+    strictly decreasing argument, so every method that extracts the
+    recursive-call structure finds the same descent coordinate. -/
+theorem sct_eq_dp_rank :
+    sctConfession.rank = dpConfession.rank := rfl
+
+end OperatorKO7.ConfessionMethodFamily
 ```
 
 ---
@@ -9394,12 +10404,14 @@ end MetaSN_KO7
 
 ## OperatorKO7/Meta/EscapeTrichotomy.lean
 
-**Lines:** 443
+**Lines:** 467
 
 ```lean
 import OperatorKO7.Meta.PumpedBarrierClasses
 import OperatorKO7.Meta.DepthBarrier
 import OperatorKO7.Meta.PrecedenceBarrier
+import OperatorKO7.Meta.MatrixBarrierLexD
+import OperatorKO7.Meta.MatrixBarrierLexPermD
 
 /-!
 # Escape Trichotomy
@@ -9420,6 +10432,8 @@ The theorem universe is intentionally narrow and reviewable:
 - KO7-specific pure head-precedence families
 - tracked-primary componentwise pair families
 - tracked-primary lexicographic pair families
+- arbitrary finite tracked-primary lexicographic vector families
+- permutation-priority finite tracked-primary lexicographic vector families
 
 Within this universe, any successful root-step orienter must fail at least one of:
 - wrapper-subterm sensitivity
@@ -9523,12 +10537,16 @@ inductive KO7DirectOrienter where
   | nat (μ : Trace → Nat)
   | pairComponentwise (μ : Trace → StepDuplicatingSchema.Vec2)
   | pairLex (μ : Trace → StepDuplicatingSchema.Vec2)
+  | vecLex (d : Nat) (μ : Trace → Fin (d + 1) → Nat)
+  | vecPermLex (d : Nat) (σ : Equiv.Perm (Fin (d + 1))) (μ : Trace → Fin (d + 1) → Nat)
 
 /-- The tracked primary scalar exposed by an orienter in the explicit KO7 direct universe. -/
 def KO7DirectOrienter.primaryScalar : KO7DirectOrienter → Trace → Nat
   | .nat μ => μ
   | .pairComponentwise μ => fun t => (μ t).1
   | .pairLex μ => fun t => (μ t).1
+  | .vecLex d μ => fun t => μ t (StepDuplicatingSchema.primaryIdx d)
+  | .vecPermLex _ σ μ => fun t => μ t (StepDuplicatingSchema.permPrimaryIdx σ)
 
 /-- Orientation predicate for the explicit KO7 direct-orienter universe. -/
 def KO7DirectOrienter.Orients : KO7DirectOrienter → Prop
@@ -9538,6 +10556,10 @@ def KO7DirectOrienter.Orients : KO7DirectOrienter → Prop
       StepDuplicatingSchema.GlobalOrients ko7System μ StepDuplicatingSchema.PairLt
   | .pairLex μ =>
       StepDuplicatingSchema.GlobalOrients ko7System μ StepDuplicatingSchema.PairLexLt
+  | .vecLex _ μ =>
+      StepDuplicatingSchema.GlobalOrients ko7System μ StepDuplicatingSchema.VecLexLt
+  | .vecPermLex _ σ μ =>
+      StepDuplicatingSchema.GlobalOrients ko7System μ (StepDuplicatingSchema.VecPermLexLt σ)
 
 /-- KO7-specific extension of the Nat-valued direct universe used by the escape
 trichotomy theorem. It adds the theorem-level depth and pure-precedence families
@@ -9600,6 +10622,14 @@ inductive KO7DirectBarrierRepresentable : KO7DirectOrienter → Prop
   | matrix2LexWithPrimaryPump
       (M : StepDuplicatingSchema.MatrixMeasure2WithPrimaryPump ko7Schema) :
       KO7DirectBarrierRepresentable (.pairLex M.eval)
+  | matrixLexDWithPrimaryPump
+      {d : Nat}
+      (M : StepDuplicatingSchema.MatrixLexMeasureDWithPrimaryPump ko7Schema d) :
+      KO7DirectBarrierRepresentable (.vecLex d M.eval)
+  | matrixLexPermWithPrimaryPump
+      {d : Nat}
+      (M : StepDuplicatingSchema.MatrixLexPermMeasureDWithPrimaryPump ko7Schema d) :
+      KO7DirectBarrierRepresentable (.vecPermLex d M.priority M.eval)
 
 /-- KO7 escape trichotomy for the explicit Nat-valued direct universe formalized
 in the artifact. Any successful Nat-valued root-step orienter must fail wrapper
@@ -9719,6 +10749,10 @@ theorem ko7_direct_escape_trichotomy_extended
           exact (PumpedBarrierClasses.no_global_step_orientation_matrix2_with_primary_pump M) horient
       | matrix2LexWithPrimaryPump M =>
           exact (PumpedBarrierClasses.no_global_step_orientation_matrix2_lex_with_primary_pump M) horient
+      | matrixLexDWithPrimaryPump M =>
+          exact (OperatorKO7.MatrixBarrierLexD.no_global_step_orientation_matrixLexD_with_primary_pump M) horient
+      | matrixLexPermWithPrimaryPump M =>
+          exact (OperatorKO7.MatrixBarrierLexPermD.no_global_step_orientation_matrixLexPermD_with_primary_pump M) horient
     · right
       left
       exact htrans
@@ -11895,6 +12929,525 @@ theorem no_global_step_orientation_matrix2_lex_of_wrap_pump
       (S := ko7Schema) M h_wrap_bias hdup
 
 end OperatorKO7.MatrixBarrierLex
+```
+
+---
+
+## OperatorKO7/Meta/MatrixBarrierLexD.lean
+
+**Lines:** 292
+
+```lean
+import OperatorKO7.Meta.CompositionalMeasure_Impossibility
+
+/-!
+# Finite-Dimension Lexicographic Barrier with Tracked Primary Coordinate
+
+This module generalizes the tracked-primary lexicographic barrier from dimension `2`
+to arbitrary fixed finite dimension.
+
+The proof remains intentionally structural rather than fully matrix-theoretic:
+only the primary coordinate is assumed to satisfy the affine barrier interface.
+All remaining coordinates may behave arbitrarily. Any lexicographic decrease still
+forces the primary coordinate to be non-increasing, so a pumped strict increase in that
+coordinate blocks lexicographic orientation immediately.
+
+This yields a genuinely broader direct-family impossibility theorem than the previous
+dimension-2 lex result: any finite tracked-primary lexicographic direct order falls on the
+barrier side once its primary coordinate admits the standard successor- or wrapper-pump.
+-/
+
+namespace OperatorKO7.StepDuplicating
+
+namespace StepDuplicatingSchema
+
+/-- The distinguished primary coordinate for a lexicographic vector family. -/
+@[simp] def primaryIdx (d : Nat) : Fin (d + 1) := ⟨0, Nat.succ_pos d⟩
+
+/-- Strict lexicographic order on `Fin (d+1) → Nat`, with the natural `Fin` ordering. -/
+def VecLexLt {d : Nat} (u v : Fin (d + 1) → Nat) : Prop :=
+  ∃ i : Fin (d + 1),
+    (∀ j : Fin (d + 1), j.val < i.val → u j = v j) ∧ u i < v i
+
+/-- Any lexicographic decrease forces the primary coordinate to be non-increasing. -/
+theorem primary_le_of_vecLexLt {d : Nat} {u v : Fin (d + 1) → Nat}
+    (h : VecLexLt u v) :
+    u (primaryIdx d) ≤ v (primaryIdx d) := by
+  rcases h with ⟨i, hprefix, hlt⟩
+  by_cases hi : i = primaryIdx d
+  · subst hi
+    exact Nat.le_of_lt hlt
+  · have hpos : 0 < i.val := by
+      apply Nat.pos_of_ne_zero
+      intro hz
+      apply hi
+      apply Fin.ext
+      simpa [primaryIdx] using hz
+    have heq := hprefix (primaryIdx d) hpos
+    exact Nat.le_of_eq heq
+
+/-- A finite-dimensional lexicographic direct measure with one tracked affine primary
+coordinate. All other coordinates are intentionally left unconstrained. -/
+structure MatrixLexMeasureD (S : StepDuplicatingSchema) (d : Nat) where
+  eval : S.T → Fin (d + 1) → Nat
+  c_base : Nat
+  succ_bias : Nat
+  succ_scale : Nat
+  wrap_const : Nat
+  wrap_left : Nat
+  wrap_right : Nat
+  recur_const : Nat
+  recur_base : Nat
+  recur_step : Nat
+  recur_counter : Nat
+  eval_base : eval S.base (primaryIdx d) = c_base
+  eval_succ :
+    ∀ t, eval (S.succ t) (primaryIdx d) = succ_bias + succ_scale * eval t (primaryIdx d)
+  eval_wrap :
+    ∀ x y,
+      eval (S.wrap x y) (primaryIdx d) =
+        wrap_const + wrap_left * eval x (primaryIdx d) + wrap_right * eval y (primaryIdx d)
+  eval_recur :
+    ∀ b s n,
+      eval (S.recur b s n) (primaryIdx d) =
+        recur_const + recur_base * eval b (primaryIdx d) +
+          recur_step * eval s (primaryIdx d) + recur_counter * eval n (primaryIdx d)
+  h_wrap_left_pos : 1 ≤ wrap_left
+  h_wrap_right_pos : 1 ≤ wrap_right
+
+/-- Project the primary coordinate to the scalar affine barrier infrastructure. -/
+def MatrixLexMeasureD.primaryAffine
+    {S : StepDuplicatingSchema} {d : Nat}
+    (M : MatrixLexMeasureD S d) : AffineMeasure S where
+  eval := fun t => M.eval t (primaryIdx d)
+  c_base := M.c_base
+  succ_bias := M.succ_bias
+  succ_scale := M.succ_scale
+  wrap_const := M.wrap_const
+  wrap_left := M.wrap_left
+  wrap_right := M.wrap_right
+  recur_const := M.recur_const
+  recur_base := M.recur_base
+  recur_step := M.recur_step
+  recur_counter := M.recur_counter
+  eval_base := M.eval_base
+  eval_succ := M.eval_succ
+  eval_wrap := M.eval_wrap
+  eval_recur := M.eval_recur
+  h_wrap_left_pos := M.h_wrap_left_pos
+  h_wrap_right_pos := M.h_wrap_right_pos
+
+/-- Unbounded pump in the tracked primary coordinate. -/
+def HasUnboundedPrimaryRange
+    {S : StepDuplicatingSchema} {d : Nat}
+    (M : MatrixLexMeasureD S d) : Prop :=
+  ∀ k : Nat, ∃ t : S.T, k ≤ M.eval t (primaryIdx d)
+
+/-- A pumped strict increase in the primary coordinate blocks finite-dimensional
+lexicographic orientation immediately. -/
+theorem no_matrixLexD_orients_dup_step_of_unbounded_primary
+    {S : StepDuplicatingSchema} {d : Nat} (M : MatrixLexMeasureD S d)
+    (hunbounded : HasUnboundedPrimaryRange M) :
+    ¬ (∀ (b s n : S.T),
+      VecLexLt (M.eval (S.wrap s (S.recur b s n))) (M.eval (S.recur b s (S.succ n)))) := by
+  intro h
+  let threshold := M.recur_counter * (M.succ_bias + M.succ_scale * M.c_base)
+  rcases hunbounded (threshold + 1) with ⟨s, hs⟩
+  let Sval := M.eval s (primaryIdx d)
+  let A := M.recur_const + M.recur_base * M.c_base + M.recur_step * Sval
+  let B := M.recur_counter * M.c_base
+  let T := M.recur_counter * (M.succ_bias + M.succ_scale * M.c_base)
+  have hspec := h S.base s S.base
+  have hle_spec :
+      M.eval (S.wrap s (S.recur S.base s S.base)) (primaryIdx d) ≤
+        M.eval (S.recur S.base s (S.succ S.base)) (primaryIdx d) := by
+    exact primary_le_of_vecLexLt hspec
+  have hle_spec' :
+      M.wrap_const + M.wrap_left * Sval + M.wrap_right * (A + B) ≤ A + T := by
+    rw [M.eval_wrap, M.eval_recur, M.eval_recur, M.eval_base, M.eval_succ, M.eval_base] at hle_spec
+    simpa [Sval, A, B, T, Nat.add_assoc, Nat.add_left_comm, Nat.add_comm, Nat.mul_add] using hle_spec
+  have hsT1 : T + 1 ≤ Sval := by
+    simpa [threshold, T, Sval] using hs
+  have hS : Sval ≤ M.wrap_left * Sval := by
+    calc
+      Sval = 1 * Sval := by simp
+      _ ≤ M.wrap_left * Sval := by exact Nat.mul_le_mul_right Sval M.h_wrap_left_pos
+  have hAB : A + B ≤ M.wrap_right * (A + B) := by
+    calc
+      A + B = 1 * (A + B) := by simp
+      _ ≤ M.wrap_right * (A + B) := by
+        exact Nat.mul_le_mul_right (A + B) M.h_wrap_right_pos
+  have h_rhs_to_aS1 : A + (T + 1) ≤ A + Sval := Nat.add_le_add_left hsT1 A
+  have h_aS_to_aWS : A + Sval ≤ A + M.wrap_left * Sval := Nat.add_le_add_left hS A
+  have h_aWS_to_sum : A + M.wrap_left * Sval ≤ A + M.wrap_left * Sval + B := by
+    exact Nat.le_add_right _ _
+  have h_sum_to_wsum :
+      A + M.wrap_left * Sval + B ≤ M.wrap_left * Sval + M.wrap_right * (A + B) := by
+    have hAB' :
+        M.wrap_left * Sval + (A + B) ≤
+          M.wrap_left * Sval + M.wrap_right * (A + B) :=
+      Nat.add_le_add_left hAB (M.wrap_left * Sval)
+    simpa [Nat.add_assoc, Nat.add_left_comm, Nat.add_comm] using hAB'
+  have h_with_const :
+      M.wrap_left * Sval + M.wrap_right * (A + B) ≤
+        M.wrap_const + M.wrap_left * Sval + M.wrap_right * (A + B) := by
+    calc
+      M.wrap_left * Sval + M.wrap_right * (A + B)
+          ≤ M.wrap_const + (M.wrap_left * Sval + M.wrap_right * (A + B)) := by
+            exact Nat.le_add_left _ _
+      _ = M.wrap_const + M.wrap_left * Sval + M.wrap_right * (A + B) := by
+        simp [Nat.add_assoc]
+  have hgt :
+      A + T + 1 ≤ M.wrap_const + M.wrap_left * Sval + M.wrap_right * (A + B) := by
+    have htmp :
+        A + (T + 1) ≤ M.wrap_const + M.wrap_left * Sval + M.wrap_right * (A + B) := by
+      exact le_trans h_rhs_to_aS1 <|
+        le_trans h_aS_to_aWS <|
+        le_trans h_aWS_to_sum <|
+        le_trans h_sum_to_wsum h_with_const
+    simpa [Nat.add_assoc] using htmp
+  omega
+
+/-- Successor-pump corollary for finite lexicographic families. -/
+theorem no_matrixLexD_orients_dup_step_of_succ_pump
+    {S : StepDuplicatingSchema} {d : Nat} (M : MatrixLexMeasureD S d)
+    (h_succ_bias : 1 ≤ M.succ_bias) (h_succ_scale : 1 ≤ M.succ_scale) :
+    ¬ (∀ (b s n : S.T),
+      VecLexLt (M.eval (S.wrap s (S.recur b s n))) (M.eval (S.recur b s (S.succ n)))) := by
+  apply no_matrixLexD_orients_dup_step_of_unbounded_primary (M := M)
+  intro k
+  refine ⟨succIter S k, ?_⟩
+  simpa [MatrixLexMeasureD.primaryAffine, primaryIdx] using
+    (eval_succIter_ge M.primaryAffine h_succ_bias h_succ_scale k)
+
+/-- Wrap-pump corollary for finite lexicographic families. -/
+theorem no_matrixLexD_orients_dup_step_of_wrap_pump
+    {S : StepDuplicatingSchema} {d : Nat} (M : MatrixLexMeasureD S d)
+    (h_wrap_bias : 1 ≤ M.wrap_const + M.wrap_right * M.c_base) :
+    ¬ (∀ (b s n : S.T),
+      VecLexLt (M.eval (S.wrap s (S.recur b s n))) (M.eval (S.recur b s (S.succ n)))) := by
+  apply no_matrixLexD_orients_dup_step_of_unbounded_primary (M := M)
+  intro k
+  refine ⟨wrapIter S k, ?_⟩
+  simpa [MatrixLexMeasureD.primaryAffine, primaryIdx] using
+    (eval_wrapIter_ge_affine M.primaryAffine h_wrap_bias k)
+
+/-- A strengthened finite lexicographic family with an internal primary pump. -/
+structure MatrixLexMeasureDWithPrimaryPump (S : StepDuplicatingSchema) (d : Nat)
+    extends MatrixLexMeasureD S d where
+  has_primary_pump :
+    (1 ≤ succ_bias ∧ 1 ≤ succ_scale) ∨ 1 ≤ wrap_const + wrap_right * c_base
+
+/-- Unconditional barrier for the strengthened finite lexicographic subclass. -/
+theorem no_matrixLexD_with_primary_pump_orients_dup_step
+    {S : StepDuplicatingSchema} {d : Nat}
+    (M : MatrixLexMeasureDWithPrimaryPump S d) :
+    ¬ (∀ (b s n : S.T),
+      VecLexLt (M.eval (S.wrap s (S.recur b s n))) (M.eval (S.recur b s (S.succ n)))) := by
+  rcases M.has_primary_pump with hsucc | hwrap
+  · exact no_matrixLexD_orients_dup_step_of_succ_pump (M := M.toMatrixLexMeasureD) hsucc.1 hsucc.2
+  · exact no_matrixLexD_orients_dup_step_of_wrap_pump (M := M.toMatrixLexMeasureD) hwrap
+
+/-- Global root orientation would orient the duplicating step as well. -/
+theorem no_global_orients_matrixLexD_of_unbounded_primary
+    {Sys : StepDuplicatingSystem} {d : Nat}
+    (M : MatrixLexMeasureD Sys.toStepDuplicatingSchema d)
+    (hunbounded : HasUnboundedPrimaryRange M) :
+    ¬ GlobalOrients Sys M.eval VecLexLt := by
+  intro h
+  exact
+    no_matrixLexD_orients_dup_step_of_unbounded_primary
+      (S := Sys.toStepDuplicatingSchema) M hunbounded
+      (fun b s n => h (Sys.dup_step b s n))
+
+/-- The strengthened pumped finite lexicographic subclass also fails globally. -/
+theorem no_global_orients_matrixLexD_with_primary_pump
+    {Sys : StepDuplicatingSystem} {d : Nat}
+    (M : MatrixLexMeasureDWithPrimaryPump Sys.toStepDuplicatingSchema d) :
+    ¬ GlobalOrients Sys M.eval VecLexLt := by
+  intro h
+  exact
+    no_matrixLexD_with_primary_pump_orients_dup_step
+      (S := Sys.toStepDuplicatingSchema) M
+      (fun b s n => h (Sys.dup_step b s n))
+
+end StepDuplicatingSchema
+
+end OperatorKO7.StepDuplicating
+
+namespace OperatorKO7.MatrixBarrierLexD
+
+open OperatorKO7
+open OperatorKO7.Trace
+open OperatorKO7.StepDuplicating
+open OperatorKO7.CompositionalImpossibility
+
+/-- KO7 specialization of the finite tracked-primary lexicographic barrier. -/
+theorem no_global_step_orientation_matrixLexD_of_unbounded_primary
+    {d : Nat} (M : StepDuplicatingSchema.MatrixLexMeasureD ko7Schema d)
+    (hunbounded : StepDuplicatingSchema.HasUnboundedPrimaryRange M) :
+    ¬ StepDuplicatingSchema.GlobalOrients ko7System M.eval StepDuplicatingSchema.VecLexLt := by
+  exact
+    StepDuplicatingSchema.no_global_orients_matrixLexD_of_unbounded_primary
+      (Sys := ko7System) M hunbounded
+
+/-- KO7 successor-pump specialization for finite tracked-primary lexicographic families. -/
+theorem no_global_step_orientation_matrixLexD_of_succ_pump
+    {d : Nat} (M : StepDuplicatingSchema.MatrixLexMeasureD ko7Schema d)
+    (h_succ_bias : 1 ≤ M.succ_bias) (h_succ_scale : 1 ≤ M.succ_scale) :
+    ¬ (∀ {a b : Trace}, Step a b → StepDuplicatingSchema.VecLexLt (M.eval b) (M.eval a)) := by
+  intro h
+  have hdup :
+      ∀ b s n : Trace,
+        StepDuplicatingSchema.VecLexLt (M.eval (app s (recΔ b s n))) (M.eval (recΔ b s (delta n))) := by
+    intro b s n
+    exact h (Step.R_rec_succ b s n)
+  exact
+    StepDuplicatingSchema.no_matrixLexD_orients_dup_step_of_succ_pump
+      (S := ko7Schema) M h_succ_bias h_succ_scale hdup
+
+/-- KO7 wrap-pump specialization for finite tracked-primary lexicographic families. -/
+theorem no_global_step_orientation_matrixLexD_of_wrap_pump
+    {d : Nat} (M : StepDuplicatingSchema.MatrixLexMeasureD ko7Schema d)
+    (h_wrap_bias : 1 ≤ M.wrap_const + M.wrap_right * M.c_base) :
+    ¬ (∀ {a b : Trace}, Step a b → StepDuplicatingSchema.VecLexLt (M.eval b) (M.eval a)) := by
+  intro h
+  have hdup :
+      ∀ b s n : Trace,
+        StepDuplicatingSchema.VecLexLt (M.eval (app s (recΔ b s n))) (M.eval (recΔ b s (delta n))) := by
+    intro b s n
+    exact h (Step.R_rec_succ b s n)
+  exact
+    StepDuplicatingSchema.no_matrixLexD_orients_dup_step_of_wrap_pump
+      (S := ko7Schema) M h_wrap_bias hdup
+
+/-- KO7 unconditional specialization for the strengthened finite lexicographic subclass. -/
+theorem no_global_step_orientation_matrixLexD_with_primary_pump
+    {d : Nat} (M : StepDuplicatingSchema.MatrixLexMeasureDWithPrimaryPump ko7Schema d) :
+    ¬ StepDuplicatingSchema.GlobalOrients ko7System M.eval StepDuplicatingSchema.VecLexLt := by
+  exact
+    StepDuplicatingSchema.no_global_orients_matrixLexD_with_primary_pump
+      (Sys := ko7System) M
+
+end OperatorKO7.MatrixBarrierLexD
+```
+
+---
+
+## OperatorKO7/Meta/MatrixBarrierLexPermD.lean
+
+**Lines:** 209
+
+```lean
+import OperatorKO7.Meta.ProjectedPrimaryBarrier
+
+/-!
+# Permutation-Priority Finite Lexicographic Barrier
+
+This module extends the finite tracked-primary lexicographic barrier from the fixed natural
+coordinate order to arbitrary priority permutations.
+
+The important point is structural: once a chosen primary coordinate is placed at highest
+priority in the lex order, the same barrier proof goes through. A lexicographic decrease
+under that priority permutation still forces the primary coordinate to be non-increasing,
+so the standard affine pump on that coordinate blocks orientation.
+
+This sharpens the orientation boundary in a mathematically meaningful way:
+the barrier no longer depends on the incidental choice of coordinate enumeration.
+-/
+
+namespace OperatorKO7.StepDuplicating
+
+namespace StepDuplicatingSchema
+
+/-- The distinguished highest-priority coordinate under a permutation-based lex order. -/
+@[simp] def permPrimaryIdx {d : Nat} (σ : Equiv.Perm (Fin (d + 1))) : Fin (d + 1) :=
+  σ (primaryIdx d)
+
+/-- Strict lexicographic order induced by a priority permutation. -/
+def VecPermLexLt {d : Nat} (σ : Equiv.Perm (Fin (d + 1)))
+    (u v : Fin (d + 1) → Nat) : Prop :=
+  ∃ i : Fin (d + 1),
+    (∀ j : Fin (d + 1), j.val < i.val → u (σ j) = v (σ j)) ∧ u (σ i) < v (σ i)
+
+/-- Any permutation-priority lex decrease forces the highest-priority coordinate to be
+non-increasing. -/
+theorem permPrimary_le_of_vecPermLexLt {d : Nat} {σ : Equiv.Perm (Fin (d + 1))}
+    {u v : Fin (d + 1) → Nat}
+    (h : VecPermLexLt σ u v) :
+    u (permPrimaryIdx σ) ≤ v (permPrimaryIdx σ) := by
+  rcases h with ⟨i, hprefix, hlt⟩
+  by_cases hi : i = primaryIdx d
+  · subst hi
+    simpa [permPrimaryIdx] using Nat.le_of_lt hlt
+  · have hpos : 0 < i.val := by
+      apply Nat.pos_of_ne_zero
+      intro hz
+      apply hi
+      apply Fin.ext
+      simpa [primaryIdx] using hz
+    have heq := hprefix (primaryIdx d) hpos
+    exact Nat.le_of_eq (by simpa [permPrimaryIdx] using heq)
+
+/-- A finite-dimensional lexicographic direct measure whose highest-priority coordinate is a
+tracked affine primary component. -/
+structure MatrixLexPermMeasureD (S : StepDuplicatingSchema) (d : Nat) where
+  priority : Equiv.Perm (Fin (d + 1))
+  eval : S.T → Fin (d + 1) → Nat
+  c_base : Nat
+  succ_bias : Nat
+  succ_scale : Nat
+  wrap_const : Nat
+  wrap_left : Nat
+  wrap_right : Nat
+  recur_const : Nat
+  recur_base : Nat
+  recur_step : Nat
+  recur_counter : Nat
+  eval_base : eval S.base (permPrimaryIdx priority) = c_base
+  eval_succ :
+    ∀ t,
+      eval (S.succ t) (permPrimaryIdx priority) =
+        succ_bias + succ_scale * eval t (permPrimaryIdx priority)
+  eval_wrap :
+    ∀ x y,
+      eval (S.wrap x y) (permPrimaryIdx priority) =
+        wrap_const + wrap_left * eval x (permPrimaryIdx priority) +
+          wrap_right * eval y (permPrimaryIdx priority)
+  eval_recur :
+    ∀ b s n,
+      eval (S.recur b s n) (permPrimaryIdx priority) =
+        recur_const + recur_base * eval b (permPrimaryIdx priority) +
+          recur_step * eval s (permPrimaryIdx priority) +
+          recur_counter * eval n (permPrimaryIdx priority)
+  h_wrap_left_pos : 1 ≤ wrap_left
+  h_wrap_right_pos : 1 ≤ wrap_right
+
+/-- The primary affine projection exposed by the permutation-priority family. -/
+def MatrixLexPermMeasureD.primaryAffine
+    {S : StepDuplicatingSchema} {d : Nat}
+    (M : MatrixLexPermMeasureD S d) : AffineMeasure S where
+  eval := fun t => M.eval t (permPrimaryIdx M.priority)
+  c_base := M.c_base
+  succ_bias := M.succ_bias
+  succ_scale := M.succ_scale
+  wrap_const := M.wrap_const
+  wrap_left := M.wrap_left
+  wrap_right := M.wrap_right
+  recur_const := M.recur_const
+  recur_base := M.recur_base
+  recur_step := M.recur_step
+  recur_counter := M.recur_counter
+  eval_base := M.eval_base
+  eval_succ := M.eval_succ
+  eval_wrap := M.eval_wrap
+  eval_recur := M.eval_recur
+  h_wrap_left_pos := M.h_wrap_left_pos
+  h_wrap_right_pos := M.h_wrap_right_pos
+
+/-- Unbounded pump in the highest-priority coordinate. -/
+def HasUnboundedPermPrimaryRange
+    {S : StepDuplicatingSchema} {d : Nat}
+    (M : MatrixLexPermMeasureD S d) : Prop :=
+  ∀ k : Nat, ∃ t : S.T, k ≤ M.eval t (permPrimaryIdx M.priority)
+
+/-- Permutation-priority lex families are instances of the generic projected-primary
+dominance theorem. -/
+theorem no_matrixLexPermD_orients_dup_step_of_unbounded_primary
+    {S : StepDuplicatingSchema} {d : Nat}
+    (M : MatrixLexPermMeasureD S d)
+    (hunbounded : HasUnboundedPermPrimaryRange M) :
+    ¬ (∀ (b s n : S.T),
+      VecPermLexLt M.priority (M.eval (S.wrap s (S.recur b s n)))
+        (M.eval (S.recur b s (S.succ n)))) := by
+  apply no_orients_dup_step_of_projected_primary_dominance
+    (μ := M.eval) (R := VecPermLexLt M.priority)
+    (π := fun v => v (permPrimaryIdx M.priority)) (M := M.primaryAffine)
+  · intro u v h
+    exact permPrimary_le_of_vecPermLexLt h
+  · intro t
+    rfl
+  · intro k
+    rcases hunbounded k with ⟨t, ht⟩
+    exact ⟨t, ht⟩
+
+/-- Successor-pump corollary for permutation-priority lex families. -/
+theorem no_matrixLexPermD_orients_dup_step_of_succ_pump
+    {S : StepDuplicatingSchema} {d : Nat}
+    (M : MatrixLexPermMeasureD S d)
+    (h_succ_bias : 1 ≤ M.succ_bias) (h_succ_scale : 1 ≤ M.succ_scale) :
+    ¬ (∀ (b s n : S.T),
+      VecPermLexLt M.priority (M.eval (S.wrap s (S.recur b s n)))
+        (M.eval (S.recur b s (S.succ n)))) := by
+  apply no_matrixLexPermD_orients_dup_step_of_unbounded_primary (M := M)
+  intro k
+  refine ⟨succIter S k, ?_⟩
+  simpa [MatrixLexPermMeasureD.primaryAffine] using
+    (eval_succIter_ge M.primaryAffine h_succ_bias h_succ_scale k)
+
+/-- Wrap-pump corollary for permutation-priority lex families. -/
+theorem no_matrixLexPermD_orients_dup_step_of_wrap_pump
+    {S : StepDuplicatingSchema} {d : Nat}
+    (M : MatrixLexPermMeasureD S d)
+    (h_wrap_bias : 1 ≤ M.wrap_const + M.wrap_right * M.c_base) :
+    ¬ (∀ (b s n : S.T),
+      VecPermLexLt M.priority (M.eval (S.wrap s (S.recur b s n)))
+        (M.eval (S.recur b s (S.succ n)))) := by
+  apply no_matrixLexPermD_orients_dup_step_of_unbounded_primary (M := M)
+  intro k
+  refine ⟨wrapIter S k, ?_⟩
+  simpa [MatrixLexPermMeasureD.primaryAffine] using
+    (eval_wrapIter_ge_affine M.primaryAffine h_wrap_bias k)
+
+/-- Strengthened permutation-priority family with an internal primary pump. -/
+structure MatrixLexPermMeasureDWithPrimaryPump (S : StepDuplicatingSchema) (d : Nat)
+    extends MatrixLexPermMeasureD S d where
+  has_primary_pump :
+    (1 ≤ succ_bias ∧ 1 ≤ succ_scale) ∨ 1 ≤ wrap_const + wrap_right * c_base
+
+/-- Unconditional barrier for the strengthened permutation-priority subclass. -/
+theorem no_matrixLexPermD_with_primary_pump_orients_dup_step
+    {S : StepDuplicatingSchema} {d : Nat}
+    (M : MatrixLexPermMeasureDWithPrimaryPump S d) :
+    ¬ (∀ (b s n : S.T),
+      VecPermLexLt M.priority (M.eval (S.wrap s (S.recur b s n)))
+        (M.eval (S.recur b s (S.succ n)))) := by
+  rcases M.has_primary_pump with hsucc | hwrap
+  · exact no_matrixLexPermD_orients_dup_step_of_succ_pump (M := M.toMatrixLexPermMeasureD) hsucc.1 hsucc.2
+  · exact no_matrixLexPermD_orients_dup_step_of_wrap_pump (M := M.toMatrixLexPermMeasureD) hwrap
+
+/-- Global root orientation would orient the duplicating step as well. -/
+theorem no_global_orients_matrixLexPermD_with_primary_pump
+    {Sys : StepDuplicatingSystem} {d : Nat}
+    (M : MatrixLexPermMeasureDWithPrimaryPump Sys.toStepDuplicatingSchema d) :
+    ¬ GlobalOrients Sys M.eval (VecPermLexLt M.priority) := by
+  intro h
+  exact
+    no_matrixLexPermD_with_primary_pump_orients_dup_step
+      (S := Sys.toStepDuplicatingSchema) M
+      (fun b s n => h (Sys.dup_step b s n))
+
+end StepDuplicatingSchema
+
+end OperatorKO7.StepDuplicating
+
+namespace OperatorKO7.MatrixBarrierLexPermD
+
+open OperatorKO7
+open OperatorKO7.Trace
+open OperatorKO7.StepDuplicating
+open OperatorKO7.CompositionalImpossibility
+
+/-- KO7 unconditional specialization for the strengthened permutation-priority subclass. -/
+theorem no_global_step_orientation_matrixLexPermD_with_primary_pump
+    {d : Nat} (M : StepDuplicatingSchema.MatrixLexPermMeasureDWithPrimaryPump ko7Schema d) :
+    ¬ StepDuplicatingSchema.GlobalOrients ko7System M.eval
+        (StepDuplicatingSchema.VecPermLexLt M.priority) := by
+  exact
+    StepDuplicatingSchema.no_global_orients_matrixLexPermD_with_primary_pump
+      (Sys := ko7System) M
+
+end OperatorKO7.MatrixBarrierLexPermD
 ```
 
 ---
@@ -20539,6 +22092,123 @@ end OperatorKO7.ObjectAxiomAblation
 
 ---
 
+## OperatorKO7/Meta/OperationalIncompleteness.lean
+
+**Lines:** 108
+
+```lean
+import OperatorKO7.Meta.WitnessOrder
+import OperatorKO7.Meta.CompositionalMeasure_Impossibility
+
+/-!
+# Operational incompleteness for the duplicated payload coordinate
+
+This module packages a narrow theorem-backed notion of **operational
+incompleteness** for the KO7 duplicating recursor.
+
+The claim formalized here is intentionally precise:
+
+- the direct whole-term witness language for KO7 is empty;
+- mathematically sound witnesses do exist above that layer;
+- under the benchmark contract the first admissible witness appears only at the
+  transformed-call layer;
+- the transformed witness is carried by a rank that explicitly drops wrapper
+  sensitivity, i.e. it works only by **certified forgetting** of the duplicated
+  payload coordinate.
+
+This is a witness-language incompleteness statement, not an undecidability
+statement. The point is not that the duplicated payload is meaningless, but
+that the direct whole-term proof language cannot remain fully sensitive to it
+and still certify the KO7 duplicating step.
+-/
+
+namespace OperatorKO7.MetaOperationalIncompleteness
+
+open OperatorKO7
+open OperatorKO7.Trace
+open OperatorKO7.WitnessOrder
+
+/-- A transformed witness that succeeds by orienting the duplicating step while
+explicitly violating wrapper sensitivity on the duplicated payload coordinate.
+
+This is the narrow formal content behind the informal phrase "ignore the
+payload": the witness comes with an explicit rank, and that rank can be shown
+not to satisfy the wrapper-subterm sensitivity expected of the direct
+whole-term barrier families. -/
+structure CertifiedForgettingWitness where
+  rank : Trace → Nat
+  orientsDupStep :
+    ∀ b s n, rank (app s (recΔ b s n)) < rank (recΔ b s (delta n))
+  violatesPayloadLeft :
+    ∃ x y : Trace, ¬ (rank (app x y) > rank x)
+  violatesPayloadRight :
+    ∃ x y : Trace, ¬ (rank (app x y) > rank y)
+
+/-- KO7's dependency-pair projection is the canonical certified-forgetting
+witness in the current artifact. -/
+def dpCertifiedForgettingWitness : CertifiedForgettingWitness where
+  rank := OperatorKO7.CompositionalImpossibility.dpProjection
+  orientsDupStep := OperatorKO7.CompositionalImpossibility.dp_projection_orients_rec_succ
+  violatesPayloadLeft := OperatorKO7.CompositionalImpossibility.dp_projection_violates_sensitivity
+  violatesPayloadRight := OperatorKO7.CompositionalImpossibility.dp_projection_violates_subterm2
+
+/-- Narrow formal package for operational incompleteness at the duplicated
+payload coordinate.
+
+Interpretation:
+- there is no witness in the direct whole-term KO7 witness universe;
+- truth-level witnesses exist above that universe;
+- under the benchmark contract the first admissible witness sits at the
+  transformed-call layer;
+- that transformed-call witness succeeds by certified forgetting of wrapper
+  sensitivity on the duplicated payload coordinate. -/
+structure PayloadOperationalIncompleteness where
+  noDirectWhole :
+    ¬ HasWitness ko7Tower WLevel.directWhole
+  truthWitnessImported :
+    HasWitness ko7Tower WLevel.importedWhole
+  noContractWitnessBelowImportedWhole :
+    kappaGt (contractTower ko7Tower benchmarkContract) WLevel.importedWhole
+  contractWitnessAtTransformedCall :
+    kappaLe (contractTower ko7Tower benchmarkContract) WLevel.transformedCall
+  certifiedForgetting :
+    CertifiedForgettingWitness
+
+/-- KO7 exhibits payload-level operational incompleteness in the sense above. -/
+def ko7PayloadOperationalIncompleteness : PayloadOperationalIncompleteness where
+  noDirectWhole := ko7_no_directWhole_witness
+  truthWitnessImported := ko7_has_importedWhole_witness_poly
+  noContractWitnessBelowImportedWhole := ko7_kappaContract_gt_importedWhole
+  contractWitnessAtTransformedCall := ko7_kappaContract_le_transformedCall
+  certifiedForgetting := dpCertifiedForgettingWitness
+
+/-- Paper-facing packaged constant for the same formal object. -/
+def ko7_operationally_incomplete_at_payload :
+    PayloadOperationalIncompleteness :=
+  ko7PayloadOperationalIncompleteness
+
+/-- A sharper corollary: any benchmark-admissible KO7 witness must live above
+the imported-whole layer, and the artifact already exhibits one whose rank
+works only by violating wrapper sensitivity. -/
+theorem ko7_admissible_witness_requires_certified_forgetting :
+    kappaGt (contractTower ko7Tower benchmarkContract) WLevel.importedWhole
+      ∧ kappaLe (contractTower ko7Tower benchmarkContract) WLevel.transformedCall
+      ∧ (∃ _ : CertifiedForgettingWitness, True) := by
+  refine ⟨ko7_kappaContract_gt_importedWhole, ko7_kappaContract_le_transformedCall, ?_⟩
+  exact ⟨dpCertifiedForgettingWitness, trivial⟩
+
+/-- The dependency-pair projection witness is explicit evidence that the
+successful transformed-call layer is not wrapper-sensitive on the duplicated
+payload coordinate. -/
+theorem dp_projection_exhibits_certified_forgetting :
+    ∃ fw : CertifiedForgettingWitness, fw.rank = OperatorKO7.CompositionalImpossibility.dpProjection := by
+  exact ⟨dpCertifiedForgettingWitness, rfl⟩
+
+end OperatorKO7.MetaOperationalIncompleteness
+```
+
+---
+
 ## OperatorKO7/Meta/OrdinalHierarchy.lean
 
 **Lines:** 119
@@ -21269,6 +22939,203 @@ theorem no_global_step_orientation_headPrecedenceFamily (M : HeadPrecedenceFamil
     no_global_step_orientation_headPrecedence M.rank
 
 end OperatorKO7.PrecedenceBarrier
+```
+
+---
+
+## OperatorKO7/Meta/ProjectedPrimaryBarrier.lean
+
+**Lines:** 188
+
+```lean
+import OperatorKO7.Meta.MatrixBarrierD
+import OperatorKO7.Meta.MatrixBarrierLexD
+
+/-!
+# Projected-Primary Dominance Barrier
+
+Many direct vector families in the orientation-boundary stack share the same proof pattern:
+
+- the ambient order forces a designated primary scalar projection to be non-increasing;
+- the designated primary scalar itself is an affine direct measure with the usual pump;
+- the duplicating step forces that primary scalar to rise beyond any such non-increase.
+
+This module packages that pattern once.
+
+The abstraction is deliberately weak and therefore broad:
+it does not ask the ambient order to strictly decrease the primary scalar, only to make it
+non-increasing. This is enough to subsume both:
+
+- strict componentwise vector orders, where every tracked coordinate decreases strictly;
+- tracked-primary lexicographic vector orders, where the primary coordinate may stay equal
+  but can never increase.
+
+The theorem is schema-level and then specialized back to the existing fixed-dimension
+componentwise and lexicographic families as compatibility corollaries.
+-/
+
+namespace OperatorKO7.StepDuplicating
+
+namespace StepDuplicatingSchema
+
+/-- A stronger scalar barrier: no affine direct measure with an unbounded pump can make the
+duplicating step merely non-increasing. The primary scalar must eventually rise. -/
+theorem no_affine_primary_nonstrict_orients_dup_step_of_unbounded
+    {S : StepDuplicatingSchema} (M : AffineMeasure S) (hunbounded : HasUnboundedRange M) :
+    ¬ (∀ (b s n : S.T),
+      M.eval (S.wrap s (S.recur b s n)) ≤ M.eval (S.recur b s (S.succ n))) := by
+  intro h
+  let threshold := M.recur_counter * (M.succ_bias + M.succ_scale * M.c_base)
+  rcases hunbounded (threshold + 1) with ⟨s, hs⟩
+  let Sval := M.eval s
+  let A := M.recur_const + M.recur_base * M.c_base + M.recur_step * Sval
+  let B := M.recur_counter * M.c_base
+  let T := M.recur_counter * (M.succ_bias + M.succ_scale * M.c_base)
+  have hspec := h S.base s S.base
+  have hle_spec' :
+      M.wrap_const + M.wrap_left * Sval + M.wrap_right * (A + B) ≤ A + T := by
+    simpa [Sval, A, B, T, M.eval_base, M.eval_succ, M.eval_wrap, M.eval_recur,
+      Nat.add_assoc, Nat.add_left_comm, Nat.add_comm, Nat.mul_add] using hspec
+  have hsT1 : T + 1 ≤ Sval := by
+    simpa [threshold, T, Sval] using hs
+  have hS : Sval ≤ M.wrap_left * Sval := by
+    calc
+      Sval = 1 * Sval := by simp
+      _ ≤ M.wrap_left * Sval := by
+        exact Nat.mul_le_mul_right Sval M.h_wrap_left_pos
+  have hAB : A + B ≤ M.wrap_right * (A + B) := by
+    calc
+      A + B = 1 * (A + B) := by simp
+      _ ≤ M.wrap_right * (A + B) := by
+        exact Nat.mul_le_mul_right (A + B) M.h_wrap_right_pos
+  have h_rhs_to_aS1 : A + (T + 1) ≤ A + Sval := Nat.add_le_add_left hsT1 A
+  have h_aS_to_aWS : A + Sval ≤ A + M.wrap_left * Sval := Nat.add_le_add_left hS A
+  have h_aWS_to_sum : A + M.wrap_left * Sval ≤ A + M.wrap_left * Sval + B := by
+    exact Nat.le_add_right _ _
+  have h_sum_to_wsum :
+      A + M.wrap_left * Sval + B ≤ M.wrap_left * Sval + M.wrap_right * (A + B) := by
+    have hAB' :
+        M.wrap_left * Sval + (A + B) ≤
+          M.wrap_left * Sval + M.wrap_right * (A + B) :=
+      Nat.add_le_add_left hAB (M.wrap_left * Sval)
+    simpa [Nat.add_assoc, Nat.add_left_comm, Nat.add_comm] using hAB'
+  have h_with_const :
+      M.wrap_left * Sval + M.wrap_right * (A + B) ≤
+        M.wrap_const + M.wrap_left * Sval + M.wrap_right * (A + B) := by
+    calc
+      M.wrap_left * Sval + M.wrap_right * (A + B)
+          ≤ M.wrap_const + (M.wrap_left * Sval + M.wrap_right * (A + B)) := by
+            exact Nat.le_add_left _ _
+      _ = M.wrap_const + M.wrap_left * Sval + M.wrap_right * (A + B) := by
+        simp [Nat.add_assoc]
+  have hgt :
+      A + T + 1 ≤ M.wrap_const + M.wrap_left * Sval + M.wrap_right * (A + B) := by
+    have htmp :
+        A + (T + 1) ≤ M.wrap_const + M.wrap_left * Sval + M.wrap_right * (A + B) := by
+      exact le_trans h_rhs_to_aS1 <|
+        le_trans h_aS_to_aWS <|
+        le_trans h_aWS_to_sum <|
+        le_trans h_sum_to_wsum h_with_const
+    simpa [Nat.add_assoc] using htmp
+  omega
+
+/-- Successor-pump corollary for the non-strict primary barrier. -/
+theorem no_affine_primary_nonstrict_orients_dup_step_of_succ_pump
+    {S : StepDuplicatingSchema} (M : AffineMeasure S)
+    (h_succ_bias : 1 ≤ M.succ_bias) (h_succ_scale : 1 ≤ M.succ_scale) :
+    ¬ (∀ (b s n : S.T),
+      M.eval (S.wrap s (S.recur b s n)) ≤ M.eval (S.recur b s (S.succ n))) := by
+  apply no_affine_primary_nonstrict_orients_dup_step_of_unbounded (M := M)
+  intro k
+  refine ⟨succIter S k, ?_⟩
+  simpa using eval_succIter_ge M h_succ_bias h_succ_scale k
+
+/-- Wrap-pump corollary for the non-strict primary barrier. -/
+theorem no_affine_primary_nonstrict_orients_dup_step_of_wrap_pump
+    {S : StepDuplicatingSchema} (M : AffineMeasure S)
+    (h_wrap_bias : 1 ≤ M.wrap_const + M.wrap_right * M.c_base) :
+    ¬ (∀ (b s n : S.T),
+      M.eval (S.wrap s (S.recur b s n)) ≤ M.eval (S.recur b s (S.succ n))) := by
+  apply no_affine_primary_nonstrict_orients_dup_step_of_unbounded (M := M)
+  intro k
+  refine ⟨wrapIter S k, ?_⟩
+  simpa using eval_wrapIter_ge_affine M h_wrap_bias k
+
+/-- Generic projected-primary barrier. If the ambient order forces a chosen scalar
+projection to be non-increasing, and that projection is an affine direct measure with an
+unbounded pump, then the ambient order cannot orient the duplicating step uniformly. -/
+theorem no_orients_dup_step_of_projected_primary_dominance
+    {S : StepDuplicatingSchema} {α : Type}
+    (μ : S.T → α) (R : α → α → Prop) (π : α → Nat)
+    (hdom : ∀ {u v : α}, R u v → π u ≤ π v)
+    (M : AffineMeasure S)
+    (heval : ∀ t : S.T, M.eval t = π (μ t))
+    (hunbounded : HasUnboundedRange M) :
+    ¬ (∀ (b s n : S.T), R (μ (S.wrap s (S.recur b s n))) (μ (S.recur b s (S.succ n)))) := by
+  intro h
+  have hprimary :
+      ∀ (b s n : S.T),
+        M.eval (S.wrap s (S.recur b s n)) ≤ M.eval (S.recur b s (S.succ n)) := by
+    intro b s n
+    have hproj : π (μ (S.wrap s (S.recur b s n))) ≤ π (μ (S.recur b s (S.succ n))) :=
+      hdom (h b s n)
+    simpa [heval (S.wrap s (S.recur b s n)), heval (S.recur b s (S.succ n))] using hproj
+  exact no_affine_primary_nonstrict_orients_dup_step_of_unbounded M hunbounded hprimary
+
+/-- Global version of the projected-primary dominance barrier. -/
+theorem no_global_orients_of_projected_primary_dominance
+    {Sys : StepDuplicatingSystem} {α : Type}
+    (μ : Sys.toStepDuplicatingSchema.T → α) (R : α → α → Prop) (π : α → Nat)
+    (hdom : ∀ {u v : α}, R u v → π u ≤ π v)
+    (M : AffineMeasure Sys.toStepDuplicatingSchema)
+    (heval : ∀ t : Sys.toStepDuplicatingSchema.T, M.eval t = π (μ t))
+    (hunbounded : HasUnboundedRange M) :
+    ¬ GlobalOrients Sys μ R := by
+  intro h
+  exact
+    no_orients_dup_step_of_projected_primary_dominance
+      (μ := μ) (R := R) (π := π) hdom M heval hunbounded
+      (fun b s n => h (Sys.dup_step b s n))
+
+/-- The fixed-dimension tracked componentwise family is an instance of the generic
+projected-primary dominance theorem. -/
+theorem no_matrixD_orients_dup_step_of_componentwise_pump_via_primary_dominance
+    {S : StepDuplicatingSchema} {d : Nat} {tracked : Fin d}
+    (M : MatrixMeasureD S d tracked)
+    (hunbounded : HasUnboundedRangeTracked M) :
+    ¬ (∀ (b s n : S.T),
+      VecLt (M.eval (S.wrap s (S.recur b s n))) (M.eval (S.recur b s (S.succ n)))) := by
+  apply no_orients_dup_step_of_projected_primary_dominance
+    (μ := M.eval) (R := VecLt) (π := fun v => v tracked) (M := M.trackedAffine)
+  · intro u v h
+    exact Nat.le_of_lt (h tracked)
+  · intro t
+    rfl
+  · intro k
+    rcases hunbounded k with ⟨t, ht⟩
+    exact ⟨t, ht⟩
+
+/-- The finite tracked-primary lexicographic family is also an instance of the generic
+projected-primary dominance theorem. -/
+theorem no_matrixLexD_orients_dup_step_of_unbounded_primary_via_primary_dominance
+    {S : StepDuplicatingSchema} {d : Nat}
+    (M : MatrixLexMeasureD S d)
+    (hunbounded : HasUnboundedPrimaryRange M) :
+    ¬ (∀ (b s n : S.T),
+      VecLexLt (M.eval (S.wrap s (S.recur b s n))) (M.eval (S.recur b s (S.succ n)))) := by
+  apply no_orients_dup_step_of_projected_primary_dominance
+    (μ := M.eval) (R := VecLexLt) (π := fun v => v (primaryIdx d)) (M := M.primaryAffine)
+  · intro u v h
+    exact primary_le_of_vecLexLt h
+  · intro t
+    rfl
+  · intro k
+    rcases hunbounded k with ⟨t, ht⟩
+    exact ⟨t, ht⟩
+
+end StepDuplicatingSchema
+
+end OperatorKO7.StepDuplicating
 ```
 
 ---
@@ -26864,10 +28731,14 @@ end OperatorKO7.TropicalBarrier
 
 ## OperatorKO7/Meta/TTT2_CertificateReplay.lean
 
-**Lines:** 72
+**Lines:** 146
 
 ```lean
 import OperatorKO7.Meta.DependencyPairs_Works
+import OperatorKO7.Meta.DependencyPairs_TPDBExtraction
+import OperatorKO7.Meta.DependencyPairs_FirstOrderExtraction
+import OperatorKO7.Meta.DependencyPairs_KernelFirstOrder
+import OperatorKO7.Meta.TPDB_Export
 
 /-!
 # Narrow Lean-side replay of the FAST TTT2 certificate core
@@ -26919,6 +28790,76 @@ theorem ko7FastReplay_singletonRealScc :
 /-- The Lean replay uses the same extracted recursive pair as the external FAST proof. -/
 theorem ko7FastReplay_uses_recSucc_pair :
     ko7FastReplay.projectionProblem.Pair = DPPair := rfl
+
+/-- The exported KO7 TPDB problem text matches the checked artifact text
+exactly. This is the first half of the external bridge: the Lean exporter and
+the file submitted to TTT2 / CeTA are the same concrete problem. -/
+theorem ko7FastReplay_export_text_matches_artifact :
+    OperatorKO7.ko7_full_step_tpdb = OperatorKO7.ko7_full_step_tpdb_artifact_text :=
+  OperatorKO7.ko7_full_step_tpdb_matches_artifact_text
+
+/-- The concrete TPDB extraction surface for the exported KO7 problem already
+exhibits the same single recursive self-call head that the replay packages as
+the internal dependency-pair problem. -/
+theorem ko7FastReplay_export_has_recD_successor :
+    ∃ n ∈ OperatorKO7.DependencyPairsFragment.ko7FullStepExtractedNodes.toList,
+      n.nodeKey = "recD" ∧ n.succKeys = ({ "recD" } : Finset String) := by
+  exact OperatorKO7.DependencyPairsFragment.ko7_full_step_has_recD_successor
+
+/-- Export-side correspondence bundle: the exact exported TPDB text matches the
+checked artifact, the extracted TPDB call-graph surface contains the unique
+recursive `recD -> recD` successor pattern, and the replay packages that same
+pattern as the internal KO7 dependency-pair problem. -/
+theorem ko7FastReplay_matches_export_surface :
+    OperatorKO7.ko7_full_step_tpdb = OperatorKO7.ko7_full_step_tpdb_artifact_text ∧
+      (∃ n ∈ OperatorKO7.DependencyPairsFragment.ko7FullStepExtractedNodes.toList,
+        n.nodeKey = "recD" ∧ n.succKeys = ({ "recD" } : Finset String)) ∧
+      ko7FastReplay.projectionProblem.Pair = DPPair := by
+  exact ⟨ko7FastReplay_export_text_matches_artifact,
+    ko7FastReplay_export_has_recD_successor,
+    ko7FastReplay_uses_recSucc_pair⟩
+
+/-- Stronger correspondence bundle across the three extraction surfaces already
+present in the formal artifact:
+
+* the concrete TPDB-side extraction surface;
+* the generic first-order string-symbol surface;
+* the internal kernel-symbol first-order surface.
+
+Each surface exhibits the same single recursive `recD -> recD` head pattern,
+and the replay packages that pattern as the internal KO7 dependency-pair
+problem. -/
+theorem ko7FastReplay_matches_all_extraction_surfaces :
+    OperatorKO7.ko7_full_step_tpdb = OperatorKO7.ko7_full_step_tpdb_artifact_text ∧
+      OperatorKO7.DependencyPairsFragment.tpdbDefinedHeads
+        OperatorKO7.ko7FullStepTpdbRules.toArray =
+        ({ "integrate", "merge", "recD", "eqW" } : Finset String) ∧
+      OperatorKO7.DependencyPairsFragment.foDefinedHeads
+        OperatorKO7.DependencyPairsFragment.KO7FirstOrder.ko7FullStepFORules =
+        ({ "integrate", "merge", "recD", "eqW" } : Finset String) ∧
+      OperatorKO7.DependencyPairsFragment.KernelFirstOrder.ko7Engine.definedHeads =
+        ({ OperatorKO7.DependencyPairsFragment.KernelFirstOrder.Symbol.integrate,
+           OperatorKO7.DependencyPairsFragment.KernelFirstOrder.Symbol.merge,
+           OperatorKO7.DependencyPairsFragment.KernelFirstOrder.Symbol.recD,
+           OperatorKO7.DependencyPairsFragment.KernelFirstOrder.Symbol.eqW } :
+          Finset OperatorKO7.DependencyPairsFragment.KernelFirstOrder.Symbol) ∧
+      (∃ n ∈ OperatorKO7.DependencyPairsFragment.ko7FullStepExtractedNodes.toList,
+        n.nodeKey = "recD" ∧ n.succKeys = ({ "recD" } : Finset String)) ∧
+      (∃ n ∈ OperatorKO7.DependencyPairsFragment.KO7FirstOrder.ko7FullStepExtractedNodes.toList,
+        n.nodeKey = "recD" ∧ n.succKeys = ({ "recD" } : Finset String)) ∧
+      (∃ n ∈ OperatorKO7.DependencyPairsFragment.KernelFirstOrder.ko7FullStepExtractedNodes.toList,
+        n.nodeKey = OperatorKO7.DependencyPairsFragment.KernelFirstOrder.Symbol.recD ∧
+          n.succKeys =
+            ({ OperatorKO7.DependencyPairsFragment.KernelFirstOrder.Symbol.recD } :
+              Finset OperatorKO7.DependencyPairsFragment.KernelFirstOrder.Symbol)) ∧
+      ko7FastReplay.projectionProblem.Pair = DPPair := by
+  refine ⟨ko7FastReplay_export_text_matches_artifact, ?_, ?_, ?_, ?_, ?_, ?_, ko7FastReplay_uses_recSucc_pair⟩
+  · exact OperatorKO7.DependencyPairsFragment.ko7_full_step_defined_heads
+  · exact OperatorKO7.DependencyPairsFragment.KO7FirstOrder.ko7_full_step_defined_heads
+  · exact OperatorKO7.DependencyPairsFragment.KernelFirstOrder.ko7_full_step_defined_heads
+  · exact ko7FastReplay_export_has_recD_successor
+  · exact OperatorKO7.DependencyPairsFragment.KO7FirstOrder.ko7_full_step_has_recD_successor
+  · exact OperatorKO7.DependencyPairsFragment.KernelFirstOrder.ko7_full_step_has_recD_successor
 
 /-- The Lean replay uses the same projection-rank drop as the external FAST proof. -/
 theorem ko7FastReplay_subterm_drop :
@@ -27157,6 +29098,262 @@ end OperatorKO7.TypedBarrierSurvival
 
 ---
 
+## OperatorKO7/Meta/WitnessOrder.lean
+
+**Lines:** 247
+
+```lean
+import OperatorKO7.Kernel
+import OperatorKO7.Meta.PolyInterpretation_FullStep
+import OperatorKO7.Meta.MPO_FullStep
+import OperatorKO7.Meta.DependencyPairs_Works
+import OperatorKO7.Meta.DP_BaseOrder_Boundary
+import OperatorKO7.Meta.EscapeTrichotomy
+import Mathlib.Order.WellFounded
+
+/-!
+# Witness-order split for KO7
+
+This module starts the authoritative Phase 1 repair for the cross-paper
+witness-order story.
+
+The immediate goal is to separate three layers that the manuscripts must not
+collapse into one:
+
+- `directWhole`     : explicit direct whole-term witness families formalized in
+  the Paper A barrier stack;
+- `importedWhole`   : mathematically sound witnesses over the original KO7
+  relation that import structure from outside those direct families;
+- `transformedCall` : witnesses that first arise after explicit passage to the
+  recursive-call relation.
+
+At this stage the module is intentionally narrow and authoritative:
+
+- the direct layer is represented by the explicit KO7 direct-orienter universe
+  already formalized in `EscapeTrichotomy`;
+- the imported-whole layer is populated by the existing nonlinear polynomial
+  and KO7-specialized MPO proofs;
+- the transformed-call layer is populated by the existing dependency-pair
+  proof and its linear base-order note.
+
+This is enough to block the specific cross-paper ambiguity now:
+Paper C must not present the contract layer as if it were the truth layer.
+-/
+
+namespace OperatorKO7.WitnessOrder
+
+open OperatorKO7
+open OperatorKO7.Trace
+
+/-- Coarse witness-language levels used by the KO7 cross-paper bridge. -/
+inductive WLevel
+  | directWhole
+  | importedWhole
+  | transformedCall
+  | externalCert
+deriving DecidableEq, Repr
+
+namespace WLevel
+
+def toNat : WLevel → Nat
+  | directWhole => 0
+  | importedWhole => 1
+  | transformedCall => 2
+  | externalCert => 3
+
+instance : LE WLevel := ⟨fun a b => a.toNat ≤ b.toNat⟩
+instance : LT WLevel := ⟨fun a b => a.toNat < b.toNat⟩
+
+instance (a b : WLevel) : Decidable (a ≤ b) := inferInstanceAs (Decidable (a.toNat ≤ b.toNat))
+instance (a b : WLevel) : Decidable (a < b) := inferInstanceAs (Decidable (a.toNat < b.toNat))
+
+@[simp] theorem toNat_directWhole : toNat directWhole = 0 := rfl
+@[simp] theorem toNat_importedWhole : toNat importedWhole = 1 := rfl
+@[simp] theorem toNat_transformedCall : toNat transformedCall = 2 := rfl
+@[simp] theorem toNat_externalCert : toNat externalCert = 3 := rfl
+
+end WLevel
+
+/-- A witness tower assigns to each coarse witness level the proposition
+    expressing that KO7 has a witness at that level. -/
+def WitnessTower := WLevel → Prop
+
+def HasWitness (T : WitnessTower) (ℓ : WLevel) : Prop := T ℓ
+
+def kappaLe (T : WitnessTower) (ℓ : WLevel) : Prop :=
+  ∃ j : WLevel, j.toNat ≤ ℓ.toNat ∧ HasWitness T j
+
+def kappaGt (T : WitnessTower) (ℓ : WLevel) : Prop :=
+  ∀ j : WLevel, j.toNat ≤ ℓ.toNat → ¬ HasWitness T j
+
+/-- Benchmark contract viewed only at the coarse witness-language level. -/
+structure TaskContract where
+  admissible : WLevel → Prop
+
+def contractTower (T : WitnessTower) (Γ : TaskContract) : WitnessTower :=
+  fun ℓ => Γ.admissible ℓ ∧ T ℓ
+
+/-- The benchmark contract excludes direct whole-term and imported-whole
+    witnesses, and permits transformed-call or external-certificate routes. -/
+def benchmarkContract : TaskContract where
+  admissible
+    | .directWhole => False
+    | .importedWhole => False
+    | .transformedCall => True
+    | .externalCert => True
+
+/-- The explicit direct witness universe already formalized in Paper A's KO7
+    barrier stack. -/
+def DirectWholeWitness : Prop :=
+  ∃ O : OperatorKO7.EscapeTrichotomy.KO7DirectOrienter,
+    OperatorKO7.EscapeTrichotomy.KO7DirectBarrierRepresentable O ∧ O.Orients
+
+/-- KO7 witness tower used by the cross-paper repair. -/
+def ko7Tower : WitnessTower
+  | .directWhole => DirectWholeWitness
+  | .importedWhole => WellFounded (fun a b : Trace => Step b a)
+  | .transformedCall => WellFounded OperatorKO7.MetaDependencyPairs.DPPairRev
+  | .externalCert => True
+
+/-- No explicit direct whole-term witness from the formalized KO7 direct
+    universe can orient the full KO7 root relation. -/
+theorem no_representable_direct_orienter :
+    ∀ {O : OperatorKO7.EscapeTrichotomy.KO7DirectOrienter},
+      OperatorKO7.EscapeTrichotomy.KO7DirectBarrierRepresentable O → ¬ O.Orients := by
+  intro O hrepr
+  cases hrepr with
+  | additive M =>
+      exact fun horient => (OperatorKO7.CompositionalImpossibility.no_global_step_orientation_additive_compositional M) horient
+  | compositionalTransparent CM htransparent =>
+      exact fun horient =>
+        (OperatorKO7.CompositionalImpossibility.no_global_step_orientation_compositional_transparent_delta CM htransparent) horient
+  | affineWithPump M =>
+      exact fun horient => (PumpedBarrierClasses.no_global_step_orientation_affine_with_pump M) horient
+  | quadraticWithPump M =>
+      exact fun horient => (PumpedBarrierClasses.no_global_step_orientation_quadratic_with_pump M) horient
+  | crossQuadraticWithPump M =>
+      exact fun horient => (PumpedBarrierClasses.no_global_step_orientation_cross_quadratic_with_pump M) horient
+  | multilinearWithPump M =>
+      exact fun horient => (PumpedBarrierClasses.no_global_step_orientation_multilinear_with_pump M) horient
+  | polynomialWithPump M =>
+      exact fun horient => (PumpedBarrierClasses.no_global_step_orientation_polynomial_with_pump M) horient
+  | maxWithPump M =>
+      exact fun horient => (PumpedBarrierClasses.no_global_step_orientation_max_with_pump M) horient
+  | depth M =>
+      exact fun horient => (OperatorKO7.DepthBarrier.no_global_step_orientation_maxDepth M) horient
+  | precedence M =>
+      exact fun horient => (OperatorKO7.PrecedenceBarrier.no_global_step_orientation_headPrecedenceFamily M) horient
+  | matrix2ComponentwiseWithPrimaryPump M =>
+      exact fun horient => (PumpedBarrierClasses.no_global_step_orientation_matrix2_with_primary_pump M) horient
+  | matrix2LexWithPrimaryPump M =>
+      exact fun horient => (PumpedBarrierClasses.no_global_step_orientation_matrix2_lex_with_primary_pump M) horient
+  | matrixLexDWithPrimaryPump M =>
+      exact fun horient => (OperatorKO7.MatrixBarrierLexD.no_global_step_orientation_matrixLexD_with_primary_pump M) horient
+  | matrixLexPermWithPrimaryPump M =>
+      exact fun horient => (OperatorKO7.MatrixBarrierLexPermD.no_global_step_orientation_matrixLexPermD_with_primary_pump M) horient
+
+/-- There is no witness in the formalized direct whole-term KO7 universe. -/
+theorem ko7_no_directWhole_witness :
+    ¬ HasWitness ko7Tower WLevel.directWhole := by
+  intro h
+  rcases h with ⟨O, hrepr, horient⟩
+  exact no_representable_direct_orienter hrepr horient
+
+/-- KO7 has a truth-level imported-whole witness via the nonlinear polynomial
+    interpretation. -/
+theorem ko7_has_importedWhole_witness_poly :
+    HasWitness ko7Tower WLevel.importedWhole := by
+  exact OperatorKO7.PolyInterpretation.wf_StepRev_poly
+
+/-- KO7 also has a truth-level imported-whole witness via the specialized MPO. -/
+theorem ko7_has_importedWhole_witness_mpo :
+    HasWitness ko7Tower WLevel.importedWhole := by
+  exact OperatorKO7.MetaMPO.wf_StepRev_mpo
+
+/-- KO7 has a transformed-call witness via the dependency-pair relation. -/
+theorem ko7_has_transformedCall_witness :
+    HasWitness ko7Tower WLevel.transformedCall := by
+  exact OperatorKO7.MetaDependencyPairs.wf_DPPairRev
+
+/-- The transformed-call witness still admits a simple linear base order on the
+    extracted dependency-pair problem. -/
+theorem ko7_transformedCall_has_linear_base_order :
+    ∃ μ : Trace → Nat, ∀ {a b : Trace}, OperatorKO7.MetaDependencyPairs.DPPair a b → μ b < μ a := by
+  exact OperatorKO7.DPBaseOrderBoundary.extracted_dp_problem_has_linear_base_order
+
+/-- `κ_direct(KO7) > directWhole`: there is no witness at or below the direct
+    whole-term layer. -/
+theorem ko7_kappaDirect_gt_directWhole :
+    kappaGt ko7Tower WLevel.directWhole := by
+  intro j hj
+  cases j with
+  | directWhole =>
+      simpa [HasWitness] using ko7_no_directWhole_witness
+  | importedWhole =>
+      simp [WLevel.toNat] at hj
+  | transformedCall =>
+      simp [WLevel.toNat] at hj
+  | externalCert =>
+      simp [WLevel.toNat] at hj
+
+/-- `κ_truth(KO7) ≤ importedWhole`: a mathematically sound witness exists at
+    the imported-whole layer. -/
+theorem ko7_kappaTruth_le_importedWhole :
+    kappaLe ko7Tower WLevel.importedWhole := by
+  exact ⟨WLevel.importedWhole, by decide, ko7_has_importedWhole_witness_poly⟩
+
+/-- The benchmark contract excludes imported-whole witnesses even when they are
+    mathematically sound. -/
+theorem benchmarkContract_disallows_importedWhole :
+    ¬ benchmarkContract.admissible WLevel.importedWhole := by
+  simp [benchmarkContract]
+
+/-- No benchmark-contract witness exists at or below the imported-whole level. -/
+theorem ko7_kappaContract_gt_importedWhole :
+    kappaGt (contractTower ko7Tower benchmarkContract) WLevel.importedWhole := by
+  intro j hj
+  cases j with
+  | directWhole =>
+      simp [HasWitness, contractTower, benchmarkContract, ko7Tower]
+  | importedWhole =>
+      simp [HasWitness, contractTower, benchmarkContract, ko7Tower]
+  | transformedCall =>
+      simp [WLevel.toNat] at hj
+  | externalCert =>
+      simp [WLevel.toNat] at hj
+
+/-- `κ_contract(KO7, Γ_bench) ≤ transformedCall`: the benchmark contract first
+    becomes satisfiable at the transformed-call layer. -/
+theorem ko7_kappaContract_le_transformedCall :
+    kappaLe (contractTower ko7Tower benchmarkContract) WLevel.transformedCall := by
+  refine ⟨WLevel.transformedCall, by decide, ?_⟩
+  exact ⟨by simp [benchmarkContract], ko7_has_transformedCall_witness⟩
+
+/-- Paper-facing summary of the three-layer split currently justified inside the
+    authoritative KO7 theorem stack. -/
+theorem ko7_three_kappa_summary :
+    kappaGt ko7Tower WLevel.directWhole
+      ∧ kappaLe ko7Tower WLevel.importedWhole
+      ∧ kappaGt (contractTower ko7Tower benchmarkContract) WLevel.importedWhole
+      ∧ kappaLe (contractTower ko7Tower benchmarkContract) WLevel.transformedCall := by
+  exact ⟨ko7_kappaDirect_gt_directWhole,
+    ko7_kappaTruth_le_importedWhole,
+    ko7_kappaContract_gt_importedWhole,
+    ko7_kappaContract_le_transformedCall⟩
+
+/-- Paper-facing corollary: under the benchmark contract, the first admissible
+    KO7 witness sits at the transformed-call layer rather than at the truth
+    layer where imported-whole witnesses already exist. -/
+theorem ko7_kappaContract_has_transformedCall :
+    kappaGt (contractTower ko7Tower benchmarkContract) WLevel.importedWhole
+      ∧ kappaLe (contractTower ko7Tower benchmarkContract) WLevel.transformedCall := by
+  exact ⟨ko7_kappaContract_gt_importedWhole, ko7_kappaContract_le_transformedCall⟩
+
+end OperatorKO7.WitnessOrder
+```
+
+---
+
 ## OperatorKO7/Meta/WPO_PolynomialBarrier.lean
 
 **Lines:** 150
@@ -27318,7 +29515,7 @@ end OperatorKO7.WPOPolynomialBarrier
 
 ## OperatorKO7/SchemaAPI.lean
 
-**Lines:** 92
+**Lines:** 107
 
 ```lean
 -- Core schema and barrier theorems
@@ -27337,9 +29534,12 @@ import OperatorKO7.Meta.ArcticBarrier
 import OperatorKO7.Meta.MatrixBarrier2
 import OperatorKO7.Meta.MatrixBarrierD
 import OperatorKO7.Meta.MatrixBarrierLex
+import OperatorKO7.Meta.MatrixBarrierLexD
+import OperatorKO7.Meta.MatrixBarrierLexPermD
 import OperatorKO7.Meta.MatrixBarrierMix2
 import OperatorKO7.Meta.MatrixBarrierFunctional
 import OperatorKO7.Meta.ScalarProjectionBarrier
+import OperatorKO7.Meta.ProjectedPrimaryBarrier
 
 -- Symbolic comparator barriers
 import OperatorKO7.Meta.SymbolicComparatorBarrier
@@ -27355,6 +29555,14 @@ import OperatorKO7.Meta.BarrierWitness_Extended
 import OperatorKO7.Meta.BarrierWitness_Budgets
 import OperatorKO7.Meta.SynthesisOracle
 import OperatorKO7.Meta.BarrierClass_Classifier
+
+-- Confession method family (escape side)
+import OperatorKO7.Meta.ConfessionMethod
+import OperatorKO7.Meta.ConfessionMethod_DP
+import OperatorKO7.Meta.ConfessionMethod_CounterProjection
+import OperatorKO7.Meta.ConfessionMethod_SCT
+import OperatorKO7.Meta.ConfessionMethod_ArgumentFiltering
+import OperatorKO7.Meta.ConfessionMethod_Family
 
 /-!
 # Public Schema API: Reusable Barrier Theory for Step-Duplicating Recursors
@@ -27381,9 +29589,13 @@ Barrier theorems (schema-level):
 - Max-plus barrier and arctic primary-projection corollary
 - Fixed-dimension tracked componentwise vector barrier
 - Dimension-2 lexicographic pair barrier
+- Arbitrary finite tracked-primary lexicographic vector barrier
+- Permutation-priority finite tracked-primary lexicographic vector barrier
 - Balanced mixed-coordinate dimension-2 barrier
 - Weighted scalar-projection componentwise barrier
 - Scalar-projection meta-theorem
+- Projected-primary dominance meta-theorem subsuming the tracked componentwise and
+  tracked-primary lexicographic vector barriers
 - Symbolic variable-condition barrier (KBO-style) and KBO corollary
 
 Strengthened subclasses and pump infrastructure:

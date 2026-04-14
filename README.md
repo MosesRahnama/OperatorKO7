@@ -71,6 +71,16 @@ Artifact-facing docs:
   full unguarded context-closed strong normalization in Lean.
 - `OperatorKO7/Meta/PolyInterpretation_FullStep.lean` and `OperatorKO7/Meta/MPO_FullStep.lean`:
   the two internal full root-step orientation proofs.
+- `OperatorKO7/Meta/WitnessOrder.lean` and `OperatorKO7/Meta/OperationalIncompleteness.lean`:
+  four-level witness-language hierarchy (`WLevel`) with truth-tower and contract-tower split,
+  bundled four-part summary `ko7_three_kappa_summary`, and the paper-facing
+  `PayloadOperationalIncompleteness` structure used by the operational-incompleteness paper.
+- `OperatorKO7/Meta/ConfessionMethod_Family.lean`:
+  the `confession_is_a_class` theorem packaging four W2 methods (DP+subterm, counter-projection,
+  SCT, argument filtering) with distinct soundness licenses and a shared projection rank.
+- `OperatorKO7/Meta/BenchmarkedPrimitiveRecursionFamily.lean`:
+  finite six-member classification of the benchmarked primitive-recursion family and
+  structural-minimum theorem for the duplicator.
 - `OperatorKO7_Complete_Documentation.md`:
   full generated file-by-file map.
 
@@ -119,6 +129,61 @@ Artifact-facing docs:
 
 ### Meta Modules
 
+#### Operational incompleteness and witness-order layer
+
+This subsection packages the artifact interface consumed by the operational-incompleteness paper.
+Every module here encodes a structural concept used by that paper (witness-language hierarchy,
+$\kappa^*$, operational incompleteness, confession-method class, structural minimality).
+
+- `OperatorKO7/Meta/WitnessOrder.lean`:
+  four-level witness-language hierarchy `WLevel` (`directWhole`, `importedWhole`, `transformedCall`,
+  `externalCert`) with decidable ordering; `kappaLe` / `kappaGt` predicates; `TaskContract` and
+  `contractTower` separating the truth tower from the contract tower; `benchmarkContract` excluding
+  direct-whole and imported-whole witnesses. Main theorems: `ko7_kappaDirect_gt_directWhole`,
+  `ko7_kappaTruth_le_importedWhole`, `ko7_kappaContract_gt_importedWhole`,
+  `ko7_kappaContract_le_transformedCall`, packaged as `ko7_three_kappa_summary`.
+- `OperatorKO7/Meta/OperationalIncompleteness.lean`:
+  `CertifiedForgettingWitness` structure (rank that orients the duplicating step while explicitly
+  violating wrapper sensitivity on both payload positions); `PayloadOperationalIncompleteness`
+  bundling the five paper-level claims; the named witness `ko7_operationally_incomplete_at_payload`;
+  and the corollary `ko7_admissible_witness_requires_certified_forgetting`.
+- `OperatorKO7/Meta/BenchmarkedPrimitiveRecursionFamily.lean`:
+  finite family `PRCConfig = BaseRuleFlag × StepRuleFlag` with six members; `StructurallyComplete`
+  predicate; `HasDirectWitness`, `HasImportedWholeWitness`, `HasTransformedCallWitness`;
+  `global_family_classification` three-way case split; the two corollaries
+  `fullDuplicating_unique_blocked_complete_member` and
+  `fullDuplicating_is_global_minimum_in_bench_family`.
+- `OperatorKO7/Meta/BoundaryFactorization.lean`:
+  ablation-style factorization theorems explaining where the KO7 barrier comes from; theorems
+  `recursion_alone_not_sufficient_for_barrier`, `simple_typing_not_escape_mechanism_additive`,
+  `simple_typing_not_escape_mechanism_affine`, `sharing_can_break_tree_barrier`, bundled as
+  `ko7_barrier_is_duplication`.
+- `OperatorKO7/Meta/ConfessionMethod.lean`:
+  generic `ConfessionMethod` structure extending `ProjectionRank`; `SoundnessLicense` enumeration
+  naming four external metatheorems; inherited lemmas `confession_orients`,
+  `confession_violates_wrap1`, `confession_violates_wrap2`.
+- `OperatorKO7/Meta/ConfessionMethod_DP.lean`:
+  dependency-pairs-plus-subterm-criterion instance (`dpConfession`, license
+  `artsGiesl2000`) built on `dpProjectionRank` from the compositional impossibility layer.
+- `OperatorKO7/Meta/ConfessionMethod_CounterProjection.lean`:
+  direct counter-projection via the subterm criterion (`counterProjectionConfession`, license
+  `subtermCriterionDirect`) together with the equivalence `counterProjection_eq_dp_rank` showing
+  it produces the same rank as DP on the step-duplicating schema.
+- `OperatorKO7/Meta/ConfessionMethod_SCT.lean`:
+  minimal size-change graph formalization (`SCArc`, `SizeChangeGraph`), schema call-graph
+  `schemaRecCallGraph`, criterion `sctSatisfied`, theorem `schema_sct_satisfied`, and
+  `sctConfession` instance (license `leeJonesBenAmram2001`).
+- `OperatorKO7/Meta/ConfessionMethod_ArgumentFiltering.lean`:
+  argument-filtering instance (`argumentFilteringConfession`, license
+  `argumentFilteringSoundness`) with the equivalence `argumentFiltering_eq_dp_rank`.
+- `OperatorKO7/Meta/ConfessionMethod_Family.lean`:
+  collects the four confession instances and proves the family-level structural theorem
+  `confession_is_a_class`: four pairwise distinct soundness licenses, a shared projection rank,
+  and the `CertifiedForgettingWitness` interface uniformly satisfied. Also supplies
+  `family_terminates_pair_problem`, `ko7_full_system_terminates`, and
+  `ko7_full_context_closed_terminates` connecting pair-problem well-foundedness to the full
+  context-closed termination proof.
+
 #### Safe fragment and certification
 
 - `OperatorKO7/Meta/SafeStep_Core.lean`:
@@ -165,6 +230,10 @@ Artifact-facing docs:
   explicit linear-size lower family with exponentially long exact `SafeStepCtx` chains and exponential normal-form output size, showing the guarded context-closed complexity is genuinely exponential up to constants in the exponent and providing a direct duplication-growth witness.
 - `OperatorKO7/Meta/OrdinalHierarchy.lean`:
   generic `slowGrowing` and `cichon` hierarchies on Mathlib ordinal notations below `ε₀`.
+- `OperatorKO7/Meta/OrdinalHierarchy_Control.lean`:
+  exact controlled-descent relation `ExactControlledPow` for ordinal notations with the generic Cichon bound `exactControlledPow_length_le_cichon`.
+- `OperatorKO7/Meta/OrdinalHierarchy_Controlled.lean`:
+  documents a failed relaxed-control route with an explicit counterexample to the `cichon` same-control monotonicity principle; included as a methodology note, not a positive bound.
 - `OperatorKO7/Meta/DM_UpstreamSurface.lean`:
   compact staging surface collecting the general DM embedding / reflection /
   exact-order-type declarations as future Mathlib candidates.
@@ -230,6 +299,8 @@ Artifact-facing docs:
   simply-typed first-order recursor fragment; typed additive and affine barrier-survival results.
 - `OperatorKO7/Meta/ManySortedBarrierSurvival.lean`:
   specialized many-sorted first-order repackaging of the typed recursor fragment; additive and affine barrier-survival results carry over unchanged.
+- `OperatorKO7/Meta/TextbookDupInstance.lean`:
+  instantiates the step-duplicating schema on the standard textbook rule `f(x, s(y)) -> g(x, f(x, y))`; packages additive, affine, and compositional barrier corollaries plus witness-extractor aliases for that system.
 
 #### Matrix, SCC, and escape extensions
 
@@ -241,6 +312,12 @@ Artifact-facing docs:
   tracked fixed-dimension componentwise barrier.
 - `OperatorKO7/Meta/MatrixBarrierLex.lean`:
   tracked dimension-2 lexicographic barrier.
+- `OperatorKO7/Meta/MatrixBarrierLexD.lean`:
+  finite-dimension extension of the tracked-primary lexicographic barrier to arbitrary dimension `d`.
+- `OperatorKO7/Meta/MatrixBarrierLexPermD.lean`:
+  permutation-priority variant of the finite lexicographic barrier, keeping the tracked primary coordinate first under permutations.
+- `OperatorKO7/Meta/ProjectedPrimaryBarrier.lean`:
+  schema-level projected-primary dominance meta-barrier unifying the componentwise and lexicographic matrix families through a non-strict primary-scalar obstruction.
 - `OperatorKO7/Meta/MatrixBarrierMix2.lean`:
   balanced mixed-coordinate dimension-2 barrier via aggregate-sum projection.
 - `OperatorKO7/Meta/MatrixBarrierFunctional.lean`:
