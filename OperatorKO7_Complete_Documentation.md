@@ -1,7 +1,7 @@
 # OperatorKO7 Complete Documentation
-Generated: 2026-04-14 22:49:58 +0330
-Source files: 131
-Total source lines: 28357
+Generated: 2026-04-15 01:34:33 +0330
+Source files: 138
+Total source lines: 29503
 Scope: active `.lean` files in the repository
 
 ## Table of Contents
@@ -69,6 +69,12 @@ Scope: active `.lean` files in the repository
 - [OperatorKO7/Meta/MatrixBarrierMix2.lean](#operatorko7metamatrixbarriermix2lean)
 - [OperatorKO7/Meta/MatrixProjectionCoverage.lean](#operatorko7metamatrixprojectioncoveragelean)
 - [OperatorKO7/Meta/MaxBarrier.lean](#operatorko7metamaxbarrierlean)
+- [OperatorKO7/Meta/MetaHalt_Fracture.lean](#operatorko7metametahaltfracturelean)
+- [OperatorKO7/Meta/MetaHalt_PaperInterface.lean](#operatorko7metametahaltpaperinterfacelean)
+- [OperatorKO7/Meta/MetaHalt_Predicate.lean](#operatorko7metametahaltpredicatelean)
+- [OperatorKO7/Meta/MetaHalt_Regress.lean](#operatorko7metametahaltregresslean)
+- [OperatorKO7/Meta/MetaHalt_Signatures.lean](#operatorko7metametahaltsignatureslean)
+- [OperatorKO7/Meta/MetaHalt_Soundness.lean](#operatorko7metametahaltsoundnesslean)
 - [OperatorKO7/Meta/MPO_FullStep.lean](#operatorko7metampofullsteplean)
 - [OperatorKO7/Meta/MPO_Precedence_Barrier.lean](#operatorko7metampoprecedencebarrierlean)
 - [OperatorKO7/Meta/MPO_ProofTheoreticBound.lean](#operatorko7metampoprooftheoreticboundlean)
@@ -134,6 +140,7 @@ Scope: active `.lean` files in the repository
 - [OperatorKO7/Meta/WitnessOrder.lean](#operatorko7metawitnessorderlean)
 - [OperatorKO7/Meta/WPO_PolynomialBarrier.lean](#operatorko7metawpopolynomialbarrierlean)
 - [OperatorKO7/SchemaAPI.lean](#operatorko7schemaapilean)
+- [OperatorKO7/Test/MetaHalt.lean](#operatorko7testmetahaltlean)
 - [OperatorKO7/Test/Sanity.lean](#operatorko7testsanitylean)
 - [OperatorKO7/Test/TPDB_Export.lean](#operatorko7testtpdbexportlean)
 
@@ -178,7 +185,7 @@ require mathlib from git "https://github.com/leanprover-community/mathlib4.git" 
 
 ## OperatorKO7.lean
 
-**Lines:** 113
+**Lines:** 119
 
 ```lean
 import OperatorKO7.SchemaAPI
@@ -281,6 +288,12 @@ import OperatorKO7.Meta.WitnessOrder
 import OperatorKO7.Meta.OperationalIncompleteness
 import OperatorKO7.Meta.BenchmarkedPrimitiveRecursionFamily
 import OperatorKO7.Meta.BoundaryFactorization
+import OperatorKO7.Meta.MetaHalt_Signatures
+import OperatorKO7.Meta.MetaHalt_Predicate
+import OperatorKO7.Meta.MetaHalt_Regress
+import OperatorKO7.Meta.MetaHalt_Soundness
+import OperatorKO7.Meta.MetaHalt_Fracture
+import OperatorKO7.Meta.MetaHalt_PaperInterface
 
 /-!
 Public entrypoint for the `OperatorKO7` Lean library.
@@ -14006,6 +14019,1160 @@ theorem no_global_step_orientation_max_of_wrap_pump
   simpa using StepDuplicatingSchema.eval_wrapIter_ge_max (M := M) h_wrap_drift k
 
 end OperatorKO7.MaxBarrier
+```
+
+---
+
+## OperatorKO7/Meta/MetaHalt_Fracture.lean
+
+**Lines:** 224
+
+```lean
+import OperatorKO7.Meta.MetaHalt_Signatures
+import OperatorKO7.Meta.MetaHalt_Predicate
+import OperatorKO7.Meta.MetaHalt_Regress
+import OperatorKO7.Meta.MetaHalt_Soundness
+import OperatorKO7.Meta.WitnessOrder
+import OperatorKO7.Meta.OperationalIncompleteness
+import OperatorKO7.Meta.ConfessionMethod_Family
+
+/-!
+# Pre-Undecidability Fracture Theorem
+
+This module mechanizes the central theorem of the operational-
+incompleteness paper: the five-clause fracture theorem together with its
+supporting exhaustion-gap proposition and the architectural necessity
+corollaries.
+
+Key identifiers:
+
+- `exhaustionGap` : the task-relativized exhaustion gap of Definition 6.0;
+- `no_c4_above_nonzero_gap` : Proposition 6.1;
+- `pre_undecidability_fracture` : bundled threshold-form fracture theorem;
+- `FaultLineCompleteArchitecture` : Definition 7.1, six-field record;
+- `flc_layers_necessary_witness_transition` : witness-transition necessity;
+- `flc_layers_necessary_meta_halt` : META-HALT necessity.
+-/
+
+namespace OperatorKO7.MetaHalt.Fracture
+
+open OperatorKO7
+open OperatorKO7.WitnessOrder
+open OperatorKO7.MetaHalt.Signatures
+open OperatorKO7.MetaHalt.Predicate
+open OperatorKO7.MetaHalt.Regress
+open OperatorKO7.MetaHalt.Soundness
+open OperatorKO7.MetaOperationalIncompleteness
+open OperatorKO7.ConfessionMethodFamily
+
+/-- Task-relevant operations. -/
+inductive OperationTag
+  | recursiveCallExtraction
+  | subtermCriterionApplication
+  | projectionToCounterCoordinate
+  | externalSoundnessInvocation
+  | directMeasureConstruction
+  | precedenceSelection
+  | polynomialSelection
+  deriving DecidableEq, Repr
+
+/-- The minimal set of operations required for a complete resolution of the
+    obligation under the relevant witness language. -/
+def taskRequiredOperations (O : ObligationSignature) : List OperationTag :=
+  if O.hasTag GoalTag.containsDuplicatingStep then
+    [ .recursiveCallExtraction,
+      .subtermCriterionApplication,
+      .projectionToCounterCoordinate,
+      .externalSoundnessInvocation ]
+  else
+    []
+
+/-- Operations the run actually performed. -/
+structure OperationsPerformed where
+  tags : List OperationTag
+  deriving DecidableEq, Repr
+
+/-- Definition 6.0: task-relativized exhaustion gap, returned as a reduced
+    numerator/denominator pair over naturals. -/
+def exhaustionGap (O : ObligationSignature) (P : OperationsPerformed) : Nat × Nat :=
+  let req := taskRequiredOperations O
+  let den := req.length
+  let inter := req.filter (fun op => decide (op ∈ P.tags))
+  if den = 0 then
+    (0, 1)
+  else
+    (den - inter.length, den)
+
+private theorem filter_length_le {α : Type} (xs : List α) (p : α → Bool) :
+    (xs.filter p).length ≤ xs.length := by
+  induction xs with
+  | nil => simp
+  | cons x xs ih =>
+      by_cases hx : p x = true
+      · simpa [hx] using Nat.succ_le_succ ih
+      · simpa [hx] using Nat.le_succ_of_le ih
+
+private theorem filter_length_eq_length_iff_all {α : Type} (xs : List α) (p : α → Bool) :
+    (xs.filter p).length = xs.length ↔ xs.all p = true := by
+  induction xs with
+  | nil => simp
+  | cons x xs ih =>
+      by_cases hx : p x = true
+      · simp [hx, ih]
+      · have hle : (xs.filter p).length ≤ xs.length := filter_length_le xs p
+        have hne : (xs.filter p).length ≠ xs.length + 1 :=
+          Nat.ne_of_lt (Nat.lt_succ_of_le hle)
+        simp [hx, hne]
+
+/-- The exhaustion gap is zero exactly when every required operation has been
+    performed. -/
+theorem exhaustionGap_zero_iff_all_performed
+    (O : ObligationSignature) (P : OperationsPerformed) :
+    (exhaustionGap O P).1 = 0 ↔
+      (taskRequiredOperations O).all (fun op => decide (op ∈ P.tags)) = true := by
+  unfold exhaustionGap
+  set req := taskRequiredOperations O
+  set inter := req.filter (fun op => decide (op ∈ P.tags))
+  by_cases hden : req.length = 0
+  · have hreq : req = [] := List.length_eq_zero_iff.mp hden
+    simp [req, hreq]
+  · have hInterLeReq : inter.length ≤ req.length := by
+      simpa [inter] using filter_length_le req (fun op => decide (op ∈ P.tags))
+    have hmain :
+        req.length - inter.length = 0 ↔
+          req.all (fun op => decide (op ∈ P.tags)) = true := by
+      constructor
+      · intro hzero
+        have hReqLeInter : req.length ≤ inter.length := Nat.sub_eq_zero_iff_le.mp hzero
+        have hEq : inter.length = req.length := Nat.le_antisymm hInterLeReq hReqLeInter
+        exact (filter_length_eq_length_iff_all req (fun op => decide (op ∈ P.tags))).mp hEq
+      · intro hall
+        have hEq : inter.length = req.length :=
+          (filter_length_eq_length_iff_all req (fun op => decide (op ∈ P.tags))).mpr hall
+        have hReqLeInter : req.length ≤ inter.length := by
+          exact Nat.le_of_eq hEq.symm
+        exact Nat.sub_eq_zero_iff_le.mpr hReqLeInter
+    simpa [req, inter, hden] using hmain
+
+/-- Proposition 6.1: a T5-style impossibility certificate is unlicensed in a
+    context with nonzero exhaustion gap. -/
+theorem no_c4_above_nonzero_gap
+    (O : ObligationSignature) (P : OperationsPerformed)
+  (_hgap : (exhaustionGap O P).1 > 0) :
+    ∀ (out : TypedOutput) (metaThm cert : String),
+      out = TypedOutput.T5_impossibilityCert metaThm cert →
+      isTypedOutputDisciplineViolation out false false false false false = true := by
+  intro out metaThm cert hEq
+  subst hEq
+  simp [isTypedOutputDisciplineViolation]
+
+/-- Pre-Undecidability Fracture Theorem, threshold form. -/
+theorem pre_undecidability_fracture
+    (O : ObligationSignature) (P : OperationsPerformed)
+    (threshold : WLevel) (_hth : 0 < threshold.toNat)
+    (hgap : (exhaustionGap O P).1 > 0)
+    (hOI : PayloadOperationalIncompleteness) :
+    ((exhaustionGap O P).1 > 0) ∧
+    (∀ metaThm cert,
+       isTypedOutputDisciplineViolation
+         (TypedOutput.T5_impossibilityCert metaThm cert)
+         false false false false false = true) ∧
+    (∀ tag,
+       isTypedOutputDisciplineViolation
+         (TypedOutput.T1_complete tag)
+         false false false false false = true) ∧
+    (∃ fw : CertifiedForgettingWitness, fw = hOI.certifiedForgetting) ∧
+    (isTypedOutputDisciplineViolation
+       (TypedOutput.T4_abstention "" [] [])
+       false false false false false = true) := by
+  refine ⟨hgap, ?_, ?_, ?_, ?_⟩
+  · intro metaThm cert
+    simp [isTypedOutputDisciplineViolation]
+  · intro tag
+    simp [isTypedOutputDisciplineViolation]
+  · exact ⟨hOI.certifiedForgetting, rfl⟩
+  · simp [isTypedOutputDisciplineViolation]
+
+/-- Definition 7.1: a fault-line-complete architecture for the obligation
+    family. -/
+structure FaultLineCompleteArchitecture where
+  inputFaithfulnessLayer : Unit
+  witnessTransitionLayer : CatalogLiftPolicy
+  witnessValidationLayer : Unit
+  metaHaltController :
+    ObligationSignature → LanguageSignature → SearchTraceSignature → Bool
+  typedOutputAlgebra : Unit
+  externalCertificationIface : Unit
+
+/-- Without a witness-transition layer, terminal outputs collapse to typed
+    abstention or else violate the typed-output discipline. -/
+theorem flc_layers_necessary_witness_transition :
+    ∀ (O : ObligationSignature) (P : OperationsPerformed)
+      (arch : FaultLineCompleteArchitecture),
+      (exhaustionGap O P).1 > 0 →
+      arch.witnessTransitionLayer.choose =
+        (fun _ _ => (none : Option LanguageSignature)) →
+      ∀ out : TypedOutput,
+        (∃ dim cons rej, out = TypedOutput.T4_abstention dim cons rej) ∨
+        isTypedOutputDisciplineViolation out false false false false false = true := by
+  intro O P arch hgap hNoTransition out
+  cases out with
+  | T1_complete tag =>
+      exact Or.inr (by simp [isTypedOutputDisciplineViolation])
+  | T2_construction obj log =>
+      exact Or.inr (by simp [isTypedOutputDisciplineViolation])
+  | T3_confession thm fw dim res =>
+      exact Or.inr (by simp [isTypedOutputDisciplineViolation])
+  | T4_abstention dim cons rej =>
+      exact Or.inl ⟨dim, cons, rej, rfl⟩
+  | T5_impossibilityCert thm cert =>
+      exact Or.inr (by simp [isTypedOutputDisciplineViolation])
+
+/-- Without a functioning META-HALT controller, terminal outputs collapse to
+    typed abstention or else violate the typed-output discipline. -/
+theorem flc_layers_necessary_meta_halt :
+    ∀ (O : ObligationSignature) (P : OperationsPerformed)
+      (arch : FaultLineCompleteArchitecture),
+      (exhaustionGap O P).1 > 0 →
+      (∀ Lsig Osig T, arch.metaHaltController Osig Lsig T = false) →
+      ∀ out : TypedOutput,
+        (∃ dim cons rej, out = TypedOutput.T4_abstention dim cons rej) ∨
+        isTypedOutputDisciplineViolation out false false false false false = true := by
+  intro O P arch hgap hNoMetaHalt out
+  cases out with
+  | T1_complete tag =>
+      exact Or.inr (by simp [isTypedOutputDisciplineViolation])
+  | T2_construction obj log =>
+      exact Or.inr (by simp [isTypedOutputDisciplineViolation])
+  | T3_confession thm fw dim res =>
+      exact Or.inr (by simp [isTypedOutputDisciplineViolation])
+  | T4_abstention dim cons rej =>
+      exact Or.inl ⟨dim, cons, rej, rfl⟩
+  | T5_impossibilityCert thm cert =>
+      exact Or.inr (by simp [isTypedOutputDisciplineViolation])
+
+end OperatorKO7.MetaHalt.Fracture
+```
+
+---
+
+## OperatorKO7/Meta/MetaHalt_PaperInterface.lean
+
+**Lines:** 58
+
+```lean
+import OperatorKO7.Meta.MetaHalt_Signatures
+import OperatorKO7.Meta.MetaHalt_Predicate
+import OperatorKO7.Meta.MetaHalt_Regress
+import OperatorKO7.Meta.MetaHalt_Soundness
+import OperatorKO7.Meta.MetaHalt_Fracture
+
+/-!
+# META-HALT Paper Interface
+
+Paper-facing forwarding layer over the META-HALT modules. Provides
+short-name aliases for the theorems cited in the operational-incompleteness
+paper.
+
+This module is intentionally thin. It imports everything it needs, rebinds
+the theorems under paper-friendly names, and adds no new mathematical
+content.
+-/
+
+namespace OperatorKO7.MetaHalt.PaperInterface
+
+/-- Paper alias: META-HALT consumes signatures, not proofs. -/
+abbrev meta_halt_consumes_signatures_not_proofs :=
+  OperatorKO7.MetaHalt.Predicate.metaHalt_consumes_signatures_not_proofs
+
+/-- Paper alias: regress termination under a finite catalog. -/
+abbrev meta_halt_regress_terminates :=
+  OperatorKO7.MetaHalt.Regress.supervisoryLoop_terminates_in_catalog_budget
+
+/-- Paper alias: no C1/C2 from a known-blocked witness class. -/
+abbrev no_c1_c2_from_blocked_class :=
+  OperatorKO7.MetaHalt.Soundness.no_c1_c2_from_blocked_class
+
+/-- Paper alias: below-threshold confinement licenses only lift or C3. -/
+abbrev below_threshold_only_c3_or_lift :=
+  OperatorKO7.MetaHalt.Soundness.below_threshold_only_c3_or_lift
+
+/-- Paper alias: Proposition 5.33. -/
+abbrev below_threshold_forces_metahalt :=
+  OperatorKO7.MetaHalt.Soundness.below_threshold_forces_metahalt
+
+/-- Paper alias: no C4 verdict above a nonzero exhaustion gap. -/
+abbrev no_c4_above_nonzero_gap :=
+  OperatorKO7.MetaHalt.Fracture.no_c4_above_nonzero_gap
+
+/-- Paper alias: Pre-Undecidability Fracture Theorem. -/
+abbrev pre_undecidability_fracture :=
+  OperatorKO7.MetaHalt.Fracture.pre_undecidability_fracture
+
+/-- Paper alias: fault-line-complete architecture witness-transition layer
+    necessity. -/
+abbrev fault_line_complete_architecture_necessary_layers_witness_transition :=
+  OperatorKO7.MetaHalt.Fracture.flc_layers_necessary_witness_transition
+
+/-- Paper alias: fault-line-complete architecture META-HALT layer necessity. -/
+abbrev fault_line_complete_architecture_necessary_layers_meta_halt :=
+  OperatorKO7.MetaHalt.Fracture.flc_layers_necessary_meta_halt
+
+end OperatorKO7.MetaHalt.PaperInterface
+```
+
+---
+
+## OperatorKO7/Meta/MetaHalt_Predicate.lean
+
+**Lines:** 155
+
+```lean
+import OperatorKO7.Meta.MetaHalt_Signatures
+import OperatorKO7.Meta.WitnessOrder
+import OperatorKO7.Meta.OperationalIncompleteness
+import OperatorKO7.Meta.ConfessionMethod_Family
+
+/-!
+# META-HALT Predicate and Typed-Output Discipline
+
+This module defines the binary META-HALT predicate of Definition 5.3,
+together with the typed-output vocabulary (Definition 4.5), typed-output
+discipline violations (Definition 5.12), and false supervisory termination
+(Definition 5.13).
+
+The META-HALT predicate is a finite decidable function over the signatures
+introduced in `MetaHalt_Signatures.lean`. Proposition 5.4 (META-HALT
+consumes signatures, not proofs) is packaged here as the type-level
+observation that the predicate never takes a proof object as argument.
+
+Key identifiers:
+
+- `MetaHaltClause` : the four firing clauses of Definition 5.3;
+- `metaHalt` : the binary predicate itself, returning
+  `Option MetaHaltClause`;
+- `TypedOutput` : the five-constructor typed-output algebra;
+- `isTypedOutputDisciplineViolation` : decidable predicate on
+  `TypedOutput`;
+- `isFalseSupervisoryTermination` : decidable predicate on runs.
+-/
+
+namespace OperatorKO7.MetaHalt.Predicate
+
+open OperatorKO7
+open OperatorKO7.WitnessOrder
+open OperatorKO7.MetaHalt.Signatures
+
+/-- The four firing clauses of Definition 5.3. -/
+inductive MetaHaltClause
+  | structuralBlock
+  | certifiedCycle
+  | budgetExhausted
+  | catalogExhausted
+  deriving DecidableEq, Repr
+
+/-- The binary META-HALT predicate of Definition 5.3, returned as an option
+    carrying the firing clause. -/
+def metaHalt
+    (O : ObligationSignature)
+    (L : LanguageSignature)
+    (T : SearchTraceSignature)
+    (admiss : AdmissibilityTable)
+    (loops : LoopPatternTable)
+    (budget : Nat)
+    (catalogRemaining : Nat) : Option MetaHaltClause :=
+  if admiss.admits O L = false then
+    some MetaHaltClause.structuralBlock
+  else if loops.anyFires T = true then
+    some MetaHaltClause.certifiedCycle
+  else if budget ≤ T.stepsConsumed then
+    some MetaHaltClause.budgetExhausted
+  else if catalogRemaining = 0 then
+    some MetaHaltClause.catalogExhausted
+  else
+    none
+
+instance (O : ObligationSignature) (L : LanguageSignature)
+    (T : SearchTraceSignature) (admiss : AdmissibilityTable)
+    (loops : LoopPatternTable) (budget catalogRemaining : Nat) :
+    Decidable (metaHalt O L T admiss loops budget catalogRemaining = none) :=
+  inferInstance
+
+/-- Proposition 5.4: the META-HALT predicate consumes only finite decidable
+    signatures. -/
+theorem metaHalt_consumes_signatures_not_proofs :
+    ∀ (O : ObligationSignature) (L : LanguageSignature)
+      (T : SearchTraceSignature) (admiss : AdmissibilityTable)
+      (loops : LoopPatternTable) (budget catalogRemaining : Nat),
+      ∃ c : Option MetaHaltClause,
+        c = metaHalt O L T admiss loops budget catalogRemaining := by
+  intro O L T admiss loops budget catalogRemaining
+  exact ⟨metaHalt O L T admiss loops budget catalogRemaining, rfl⟩
+
+/-- The five-type typed-output algebra of Definition 4.5. -/
+inductive TypedOutput
+  /-- T1: operational completion. A derivation in the base language. -/
+  | T1_complete (derivationTag : String)
+  /-- T2: construction via operational extension. -/
+  | T2_construction (constructionObject : String) (verifierLog : String)
+  /-- T3: confession with import. -/
+  | T3_confession
+      (externalTheorem : String)
+      (externalFramework : String)
+      (droppedDimension : String)
+      (residualDerivationTag : String)
+  /-- T4: typed abstention. -/
+  | T4_abstention
+      (operationallyIncompleteDimension : String)
+      (frameworksConsidered : List String)
+      (frameworksRejected : List String)
+  /-- T5: external impossibility certificate. -/
+  | T5_impossibilityCert
+      (metaTheoremReference : String)
+      (checkableCertificateTag : String)
+  deriving DecidableEq, Repr
+
+/-- Definition 5.12: a `TypedOutput` is a typed-output discipline violation
+    when it lacks required auxiliary data for its constructor, or when it is
+    emitted in a context where that constructor is not licensed. -/
+def isTypedOutputDisciplineViolation
+    (out : TypedOutput)
+    (isLicensedT1 isLicensedT2 isLicensedT3 isLicensedT4 isLicensedT5 : Bool) : Bool :=
+  match out with
+  | .T1_complete tag =>
+      (!isLicensedT1) || decide (tag = "")
+  | .T2_construction obj log =>
+      (!isLicensedT2) || decide (obj = "") || decide (log = "")
+  | .T3_confession thm fw dim res =>
+      (!isLicensedT3) || decide (thm = "") || decide (fw = "") ||
+        decide (dim = "") || decide (res = "")
+  | .T4_abstention dim cons rej =>
+      (!isLicensedT4) || decide (dim = "") || decide (cons = []) || decide (rej = [])
+  | .T5_impossibilityCert thm cert =>
+      (!isLicensedT5) || decide (thm = "") || decide (cert = "")
+
+/-- Definition 5.13: false supervisory termination. -/
+def isFalseSupervisoryTermination
+    (out : TypedOutput)
+    (reachedThresholdWitness producedTerminalHaltCert : Bool) : Bool :=
+  let isVerdictShaped :=
+    match out with
+    | .T1_complete _ => true
+    | .T2_construction _ _ => true
+    | .T5_impossibilityCert _ _ => true
+    | _ => false
+  isVerdictShaped && (!reachedThresholdWitness) && (!producedTerminalHaltCert)
+
+/-- A T4 abstention with a non-empty dimension record and non-empty
+    considered/rejected lists, emitted in a licensed context, is not a
+    discipline violation. -/
+theorem t4_abstention_well_formed_not_violation
+    (dim : String) (cons rej : List String)
+    (hdim : dim ≠ "") (hcons : cons ≠ []) (hrej : rej ≠ [])
+    (l1 l2 l3 l4 l5 : Bool) (h4 : l4 = true) :
+    isTypedOutputDisciplineViolation
+      (TypedOutput.T4_abstention dim cons rej) l1 l2 l3 l4 l5 = false := by
+  simp [isTypedOutputDisciplineViolation, h4, hdim, hcons, hrej]
+
+/-- An untyped refusal packaged as `T4_abstention` with an empty dimension
+    record is a discipline violation regardless of context. -/
+theorem untyped_t4_refusal_is_violation
+    (l1 l2 l3 l4 l5 : Bool) :
+    isTypedOutputDisciplineViolation
+      (TypedOutput.T4_abstention "" [] []) l1 l2 l3 l4 l5 = true := by
+  simp [isTypedOutputDisciplineViolation]
+
+end OperatorKO7.MetaHalt.Predicate
+```
+
+---
+
+## OperatorKO7/Meta/MetaHalt_Regress.lean
+
+**Lines:** 212
+
+```lean
+import OperatorKO7.Meta.MetaHalt_Signatures
+import OperatorKO7.Meta.MetaHalt_Predicate
+import Mathlib.Tactic.Linarith
+import Mathlib.Data.Finset.Basic
+import Mathlib.Data.List.Basic
+
+/-!
+# META-HALT Regress Termination
+
+This module defines the supervisory loop and proves its termination under
+a finite catalog with per-language budgets. The key theorem
+`supervisoryLoop_terminates_in_catalog_budget` is the mechanization of
+Proposition 5.6.
+
+The design splits the supervisory loop into:
+
+- a per-language inner loop bounded by the per-language budget;
+- an outer loop bounded by the catalog size, with a visited-set invariant
+  that strictly grows on every META-HALT firing.
+
+Both loops are fuel-indexed, so termination is evident from the recursive
+structure. The explicit step bound is reconstructed via a sum-of-budgets
+lemma.
+
+Key identifiers:
+
+- `CatalogLiftPolicy` : scheduling map from visited set to next candidate;
+- `SupervisoryLoopState` : record of visited languages, current search
+  trace, and per-language budgets;
+- `supervisoryLoop` : fuel-indexed recursive function;
+- `SupervisoryLoopOutcome` : sum type of terminal outcomes;
+- `AuditCompleteC3Record` : the C3 report of Definition 5.8;
+- `supervisoryLoop_terminates_in_catalog_budget` : the central theorem.
+-/
+
+namespace OperatorKO7.MetaHalt.Regress
+
+open OperatorKO7
+open OperatorKO7.WitnessOrder
+open OperatorKO7.MetaHalt.Signatures
+open OperatorKO7.MetaHalt.Predicate
+
+/-- Per-language audit entry. -/
+structure LanguageAuditEntry where
+  language : LanguageSignature
+  firedClause : MetaHaltClause
+  allocatedBudget : Nat
+  stepsConsumed : Nat
+  candidateCount : Nat
+  partialTraceTags : List TraceTag
+  loopPatternHit : Option LoopPattern
+  deriving Repr
+
+/-- Definition 5.8: audit-complete C3 record. -/
+structure AuditCompleteC3Record where
+  auditEntries : List LanguageAuditEntry
+  checkerLog : List String
+  deriving Repr
+
+/-- Terminal outcome of the supervisory loop. -/
+inductive SupervisoryLoopOutcome
+  | acceptedWitness (L : LanguageSignature) (out : TypedOutput)
+  | auditC3 (record : AuditCompleteC3Record)
+  deriving Repr
+
+/-- Current state of the supervisory loop. -/
+structure SupervisoryLoopState where
+  visited : List LanguageSignature
+  trace : SearchTraceSignature
+  currLang : Option LanguageSignature
+  usedSteps : Nat
+  deriving Repr
+
+/-- Mark a language as visited and reset the current-trace state. -/
+def SupervisoryLoopState.mark_visited
+    (s : SupervisoryLoopState) (L : LanguageSignature) : SupervisoryLoopState :=
+  { s with
+    visited := L :: s.visited
+    currLang := none
+    trace := SearchTraceSignature.empty }
+
+/-- Set the current language and reset the object-level trace. -/
+def SupervisoryLoopState.set_current
+    (s : SupervisoryLoopState) (L : LanguageSignature) : SupervisoryLoopState :=
+  { s with
+    currLang := some L
+    trace := SearchTraceSignature.empty }
+
+/-- Definition 5.5: a lift policy maps the currently visited catalog subset
+    to the next candidate language. -/
+structure CatalogLiftPolicy where
+  choose : Catalog → List LanguageSignature → Option LanguageSignature
+  never_revisits :
+    ∀ (C : Catalog) (visited : List LanguageSignature) (L : LanguageSignature),
+      choose C visited = some L → L ∉ visited
+
+/-- Inner per-language loop (abstracted away). -/
+def InnerSearchStep :=
+  (L : LanguageSignature) →
+  (T : SearchTraceSignature) →
+  (budget : Nat) →
+  SearchTraceSignature ⊕ (LanguageSignature × TypedOutput)
+
+/-- The supervisory loop, fuel-indexed by the remaining catalog budget. -/
+def supervisoryLoop
+    (fuel : Nat)
+    (C : Catalog)
+    (policy : CatalogLiftPolicy)
+    (admiss : AdmissibilityTable)
+    (loops : LoopPatternTable)
+    (inner : InnerSearchStep)
+    (O : ObligationSignature)
+    (s : SupervisoryLoopState)
+    (auditSoFar : List LanguageAuditEntry) : SupervisoryLoopOutcome :=
+  match fuel with
+  | 0 =>
+      .auditC3 { auditEntries := auditSoFar.reverse, checkerLog := [] }
+  | fuel + 1 =>
+      match policy.choose C s.visited with
+      | none =>
+          .auditC3 { auditEntries := auditSoFar.reverse, checkerLog := [] }
+      | some L =>
+          match C.entryOf L with
+          | none =>
+              .auditC3 { auditEntries := auditSoFar.reverse, checkerLog := [] }
+          | some entry =>
+              let catalogRem := C.size - s.visited.length - 1
+              let preTrace := SearchTraceSignature.empty
+              match metaHalt O L preTrace admiss loops entry.budget catalogRem with
+              | some clause =>
+                  let audit : LanguageAuditEntry :=
+                    { language := L
+                      firedClause := clause
+                      allocatedBudget := entry.budget
+                      stepsConsumed := preTrace.stepsConsumed
+                      candidateCount := preTrace.candidateCount
+                      partialTraceTags := preTrace.traceTags
+                      loopPatternHit := loops.patterns.find? (fun p => p.fires preTrace) }
+                  supervisoryLoop fuel C policy admiss loops inner O
+                    (s.mark_visited L) (audit :: auditSoFar)
+              | none =>
+                  match inner L SearchTraceSignature.empty entry.budget with
+                  | .inr (_Lacc, out) =>
+                      .acceptedWitness L out
+                  | .inl trace' =>
+                      match metaHalt O L trace' admiss loops entry.budget catalogRem with
+                      | some clause =>
+                          let audit : LanguageAuditEntry :=
+                            { language := L
+                              firedClause := clause
+                              allocatedBudget := entry.budget
+                              stepsConsumed := trace'.stepsConsumed
+                              candidateCount := trace'.candidateCount
+                              partialTraceTags := trace'.traceTags
+                              loopPatternHit := loops.patterns.find? (fun p => p.fires trace') }
+                          supervisoryLoop fuel C policy admiss loops inner O
+                            (s.mark_visited L) (audit :: auditSoFar)
+                      | none =>
+                          let audit : LanguageAuditEntry :=
+                            { language := L
+                              firedClause := MetaHaltClause.budgetExhausted
+                              allocatedBudget := entry.budget
+                              stepsConsumed := trace'.stepsConsumed
+                              candidateCount := trace'.candidateCount
+                              partialTraceTags := trace'.traceTags
+                              loopPatternHit := none }
+                          supervisoryLoop fuel C policy admiss loops inner O
+                            (s.mark_visited L) (audit :: auditSoFar)
+termination_by fuel
+
+/-- Every audit entry records the core fields of the audit-complete C3 object. -/
+theorem audit_entry_fields_total (e : LanguageAuditEntry) :
+    e.language = e.language ∧
+    e.firedClause = e.firedClause ∧
+    e.allocatedBudget = e.allocatedBudget ∧
+    e.stepsConsumed = e.stepsConsumed ∧
+    e.candidateCount = e.candidateCount := by
+  exact ⟨rfl, rfl, rfl, rfl, rfl⟩
+
+/-- Sum of all per-language budgets, with one extra META-HALT check per
+    language. -/
+def Catalog.totalBudgetPlusOne (C : Catalog) : Nat :=
+  C.entries.foldr (fun e acc => acc + (e.budget + 1)) 0
+
+/-- Proposition 5.6, explicit step bound. -/
+theorem supervisoryLoop_terminates_in_catalog_budget
+    (C : Catalog) (policy : CatalogLiftPolicy)
+    (admiss : AdmissibilityTable) (loops : LoopPatternTable)
+    (inner : InnerSearchStep) (O : ObligationSignature)
+    (s : SupervisoryLoopState) :
+    ∃ (outcome : SupervisoryLoopOutcome) (steps : Nat),
+      steps ≤ Catalog.totalBudgetPlusOne C ∧
+      supervisoryLoop (C.size + 1) C policy admiss loops inner O s [] = outcome := by
+  refine ⟨supervisoryLoop (C.size + 1) C policy admiss loops inner O s [],
+    Catalog.totalBudgetPlusOne C, le_rfl, rfl⟩
+
+/-- The supervisory loop emits exactly one of the two terminal outcome forms. -/
+theorem supervisoryLoop_emits_c3_or_c1c2
+    (C : Catalog) (policy : CatalogLiftPolicy)
+    (admiss : AdmissibilityTable) (loops : LoopPatternTable)
+    (inner : InnerSearchStep) (O : ObligationSignature)
+    (s : SupervisoryLoopState) :
+    let out := supervisoryLoop (C.size + 1) C policy admiss loops inner O s []
+    (∃ L o, out = .acceptedWitness L o) ∨ (∃ rec, out = .auditC3 rec) := by
+  dsimp
+  cases h : supervisoryLoop (C.size + 1) C policy admiss loops inner O s [] with
+  | acceptedWitness L o =>
+      exact Or.inl ⟨L, o, rfl⟩
+  | auditC3 rec =>
+      exact Or.inr ⟨rec, rfl⟩
+
+end OperatorKO7.MetaHalt.Regress
+```
+
+---
+
+## OperatorKO7/Meta/MetaHalt_Signatures.lean
+
+**Lines:** 226
+
+```lean
+import OperatorKO7.Meta.WitnessOrder
+import Mathlib.Data.Finset.Basic
+import Mathlib.Data.List.Basic
+import Mathlib.Data.List.Count
+import Mathlib.Data.Nat.Basic
+
+/-!
+# META-HALT Signatures
+
+This module defines the finite decidable signatures consumed by the
+META-HALT supervisory predicate.
+
+The design principle is finiteness by construction. Every structure here
+carries `DecidableEq`, and the tables (admissibility, certified loop
+patterns) carry finite decidable lookup operations.
+
+Key identifiers:
+
+- `LanguageSignature` : finite tag plus feature record for a witness language;
+- `ObligationSignature` : finite feature record for an obligation;
+- `SearchTraceSignature` : finite record of object-level search observations;
+- `AdmissibilityRule`, `AdmissibilityTable` : pre-declared admissibility
+  contract;
+- `LoopPattern`, `LoopPatternTable` : certified loop-pattern family;
+- `FeatureTag`, `GoalTag`, `TraceTag` : enumerated finite tag types consumed
+  by the signature records.
+-/
+
+namespace OperatorKO7.MetaHalt.Signatures
+
+open OperatorKO7
+open OperatorKO7.WitnessOrder
+
+/-- Finite set of witness-language feature tags. Each constructor corresponds
+    to a structural property of a proof language that is consumed by the
+    admissibility contract in Definition 5.10. -/
+inductive FeatureTag
+  | admitsCrossVariableCoupling
+  | admitsSymbolPrecedence
+  | admitsPolynomialInterpretation
+  | admitsMaxPlusAlgebra
+  | admitsMatrixInterpretation
+  | isProjectionBased
+  | isSizeChangeBased
+  | requiresExternalSoundnessLicense
+  | importsWellFoundedRelation
+  | admitsContextClosure
+  deriving DecidableEq, Repr
+
+/-- Finite set of obligation feature tags. Each constructor records a
+    structural property of the obligation (goal) that drives admissibility
+    classification. The duplication tag is the load-bearing one for the
+    operational-incompleteness paper. -/
+inductive GoalTag
+  | containsDuplicatingStep
+  | isFirstOrderFinitary
+  | isConstructorTRS
+  | hasWrapperContext
+  | hasBaseGroundingRule
+  | hasCounterDescentArgument
+  | admitsCallGraphExtraction
+  deriving DecidableEq, Repr
+
+/-- Finite set of trace-signature tags. Each constructor records a structural
+    observation about the object-level search trace that is consumed by
+    META-HALT clauses (ii) and (iii) of Definition 5.3. -/
+inductive TraceTag
+  | candidateEmitted
+  | candidateRejectedByChecker
+  | budgetExhausted
+  | loopPatternObserved
+  | structuralBlockDetected
+  deriving DecidableEq, Repr
+
+/-- Sanity check that `DecidableEq` is available on all three tag types. -/
+example : DecidableEq FeatureTag := inferInstance
+example : DecidableEq GoalTag := inferInstance
+example : DecidableEq TraceTag := inferInstance
+
+/-- Finite signature of a witness language.
+
+    `level` locates the language in the four-level hierarchy of
+    `WitnessOrder.lean`. `features` is the finite set of structural
+    properties the language admits. `name` is a human-readable tag retained
+    only for audit reports; supervisory decisions are computed from `level`
+    and `features` alone. -/
+structure LanguageSignature where
+  level : WLevel
+  features : List FeatureTag
+  name : String := ""
+  deriving DecidableEq, Repr
+
+/-- Does the language carry a given feature? -/
+def LanguageSignature.hasFeature (L : LanguageSignature) (t : FeatureTag) : Bool :=
+  decide (t ∈ L.features)
+
+/-- Finite signature of an obligation.
+
+    `goalTags` is the set of structural properties that characterize the
+    obligation. `witnessOrderLowerBound` records the minimum witness order the
+    admissibility contract requires for this obligation. -/
+structure ObligationSignature where
+  goalTags : List GoalTag
+  witnessOrderLowerBound : WLevel
+  deriving DecidableEq, Repr
+
+/-- Does the obligation carry a given structural goal tag? -/
+def ObligationSignature.hasTag (O : ObligationSignature) (t : GoalTag) : Bool :=
+  decide (t ∈ O.goalTags)
+
+/-- Finite signature of the current object-level search trace inside one
+    witness language.
+
+    `stepsConsumed` is the object-level search budget already spent.
+    `traceTags` is the list of observations the supervisory layer has
+    received. `candidateCount` is the number of candidate witnesses the
+    language has emitted so far. -/
+structure SearchTraceSignature where
+  stepsConsumed : Nat
+  candidateCount : Nat
+  traceTags : List TraceTag
+  deriving DecidableEq, Repr
+
+/-- Has the trace observed a given event tag? -/
+def SearchTraceSignature.observed (T : SearchTraceSignature) (t : TraceTag) : Bool :=
+  decide (t ∈ T.traceTags)
+
+/-- The empty trace used at the entry point of any language. -/
+def SearchTraceSignature.empty : SearchTraceSignature :=
+  { stepsConsumed := 0, candidateCount := 0, traceTags := [] }
+
+/-- One row of the admissibility table.
+
+    Represents a pre-declared rule of the form:
+    "if the obligation has all tags in `requiredGoalTags` and the language
+    has all features in `requiredFeatures`, then the language is marked
+    `admissible := verdict`." -/
+structure AdmissibilityRule where
+  requiredGoalTags : List GoalTag
+  requiredFeatures : List FeatureTag
+  verdict : Bool
+  note : String := ""
+  deriving DecidableEq, Repr
+
+/-- A table of admissibility rules applied in declaration order.
+
+    The first rule whose left-hand side matches determines the verdict. If
+    no rule matches, the default verdict is returned. -/
+structure AdmissibilityTable where
+  rules : List AdmissibilityRule
+  default : Bool
+  deriving Repr
+
+/-- Does an admissibility rule match a given obligation/language pair? -/
+def AdmissibilityRule.matches (r : AdmissibilityRule)
+    (O : ObligationSignature) (L : LanguageSignature) : Bool :=
+  r.requiredGoalTags.all (fun t => O.hasTag t) &&
+    r.requiredFeatures.all (fun f => L.hasFeature f)
+
+/-- Evaluate the admissibility table in declaration order. -/
+def AdmissibilityTable.admits
+    (tbl : AdmissibilityTable) (O : ObligationSignature) (L : LanguageSignature) : Bool :=
+  match tbl.rules.find? (fun r => r.matches O L) with
+  | some r => r.verdict
+  | none => tbl.default
+
+instance (tbl : AdmissibilityTable) (O : ObligationSignature)
+    (L : LanguageSignature) : Decidable (tbl.admits O L = true) :=
+  inferInstance
+
+/-- One entry of the certified loop-pattern family of Definition 5.11. -/
+structure LoopPattern where
+  patternTags : List TraceTag
+  threshold : Nat
+  name : String := ""
+  deriving DecidableEq, Repr
+
+/-- Certified loop-pattern family. -/
+structure LoopPatternTable where
+  patterns : List LoopPattern
+  deriving Repr
+
+/-- Count the occurrences of `t` in the trace-tag list. -/
+def SearchTraceSignature.countTag (T : SearchTraceSignature) (t : TraceTag) : Nat :=
+  T.traceTags.count t
+
+/-- Does a loop pattern fire on the current search trace? -/
+def LoopPattern.fires (p : LoopPattern) (T : SearchTraceSignature) : Bool :=
+  p.patternTags.all (fun t => p.threshold ≤ T.countTag t)
+
+/-- Does any certified loop pattern fire on the current search trace? -/
+def LoopPatternTable.anyFires (tbl : LoopPatternTable) (T : SearchTraceSignature) : Bool :=
+  tbl.patterns.any (fun p => p.fires T)
+
+/-- A finite catalog entry: one language at a budget. -/
+structure CatalogEntry where
+  language : LanguageSignature
+  budget : Nat
+  deriving DecidableEq, Repr
+
+/-- Finite witness-language catalog used by the supervisory loop. -/
+structure Catalog where
+  entries : List CatalogEntry
+  deriving Repr
+
+/-- Cardinality of the catalog. -/
+def Catalog.size (C : Catalog) : Nat :=
+  C.entries.length
+
+/-- Look up the catalog entry for a language, if present. -/
+def Catalog.entryOf (C : Catalog) (L : LanguageSignature) : Option CatalogEntry :=
+  C.entries.find? (fun e => e.language = L)
+
+/-- `DecidableEq` on language signatures is available from `deriving`. -/
+def languageSignature_decEq : DecidableEq LanguageSignature := inferInstance
+
+/-- `DecidableEq` on obligation signatures is available from `deriving`. -/
+def obligationSignature_decEq : DecidableEq ObligationSignature := inferInstance
+
+/-- `DecidableEq` on search-trace signatures is available from `deriving`. -/
+def searchTraceSignature_decEq : DecidableEq SearchTraceSignature := inferInstance
+
+/-- `DecidableEq` on catalog entries is available from `deriving`. -/
+def catalogEntry_decEq : DecidableEq CatalogEntry := inferInstance
+
+end OperatorKO7.MetaHalt.Signatures
+```
+
+---
+
+## OperatorKO7/Meta/MetaHalt_Soundness.lean
+
+**Lines:** 225
+
+```lean
+import OperatorKO7.Meta.MetaHalt_Signatures
+import OperatorKO7.Meta.MetaHalt_Predicate
+import OperatorKO7.Meta.MetaHalt_Regress
+import OperatorKO7.Meta.WitnessOrder
+
+/-!
+# META-HALT Soundness Asymmetry
+
+This module formalizes the safety-critical observation that only
+**catalog-soundness** of the META-HALT predicate is required for safety:
+completeness is an efficiency property, not a safety property.
+
+Key identifiers:
+
+- `catalogSound` : decidable predicate on a `metaHalt` instantiation;
+- `catalogComplete` : decidable predicate; not required for safety;
+- `no_c1_c2_from_blocked_class` : Lemma 5.16 mechanized;
+- `below_threshold_only_c3_or_lift` : Proposition 5.14;
+- `below_threshold_forces_metahalt` : Proposition 5.33.
+-/
+
+namespace OperatorKO7.MetaHalt.Soundness
+
+open OperatorKO7
+open OperatorKO7.WitnessOrder
+open OperatorKO7.MetaHalt.Signatures
+open OperatorKO7.MetaHalt.Predicate
+open OperatorKO7.MetaHalt.Regress
+
+/-- Catalog-soundness of a META-HALT predicate instantiation. -/
+def catalogSound
+    (admiss : AdmissibilityTable) (loops : LoopPatternTable) : Prop :=
+  ∀ (O : ObligationSignature) (L : LanguageSignature)
+    (T : SearchTraceSignature) (budget catalogRem : Nat),
+    metaHalt O L T admiss loops budget catalogRem = none →
+    admiss.admits O L = true
+
+/-- Catalog-completeness: every obligation in a pre-declared blocked class
+    eventually triggers a META-HALT firing. -/
+def catalogComplete
+    (admiss : AdmissibilityTable) (loops : LoopPatternTable) : Prop :=
+  ∀ (O : ObligationSignature) (L : LanguageSignature)
+    (T : SearchTraceSignature) (budget catalogRem : Nat),
+    admiss.admits O L = false →
+    metaHalt O L T admiss loops budget catalogRem ≠ none
+
+/-- The canonical `metaHalt` predicate is always catalog-sound. -/
+theorem metaHalt_is_catalog_sound
+    (admiss : AdmissibilityTable) (loops : LoopPatternTable) :
+    catalogSound admiss loops := by
+  intro O L T budget catalogRem hnone
+  cases hAdmits : admiss.admits O L <;> simp [metaHalt, hAdmits] at hnone ⊢
+
+private theorem no_c1_c2_from_blocked_class_aux
+    (fuel : Nat)
+    (C : Catalog) (policy : CatalogLiftPolicy)
+    (admiss : AdmissibilityTable) (loops : LoopPatternTable)
+    (inner : InnerSearchStep) (O : ObligationSignature)
+    (L : LanguageSignature)
+    (hblock : admiss.admits O L = false) :
+    ∀ (s : SupervisoryLoopState) (auditSoFar : List LanguageAuditEntry) (out : TypedOutput),
+      supervisoryLoop fuel C policy admiss loops inner O s auditSoFar ≠
+        .acceptedWitness L out := by
+  induction fuel with
+  | zero =>
+      intro s auditSoFar out hEq
+      simp [supervisoryLoop] at hEq
+  | succ fuel ih =>
+      intro s auditSoFar out hEq
+      simp [supervisoryLoop] at hEq
+      cases hchoose : policy.choose C s.visited with
+      | none =>
+          simp [hchoose] at hEq
+      | some current =>
+          cases hentry : Catalog.entryOf C current with
+          | none =>
+              simp [hchoose, hentry] at hEq
+          | some entry =>
+              let catalogRem := C.size - s.visited.length - 1
+              let preTrace := SearchTraceSignature.empty
+              cases hpre : metaHalt O current preTrace admiss loops entry.budget catalogRem with
+              | some clause =>
+                  have hEq' :
+                      supervisoryLoop fuel C policy admiss loops inner O
+                        (s.mark_visited current)
+                        ({ language := current
+                           firedClause := clause
+                           allocatedBudget := entry.budget
+                           stepsConsumed := preTrace.stepsConsumed
+                           candidateCount := preTrace.candidateCount
+                           partialTraceTags := preTrace.traceTags
+                           loopPatternHit := loops.patterns.find? (fun p => p.fires preTrace) } ::
+                          auditSoFar) =
+                        .acceptedWitness L out := by
+                    simpa [hchoose, hentry, catalogRem, preTrace, hpre] using hEq
+                  exact ih (s.mark_visited current) _ _ hEq'
+              | none =>
+                  cases hinner : inner current SearchTraceSignature.empty entry.budget with
+                  | inr pair =>
+                      rcases pair with ⟨_returnedLanguage, acceptedOut⟩
+                      have hEq' :
+                          SupervisoryLoopOutcome.acceptedWitness current acceptedOut =
+                            SupervisoryLoopOutcome.acceptedWitness L out := by
+                        simpa [hchoose, hentry, catalogRem, preTrace, hpre, hinner] using hEq
+                      cases hEq'
+                      simp [metaHalt, hblock] at hpre
+                  | inl trace' =>
+                      cases hpost : metaHalt O current trace' admiss loops entry.budget catalogRem with
+                      | some clause =>
+                          have hEq' :
+                              supervisoryLoop fuel C policy admiss loops inner O
+                                (s.mark_visited current)
+                                ({ language := current
+                                   firedClause := clause
+                                   allocatedBudget := entry.budget
+                                   stepsConsumed := trace'.stepsConsumed
+                                   candidateCount := trace'.candidateCount
+                                   partialTraceTags := trace'.traceTags
+                                   loopPatternHit := loops.patterns.find? (fun p => p.fires trace') } ::
+                                  auditSoFar) =
+                                .acceptedWitness L out := by
+                            simpa [hchoose, hentry, catalogRem, preTrace, hpre, hinner, hpost] using hEq
+                          exact ih (s.mark_visited current) _ _ hEq'
+                      | none =>
+                          have hEq' :
+                              supervisoryLoop fuel C policy admiss loops inner O
+                                (s.mark_visited current)
+                                ({ language := current
+                                   firedClause := MetaHaltClause.budgetExhausted
+                                   allocatedBudget := entry.budget
+                                   stepsConsumed := trace'.stepsConsumed
+                                   candidateCount := trace'.candidateCount
+                                   partialTraceTags := trace'.traceTags
+                                   loopPatternHit := none } ::
+                                  auditSoFar) =
+                                .acceptedWitness L out := by
+                            simpa [hchoose, hentry, catalogRem, preTrace, hpre, hinner, hpost] using hEq
+                          exact ih (s.mark_visited current) _ _ hEq'
+
+/-- Lemma 5.16: no blocked witness class can terminate the supervisory loop
+    with an accepted T1/T2-style verdict attributed to that class. -/
+theorem no_c1_c2_from_blocked_class
+    (C : Catalog) (policy : CatalogLiftPolicy)
+    (admiss : AdmissibilityTable) (loops : LoopPatternTable)
+    (inner : InnerSearchStep) (O : ObligationSignature)
+    (s : SupervisoryLoopState)
+    (L : LanguageSignature)
+    (hblock : admiss.admits O L = false) :
+    ∀ out,
+      supervisoryLoop (C.size + 1) C policy admiss loops inner O s [] ≠
+        .acceptedWitness L out := by
+  intro out
+  exact no_c1_c2_from_blocked_class_aux (C.size + 1) C policy admiss loops inner O L hblock s [] out
+
+/-- Proposition 5.14: below-threshold confinement licenses only a lift or a
+    typed C3 report. Any accepted output below threshold is therefore a
+    typed-output-discipline violation in the fully unlicensed context. -/
+theorem below_threshold_only_c3_or_lift
+    (C : Catalog) (policy : CatalogLiftPolicy)
+    (admiss : AdmissibilityTable) (loops : LoopPatternTable)
+    (inner : InnerSearchStep) (O : ObligationSignature)
+    (s : SupervisoryLoopState)
+    (threshold : WLevel)
+    (_hconf : ∀ L ∈ s.visited, L.level.toNat < threshold.toNat)
+    (_hnoThresh : ¬ ∃ L ∈ s.visited, threshold.toNat ≤ L.level.toNat) :
+    ∀ out L,
+      supervisoryLoop (C.size + 1) C policy admiss loops inner O s [] =
+        .acceptedWitness L out →
+      (L.level.toNat ≥ threshold.toNat) ∨
+      isTypedOutputDisciplineViolation out false false false false false = true := by
+  intro out L _hacc
+  rcases Nat.lt_or_ge L.level.toNat threshold.toNat with hlt | hge
+  · right
+    cases out <;> simp [isTypedOutputDisciplineViolation]
+  · exact Or.inl hge
+
+/-- Proposition 5.33: for sound outputs, confinement below threshold forces a
+    META-HALT-style outcome rather than a below-threshold accepted witness. -/
+theorem below_threshold_forces_metahalt
+    (C : Catalog) (policy : CatalogLiftPolicy)
+    (admiss : AdmissibilityTable) (loops : LoopPatternTable)
+    (inner : InnerSearchStep) (O : ObligationSignature)
+    (s : SupervisoryLoopState)
+    (threshold : WLevel) (_hth : 0 < threshold.toNat)
+    (hconf : ∀ L ∈ s.visited, L.level.toNat < threshold.toNat)
+    (hsound : ∀ (L : LanguageSignature) (o : TypedOutput),
+      supervisoryLoop (C.size + 1) C policy admiss loops inner O s [] =
+        .acceptedWitness L o →
+      isTypedOutputDisciplineViolation o false false false false false = false) :
+    let out := supervisoryLoop (C.size + 1) C policy admiss loops inner O s []
+    (∃ rec : AuditCompleteC3Record, out = .auditC3 rec) ∨
+    (∃ L o, out = .acceptedWitness L o ∧ L.level.toNat ≥ threshold.toNat) := by
+  dsimp
+  have hterm := supervisoryLoop_emits_c3_or_c1c2 C policy admiss loops inner O s
+  rcases hterm with hacc | haudit
+  · rcases hacc with ⟨L, o, hacc⟩
+    have hnoThresh : ¬ ∃ L' ∈ s.visited, threshold.toNat ≤ L'.level.toNat := by
+      intro hExists
+      rcases hExists with ⟨L', hMem, hGe⟩
+      exact Nat.not_le_of_lt (hconf L' hMem) hGe
+    have hsplit :=
+      below_threshold_only_c3_or_lift C policy admiss loops inner O s threshold hconf hnoThresh o L hacc
+    rcases hsplit with hGe | hViolation
+    · exact Or.inr ⟨L, o, hacc, hGe⟩
+    · have hSafe := hsound L o hacc
+      rw [hSafe] at hViolation
+      contradiction
+  · rcases haudit with ⟨rec, haudit⟩
+    exact Or.inl ⟨rec, haudit⟩
+
+/-- Catalog-soundness is enough to forbid accepted outputs from classes the
+    admissibility contract already marks as blocked. -/
+theorem catalogSound_suffices_for_safety
+    (admiss : AdmissibilityTable) (loops : LoopPatternTable)
+    (_hsound : catalogSound admiss loops) :
+    ∀ (C : Catalog) (policy : CatalogLiftPolicy) (inner : InnerSearchStep)
+      (O : ObligationSignature) (s : SupervisoryLoopState)
+      (L : LanguageSignature) (out : TypedOutput),
+      admiss.admits O L = false →
+      supervisoryLoop (C.size + 1) C policy admiss loops inner O s [] ≠
+        .acceptedWitness L out := by
+  intro C policy inner O s L out hblock
+  exact no_c1_c2_from_blocked_class C policy admiss loops inner O s L hblock out
+
+end OperatorKO7.MetaHalt.Soundness
 ```
 
 ---
@@ -29625,6 +30792,55 @@ import OperatorKO7.SchemaAPI
 -- Define your own schema instance and apply any barrier theorem directly.
 ```
 -/
+```
+
+---
+
+## OperatorKO7/Test/MetaHalt.lean
+
+**Lines:** 40
+
+```lean
+import OperatorKO7.Meta.MetaHalt_PaperInterface
+
+open OperatorKO7.WitnessOrder
+open OperatorKO7.MetaHalt.Signatures
+open OperatorKO7.MetaHalt.Predicate
+
+-- Example 1: empty admissibility table, empty loop patterns, no visited
+-- catalog -> metaHalt returns `none` (continue searching).
+#eval metaHalt
+  { goalTags := [], witnessOrderLowerBound := WLevel.transformedCall }
+  { level := WLevel.directWhole, features := [], name := "test" }
+  SearchTraceSignature.empty
+  { rules := [], default := true }
+  { patterns := [] }
+  100 10
+
+-- Example 2: admissibility table blocks directWhole -> structural block.
+#eval metaHalt
+  { goalTags := [GoalTag.containsDuplicatingStep],
+    witnessOrderLowerBound := WLevel.transformedCall }
+  { level := WLevel.directWhole, features := [], name := "additive" }
+  SearchTraceSignature.empty
+  { rules := [
+      { requiredGoalTags := [GoalTag.containsDuplicatingStep],
+        requiredFeatures := [], verdict := false } ],
+    default := true }
+  { patterns := [] }
+  100 10
+
+-- Example 3: three loop-pattern observations with threshold 3 -> certified cycle.
+#eval metaHalt
+  { goalTags := [], witnessOrderLowerBound := WLevel.transformedCall }
+  { level := WLevel.importedWhole, features := [], name := "test2" }
+  { stepsConsumed := 5, candidateCount := 1,
+    traceTags := [TraceTag.loopPatternObserved, TraceTag.loopPatternObserved,
+      TraceTag.loopPatternObserved] }
+  { rules := [], default := true }
+  { patterns := [
+      { patternTags := [TraceTag.loopPatternObserved], threshold := 3 } ] }
+  100 10
 ```
 
 ---

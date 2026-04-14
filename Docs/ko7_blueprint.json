@@ -1,7 +1,7 @@
 {
   "artifact": "OperatorKO7",
   "paper": "Rahnama_The_Orientation_Boundary.tex",
-  "updated": "2026-04-09",
+  "updated": "2026-04-15",
   "paper_to_lean": [
     {
       "label": "thm:schema-barrier",
@@ -567,6 +567,128 @@
       ],
       "depends_on": [
         "prop:mpo-full-step"
+      ]
+    },
+    {
+      "label": "def:meta-halt-binary",
+      "module": "OperatorKO7/Meta/MetaHalt_Predicate.lean",
+      "declarations": [
+        "MetaHaltClause",
+        "metaHalt"
+      ],
+      "depends_on": [
+        "thm:escape-trichotomy"
+      ]
+    },
+    {
+      "label": "prop:meta-halt-signatures",
+      "module": "OperatorKO7/Meta/MetaHalt_Predicate.lean",
+      "declarations": [
+        "metaHalt_consumes_signatures_not_proofs"
+      ],
+      "depends_on": [
+        "def:meta-halt-binary"
+      ]
+    },
+    {
+      "label": "prop:regress-termination",
+      "module": "OperatorKO7/Meta/MetaHalt_Regress.lean",
+      "declarations": [
+        "AuditCompleteC3Record",
+        "supervisoryLoop_terminates_in_catalog_budget"
+      ],
+      "depends_on": [
+        "def:meta-halt-binary",
+        "prop:meta-halt-signatures"
+      ]
+    },
+    {
+      "label": "lem:no-c1c2-blocked",
+      "module": "OperatorKO7/Meta/MetaHalt_Soundness.lean",
+      "declarations": [
+        "no_c1_c2_from_blocked_class"
+      ],
+      "depends_on": [
+        "prop:regress-termination"
+      ]
+    },
+    {
+      "label": "prop:below-threshold-only-c3",
+      "module": "OperatorKO7/Meta/MetaHalt_Soundness.lean",
+      "declarations": [
+        "below_threshold_only_c3_or_lift"
+      ],
+      "depends_on": [
+        "lem:no-c1c2-blocked",
+        "thm:escape-trichotomy"
+      ]
+    },
+    {
+      "label": "prop:boundary-forces-metahalt",
+      "module": "OperatorKO7/Meta/MetaHalt_Soundness.lean",
+      "declarations": [
+        "below_threshold_forces_metahalt"
+      ],
+      "depends_on": [
+        "prop:below-threshold-only-c3"
+      ]
+    },
+    {
+      "label": "prop:no-c4-above-gap",
+      "module": "OperatorKO7/Meta/MetaHalt_Fracture.lean",
+      "declarations": [
+        "no_c4_above_nonzero_gap"
+      ],
+      "depends_on": [
+        "prop:boundary-forces-metahalt"
+      ]
+    },
+    {
+      "label": "thm:pre-decidability-collapse",
+      "module": "OperatorKO7/Meta/MetaHalt_Fracture.lean",
+      "declarations": [
+        "pre_undecidability_fracture"
+      ],
+      "depends_on": [
+        "prop:no-c4-above-gap",
+        "prop:below-threshold-only-c3",
+        "prop:boundary-forces-metahalt"
+      ]
+    },
+    {
+      "label": "prop:flc-necessary",
+      "module": "OperatorKO7/Meta/MetaHalt_Fracture.lean",
+      "declarations": [
+        "flc_layers_necessary_witness_transition",
+        "flc_layers_necessary_meta_halt"
+      ],
+      "depends_on": [
+        "thm:pre-decidability-collapse"
+      ]
+    },
+    {
+      "label": "paper:meta-halt-interface",
+      "module": "OperatorKO7/Meta/MetaHalt_PaperInterface.lean",
+      "declarations": [
+        "meta_halt_consumes_signatures_not_proofs",
+        "meta_halt_regress_terminates",
+        "no_c1_c2_from_blocked_class",
+        "below_threshold_only_c3_or_lift",
+        "below_threshold_forces_metahalt",
+        "no_c4_above_nonzero_gap",
+        "pre_undecidability_fracture",
+        "fault_line_complete_architecture_necessary_layers_witness_transition",
+        "fault_line_complete_architecture_necessary_layers_meta_halt"
+      ],
+      "depends_on": [
+        "prop:meta-halt-signatures",
+        "prop:regress-termination",
+        "lem:no-c1c2-blocked",
+        "prop:below-threshold-only-c3",
+        "prop:boundary-forces-metahalt",
+        "prop:no-c4-above-gap",
+        "thm:pre-decidability-collapse",
+        "prop:flc-necessary"
       ]
     }
   ]

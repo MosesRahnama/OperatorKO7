@@ -78,6 +78,10 @@ Artifact-facing docs:
 - `OperatorKO7/Meta/ConfessionMethod_Family.lean`:
   the `confession_is_a_class` theorem packaging four W2 methods (DP+subterm, counter-projection,
   SCT, argument filtering) with distinct soundness licenses and a shared projection rank.
+- `OperatorKO7/Meta/MetaHalt_PaperInterface.lean`:
+  paper-facing entry into the supervisory-layer mechanization; forwards the
+  META-HALT predicate, regress-termination, soundness, fracture, and
+  fault-line-complete-architecture corollaries under short names.
 - `OperatorKO7/Meta/BenchmarkedPrimitiveRecursionFamily.lean`:
   finite six-member classification of the benchmarked primitive-recursion family and
   structural-minimum theorem for the duplicator.
@@ -183,6 +187,29 @@ $\kappa^*$, operational incompleteness, confession-method class, structural mini
   `family_terminates_pair_problem`, `ko7_full_system_terminates`, and
   `ko7_full_context_closed_terminates` connecting pair-problem well-foundedness to the full
   context-closed termination proof.
+
+#### META-HALT supervisory layer
+
+This subsection packages the mechanized supervisory layer for the operational-
+incompleteness paper.
+
+- `OperatorKO7/Meta/MetaHalt_Signatures.lean`:
+  finite decidable signature types consumed by the META-HALT predicate
+  (language, obligation, trace, admissibility, loop-pattern, catalog).
+- `OperatorKO7/Meta/MetaHalt_Predicate.lean`:
+  binary `metaHalt` function with four firing clauses, five-type `TypedOutput`
+  algebra, typed-output-discipline predicate, and false-supervisory-termination predicate.
+- `OperatorKO7/Meta/MetaHalt_Regress.lean`:
+  supervisory loop, audit-complete C3 record, and the finite-catalog
+  regress-termination theorem with explicit `Σᵢ (Bᵢ + 1)`-style budget surface.
+- `OperatorKO7/Meta/MetaHalt_Soundness.lean`:
+  catalog-soundness, no C1/C2 from blocked classes, and below-threshold
+  soundness corollaries for META-HALT-governed runs.
+- `OperatorKO7/Meta/MetaHalt_Fracture.lean`:
+  task-relativized exhaustion gap, `pre_undecidability_fracture`, and the
+  fault-line-complete-architecture layer-necessity corollaries.
+- `OperatorKO7/Meta/MetaHalt_PaperInterface.lean`:
+  thin paper-facing forwarding layer collecting the short-name theorems cited by the manuscript.
 
 #### Safe fragment and certification
 
@@ -446,6 +473,9 @@ $\kappa^*$, operational incompleteness, confession-method class, structural mini
 
 - `OperatorKO7/Test/Sanity.lean`:
   basic compilation/evaluation checks.
+- `OperatorKO7/Test/MetaHalt.lean`:
+  regression `#eval` checks for the META-HALT predicate's continue-search,
+  structural-block, and certified-cycle branches.
 - `OperatorKO7/Test/TPDB_Export.lean`:
   smoke tests for TPDB export text generation and related verifier-facing declarations.
 

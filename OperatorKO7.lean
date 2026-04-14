@@ -98,6 +98,12 @@ import OperatorKO7.Meta.WitnessOrder
 import OperatorKO7.Meta.OperationalIncompleteness
 import OperatorKO7.Meta.BenchmarkedPrimitiveRecursionFamily
 import OperatorKO7.Meta.BoundaryFactorization
+import OperatorKO7.Meta.MetaHalt_Signatures
+import OperatorKO7.Meta.MetaHalt_Predicate
+import OperatorKO7.Meta.MetaHalt_Regress
+import OperatorKO7.Meta.MetaHalt_Soundness
+import OperatorKO7.Meta.MetaHalt_Fracture
+import OperatorKO7.Meta.MetaHalt_PaperInterface
 
 /-!
 Public entrypoint for the `OperatorKO7` Lean library.
