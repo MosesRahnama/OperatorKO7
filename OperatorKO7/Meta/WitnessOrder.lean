@@ -142,6 +142,10 @@ theorem no_representable_direct_orienter :
       exact fun horient => (PumpedBarrierClasses.no_global_step_orientation_matrix2_with_primary_pump M) horient
   | matrix2LexWithPrimaryPump M =>
       exact fun horient => (PumpedBarrierClasses.no_global_step_orientation_matrix2_lex_with_primary_pump M) horient
+  | matrixLexDWithPrimaryPump M =>
+      exact fun horient => (OperatorKO7.MatrixBarrierLexD.no_global_step_orientation_matrixLexD_with_primary_pump M) horient
+  | matrixLexPermWithPrimaryPump M =>
+      exact fun horient => (OperatorKO7.MatrixBarrierLexPermD.no_global_step_orientation_matrixLexPermD_with_primary_pump M) horient
 
 /-- There is no witness in the formalized direct whole-term KO7 universe. -/
 theorem ko7_no_directWhole_witness :

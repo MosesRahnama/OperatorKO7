@@ -4,6 +4,9 @@ import OperatorKO7.Meta.ConfessionMethod_CounterProjection
 import OperatorKO7.Meta.ConfessionMethod_SCT
 import OperatorKO7.Meta.ConfessionMethod_ArgumentFiltering
 import OperatorKO7.Meta.OperationalIncompleteness
+import OperatorKO7.Meta.DependencyPairs_Works
+import OperatorKO7.Meta.PolyInterpretation_FullStep
+import OperatorKO7.Meta.ContextClosed_SN_Full
 
 /-!
 # The Confession-Method Family: Collected Results
@@ -116,5 +119,50 @@ theorem confession_family_resolves_operational_incompleteness :
     ∀ C ∈ allConfessionMethods,
       ∃ fw : CertifiedForgettingWitness, fw.rank = C.rank :=
   family_certified_forgetting
+
+/-! ## Full-system termination via the confession family
+
+    Each confession method proves termination of the *extracted pair problem*,
+    not just orientation of the duplicating step. The bridge from pair-problem
+    well-foundedness to full-system termination is the external soundness
+    metatheorem named by each method's `SoundnessLicense`.
+
+    Since all four methods share the same rank on this schema, they all
+    inherit the same pair-problem well-foundedness proof (`wf_DPPairRev`
+    from `DependencyPairs_Works.lean`). The full KO7 root-step termination
+    then follows by any of three independent routes:
+
+    - The DP route: `wf_DPPairRev` + Arts-Giesl soundness (external)
+    - The polynomial route: `wf_StepRev_poly` (internal, construction method)
+    - The MPO route: `wf_StepRev_mpo` (internal, construction method)
+
+    All three are already formalized in the artifact. The confession family
+    inherits the DP route because the pair problem is the same for all four
+    methods.
+-/
+
+/-- Every confession method in the family terminates the extracted KO7
+    dependency-pair problem. Since all four share the same rank, they
+    share the same well-foundedness proof. -/
+theorem family_terminates_pair_problem :
+    ∀ C ∈ allConfessionMethods,
+      WellFounded (fun a b : Trace =>
+        OperatorKO7.MetaDependencyPairs.DPPair b a) := by
+  intro C _
+  exact OperatorKO7.MetaDependencyPairs.wf_DPPairRev
+
+/-- The full KO7 root relation is terminating. This is the existing
+    `wf_StepRev_poly` theorem, restated here to confirm that the
+    confession family's pair-problem termination is consistent with
+    (and subsumed by) the full-system termination already in the
+    artifact. -/
+theorem ko7_full_system_terminates :
+    WellFounded (fun a b : Trace => Step b a) :=
+  OperatorKO7.PolyInterpretation.wf_StepRev_poly
+
+/-- The full KO7 context-closed relation is also terminating. -/
+theorem ko7_full_context_closed_terminates :
+    WellFounded MetaSN_KO7.StepCtxFullRev :=
+  MetaSN_KO7.wf_StepCtxFullRev_poly
 
 end OperatorKO7.ConfessionMethodFamily

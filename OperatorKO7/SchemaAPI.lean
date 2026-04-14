@@ -14,9 +14,12 @@ import OperatorKO7.Meta.ArcticBarrier
 import OperatorKO7.Meta.MatrixBarrier2
 import OperatorKO7.Meta.MatrixBarrierD
 import OperatorKO7.Meta.MatrixBarrierLex
+import OperatorKO7.Meta.MatrixBarrierLexD
+import OperatorKO7.Meta.MatrixBarrierLexPermD
 import OperatorKO7.Meta.MatrixBarrierMix2
 import OperatorKO7.Meta.MatrixBarrierFunctional
 import OperatorKO7.Meta.ScalarProjectionBarrier
+import OperatorKO7.Meta.ProjectedPrimaryBarrier
 
 -- Symbolic comparator barriers
 import OperatorKO7.Meta.SymbolicComparatorBarrier
@@ -66,9 +69,13 @@ Barrier theorems (schema-level):
 - Max-plus barrier and arctic primary-projection corollary
 - Fixed-dimension tracked componentwise vector barrier
 - Dimension-2 lexicographic pair barrier
+- Arbitrary finite tracked-primary lexicographic vector barrier
+- Permutation-priority finite tracked-primary lexicographic vector barrier
 - Balanced mixed-coordinate dimension-2 barrier
 - Weighted scalar-projection componentwise barrier
 - Scalar-projection meta-theorem
+- Projected-primary dominance meta-theorem subsuming the tracked componentwise and
+  tracked-primary lexicographic vector barriers
 - Symbolic variable-condition barrier (KBO-style) and KBO corollary
 
 Strengthened subclasses and pump infrastructure:

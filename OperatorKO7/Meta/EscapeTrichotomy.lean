@@ -1,6 +1,8 @@
 import OperatorKO7.Meta.PumpedBarrierClasses
 import OperatorKO7.Meta.DepthBarrier
 import OperatorKO7.Meta.PrecedenceBarrier
+import OperatorKO7.Meta.MatrixBarrierLexD
+import OperatorKO7.Meta.MatrixBarrierLexPermD
 
 /-!
 # Escape Trichotomy
@@ -21,6 +23,8 @@ The theorem universe is intentionally narrow and reviewable:
 - KO7-specific pure head-precedence families
 - tracked-primary componentwise pair families
 - tracked-primary lexicographic pair families
+- arbitrary finite tracked-primary lexicographic vector families
+- permutation-priority finite tracked-primary lexicographic vector families
 
 Within this universe, any successful root-step orienter must fail at least one of:
 - wrapper-subterm sensitivity
@@ -124,12 +128,16 @@ inductive KO7DirectOrienter where
   | nat (μ : Trace → Nat)
   | pairComponentwise (μ : Trace → StepDuplicatingSchema.Vec2)
   | pairLex (μ : Trace → StepDuplicatingSchema.Vec2)
+  | vecLex (d : Nat) (μ : Trace → Fin (d + 1) → Nat)
+  | vecPermLex (d : Nat) (σ : Equiv.Perm (Fin (d + 1))) (μ : Trace → Fin (d + 1) → Nat)
 
 /-- The tracked primary scalar exposed by an orienter in the explicit KO7 direct universe. -/
 def KO7DirectOrienter.primaryScalar : KO7DirectOrienter → Trace → Nat
   | .nat μ => μ
   | .pairComponentwise μ => fun t => (μ t).1
   | .pairLex μ => fun t => (μ t).1
+  | .vecLex d μ => fun t => μ t (StepDuplicatingSchema.primaryIdx d)
+  | .vecPermLex d σ μ => fun t => μ t (StepDuplicatingSchema.permPrimaryIdx σ)
 
 /-- Orientation predicate for the explicit KO7 direct-orienter universe. -/
 def KO7DirectOrienter.Orients : KO7DirectOrienter → Prop
@@ -139,6 +147,10 @@ def KO7DirectOrienter.Orients : KO7DirectOrienter → Prop
       StepDuplicatingSchema.GlobalOrients ko7System μ StepDuplicatingSchema.PairLt
   | .pairLex μ =>
       StepDuplicatingSchema.GlobalOrients ko7System μ StepDuplicatingSchema.PairLexLt
+  | .vecLex _ μ =>
+      StepDuplicatingSchema.GlobalOrients ko7System μ StepDuplicatingSchema.VecLexLt
+  | .vecPermLex _ σ μ =>
+      StepDuplicatingSchema.GlobalOrients ko7System μ (StepDuplicatingSchema.VecPermLexLt σ)
 
 /-- KO7-specific extension of the Nat-valued direct universe used by the escape
 trichotomy theorem. It adds the theorem-level depth and pure-precedence families
@@ -201,6 +213,14 @@ inductive KO7DirectBarrierRepresentable : KO7DirectOrienter → Prop
   | matrix2LexWithPrimaryPump
       (M : StepDuplicatingSchema.MatrixMeasure2WithPrimaryPump ko7Schema) :
       KO7DirectBarrierRepresentable (.pairLex M.eval)
+  | matrixLexDWithPrimaryPump
+      {d : Nat}
+      (M : StepDuplicatingSchema.MatrixLexMeasureDWithPrimaryPump ko7Schema d) :
+      KO7DirectBarrierRepresentable (.vecLex d M.eval)
+  | matrixLexPermWithPrimaryPump
+      {d : Nat}
+      (M : StepDuplicatingSchema.MatrixLexPermMeasureDWithPrimaryPump ko7Schema d) :
+      KO7DirectBarrierRepresentable (.vecPermLex d M.priority M.eval)
 
 /-- KO7 escape trichotomy for the explicit Nat-valued direct universe formalized
 in the artifact. Any successful Nat-valued root-step orienter must fail wrapper
@@ -320,6 +340,10 @@ theorem ko7_direct_escape_trichotomy_extended
           exact (PumpedBarrierClasses.no_global_step_orientation_matrix2_with_primary_pump M) horient
       | matrix2LexWithPrimaryPump M =>
           exact (PumpedBarrierClasses.no_global_step_orientation_matrix2_lex_with_primary_pump M) horient
+      | matrixLexDWithPrimaryPump M =>
+          exact (OperatorKO7.MatrixBarrierLexD.no_global_step_orientation_matrixLexD_with_primary_pump M) horient
+      | matrixLexPermWithPrimaryPump M =>
+          exact (OperatorKO7.MatrixBarrierLexPermD.no_global_step_orientation_matrixLexPermD_with_primary_pump M) horient
     · right
       left
       exact htrans
