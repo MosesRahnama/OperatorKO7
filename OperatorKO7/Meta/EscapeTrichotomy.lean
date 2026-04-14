@@ -137,7 +137,7 @@ def KO7DirectOrienter.primaryScalar : KO7DirectOrienter → Trace → Nat
   | .pairComponentwise μ => fun t => (μ t).1
   | .pairLex μ => fun t => (μ t).1
   | .vecLex d μ => fun t => μ t (StepDuplicatingSchema.primaryIdx d)
-  | .vecPermLex d σ μ => fun t => μ t (StepDuplicatingSchema.permPrimaryIdx σ)
+  | .vecPermLex _ σ μ => fun t => μ t (StepDuplicatingSchema.permPrimaryIdx σ)
 
 /-- Orientation predicate for the explicit KO7 direct-orienter universe. -/
 def KO7DirectOrienter.Orients : KO7DirectOrienter → Prop
