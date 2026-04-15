@@ -128,38 +128,58 @@ theorem exhaustionGap_zero_iff_all_performed
     context with nonzero exhaustion gap. -/
 theorem no_c4_above_nonzero_gap
     (O : ObligationSignature) (P : OperationsPerformed)
-  (_hgap : (exhaustionGap O P).1 > 0) :
+    (hgap : (exhaustionGap O P).1 > 0) :
+    ¬ (taskRequiredOperations O).all (fun op => decide (op ∈ P.tags)) = true ∧
     ∀ (out : TypedOutput) (metaThm cert : String),
       out = TypedOutput.T5_impossibilityCert metaThm cert →
       isTypedOutputDisciplineViolation out false false false false false = true := by
-  intro out metaThm cert hEq
-  subst hEq
-  simp [isTypedOutputDisciplineViolation]
+  refine ⟨?_, ?_⟩
+  · intro hall
+    have hzero : (exhaustionGap O P).1 = 0 :=
+      (exhaustionGap_zero_iff_all_performed O P).2 hall
+    exact Nat.ne_of_gt hgap hzero
+  · intro out metaThm cert hEq
+    subst hEq
+    simp [isTypedOutputDisciplineViolation]
 
 /-- Pre-Undecidability Fracture Theorem, threshold form. -/
 theorem pre_undecidability_fracture
+    (C : Catalog) (policy : CatalogLiftPolicy)
+    (admiss : AdmissibilityTable) (loops : LoopPatternTable)
+    (inner : InnerSearchStep)
     (O : ObligationSignature) (P : OperationsPerformed)
-    (threshold : WLevel) (_hth : 0 < threshold.toNat)
+    (s : SupervisoryLoopState)
+    (threshold : WLevel) (hth : 0 < threshold.toNat)
     (hgap : (exhaustionGap O P).1 > 0)
-    (hOI : PayloadOperationalIncompleteness) :
+    (hOI : PayloadOperationalIncompleteness)
+    (hconf : ∀ L ∈ s.visited, L.level.toNat < threshold.toNat)
+    (hsound : ∀ (L : LanguageSignature) (o : TypedOutput),
+      supervisoryLoop (C.size + 1) C policy admiss loops inner O s [] =
+        .acceptedWitness L o →
+      isTypedOutputDisciplineViolation o false false false false false = false) :
+    kappaGt (contractTower ko7Tower benchmarkContract) WLevel.importedWhole ∧
     ((exhaustionGap O P).1 > 0) ∧
+    (¬ (taskRequiredOperations O).all (fun op => decide (op ∈ P.tags)) = true) ∧
     (∀ metaThm cert,
        isTypedOutputDisciplineViolation
          (TypedOutput.T5_impossibilityCert metaThm cert)
          false false false false false = true) ∧
-    (∀ tag,
-       isTypedOutputDisciplineViolation
-         (TypedOutput.T1_complete tag)
-         false false false false false = true) ∧
+    ((∃ rec : AuditCompleteC3Record,
+        supervisoryLoop (C.size + 1) C policy admiss loops inner O s [] = .auditC3 rec) ∨
+     (∃ L o,
+        supervisoryLoop (C.size + 1) C policy admiss loops inner O s [] = .acceptedWitness L o ∧
+        L.level.toNat ≥ threshold.toNat)) ∧
     (∃ fw : CertifiedForgettingWitness, fw = hOI.certifiedForgetting) ∧
     (isTypedOutputDisciplineViolation
        (TypedOutput.T4_abstention "" [] [])
        false false false false false = true) := by
-  refine ⟨hgap, ?_, ?_, ?_, ?_⟩
+  have hc4 := no_c4_above_nonzero_gap O P hgap
+  have hmeta :=
+    below_threshold_forces_metahalt
+      C policy admiss loops inner O s threshold hth hconf hsound
+  refine ⟨hOI.noContractWitnessBelowImportedWhole, hgap, hc4.1, ?_, hmeta, ?_, ?_⟩
   · intro metaThm cert
-    simp [isTypedOutputDisciplineViolation]
-  · intro tag
-    simp [isTypedOutputDisciplineViolation]
+    exact hc4.2 (TypedOutput.T5_impossibilityCert metaThm cert) metaThm cert rfl
   · exact ⟨hOI.certifiedForgetting, rfl⟩
   · simp [isTypedOutputDisciplineViolation]
 
@@ -177,48 +197,65 @@ structure FaultLineCompleteArchitecture where
 /-- Without a witness-transition layer, terminal outputs collapse to typed
     abstention or else violate the typed-output discipline. -/
 theorem flc_layers_necessary_witness_transition :
-    ∀ (O : ObligationSignature) (P : OperationsPerformed)
+    ∀ (C : Catalog) (admiss : AdmissibilityTable) (loops : LoopPatternTable)
+      (inner : InnerSearchStep) (O : ObligationSignature)
+      (P : OperationsPerformed) (s : SupervisoryLoopState)
       (arch : FaultLineCompleteArchitecture),
       (exhaustionGap O P).1 > 0 →
       arch.witnessTransitionLayer.choose =
         (fun _ _ => (none : Option LanguageSignature)) →
-      ∀ out : TypedOutput,
-        (∃ dim cons rej, out = TypedOutput.T4_abstention dim cons rej) ∨
-        isTypedOutputDisciplineViolation out false false false false false = true := by
-  intro O P arch hgap hNoTransition out
-  cases out with
-  | T1_complete tag =>
-      exact Or.inr (by simp [isTypedOutputDisciplineViolation])
-  | T2_construction obj log =>
-      exact Or.inr (by simp [isTypedOutputDisciplineViolation])
-  | T3_confession thm fw dim res =>
-      exact Or.inr (by simp [isTypedOutputDisciplineViolation])
-  | T4_abstention dim cons rej =>
-      exact Or.inl ⟨dim, cons, rej, rfl⟩
-  | T5_impossibilityCert thm cert =>
-      exact Or.inr (by simp [isTypedOutputDisciplineViolation])
+      let out :=
+        supervisoryLoop (C.size + 1) C arch.witnessTransitionLayer admiss loops inner O s []
+      (¬ (taskRequiredOperations O).all (fun op => decide (op ∈ P.tags)) = true) ∧
+      (∃ rec : AuditCompleteC3Record, out = .auditC3 rec) := by
+  intro C admiss loops inner O P s arch hgap hNoTransition
+  dsimp
+  have hc4 := no_c4_above_nonzero_gap O P hgap
+  have hterm :=
+    supervisoryLoop_emits_c3_or_c1c2 C arch.witnessTransitionLayer admiss loops inner O s
+  refine ⟨hc4.1, ?_⟩
+  rcases hterm with hacc | haudit
+  · rcases hacc with ⟨L, o, hacc⟩
+    simp [supervisoryLoop, hNoTransition] at hacc
+  · exact haudit
 
 /-- Without a functioning META-HALT controller, terminal outputs collapse to
     typed abstention or else violate the typed-output discipline. -/
 theorem flc_layers_necessary_meta_halt :
-    ∀ (O : ObligationSignature) (P : OperationsPerformed)
-      (arch : FaultLineCompleteArchitecture),
+    ∀ (C : Catalog) (admiss : AdmissibilityTable) (loops : LoopPatternTable)
+      (inner : InnerSearchStep) (O : ObligationSignature)
+      (P : OperationsPerformed) (s : SupervisoryLoopState)
+      (threshold : WLevel) (arch : FaultLineCompleteArchitecture),
+      0 < threshold.toNat →
       (exhaustionGap O P).1 > 0 →
       (∀ Lsig Osig T, arch.metaHaltController Osig Lsig T = false) →
-      ∀ out : TypedOutput,
-        (∃ dim cons rej, out = TypedOutput.T4_abstention dim cons rej) ∨
-        isTypedOutputDisciplineViolation out false false false false false = true := by
-  intro O P arch hgap hNoMetaHalt out
-  cases out with
-  | T1_complete tag =>
-      exact Or.inr (by simp [isTypedOutputDisciplineViolation])
-  | T2_construction obj log =>
-      exact Or.inr (by simp [isTypedOutputDisciplineViolation])
-  | T3_confession thm fw dim res =>
-      exact Or.inr (by simp [isTypedOutputDisciplineViolation])
-  | T4_abstention dim cons rej =>
-      exact Or.inl ⟨dim, cons, rej, rfl⟩
-  | T5_impossibilityCert thm cert =>
-      exact Or.inr (by simp [isTypedOutputDisciplineViolation])
+      (∀ (Osig : ObligationSignature) (Lsig : LanguageSignature)
+          (T : SearchTraceSignature) (budget catalogRem : Nat),
+          arch.metaHaltController Osig Lsig T = false →
+          metaHalt Osig Lsig T admiss loops budget catalogRem = none) →
+      (∀ L ∈ s.visited, L.level.toNat < threshold.toNat) →
+      (∀ (L : LanguageSignature) (o : TypedOutput),
+        supervisoryLoop (C.size + 1) C arch.witnessTransitionLayer admiss loops inner O s [] =
+          .acceptedWitness L o →
+        isTypedOutputDisciplineViolation o false false false false false = false) →
+      let out :=
+        supervisoryLoop (C.size + 1) C arch.witnessTransitionLayer admiss loops inner O s []
+      (¬ (taskRequiredOperations O).all (fun op => decide (op ∈ P.tags)) = true) ∧
+      (∀ (Lsig : LanguageSignature) (T : SearchTraceSignature) (budget catalogRem : Nat),
+        metaHalt O Lsig T admiss loops budget catalogRem = none) ∧
+      ((∃ rec : AuditCompleteC3Record, out = .auditC3 rec) ∨
+       (∃ L o, out = .acceptedWitness L o ∧ L.level.toNat ≥ threshold.toNat)) := by
+  intro C admiss loops inner O P s threshold arch hth hgap hNoMetaHalt hReflectsNone hconf hsound
+  dsimp
+  have hc4 := no_c4_above_nonzero_gap O P hgap
+  have hallNone :
+      ∀ (Lsig : LanguageSignature) (T : SearchTraceSignature) (budget catalogRem : Nat),
+        metaHalt O Lsig T admiss loops budget catalogRem = none := by
+    intro Lsig T budget catalogRem
+    exact hReflectsNone O Lsig T budget catalogRem (hNoMetaHalt Lsig O T)
+  have hterm :=
+    below_threshold_forces_metahalt
+      C arch.witnessTransitionLayer admiss loops inner O s threshold hth hconf hsound
+  exact ⟨hc4.1, hallNone, hterm⟩
 
 end OperatorKO7.MetaHalt.Fracture
