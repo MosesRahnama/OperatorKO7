@@ -1,5 +1,5 @@
 # OperatorKO7 Complete Documentation
-Generated: 2026-04-15 02:52:10 +0330
+Generated: 2026-04-15 20:33:04 +0330
 Source files: 138
 Total source lines: 29851
 Scope: active `.lean` files in the repository
