@@ -1,18 +1,83 @@
 import OperatorKO7.Meta.Conjecture_Boundary
+import OperatorKO7.Meta.CompositionalMeasure_Impossibility
 
 /-!
 # Max-Based Depth Barrier
 
-This module upgrades the standalone tree-depth witness to a theorem-backed family.
-The family is still KO7-specific: constructor-local heights are aggregated by `max`,
-not by addition, and the failure is exhibited on the kernel `rec_succ` rule.
+This module provides the max-aggregative depth barrier at two layers:
+
+- a generic **schema-level** family `MaxDepthMeasure S` over an arbitrary
+  `StepDuplicatingSchema`, with the corresponding impossibility theorem
+  `no_maxDepth_orients_dup_step` and its `GlobalOrients` corollary; and
+- the original **KO7-specific** max-aggregative depth family, now re-derived
+  as a thin corollary via a `toSchemaMeasure` projection that forgets the
+  unused extra constructor weights (`c_integrate`, `c_merge`, `c_eq`).
+
+The schema proof is discharged on the concrete duplicating-rule instance
+with `b = base`, `s = succ base`, `n = base`.
 -/
+
+namespace OperatorKO7.StepDuplicating
+
+namespace StepDuplicatingSchema
+
+/-- A schema-level max-aggregative depth family.
+
+`succ` adds a unary bump and forwards its argument; `wrap` and `recur`
+add an outer bump on top of the maximum depth of their visible branches.
+The only load-bearing side condition is `h_wrap_pos : 1 ≤ c_wrap`: the
+duplicating rule exposes the step argument under an extra wrapper, and a
+positive wrapper offset forces that exposure to strictly increase depth. -/
+structure MaxDepthMeasure (S : StepDuplicatingSchema) where
+  eval       : S.T → Nat
+  c_base     : Nat
+  c_succ     : Nat
+  c_wrap     : Nat
+  c_recur    : Nat
+  eval_base  : eval S.base = c_base
+  eval_succ  : ∀ t, eval (S.succ t) = c_succ + eval t
+  eval_wrap  : ∀ x y, eval (S.wrap x y) = c_wrap + max (eval x) (eval y)
+  eval_recur : ∀ b s n,
+    eval (S.recur b s n) = c_recur + max (max (eval b) (eval s)) (eval n)
+  h_wrap_pos : 1 ≤ c_wrap
+
+/-- **Schema-level max-aggregative depth barrier.**
+
+No such measure can strictly orient the duplicating rule uniformly. The
+contradiction falls out of the concrete instance `b = base`, `s = succ base`,
+`n = base`, where both sides share the same frozen branches and the target
+is exactly `c_wrap` larger than the source. -/
+theorem no_maxDepth_orients_dup_step
+    {S : StepDuplicatingSchema} (M : MaxDepthMeasure S) :
+    ¬ (∀ (b s n : S.T),
+      M.eval (S.wrap s (S.recur b s n)) < M.eval (S.recur b s (S.succ n))) := by
+  intro h
+  have hspec := h S.base (S.succ S.base) S.base
+  rw [M.eval_wrap, M.eval_recur, M.eval_recur, M.eval_succ, M.eval_base] at hspec
+  have hwrap := M.h_wrap_pos
+  omega
+
+/-- Unbounded-range hypothesis is not needed; the barrier is unconditional. -/
+theorem no_global_orients_maxDepth
+    {Sys : StepDuplicatingSystem} (M : MaxDepthMeasure Sys.toStepDuplicatingSchema) :
+    ¬ GlobalOrients Sys M.eval (· < ·) := by
+  intro h
+  exact
+    no_maxDepth_orients_dup_step
+      (S := Sys.toStepDuplicatingSchema) M
+      (fun b s n => h (Sys.dup_step b s n))
+
+end StepDuplicatingSchema
+
+end OperatorKO7.StepDuplicating
 
 namespace OperatorKO7.DepthBarrier
 
 open OperatorKO7
 open OperatorKO7.Trace
 open OperatorKO7.MetaConjectureBoundary
+open OperatorKO7.StepDuplicating
+open OperatorKO7.CompositionalImpossibility
 
 /-- A KO7-specific max-aggregative depth family. Unary constructors add a fixed bump;
 binary and ternary constructors add a fixed bump on top of the maximum depth of their
@@ -37,16 +102,32 @@ structure MaxDepthMeasure where
   | .recΔ b s n => M.c_rec + max (max (M.eval b) (M.eval s)) (M.eval n)
   | .eqW a b => M.c_eq + max (M.eval a) (M.eval b)
 
-/-- No max-aggregative depth measure can globally orient `Step`. The duplicating rule
-already forces a contradiction at `b = void`, `s = delta void`, `n = void`. -/
+/-- Forget the KO7-specific extra constructor weights and view the KO7 depth
+family as a schema-level `MaxDepthMeasure` on `ko7Schema`. -/
+def MaxDepthMeasure.toSchemaMeasure (M : MaxDepthMeasure) :
+    StepDuplicatingSchema.MaxDepthMeasure ko7Schema where
+  eval := M.eval
+  c_base := M.c_void
+  c_succ := M.c_delta
+  c_wrap := M.c_app
+  c_recur := M.c_rec
+  eval_base := by rfl
+  eval_succ := by intro t; rfl
+  eval_wrap := by intro x y; rfl
+  eval_recur := by intro b s n; rfl
+  h_wrap_pos := M.h_app_pos
+
+/-- KO7 max-aggregative depth barrier as a corollary of the schema theorem. -/
 theorem no_global_step_orientation_maxDepth (M : MaxDepthMeasure) :
     ¬ GlobalOrients M.eval (· < ·) := by
   intro h
-  have hstep : Step (recΔ void (delta void) (delta void))
-      (app (delta void) (recΔ void (delta void) void)) :=
-    Step.R_rec_succ void (delta void) void
-  have hlt := h hstep
-  simp [MaxDepthMeasure.eval] at hlt
+  have hdup :
+      StepDuplicatingSchema.GlobalOrients ko7System M.eval (· < ·) := by
+    intro a b hab
+    exact h hab
+  exact
+    StepDuplicatingSchema.no_global_orients_maxDepth
+      (Sys := ko7System) (M := M.toSchemaMeasure) hdup
 
 /-- The usual unit-increment tree depth is an instance of the max-depth family. -/
 def standardTreeDepthMeasure : MaxDepthMeasure where
