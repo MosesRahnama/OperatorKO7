@@ -38,7 +38,7 @@ def schemaDPWitness : DPWitness where
   selectedCoordinate_is_counter := rfl
 
 /-- The DP witness packaged as the intermediate confession-core witness. -/
-def DPWitness.toConfessionCoreWitness (W : DPWitness) : ConfessionCoreWitness ko7Schema where
+def DPWitness.toConfessionCoreWitness (_W : DPWitness) : ConfessionCoreWitness ko7Schema where
   rank := dpProjection
   rank_base := by rfl
   rank_succ := by intro t; rfl

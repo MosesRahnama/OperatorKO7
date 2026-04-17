@@ -42,6 +42,52 @@ abbrev counterProjectionCoreWitness := counterProjectionConfession.toConfessionC
 abbrev sctCoreWitness := sctConfession.toConfessionCoreWitness
 abbrev argumentFilteringCoreWitness := argumentFilteringConfession.toConfessionCoreWitness
 
+/-- The common confession core satisfies the generic semantic profile. -/
+theorem confession_core_has_semantic_profile :
+    NormalizedAtBase ko7Schema confessionCoreWitness.rank
+    ∧ TracksSuccessorDepth ko7Schema confessionCoreWitness.rank
+    ∧ ForgetsWrapperPayload ko7Schema confessionCoreWitness.rank
+    ∧ FollowsRecursiveCounter ko7Schema confessionCoreWitness.rank := by
+  exact confessionCoreWitness.satisfies_semantic_profile
+
+/-- The route-local witness objects also induce the same confession core. -/
+theorem all_route_local_witnesses_share_confession_core :
+    schemaDPWitness.toConfessionCoreWitness.toProjectionRank = confessionProjectionCore
+    ∧ schemaDirectCounterProjectionWitness.toConfessionCoreWitness.toProjectionRank =
+        confessionProjectionCore
+    ∧ schemaSCTWitness.toConfessionCoreWitness.toProjectionRank = confessionProjectionCore
+    ∧ schemaArgumentFilteringWitness.toConfessionCoreWitness.toProjectionRank =
+        confessionProjectionCore := by
+  exact ⟨dpWitness_toConfessionCoreWitness_eq_core,
+    directCounterProjectionWitness_toConfessionCoreWitness_eq_core,
+    sctWitness_toConfessionCoreWitness_eq_core,
+    argumentFilteringWitness_toConfessionCoreWitness_eq_core⟩
+
+/-- The route-local witness objects are equal to the common intermediate
+    confession-core witness, not only after projection-rank packaging. -/
+theorem all_route_local_witnesses_share_confession_core_witness_exact :
+    schemaDPWitness.toConfessionCoreWitness = confessionCoreWitness
+    ∧ schemaDirectCounterProjectionWitness.toConfessionCoreWitness = confessionCoreWitness
+    ∧ schemaSCTWitness.toConfessionCoreWitness = confessionCoreWitness
+    ∧ schemaArgumentFilteringWitness.toConfessionCoreWitness = confessionCoreWitness := by
+  refine ⟨?_, ?_, ?_, ?_⟩
+  · rfl
+  · apply ConfessionCoreWitness.ext_rank
+    intro t
+    simpa [confessionCoreWitness, ConfessionCoreWitness.ofProjectionRank,
+      DirectCounterProjectionWitness.toConfessionCoreWitness] using
+      congrFun counterProjectionRankFn_eq_dpProjection t
+  · apply ConfessionCoreWitness.ext_rank
+    intro t
+    simpa [confessionCoreWitness, ConfessionCoreWitness.ofProjectionRank,
+      SCTWitness.toConfessionCoreWitness] using
+      congrFun sctRankFn_eq_dpProjection t
+  · apply ConfessionCoreWitness.ext_rank
+    intro t
+    simpa [confessionCoreWitness, ConfessionCoreWitness.ofProjectionRank,
+      ArgumentFilteringWitness.toConfessionCoreWitness] using
+      congrFun argumentFilteringRankFn_eq_dpProjection t
+
 /-- The DP route is the canonical realization of the confession core. -/
 theorem dp_route_eq_confession_core :
     dpConfession.toProjectionRank = confessionProjectionCore := rfl
@@ -82,6 +128,59 @@ theorem all_confession_routes_share_confession_core_witness :
     ∧ argumentFilteringCoreWitness.toProjectionRank = confessionProjectionCore := by
   exact ⟨dp_route_eq_confession_core, counterProjection_route_eq_confession_core,
     sct_route_eq_confession_core, argumentFiltering_route_eq_confession_core⟩
+
+/-- The concrete confession methods also agree with the common intermediate
+    confession-core witness exactly, not only after reprojecting to
+    `ProjectionRank`. -/
+theorem all_confession_methods_share_confession_core_witness_exact :
+    dpCoreWitness = confessionCoreWitness
+    ∧ counterProjectionCoreWitness = confessionCoreWitness
+    ∧ sctCoreWitness = confessionCoreWitness
+    ∧ argumentFilteringCoreWitness = confessionCoreWitness := by
+  refine ⟨?_, ?_, ?_, ?_⟩
+  · rfl
+  · apply ConfessionCoreWitness.ext_rank
+    intro t
+    simpa [counterProjectionCoreWitness, confessionCoreWitness,
+      ConfessionMethod.toConfessionCoreWitness, ConfessionCoreWitness.ofProjectionRank] using
+      congrFun counterProjectionRankFn_eq_dpProjection t
+  · apply ConfessionCoreWitness.ext_rank
+    intro t
+    simpa [sctCoreWitness, confessionCoreWitness,
+      ConfessionMethod.toConfessionCoreWitness, ConfessionCoreWitness.ofProjectionRank] using
+      congrFun sctRankFn_eq_dpProjection t
+  · apply ConfessionCoreWitness.ext_rank
+    intro t
+    simpa [argumentFilteringCoreWitness, confessionCoreWitness,
+      ConfessionMethod.toConfessionCoreWitness, ConfessionCoreWitness.ofProjectionRank] using
+      congrFun argumentFilteringRankFn_eq_dpProjection t
+
+/-- Consequently, all four concrete confession methods satisfy the same generic
+    semantic profile once viewed through the intermediate core witness. -/
+theorem all_confession_methods_share_semantic_profile :
+    (NormalizedAtBase ko7Schema dpCoreWitness.rank
+      ∧ TracksSuccessorDepth ko7Schema dpCoreWitness.rank
+      ∧ ForgetsWrapperPayload ko7Schema dpCoreWitness.rank
+      ∧ FollowsRecursiveCounter ko7Schema dpCoreWitness.rank)
+    ∧ (NormalizedAtBase ko7Schema counterProjectionCoreWitness.rank
+      ∧ TracksSuccessorDepth ko7Schema counterProjectionCoreWitness.rank
+      ∧ ForgetsWrapperPayload ko7Schema counterProjectionCoreWitness.rank
+      ∧ FollowsRecursiveCounter ko7Schema counterProjectionCoreWitness.rank)
+    ∧ (NormalizedAtBase ko7Schema sctCoreWitness.rank
+      ∧ TracksSuccessorDepth ko7Schema sctCoreWitness.rank
+      ∧ ForgetsWrapperPayload ko7Schema sctCoreWitness.rank
+      ∧ FollowsRecursiveCounter ko7Schema sctCoreWitness.rank)
+    ∧ (NormalizedAtBase ko7Schema argumentFilteringCoreWitness.rank
+      ∧ TracksSuccessorDepth ko7Schema argumentFilteringCoreWitness.rank
+      ∧ ForgetsWrapperPayload ko7Schema argumentFilteringCoreWitness.rank
+      ∧ FollowsRecursiveCounter ko7Schema argumentFilteringCoreWitness.rank) := by
+  rcases all_confession_methods_share_confession_core_witness_exact with
+    ⟨hDP, hCounter, hSCT, hFilter⟩
+  refine ⟨?_, ?_, ?_, ?_⟩
+  · simpa [hDP] using confession_core_has_semantic_profile
+  · simpa [hCounter] using confession_core_has_semantic_profile
+  · simpa [hSCT] using confession_core_has_semantic_profile
+  · simpa [hFilter] using confession_core_has_semantic_profile
 
 /-- The corresponding rank functions also coincide. -/
 theorem all_confession_routes_share_rank_core :

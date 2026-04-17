@@ -368,6 +368,60 @@ structure ConfessionCoreWitness (S : StepDuplicatingSchema) where
   rank_wrap : ∀ x y, rank (S.wrap x y) = 0
   rank_recur : ∀ b s n, rank (S.recur b s n) = rank n
 
+/-- Extensionality for confession-core witnesses by their rank functions. -/
+@[ext] theorem ConfessionCoreWitness.ext {S : StepDuplicatingSchema}
+    (W₁ W₂ : ConfessionCoreWitness S) (h : W₁.rank = W₂.rank) : W₁ = W₂ := by
+  cases W₁
+  cases W₂
+  cases h
+  simp
+
+/-- Pointwise extensionality for confession-core witnesses. -/
+theorem ConfessionCoreWitness.ext_rank {S : StepDuplicatingSchema}
+    (W₁ W₂ : ConfessionCoreWitness S)
+    (h : ∀ t : S.T, W₁.rank t = W₂.rank t) : W₁ = W₂ := by
+  apply ConfessionCoreWitness.ext
+  funext t
+  exact h t
+
+/-- Semantic predicates for the confession-core shape. -/
+def NormalizedAtBase (S : StepDuplicatingSchema) (rank : S.T → Nat) : Prop :=
+  rank S.base = 0
+
+def TracksSuccessorDepth (S : StepDuplicatingSchema) (rank : S.T → Nat) : Prop :=
+  ∀ t, rank (S.succ t) = rank t + 1
+
+def ForgetsWrapperPayload (S : StepDuplicatingSchema) (rank : S.T → Nat) : Prop :=
+  ∀ x y, rank (S.wrap x y) = 0
+
+def FollowsRecursiveCounter (S : StepDuplicatingSchema) (rank : S.T → Nat) : Prop :=
+  ∀ b s n, rank (S.recur b s n) = rank n
+
+namespace ConfessionCoreWitness
+
+/-- Build a confession-core witness from the semantic profile predicates. -/
+def ofSemanticProfile {S : StepDuplicatingSchema} (rank : S.T → Nat)
+    (hbase : NormalizedAtBase S rank)
+    (hsucc : TracksSuccessorDepth S rank)
+    (hwrap : ForgetsWrapperPayload S rank)
+    (hrecur : FollowsRecursiveCounter S rank) : ConfessionCoreWitness S where
+  rank := rank
+  rank_base := hbase
+  rank_succ := hsucc
+  rank_wrap := hwrap
+  rank_recur := hrecur
+
+/-- Every confession-core witness satisfies the semantic profile predicates. -/
+theorem satisfies_semantic_profile {S : StepDuplicatingSchema}
+    (W : ConfessionCoreWitness S) :
+    NormalizedAtBase S W.rank
+    ∧ TracksSuccessorDepth S W.rank
+    ∧ ForgetsWrapperPayload S W.rank
+    ∧ FollowsRecursiveCounter S W.rank := by
+  exact ⟨W.rank_base, W.rank_succ, W.rank_wrap, W.rank_recur⟩
+
+end ConfessionCoreWitness
+
 /-- The projection rank orients the duplicating step by tracking only the recursion counter. -/
 theorem projection_orients_dup_step {S : StepDuplicatingSchema} (R : ProjectionRank S)
     (b s n : S.T) :

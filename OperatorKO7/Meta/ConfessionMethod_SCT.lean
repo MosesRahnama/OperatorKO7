@@ -144,6 +144,14 @@ theorem sctRankFn_eq_dpProjection :
   funext t
   induction t <;> simp [sctRankFn, dpProjection, *]
 
+/-- The SCT witness packaged as the intermediate confession-core witness. -/
+def SCTWitness.toConfessionCoreWitness (_W : SCTWitness) : ConfessionCoreWitness ko7Schema where
+  rank := sctRankFn
+  rank_base := by rfl
+  rank_succ := by intro t; rfl
+  rank_wrap := by intro x y; rfl
+  rank_recur := by intro b s n; rfl
+
 /-- The projection rank derived from the SCT witness. -/
 def sctDerivedRank : ProjectionRank ko7Schema where
   rank := sctRankFn
@@ -164,6 +172,22 @@ theorem sctDerivedRank_eq_dpProjectionRank :
     sctDerivedRank = dpProjectionRank := by
   ext t
   simpa [sctDerivedRank, dpProjectionRank] using congrFun sctRankFn_eq_dpProjection t
+
+/-- The SCT witness forgets the wrapper payload at the level of the
+    intermediate confession core. -/
+theorem sctWitness_forgets_wrapper_payload :
+    ∀ x y : Trace,
+      schemaSCTWitness.toConfessionCoreWitness.rank (app x y) = 0 := by
+  intro x y
+  rfl
+
+/-- The SCT witness induces the same confession core as the canonical DP
+    route. -/
+theorem sctWitness_toConfessionCoreWitness_eq_core :
+    schemaSCTWitness.toConfessionCoreWitness.toProjectionRank = dpProjectionRank := by
+  ext t
+  simpa [SCTWitness.toConfessionCoreWitness, dpProjectionRank] using
+    congrFun sctRankFn_eq_dpProjection t
 
 /-- SCT as a confession method on the KO7 schema. The rank is the same
     counter-projection rank that DP uses, but now via an explicit graph-level

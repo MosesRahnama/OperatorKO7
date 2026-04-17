@@ -44,16 +44,6 @@ def schemaDirectCounterProjectionWitness : DirectCounterProjectionWitness where
   selectedCoordinate := ⟨2, by decide⟩
   selectedCoordinate_is_counter := rfl
 
-/-- The direct counter-projection witness packaged as the intermediate
-    confession-core witness. -/
-def DirectCounterProjectionWitness.toConfessionCoreWitness
-    (W : DirectCounterProjectionWitness) : ConfessionCoreWitness ko7Schema where
-  rank := counterProjectionRankFn
-  rank_base := by rfl
-  rank_succ := by intro t; rfl
-  rank_wrap := by intro x y; rfl
-  rank_recur := by intro b s n; rfl
-
 /-- Route-local rank extracted from direct counter projection.
     This is the "follow the counter, ignore the wrapper" measure obtained from
     the direct subterm-criterion reading of the original recursive symbol. -/
@@ -72,6 +62,16 @@ theorem counterProjectionRankFn_eq_dpProjection :
     counterProjectionRankFn = dpProjection := by
   funext t
   induction t <;> simp [counterProjectionRankFn, dpProjection, *]
+
+/-- The direct counter-projection witness packaged as the intermediate
+    confession-core witness. -/
+def DirectCounterProjectionWitness.toConfessionCoreWitness
+    (_W : DirectCounterProjectionWitness) : ConfessionCoreWitness ko7Schema where
+  rank := counterProjectionRankFn
+  rank_base := by rfl
+  rank_succ := by intro t; rfl
+  rank_wrap := by intro x y; rfl
+  rank_recur := by intro b s n; rfl
 
 /-- The projection rank derived from the direct counter-projection witness. -/
 def counterProjectionDerivedRank : ProjectionRank ko7Schema where

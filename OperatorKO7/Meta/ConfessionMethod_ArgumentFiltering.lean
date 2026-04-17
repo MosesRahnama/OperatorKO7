@@ -68,6 +68,16 @@ theorem argumentFilteringRankFn_eq_dpProjection :
   funext t
   induction t <;> simp [argumentFilteringRankFn, dpProjection, *]
 
+/-- The argument-filtering witness packaged as the intermediate
+    confession-core witness. -/
+def ArgumentFilteringWitness.toConfessionCoreWitness
+    (_W : ArgumentFilteringWitness) : ConfessionCoreWitness ko7Schema where
+  rank := argumentFilteringRankFn
+  rank_base := by rfl
+  rank_succ := by intro t; rfl
+  rank_wrap := by intro x y; rfl
+  rank_recur := by intro b s n; rfl
+
 /-- The projection rank derived from argument filtering. -/
 def argumentFilteringDerivedRank : ProjectionRank ko7Schema where
   rank := argumentFilteringRankFn
@@ -89,6 +99,23 @@ theorem argumentFilteringDerivedRank_eq_dpProjectionRank :
     argumentFilteringDerivedRank = dpProjectionRank := by
   ext t
   simpa [argumentFilteringDerivedRank, dpProjectionRank] using
+    congrFun argumentFilteringRankFn_eq_dpProjection t
+
+/-- The argument-filtering witness forgets the wrapper payload at the level of
+    the intermediate confession core. -/
+theorem argumentFilteringWitness_forgets_wrapper_payload :
+    ∀ x y : Trace,
+      schemaArgumentFilteringWitness.toConfessionCoreWitness.rank (app x y) = 0 := by
+  intro x y
+  rfl
+
+/-- The argument-filtering witness induces the same confession core as the
+    canonical DP route. -/
+theorem argumentFilteringWitness_toConfessionCoreWitness_eq_core :
+    schemaArgumentFilteringWitness.toConfessionCoreWitness.toProjectionRank =
+      dpProjectionRank := by
+  ext t
+  simpa [ArgumentFilteringWitness.toConfessionCoreWitness, dpProjectionRank] using
     congrFun argumentFilteringRankFn_eq_dpProjection t
 
 /-- Argument filtering as a confession method on KO7.
