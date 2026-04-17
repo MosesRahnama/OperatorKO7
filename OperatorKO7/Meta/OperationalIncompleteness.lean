@@ -1,5 +1,6 @@
 import OperatorKO7.Meta.WitnessOrder
 import OperatorKO7.Meta.CompositionalMeasure_Impossibility
+import OperatorKO7.Meta.ConfessionMethod
 
 /-!
 # Operational incompleteness for the duplicated payload coordinate
@@ -28,6 +29,7 @@ namespace OperatorKO7.MetaOperationalIncompleteness
 open OperatorKO7
 open OperatorKO7.Trace
 open OperatorKO7.WitnessOrder
+open OperatorKO7.ConfessionMethodFamily
 
 /-- A transformed witness that succeeds by orienting the duplicating step while
 explicitly violating wrapper sensitivity on the duplicated payload coordinate.
@@ -52,6 +54,41 @@ def dpCertifiedForgettingWitness : CertifiedForgettingWitness where
   orientsDupStep := OperatorKO7.CompositionalImpossibility.dp_projection_orients_rec_succ
   violatesPayloadLeft := OperatorKO7.CompositionalImpossibility.dp_projection_violates_sensitivity
   violatesPayloadRight := OperatorKO7.CompositionalImpossibility.dp_projection_violates_subterm2
+
+/-- Explicit equivalence between the schema carrier of `ko7Schema` and the
+    concrete kernel syntax `Trace`. Making this map explicit avoids relying on
+    reducibility heuristics in downstream packaging lemmas. -/
+def ko7CarrierEquivTrace : OperatorKO7.CompositionalImpossibility.ko7Schema.T ≃ Trace := by
+  dsimp [OperatorKO7.CompositionalImpossibility.ko7Schema]
+  exact Equiv.refl _
+
+/-- Any KO7 confession method yields a certified-forgetting witness: the
+underlying projection rank already orients the duplicating step and violates
+wrapper sensitivity on both payload coordinates. -/
+def CertifiedForgettingWitness.ofConfessionMethod
+    (C : ConfessionMethod OperatorKO7.CompositionalImpossibility.ko7Schema) :
+    CertifiedForgettingWitness where
+  rank := fun t => C.rank (ko7CarrierEquivTrace.symm t)
+  orientsDupStep := by
+    intro b s n
+    simpa [ko7CarrierEquivTrace, OperatorKO7.CompositionalImpossibility.ko7Schema] using
+      confession_orients C
+        (ko7CarrierEquivTrace.symm b)
+        (ko7CarrierEquivTrace.symm s)
+        (ko7CarrierEquivTrace.symm n)
+  violatesPayloadLeft := by
+    rcases confession_violates_wrap1 C with ⟨x, y, hxy⟩
+    refine ⟨ko7CarrierEquivTrace x, ko7CarrierEquivTrace y, ?_⟩
+    simpa [ko7CarrierEquivTrace, OperatorKO7.CompositionalImpossibility.ko7Schema] using hxy
+  violatesPayloadRight := by
+    rcases confession_violates_wrap2 C with ⟨x, y, hxy⟩
+    refine ⟨ko7CarrierEquivTrace x, ko7CarrierEquivTrace y, ?_⟩
+    simpa [ko7CarrierEquivTrace, OperatorKO7.CompositionalImpossibility.ko7Schema] using hxy
+
+@[simp] theorem CertifiedForgettingWitness.ofConfessionMethod_rank
+    (C : ConfessionMethod OperatorKO7.CompositionalImpossibility.ko7Schema) :
+    (CertifiedForgettingWitness.ofConfessionMethod C).rank =
+      fun t => C.rank (ko7CarrierEquivTrace.symm t) := rfl
 
 /-- Narrow formal package for operational incompleteness at the duplicated
 payload coordinate.

@@ -36,6 +36,16 @@ structure ConfessionMethod (S : StepDuplicatingSchema) extends
     ProjectionRank S where
   license : SoundnessLicense
 
+/-- Every confession method determines a method-agnostic confession-core
+    witness by forgetting the external soundness license. -/
+def ConfessionMethod.toConfessionCoreWitness {S : StepDuplicatingSchema}
+    (C : ConfessionMethod S) : ConfessionCoreWitness S :=
+  ConfessionCoreWitness.ofProjectionRank C.toProjectionRank
+
+@[simp] theorem ConfessionMethod.toConfessionCoreWitness_rank
+    {S : StepDuplicatingSchema} (C : ConfessionMethod S) :
+    C.toConfessionCoreWitness.rank = C.rank := rfl
+
 /-- Every confession method orients the duplicating step.
     This follows directly from the `ProjectionRank` orientation theorem. -/
 theorem confession_orients {S : StepDuplicatingSchema} (C : ConfessionMethod S)

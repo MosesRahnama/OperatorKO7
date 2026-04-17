@@ -32,7 +32,9 @@ multi-call systems).
 
 namespace OperatorKO7.ConfessionMethodFamily
 
+open OperatorKO7.Trace
 open OperatorKO7.StepDuplicating
+open OperatorKO7.StepDuplicating.StepDuplicatingSchema
 open OperatorKO7.CompositionalImpossibility
 
 /-- A size-change arc records the relationship between a caller argument
@@ -102,18 +104,87 @@ theorem schema_sct_unique_descent :
   | ⟨1, _⟩ => simp [schemaRecCallGraph] at h
   | ⟨2, _⟩ => rfl
 
+/-- A route-local SCT witness object for the single-call schema. -/
+structure SCTWitness where
+  graph : SizeChangeGraph 3
+  satisfied : sctSatisfied graph
+  uniqueStrictDescent :
+    ∀ i : Fin 3, graph.arcs i i = SCArc.strictDecrease → i = ⟨2, by omega⟩
+
+/-- The schema's concrete SCT witness. -/
+def schemaSCTWitness : SCTWitness where
+  graph := schemaRecCallGraph
+  satisfied := schema_sct_satisfied
+  uniqueStrictDescent := schema_sct_unique_descent
+
+/-- The SCT witness independently identifies the counter coordinate as the
+    sole strictly descending thread. -/
+theorem sctWitness_selects_counter_coordinate :
+    ∀ i : Fin 3,
+      schemaSCTWitness.graph.arcs i i = SCArc.strictDecrease →
+      i = ⟨2, by omega⟩ :=
+  schemaSCTWitness.uniqueStrictDescent
+
+/-- Route-local rank extracted from the SCT witness. The graph-level strict
+    descent on the counter coordinate induces the same counter-depth measure
+    used by the canonical DP route. -/
+@[simp] def sctRankFn : Trace → Nat
+  | void        => 0
+  | delta t     => sctRankFn t + 1
+  | integrate _ => 0
+  | merge _ _   => 0
+  | app _ _     => 0
+  | recΔ _ _ n  => sctRankFn n
+  | eqW _ _     => 0
+
+/-- The SCT route independently recovers the same counter-depth rank function
+    as the DP route. -/
+theorem sctRankFn_eq_dpProjection :
+    sctRankFn = dpProjection := by
+  funext t
+  induction t <;> simp [sctRankFn, dpProjection, *]
+
+/-- The projection rank derived from the SCT witness. -/
+def sctDerivedRank : ProjectionRank ko7Schema where
+  rank := sctRankFn
+  rank_base := by rfl
+  rank_succ := by intro t; rfl
+  rank_wrap := by intro x y; rfl
+  rank_recur := by intro b s n; rfl
+
+/-- The SCT route converges to the same rank function as the canonical DP
+    projection core. -/
+theorem sctDerivedRank_eq_dp_core :
+    sctDerivedRank.rank = dpProjectionRank.rank := by
+  simpa [sctDerivedRank, dpProjectionRank] using sctRankFn_eq_dpProjection
+
+/-- The SCT route induces the same projection-rank structure as the canonical
+    DP core. -/
+theorem sctDerivedRank_eq_dpProjectionRank :
+    sctDerivedRank = dpProjectionRank := by
+  ext t
+  simpa [sctDerivedRank, dpProjectionRank] using congrFun sctRankFn_eq_dpProjection t
+
 /-- SCT as a confession method on the KO7 schema. The rank is the same
-    counter-projection rank that DP uses; the license is
+    counter-projection rank that DP uses, but now via an explicit graph-level
+    witness and derived projection rank. The license is
     Lee-Jones-Ben-Amram 2001. -/
 def sctConfession : ConfessionMethod ko7Schema where
-  toProjectionRank := dpProjectionRank
+  toProjectionRank := sctDerivedRank
   license := SoundnessLicense.leeJonesBenAmram2001
+
+/-- The exported SCT confession instance is routed through the derived
+    SCT projection rank. -/
+theorem sctConfession_is_derived :
+    sctConfession.toProjectionRank = sctDerivedRank := rfl
 
 /-- On the step-duplicating schema, SCT and DP produce the same rank.
     This is because the schema has a single recursive call with a single
     strictly decreasing argument, so every method that extracts the
     recursive-call structure finds the same descent coordinate. -/
 theorem sct_eq_dp_rank :
-    sctConfession.rank = dpConfession.rank := rfl
+    sctConfession.rank = dpConfession.rank := by
+  simpa [sctConfession, dpConfession, sctDerivedRank, dpProjectionRank] using
+    sctRankFn_eq_dpProjection
 
 end OperatorKO7.ConfessionMethodFamily

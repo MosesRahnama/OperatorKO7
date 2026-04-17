@@ -63,6 +63,16 @@ def ofProjectionRank {S : StepDuplicatingSchema}
     (R : ProjectionRank S) :
     (ofProjectionRank R).rank = R.rank := rfl
 
+/-- Every confession-core witness also yields a generic forgetting witness,
+    by packaging it as the shared projection core first. -/
+def ofConfessionCoreWitness {S : StepDuplicatingSchema}
+    (W : ConfessionCoreWitness S) : ForgettingWitness S :=
+  ofProjectionRank W.toProjectionRank
+
+@[simp] theorem ofConfessionCoreWitness_rank {S : StepDuplicatingSchema}
+    (W : ConfessionCoreWitness S) :
+    (ofConfessionCoreWitness W).rank = W.rank := rfl
+
 end ForgettingWitness
 
 end StepDuplicatingSchema

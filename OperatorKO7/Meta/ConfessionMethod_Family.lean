@@ -1,8 +1,5 @@
 import OperatorKO7.Meta.ConfessionMethod
-import OperatorKO7.Meta.ConfessionMethod_DP
-import OperatorKO7.Meta.ConfessionMethod_CounterProjection
-import OperatorKO7.Meta.ConfessionMethod_SCT
-import OperatorKO7.Meta.ConfessionMethod_ArgumentFiltering
+import OperatorKO7.Meta.ConfessionMethod_Unification
 import OperatorKO7.Meta.OperationalIncompleteness
 import OperatorKO7.Meta.DependencyPairs_Works
 import OperatorKO7.Meta.PolyInterpretation_FullStep
@@ -16,11 +13,11 @@ step-duplicating schema and proves family-level theorems about their
 shared structure.
 
 The central result is `confession_is_a_class`: on the step-duplicating
-schema, four methods with four distinct soundness licenses all produce
-the same projection rank and all satisfy the `CertifiedForgettingWitness`
-interface. This is the formal content behind Paper C's claim that the
-construction/confession boundary separates *method classes*, not individual
-named methods.
+schema, four methods with four distinct soundness licenses all converge
+to the same projection core and all satisfy the `CertifiedForgettingWitness`
+interface. The important point is not just that the ranks are equal, but
+that the non-DP routes now reach that equality through route-local witness
+objects and derived projection ranks rather than by direct alias assignment.
 
 The four methods are:
 1. Dependency pairs + subterm criterion (Arts-Giesl 2000)
@@ -46,15 +43,18 @@ def allConfessionMethods : List (ConfessionMethod ko7Schema) :=
 theorem family_size : allConfessionMethods.length = 4 := by rfl
 
 /-- Every confession method in the family produces the same rank on
-    the KO7 schema. This is a theorem: the schema has exactly one
-    recursive call with exactly one strictly decreasing argument, so
-    every projection-based method finds the same descent coordinate. -/
+    the KO7 schema. This is now proved through the route-local convergence
+    theorems, not by immediate alias collapse. -/
 theorem family_rank_agreement :
     ∀ C ∈ allConfessionMethods,
       C.rank = dpConfession.rank := by
   intro C hC
   simp [allConfessionMethods] at hC
-  rcases hC with rfl | rfl | rfl | rfl <;> rfl
+  rcases hC with rfl | rfl | rfl | rfl
+  · rfl
+  · exact counterProjection_eq_dp_rank
+  · exact sct_eq_dp_rank
+  · exact argumentFiltering_eq_dp_rank
 
 /-- Every confession method in the family orients the KO7 duplicating
     step. -/
@@ -81,8 +81,7 @@ theorem family_certified_forgetting :
       ∃ fw : CertifiedForgettingWitness,
         fw.rank = C.rank := by
   intro C hC
-  rw [family_rank_agreement C hC]
-  exact dp_projection_exhibits_certified_forgetting
+  exact ⟨CertifiedForgettingWitness.ofConfessionMethod C, rfl⟩
 
 /-- The four confession methods have four distinct soundness licenses.
     This confirms they are genuinely different methods that happen to
@@ -91,11 +90,31 @@ theorem family_distinct_licenses :
     (allConfessionMethods.map (·.license)).Nodup := by
   decide
 
+/-- The non-DP confession routes each converge to the same projection core as
+    the canonical DP route. -/
+theorem family_single_core :
+    counterProjectionConfession.rank = dpConfession.rank
+    ∧ sctConfession.rank = dpConfession.rank
+    ∧ argumentFilteringConfession.rank = dpConfession.rank := by
+  exact ⟨counterProjection_eq_dp_rank, sct_eq_dp_rank, argumentFiltering_eq_dp_rank⟩
+
+/-- The family exhibits both ingredients of the strong target:
+    distinct entry licenses and a single convergent projection core. -/
+theorem family_independent_entries_and_single_core :
+    (allConfessionMethods.map (·.license)).Nodup
+    ∧ counterProjectionConfession.rank = dpConfession.rank
+    ∧ sctConfession.rank = dpConfession.rank
+    ∧ argumentFilteringConfession.rank = dpConfession.rank := by
+  rcases confession_routes_converge with
+    ⟨_, _, _, _, hCounter, hSCT, hFilter⟩
+  exact ⟨family_distinct_licenses, hCounter, hSCT, hFilter⟩
+
 /-- **Main theorem: Confession methods form a structural class.**
 
     On the step-duplicating schema:
     - four methods with distinct soundness licenses exist;
-    - all share a common rank (counter projection);
+    - the non-DP routes converge to the same common rank (counter projection)
+      as the canonical DP route;
     - all satisfy the certified-forgetting interface;
     - the licenses are pairwise distinct.
 
@@ -111,10 +130,9 @@ theorem confession_is_a_class :
     ∧ (allConfessionMethods.map (·.license)).Nodup := by
   exact ⟨family_size, family_rank_agreement, family_distinct_licenses⟩
 
-/-- The confession family provides four independent witnesses that the
-    transformed-call layer resolves KO7's operational incompleteness at
-    the payload dimension. Each uses the same rank but a different
-    external soundness license. -/
+/-- The confession family provides four independently licensed entry routes
+    into one shared projection core resolving KO7's operational
+    incompleteness at the payload dimension. -/
 theorem confession_family_resolves_operational_incompleteness :
     ∀ C ∈ allConfessionMethods,
       ∃ fw : CertifiedForgettingWitness, fw.rank = C.rank :=

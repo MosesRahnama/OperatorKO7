@@ -339,6 +339,35 @@ structure ProjectionRank (S : StepDuplicatingSchema) where
   rank_wrap : ∀ x y, rank (S.wrap x y) = 0
   rank_recur : ∀ b s n, rank (S.recur b s n) = rank n
 
+/-- Extensionality for projection ranks by their rank functions. This is useful
+    once multiple independently derived confession routes are shown to induce
+    the same pointwise rank on a concrete schema. -/
+@[ext] theorem ProjectionRank.ext {S : StepDuplicatingSchema}
+    (R₁ R₂ : ProjectionRank S) (h : R₁.rank = R₂.rank) : R₁ = R₂ := by
+  cases R₁
+  cases R₂
+  cases h
+  simp
+
+/-- Pointwise extensionality for projection ranks. -/
+theorem ProjectionRank.ext_rank {S : StepDuplicatingSchema}
+    (R₁ R₂ : ProjectionRank S)
+    (h : ∀ t : S.T, R₁.rank t = R₂.rank t) : R₁ = R₂ := by
+  apply ProjectionRank.ext
+  funext t
+  exact h t
+
+/-- A method-agnostic witness for the confession core on a step-duplicating
+schema. This is intentionally close to `ProjectionRank`: it exists as a readable
+intermediate object for route-local derivations before one packages the result
+as the shared projection core. -/
+structure ConfessionCoreWitness (S : StepDuplicatingSchema) where
+  rank : S.T → Nat
+  rank_base : rank S.base = 0
+  rank_succ : ∀ t, rank (S.succ t) = rank t + 1
+  rank_wrap : ∀ x y, rank (S.wrap x y) = 0
+  rank_recur : ∀ b s n, rank (S.recur b s n) = rank n
+
 /-- The projection rank orients the duplicating step by tracking only the recursion counter. -/
 theorem projection_orients_dup_step {S : StepDuplicatingSchema} (R : ProjectionRank S)
     (b s n : S.T) :
@@ -359,6 +388,47 @@ theorem projection_violates_wrap_subterm2 {S : StepDuplicatingSchema} (R : Proje
   refine ⟨S.base, S.succ S.base, ?_⟩
   rw [R.rank_wrap, R.rank_succ, R.rank_base]
   omega
+
+namespace ConfessionCoreWitness
+
+/-- Package a confession-core witness as the shared projection core. -/
+def toProjectionRank {S : StepDuplicatingSchema}
+    (W : ConfessionCoreWitness S) : ProjectionRank S where
+  rank := W.rank
+  rank_base := W.rank_base
+  rank_succ := W.rank_succ
+  rank_wrap := W.rank_wrap
+  rank_recur := W.rank_recur
+
+/-- Every projection rank already furnishes a confession-core witness. -/
+def ofProjectionRank {S : StepDuplicatingSchema}
+    (R : ProjectionRank S) : ConfessionCoreWitness S where
+  rank := R.rank
+  rank_base := R.rank_base
+  rank_succ := R.rank_succ
+  rank_wrap := R.rank_wrap
+  rank_recur := R.rank_recur
+
+@[simp] theorem toProjectionRank_rank {S : StepDuplicatingSchema}
+    (W : ConfessionCoreWitness S) :
+    W.toProjectionRank.rank = W.rank := rfl
+
+@[simp] theorem ofProjectionRank_rank {S : StepDuplicatingSchema}
+    (R : ProjectionRank S) :
+    (ofProjectionRank R).rank = R.rank := rfl
+
+@[simp] theorem ofProjectionRank_toProjectionRank {S : StepDuplicatingSchema}
+    (R : ProjectionRank S) :
+    (ofProjectionRank R).toProjectionRank = R := by
+  rfl
+
+@[simp] theorem toProjectionRank_ofProjectionRank {S : StepDuplicatingSchema}
+    (W : ConfessionCoreWitness S) :
+    ofProjectionRank W.toProjectionRank = W := by
+  cases W
+  rfl
+
+end ConfessionCoreWitness
 
 end StepDuplicatingSchema
 end OperatorKO7.StepDuplicating

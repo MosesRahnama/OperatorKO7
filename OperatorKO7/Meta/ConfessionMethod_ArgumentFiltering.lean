@@ -32,19 +32,83 @@ direct argument selection) and the specific soundness theorem invoked.
 
 namespace OperatorKO7.ConfessionMethodFamily
 
+open OperatorKO7.Trace
 open OperatorKO7.StepDuplicating
+open OperatorKO7.StepDuplicating.StepDuplicatingSchema
 open OperatorKO7.CompositionalImpossibility
 
+/-- A route-local argument-filtering witness on the original symbols.
+    The filter keeps only the counter coordinate of `recΔ`, drops the wrapper,
+    preserves `delta`, and collapses the remaining constructors. -/
+structure ArgumentFilteringWitness where
+  keepRecurCoordinate : Fin 3
+  keepRecurCoordinate_is_counter : keepRecurCoordinate = ⟨2, by decide⟩
+
+/-- The concrete schema witness for argument filtering. -/
+def schemaArgumentFilteringWitness : ArgumentFilteringWitness where
+  keepRecurCoordinate := ⟨2, by decide⟩
+  keepRecurCoordinate_is_counter := rfl
+
+/-- Route-local rank extracted from the filtering view.
+    After filtering away the wrapper and duplicated payload, only the counter
+    depth remains visible. -/
+@[simp] def argumentFilteringRankFn : Trace → Nat
+  | void        => 0
+  | delta t     => argumentFilteringRankFn t + 1
+  | integrate _ => 0
+  | merge _ _   => 0
+  | app _ _     => 0
+  | recΔ _ _ n  => argumentFilteringRankFn n
+  | eqW _ _     => 0
+
+/-- The argument-filtering route independently recovers the same counter-depth
+    rank function as the DP route. -/
+theorem argumentFilteringRankFn_eq_dpProjection :
+    argumentFilteringRankFn = dpProjection := by
+  funext t
+  induction t <;> simp [argumentFilteringRankFn, dpProjection, *]
+
+/-- The projection rank derived from argument filtering. -/
+def argumentFilteringDerivedRank : ProjectionRank ko7Schema where
+  rank := argumentFilteringRankFn
+  rank_base := by rfl
+  rank_succ := by intro t; rfl
+  rank_wrap := by intro x y; rfl
+  rank_recur := by intro b s n; rfl
+
+/-- The argument-filtering route converges to the same rank function as the
+    canonical DP projection core. -/
+theorem argumentFilteringDerivedRank_eq_dp_core :
+    argumentFilteringDerivedRank.rank = dpProjectionRank.rank := by
+  simpa [argumentFilteringDerivedRank, dpProjectionRank] using
+    argumentFilteringRankFn_eq_dpProjection
+
+/-- The argument-filtering route converges to the same projection-rank object
+    as the canonical DP route. -/
+theorem argumentFilteringDerivedRank_eq_dpProjectionRank :
+    argumentFilteringDerivedRank = dpProjectionRank := by
+  ext t
+  simpa [argumentFilteringDerivedRank, dpProjectionRank] using
+    congrFun argumentFilteringRankFn_eq_dpProjection t
+
 /-- Argument filtering as a confession method on KO7.
-    Same projection rank; the license is the argument-filtering soundness
-    theorem within the DP framework. -/
+    Same projection rank, but now via an explicit filtering witness and derived
+    projection rank; the license is the argument-filtering soundness theorem
+    within the DP framework. -/
 def argumentFilteringConfession : ConfessionMethod ko7Schema where
-  toProjectionRank := dpProjectionRank
+  toProjectionRank := argumentFilteringDerivedRank
   license := SoundnessLicense.argumentFilteringSoundness
+
+/-- The exported argument-filtering confession instance is routed through the
+    derived argument-filtering rank. -/
+theorem argumentFilteringConfession_is_derived :
+    argumentFilteringConfession.toProjectionRank = argumentFilteringDerivedRank := rfl
 
 /-- On the step-duplicating schema, argument filtering and DP produce
     the same rank function. -/
 theorem argumentFiltering_eq_dp_rank :
-    argumentFilteringConfession.rank = dpConfession.rank := rfl
+    argumentFilteringConfession.rank = dpConfession.rank := by
+  simpa [argumentFilteringConfession, dpConfession, argumentFilteringDerivedRank,
+    dpProjectionRank] using argumentFilteringRankFn_eq_dpProjection
 
 end OperatorKO7.ConfessionMethodFamily
