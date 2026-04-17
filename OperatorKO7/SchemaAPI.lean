@@ -86,6 +86,16 @@ import OperatorKO7.Meta.MutualDuplication_PacketGraph
 import OperatorKO7.Meta.BenchmarkedPrimitiveRecursionFamily
 import OperatorKO7.Meta.OperationalIncompleteness
 
+-- Paper 2 (Failure Floor) schema-level quantitative / structural layer
+import OperatorKO7.Meta.SchemaCanonicalTrace
+import OperatorKO7.Meta.SchemaConfessionDominance
+import OperatorKO7.Meta.SchemaOffsetAndWrapper
+import OperatorKO7.Meta.SchemaNormMismatch
+import OperatorKO7.Meta.SchemaSeedCarrierFactorization
+import OperatorKO7.Meta.SchemaForgettingWitness
+import OperatorKO7.Meta.SchemaOperationalIncompleteness
+import OperatorKO7.Meta.SchemaWitnessOrder
+
 /-!
 # Public Schema API: Reusable Barrier Theory for Step-Duplicating Recursors
 

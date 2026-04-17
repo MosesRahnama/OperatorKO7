@@ -57,4 +57,57 @@ example : True := by
   have := @OperatorKO7.DependencyPairsFragment.DPProjection.wfRev
   trivial
 
+-- Paper 2 schema-level quantitative layer
+example : True := by
+  have := @OperatorKO7.StepDuplicating.StepDuplicatingSchema.BaseDuplicatingSystem.per_step_exchange
+  trivial
+
+example : True := by
+  have := @OperatorKO7.StepDuplicating.StepDuplicatingSchema.BaseDuplicatingSystem.offset_conservation
+  trivial
+
+example : True := by
+  have := @OperatorKO7.StepDuplicating.StepDuplicatingSchema.BaseDuplicatingSystem.sum_payloads_doubled
+  trivial
+
+example : True := by
+  have := @OperatorKO7.StepDuplicating.StepDuplicatingSchema.BaseDuplicatingSystem.proof_entropy_nondecreasing
+  trivial
+
+example : True := by
+  have := @OperatorKO7.StepDuplicating.StepDuplicatingSchema.BaseDuplicatingSystem.counter_unique_retained_coordinate
+  trivial
+
+example : True := by
+  have := @OperatorKO7.StepDuplicating.StepDuplicatingSchema.BaseDuplicatingSystem.norm_mismatch_pairwise
+  trivial
+
+-- Paper 2 seed-carrier factorization
+example : True := by
+  have := @OperatorKO7.SchemaSeedCarrier.PayloadObservable.factorization_criterion
+  trivial
+
+example : True := by
+  have := @OperatorKO7.SchemaSeedCarrier.additiveObservable_not_factors
+  trivial
+
+-- Paper 2 schema forgetting witness
+example : True := by
+  have := @OperatorKO7.StepDuplicating.StepDuplicatingSchema.ForgettingWitness.ofProjectionRank
+  trivial
+
+-- Paper 2 schema operational incompleteness
+example : True := by
+  have := @OperatorKO7.StepDuplicating.StepDuplicatingSchema.OperationalIncompleteness.ofProjectionRank
+  trivial
+
+example : True := by
+  have := @OperatorKO7.StepDuplicating.StepDuplicatingSchema.construction_confession_exclusive
+  trivial
+
+-- Paper 2 schema witness order
+example : True := by
+  have := @OperatorKO7.StepDuplicating.StepDuplicatingSchema.SchemaWitnessTower.OB_iff_no_directWhole
+  trivial
+
 end SchemaAPIReach
