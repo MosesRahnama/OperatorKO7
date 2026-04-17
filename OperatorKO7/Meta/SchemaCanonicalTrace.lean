@@ -75,6 +75,39 @@ lemma StepStar.trans {Sys : BaseDuplicatingSystem} {a b c : Sys.T}
   | refl => exact hab
   | tail _ hstep ih => exact StepStar.tail ih hstep
 
+/-- Explicit wrap-context closure for systems where the root step may be lifted
+under a wrapper layer. This is not built into `StepDuplicatingSystem`
+itself because many barrier theorems never need it, but the full canonical
+trace law does. -/
+def WrapContextClosed (Sys : BaseDuplicatingSystem) : Prop :=
+  ∀ (s : Sys.T) {a b : Sys.T}, Sys.Step a b → Sys.Step (Sys.wrap s a) (Sys.wrap s b)
+
+@[simp] lemma wrapChain_push (s r : Sys.T) (i : Nat) :
+    Sys.wrapChain s i (Sys.wrap s r) = Sys.wrapChain s (i + 1) r := by
+  induction i with
+  | zero => rfl
+  | succ i ih => simp [wrapChain, ih]
+
+lemma StepStar.wrap {Sys : BaseDuplicatingSystem}
+    (hwrap : WrapContextClosed Sys) (s : Sys.T) {a b : Sys.T} :
+    StepStar (Sys := Sys) a b → StepStar (Sys.wrap s a) (Sys.wrap s b) := by
+  intro hab
+  induction hab with
+  | refl => exact StepStar.refl (Sys.wrap s a)
+  | tail hab hstep ih =>
+      exact StepStar.tail ih (hwrap s hstep)
+
+lemma StepStar.wrapChain {Sys : BaseDuplicatingSystem}
+    (hwrap : WrapContextClosed Sys) (s : Sys.T) (i : Nat) {a b : Sys.T} :
+    StepStar (Sys := Sys) a b → StepStar (Sys.wrapChain s i a) (Sys.wrapChain s i b) := by
+  induction i generalizing a b with
+  | zero =>
+      intro hab
+      simpa [wrapChain] using hab
+  | succ i ih =>
+      intro hab
+      simpa [wrapChain] using StepStar.wrap (Sys := Sys) hwrap s (ih hab)
+
 /-
 The schema `Step` relation is an arbitrary relation containing only the
 root dup rule and (for `BaseDuplicatingSystem`) the root base rule. Context
@@ -106,6 +139,78 @@ lemma canonical_dup_step (Sys : BaseDuplicatingSystem)
 /-- The canonical base step at stage `k`: from `recur b s base` to `b`. -/
 lemma canonical_base_step (Sys : BaseDuplicatingSystem) (b s : Sys.T) :
     Sys.Step (Sys.recur b s Sys.base) b := Sys.base_step b s
+
+/-- One full canonical transition from stage `i` to stage `i + 1`, assuming
+the system admits wrap-context closure. -/
+theorem canonical_stage_step (Sys : BaseDuplicatingSystem)
+    (hwrap : WrapContextClosed Sys) (b s : Sys.T) {k i : Nat} (hik : i < k) :
+    StepStar
+      (Sys.canonicalTrace b s k i)
+      (Sys.canonicalTrace b s k (i + 1)) := by
+  unfold canonicalTrace
+  have hroot :
+      StepStar
+        (Sys.recur b s (Sys.counter (k - i)))
+        (Sys.wrap s (Sys.recur b s (Sys.counter (k - i - 1)))) :=
+    StepStar.single (Sys.canonical_dup_step b s hik)
+  have hlift := StepStar.wrapChain (Sys := Sys) hwrap s i hroot
+  have hsub : k - i - 1 = k - (i + 1) := by omega
+  simpa [hsub, wrapChain_push] using hlift
+
+/-- The canonical trace reaches the base-site stage `wrap^k s (recur b s base)`
+under wrap-context closure. -/
+theorem canonical_trace_to_base_stage (Sys : BaseDuplicatingSystem)
+    (hwrap : WrapContextClosed Sys) (b s : Sys.T) (k : Nat) :
+    StepStar
+      (Sys.canonicalTrace b s k 0)
+      (Sys.canonicalTrace b s k k) := by
+  have hprefix :
+      ∀ i, i ≤ k →
+        StepStar
+          (Sys.canonicalTrace b s k 0)
+          (Sys.canonicalTrace b s k i) := by
+    intro i hi
+    induction i with
+    | zero =>
+        exact StepStar.refl _
+    | succ i ih =>
+        have hprev :
+            StepStar
+              (Sys.canonicalTrace b s k 0)
+              (Sys.canonicalTrace b s k i) :=
+          ih (by omega)
+        have hstep :
+            StepStar
+              (Sys.canonicalTrace b s k i)
+              (Sys.canonicalTrace b s k (i + 1)) :=
+          Sys.canonical_stage_step hwrap b s (by omega)
+        exact StepStar.trans hprev hstep
+  exact hprefix k (Nat.le_refl _)
+
+/-- Full canonical trace law under wrap-context closure: the trace starts at
+`recur b s (succ^k base)`, reaches the base-site stage `wrap^k s (recur b s base)`,
+and then lands on `wrap^k s b`. -/
+theorem canonical_trace_full (Sys : BaseDuplicatingSystem)
+    (hwrap : WrapContextClosed Sys) (b s : Sys.T) (k : Nat) :
+    StepStar
+      (Sys.recur b s (Sys.counter k))
+      (Sys.wrapChain s k b) := by
+  have htrace :
+      StepStar
+        (Sys.canonicalTrace b s k 0)
+        (Sys.canonicalTrace b s k k) :=
+    Sys.canonical_trace_to_base_stage hwrap b s k
+  have hbase :
+      StepStar
+        (Sys.recur b s Sys.base)
+        b :=
+    StepStar.single (Sys.canonical_base_step b s)
+  have hlift :=
+    StepStar.wrapChain (Sys := Sys) hwrap s k hbase
+  have hkk : k - k = 0 := by omega
+  exact StepStar.trans
+    (by simpa [canonicalTrace, hkk, counter_zero] using htrace)
+    (by simpa using hlift)
 
 /-- Counter-height coordinate along the canonical trace: `ctr(t_i) = k - i`. -/
 def trace_ctr (k i : Nat) : Nat := k - i

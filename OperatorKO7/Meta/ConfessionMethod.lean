@@ -1,5 +1,4 @@
 import OperatorKO7.Meta.StepDuplicatingSchema
-import OperatorKO7.Meta.OperationalIncompleteness
 
 /-!
 # Confession Methods: Generic Interface

@@ -1,5 +1,4 @@
 import OperatorKO7.Meta.SchemaForgettingWitness
-import OperatorKO7.Meta.SchemaCanonicalTrace
 
 /-!
 # Schema-Generic Operational Incompleteness
@@ -18,7 +17,92 @@ namespace OperatorKO7.StepDuplicating
 
 namespace StepDuplicatingSchema
 
-/-! ## Def 5.1 schema-level operational incompleteness -/
+/-! ## Def 5.1 abstract operational incompleteness -/
+
+/-- An abstract proof-language interface for a fixed operational question. -/
+structure OperationalQuestion (Statement : Type) where
+  derivable : Statement → Prop
+  dependsOnDimension : Statement → Prop
+  constrainsTarget : Statement → Prop
+  dimensionPresent : Prop
+
+/-- **Paper 2 Definition 5.1 (abstract form).** A proof language is
+operationally incomplete at a chosen dimension when that dimension is present,
+but no derivable statement both depends on it and constrains the target
+question. -/
+def OperationallyIncomplete {Statement : Type}
+    (Q : OperationalQuestion Statement) : Prop :=
+  Q.dimensionPresent
+    ∧ ∀ ψ, Q.derivable ψ →
+        ¬ (Q.dependsOnDimension ψ ∧ Q.constrainsTarget ψ)
+
+/-- Direct whole-term witness claims in the direct-aggregation language. -/
+inductive DirectAggregationClaim (Sys : StepDuplicatingSystem) where
+  | additive
+      (M : AdditiveMeasure Sys.toStepDuplicatingSchema)
+  | compositional
+      (CM : CompositionalMeasure Sys.toStepDuplicatingSchema)
+      (htrans : CM.c_succ CM.c_base = CM.c_base)
+  | affine
+      (M : AffineMeasure Sys.toStepDuplicatingSchema)
+      (hunb : HasUnboundedRange M)
+
+/-- A claim is derivable in the direct-aggregation language exactly when the
+corresponding direct witness globally orients the system. -/
+def DirectAggregationClaim.derivable
+    {Sys : StepDuplicatingSystem} :
+    DirectAggregationClaim Sys → Prop
+  | .additive M => GlobalOrients Sys M.eval (· < ·)
+  | .compositional CM _ => GlobalOrients Sys CM.eval (· < ·)
+  | .affine M _ => GlobalOrients Sys M.eval (· < ·)
+
+/-- In the canonical direct-aggregation language, every witness claim is a
+dimension-using attempt: it is supposed to derive termination by a direct
+whole-term account of the input. -/
+def DirectAggregationClaim.dependsOnDimension
+    {Sys : StepDuplicatingSystem} :
+    DirectAggregationClaim Sys → Prop :=
+  fun _ => True
+
+/-- Any successful direct-aggregation witness would constrain the target
+termination question by construction. -/
+def DirectAggregationClaim.constrainsTarget
+    {Sys : StepDuplicatingSystem} :
+    DirectAggregationClaim Sys → Prop :=
+  fun _ => True
+
+/-- The canonical operational question attached to the direct-aggregation
+language for a fixed step-duplicating system. -/
+def directAggregationQuestion
+    (Sys : StepDuplicatingSystem) (dimensionPresent : Prop) :
+    OperationalQuestion (DirectAggregationClaim Sys) where
+  derivable := DirectAggregationClaim.derivable
+  dependsOnDimension := DirectAggregationClaim.dependsOnDimension
+  constrainsTarget := DirectAggregationClaim.constrainsTarget
+  dimensionPresent := dimensionPresent
+
+/-- **Paper 2 Theorem 5.2 (abstract canonical instance).** Once the chosen
+dimension is present, the direct-aggregation language is operationally
+incomplete: every direct witness claim is blocked by the schema barriers, so no
+derivable claim both depends on the dimension and constrains termination. -/
+theorem directAggregationQuestion_operationallyIncomplete
+    {Sys : StepDuplicatingSystem} {dimensionPresent : Prop}
+    (hpresent : dimensionPresent) :
+    OperationallyIncomplete (directAggregationQuestion Sys dimensionPresent) := by
+  refine ⟨hpresent, ?_⟩
+  intro ψ hψ
+  cases ψ with
+  | additive M =>
+      intro hpair
+      exact no_global_orients_additive (Sys := Sys) M hψ
+  | compositional CM htrans =>
+      intro hpair
+      exact no_global_orients_compositional_transparent_succ (Sys := Sys) CM htrans hψ
+  | affine M hunb =>
+      intro hpair
+      exact no_global_orients_affine_of_unbounded (Sys := Sys) M hunb hψ
+
+/-! ## Concrete schema evidence bundle -/
 
 /-- **Paper 2 Definition 5.1 (operational incompleteness).** A
 step-duplicating system is *operationally incomplete at dimension π for
@@ -68,6 +152,18 @@ theorem operationalIncompleteness_universal
     (R : ProjectionRank Sys.toStepDuplicatingSchema) :
     ∃ _ : OperationalIncompleteness Sys, True :=
   ⟨OperationalIncompleteness.ofProjectionRank R, trivial⟩
+
+/-- The abstract operational-incompleteness predicate and the concrete schema
+evidence bundle are both available uniformly from the same projection-rank
+input. -/
+theorem canonical_operational_instance
+    {Sys : StepDuplicatingSystem} {dimensionPresent : Prop}
+    (hpresent : dimensionPresent)
+    (R : ProjectionRank Sys.toStepDuplicatingSchema) :
+    OperationallyIncomplete (directAggregationQuestion Sys dimensionPresent)
+      ∧ Nonempty (OperationalIncompleteness Sys) := by
+  exact ⟨directAggregationQuestion_operationallyIncomplete hpresent,
+    ⟨OperationalIncompleteness.ofProjectionRank R⟩⟩
 
 /-! ## Def 5.8, 5.9 construction vs confession -/
 
@@ -127,21 +223,25 @@ structure ProjectionTransaction (S : StepDuplicatingSchema) where
   / argument filtering). -/
   licensed : license
 
+/-- A step-indexed family of projection transactions is static when the
+dimension, license, and forgetting witness do not vary with the trace stage. -/
+def IsStaticProjectionFamily {S : StepDuplicatingSchema}
+    (τ : Nat → ProjectionTransaction S) : Prop :=
+  ∀ i,
+    (τ i).dimension = (τ 0).dimension
+      ∧ (τ i).license = (τ 0).license
+      ∧ (τ i).boundary = (τ 0).boundary
+
 /-- **Paper 2 Proposition 5.17 (boundary is static, not dynamic).** The
 projection-transaction depends only on the triple (`dimension`, `license`,
 `boundary`) and *not* on any per-step state of the generative trace. This
-is captured by the fact that `ProjectionTransaction` is a structure whose
-fields do not take step indices or trace states as arguments. -/
+is captured by the fact that the constant step-indexed family generated by a
+single `ProjectionTransaction` is static in the above sense. -/
 theorem projection_transaction_static
-    {S : StepDuplicatingSchema}
-    (T₁ T₂ : ProjectionTransaction S)
-    (hdim : T₁.dimension = T₂.dimension)
-    (hlic : T₁.license = T₂.license)
-    (hbnd : T₁.boundary = T₂.boundary) :
-    HEq T₁.dimension T₂.dimension
-      ∧ HEq T₁.license T₂.license
-      ∧ HEq T₁.boundary T₂.boundary := by
-  exact ⟨heq_of_eq hdim, heq_of_eq hlic, heq_of_eq hbnd⟩
+    {S : StepDuplicatingSchema} (T : ProjectionTransaction S) :
+    IsStaticProjectionFamily (fun _ => T) := by
+  intro i
+  exact ⟨rfl, rfl, rfl⟩
 
 end StepDuplicatingSchema
 

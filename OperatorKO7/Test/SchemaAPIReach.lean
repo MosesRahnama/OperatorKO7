@@ -82,6 +82,18 @@ example : True := by
   have := @OperatorKO7.StepDuplicating.StepDuplicatingSchema.BaseDuplicatingSystem.norm_mismatch_pairwise
   trivial
 
+example : True := by
+  have := @OperatorKO7.StepDuplicating.StepDuplicatingSchema.BaseDuplicatingSystem.permutation_gauge_symmetry_package
+  trivial
+
+example : True := by
+  have := @OperatorKO7.StepDuplicating.StepDuplicatingSchema.BaseDuplicatingSystem.inefficiencyCoefficient_unbounded_atTop
+  trivial
+
+example : True := by
+  have := @OperatorKO7.StepDuplicating.StepDuplicatingSchema.BaseDuplicatingSystem.explicitDescription_linear_gap
+  trivial
+
 -- Paper 2 seed-carrier factorization
 example : True := by
   have := @OperatorKO7.SchemaSeedCarrier.PayloadObservable.factorization_criterion
@@ -103,6 +115,14 @@ example : True := by
 
 example : True := by
   have := @OperatorKO7.StepDuplicating.StepDuplicatingSchema.construction_confession_exclusive
+  trivial
+
+example : True := by
+  have := @OperatorKO7.StepDuplicating.StepDuplicatingSchema.directAggregationQuestion_operationallyIncomplete
+  trivial
+
+example : True := by
+  have := @OperatorKO7.StepDuplicating.StepDuplicatingSchema.canonical_operational_instance
   trivial
 
 -- Paper 2 schema witness order

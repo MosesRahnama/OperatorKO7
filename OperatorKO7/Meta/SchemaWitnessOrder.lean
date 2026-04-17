@@ -1,5 +1,4 @@
 import OperatorKO7.Meta.StepDuplicatingSchema
-import OperatorKO7.Meta.SchemaForgettingWitness
 
 /-!
 # Schema-Level Witness Order and Orientation Boundary Predicate
@@ -110,6 +109,18 @@ theorem OB_witness_at_transformedCall
     (_hOB : OB T x)
     (hTC : HasWitness T x WLevel.transformedCall) :
     kappaLe T x WLevel.transformedCall := by
+  exact ⟨WLevel.transformedCall, Nat.le_refl _, hTC⟩
+
+/-- A threshold formulation closer to Paper 2 Proposition 4.4: if the direct
+whole-term witness language is empty at `x` and a transformed-call witness
+exists, then the orientation boundary holds and the first available witness
+order is at most the transformed-call layer. -/
+theorem boundary_threshold_at_transformedCall
+    (T : SchemaWitnessTower S) (x : S.T)
+    (hno : ¬ HasWitness T x WLevel.directWhole)
+    (hTC : HasWitness T x WLevel.transformedCall) :
+    OB T x ∧ kappaLe T x WLevel.transformedCall := by
+  refine ⟨(OB_iff_no_directWhole T x).2 hno, ?_⟩
   exact ⟨WLevel.transformedCall, Nat.le_refl _, hTC⟩
 
 end SchemaWitnessTower

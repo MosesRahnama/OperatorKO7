@@ -1,3 +1,4 @@
+import Mathlib.Algebra.BigOperators.Group.Finset.Basic
 import OperatorKO7.Meta.SchemaCanonicalTrace
 
 /-!
@@ -16,6 +17,8 @@ namespace OperatorKO7.StepDuplicating
 namespace StepDuplicatingSchema
 
 namespace BaseDuplicatingSystem
+
+open scoped BigOperators
 
 variable {Sys : BaseDuplicatingSystem}
 
@@ -95,6 +98,12 @@ def PayloadTuple.permute {B : Type} {i : Nat}
     (u : PayloadTuple B i) (π : Perm (i + 1)) : PayloadTuple B i :=
   fun k => u (π.1 k)
 
+/-- An additive observer on a payload tuple: sum the contribution of each
+position under a size map. -/
+def payloadMass {B : Type} {i : Nat}
+    (size : B → Nat) (u : PayloadTuple B i) : Nat :=
+  ∑ j : Fin (i + 1), size (u j)
+
 /-- **Paper 2 Proposition 3.12 (permutation gauge symmetry).**
 The constant payload tuple is fixed by every permutation. -/
 theorem constTuple_gauge_invariant
@@ -102,6 +111,35 @@ theorem constTuple_gauge_invariant
     (constTuple B b i).permute π = constTuple B b i := by
   funext k
   rfl
+
+/-- Additive payload mass is invariant under relabelling of payload positions. -/
+theorem payloadMass_permute
+    {B : Type} {i : Nat} (size : B → Nat)
+    (u : PayloadTuple B i) (π : Perm (i + 1)) :
+    payloadMass size (u.permute π) = payloadMass size u := by
+  classical
+  let e : Fin (i + 1) ≃ Fin (i + 1) := Equiv.ofBijective π.1 π.2
+  unfold payloadMass PayloadTuple.permute
+  exact Fintype.sum_equiv e _ _ (fun _ => rfl)
+
+/-- The additive mass of the constant payload tuple records multiplicity
+exactly: `i + 1` identical copies contribute `(i + 1) * size b`. -/
+theorem payloadMass_constTuple
+    {B : Type} (size : B → Nat) (b : B) (i : Nat) :
+    payloadMass size (constTuple B b i) = (i + 1) * size b := by
+  unfold payloadMass constTuple
+  simp
+
+/-- For positive seed size, the additive mass on constant tuples is strictly
+increasing with the number of payload positions. This is the precise sense in
+which direct additive observers remain multiplicity-sensitive even on a single
+gauge orbit. -/
+theorem payloadMass_constTuple_strict_mono
+    {B : Type} (size : B → Nat) (b : B) {i j : Nat}
+    (hb : 0 < size b) (hij : i < j) :
+    payloadMass size (constTuple B b i) < payloadMass size (constTuple B b j) := by
+  rw [payloadMass_constTuple, payloadMass_constTuple]
+  nlinarith
 
 /-! ## The counter is the gauge-invariant retained coordinate (Prop 3.13) -/
 
@@ -126,11 +164,32 @@ theorem trace_ctr_gaugeInvariant
     GaugeInvariant (fun (_ : PayloadTuple B i) => trace_ctr k i) :=
   constCoord_gaugeInvariant _
 
+/-- A packaged schema version of the permutation-gauge picture used in
+Paper 2: the constant tuple is fixed by every payload permutation, the
+additive observer records multiplicity exactly, and the counter coordinate
+is the retained gauge-invariant coordinate. -/
+theorem permutation_gauge_symmetry_package
+    {B : Type} (size : B → Nat) (b : B) (k i : Nat) (π : Perm (i + 1)) :
+    (constTuple B b i).permute π = constTuple B b i
+      ∧ payloadMass size ((constTuple B b i).permute π) = (i + 1) * size b
+      ∧ GaugeInvariant (fun (_ : PayloadTuple B i) => trace_ctr k i) := by
+  refine ⟨constTuple_gauge_invariant b i π, ?_, trace_ctr_gaugeInvariant (B := B) k i⟩
+  rw [constTuple_gauge_invariant, payloadMass_constTuple]
+
 /-- **Paper 2 Prop 3.13 (strict descent of the counter).** -/
 theorem trace_ctr_strict_descent (k i : Nat) (hik : i < k) :
     trace_ctr k (i + 1) < trace_ctr k i := by
   unfold trace_ctr
   omega
+
+/-- **Paper 2 Prop 3.13 (reversibility of the counter step).** The descending
+counter coordinate is recovered uniquely by reattaching one `succ` layer. -/
+theorem trace_ctr_reversible (k i : Nat) (hik : i < k) :
+    Sys.counter (trace_ctr k i) =
+      Sys.succ (Sys.counter (trace_ctr k (i + 1))) := by
+  unfold trace_ctr
+  have hsub : k - i = (k - (i + 1)) + 1 := by omega
+  rw [hsub, Sys.counter_succ]
 
 /-- **Paper 2 Prop 3.13 (payload coordinate strictly increases, not descends).**
 The payload-multiplicity coordinate `trace_pay i = i + 1` strictly increases
@@ -157,6 +216,21 @@ theorem counter_unique_retained_coordinate
       ∧ trace_wraps i < trace_wraps (i + 1) := by
   refine ⟨trace_ctr_strict_descent k i hik,
           trace_pay_strict_ascent i, ?_⟩
+  unfold trace_wraps
+  omega
+
+/-- A stronger retained-coordinate package collecting the gauge invariance,
+strict descent, reversibility, and ascent of the competing coordinates. -/
+theorem counter_retained_coordinate_package
+    {B : Type} (k i : Nat) (hik : i < k) :
+    GaugeInvariant (fun (_ : PayloadTuple B i) => trace_ctr k i)
+      ∧ trace_ctr k (i + 1) < trace_ctr k i
+      ∧ Sys.counter (trace_ctr k i) =
+          Sys.succ (Sys.counter (trace_ctr k (i + 1)))
+      ∧ trace_pay i < trace_pay (i + 1)
+      ∧ trace_wraps i < trace_wraps (i + 1) := by
+  refine ⟨trace_ctr_gaugeInvariant (B := B) k i, trace_ctr_strict_descent k i hik,
+    trace_ctr_reversible (Sys := Sys) k i hik, trace_pay_strict_ascent i, ?_⟩
   unfold trace_wraps
   omega
 

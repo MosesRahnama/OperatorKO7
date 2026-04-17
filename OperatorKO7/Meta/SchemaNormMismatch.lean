@@ -1,6 +1,8 @@
 import OperatorKO7.Meta.SchemaOffsetAndWrapper
 import OperatorKO7.Meta.SchemaConfessionDominance
 import Mathlib.Analysis.SpecialFunctions.Log.Basic
+import Mathlib.Data.Nat.Size
+import Mathlib.Tactic
 
 /-!
 # Norm Mismatch, Gauge Entropy, and Inefficiency Coefficient
@@ -54,6 +56,14 @@ def ell0NormOnDiagonal (i : Nat) : Nat :=
   unfold ell0NormOnDiagonal
   have : i ≠ 0 := Nat.one_le_iff_ne_zero.mp hi
   simp [this]
+
+/-- Exact values of the three canonical norm readings on a nonempty diagonal
+wrapper stack. -/
+theorem diagonal_norm_values (p i : Nat) (hi : 1 ≤ i) :
+    ell0NormOnDiagonal i = 1
+      ∧ ellInfNormOnDiagonal p i = p
+      ∧ ell1NormOnDiagonal p i = i * p := by
+  exact ⟨ell0NormOnDiagonal_pos i hi, ellInfNormOnDiagonal_pos p i hi, rfl⟩
 
 /-- **Paper 2 Proposition 3.15 (norm mismatch).** For every `i ≥ 1` and
 payload size `p ≥ 1`, the three norms of the constant-payload wrapper stack
@@ -132,18 +142,116 @@ theorem inefficiency_doubled_burden_lower_bound
   unfold confessedBurdenDoubled
   nlinarith [hw, Nat.zero_le k]
 
-/-- **Paper 2 Proposition 3.20 (Shannon-uniqueness).** The syntactic
-structural mass `(i + 1) · (|b| + |G|)` at step `i` exceeds the minimum
-description length bound `(|b| + |G|) + c(i)` by at least `i · (|b| + |G|)`,
-where `c(i)` is any constant-in-`i` overhead. This captures the paper's
-`|t_i| - K(t_i) = Θ(i · (|b| + |G|))` at the Nat level. -/
-theorem shannon_uniqueness_gap
-    (wrapSize paySize i : Nat) :
+/-- A linear lower bound on the inefficiency coefficient once the trace length
+is nontrivial. This is the key estimate behind the unboundedness theorem. -/
+theorem inefficiencyCoefficient_lower_linear
+    (k w : Nat) (hk : 1 ≤ k) (hw : 1 ≤ w) :
+    ((k + 1 : ℝ) * w / 2) ≤ inefficiencyCoefficient k w := by
+  have hlog_pos : 0 < Real.log (k + 1) := by
+    apply Real.log_pos
+    exact_mod_cast (show 1 < k + 1 by omega)
+  have hlog_le : Real.log (k + 1) ≤ k := by
+    have hkpos : 0 < (k + 1 : ℝ) := by positivity
+    simpa using Real.log_le_sub_one_of_pos hkpos
+  unfold inefficiencyCoefficient
+  have hden_pos : 0 < 2 * Real.log (k + 1) := by nlinarith
+  apply (le_div_iff₀ hden_pos).2
+  calc
+    ((k + 1 : ℝ) * w / 2) * (2 * Real.log (k + 1))
+        = ((k + 1 : ℝ) * w) * Real.log (k + 1) := by ring
+    _ ≤ ((k + 1 : ℝ) * w) * k := by
+      have hmul_nonneg : 0 ≤ ((k + 1 : ℝ) * w) := by positivity
+      exact mul_le_mul_of_nonneg_left hlog_le hmul_nonneg
+    _ ≤ ((k + 1 : ℝ) * (k + 2) * w) := by
+      nlinarith
+
+/-- **Paper 2 Proposition 3.19 (schema-mechanized form).** For every target
+bound `N`, the direct-carrier inefficiency coefficient eventually exceeds `N`
+along the odd subsequence `k = 2N + 1`. This is a concrete unboundedness
+theorem for `η(k,w)`. -/
+theorem inefficiencyCoefficient_unbounded
+    (w : Nat) (hw : 1 ≤ w) (N : Nat) :
+    (N : ℝ) ≤ inefficiencyCoefficient (2 * N + 1) w := by
+  have hk : 1 ≤ 2 * N + 1 := by omega
+  have hw' : (1 : ℝ) ≤ w := by exact_mod_cast hw
+  have hhalf :
+      (N : ℝ) ≤ (((((2 * N + 1) + 1 : Nat) : ℝ)) / 2) := by
+    have hrewrite : (((((2 * N + 1) + 1 : Nat) : ℝ)) / 2) = (N : ℝ) + 1 := by
+      norm_num [Nat.cast_add, Nat.cast_mul]
+      ring
+    rw [hrewrite]
+    nlinarith
+  have hscale :
+      (((((2 * N + 1) + 1 : Nat) : ℝ)) / 2)
+        ≤ ((((2 * N + 1) + 1 : Nat) : ℝ) * w / 2) := by
+    nlinarith
+  calc
+    (N : ℝ) ≤ (((((2 * N + 1) + 1 : Nat) : ℝ)) / 2) := hhalf
+    _ ≤ ((((2 * N + 1) + 1 : Nat) : ℝ) * w / 2) := hscale
+    _ ≤ inefficiencyCoefficient (2 * N + 1) w := by
+      simpa using inefficiencyCoefficient_lower_linear (2 * N + 1) w hk hw
+
+/-- Unboundedness packaged in existential form. -/
+theorem inefficiencyCoefficient_unbounded_atTop
+    (w : Nat) (hw : 1 ≤ w) :
+    ∀ N : Nat, ∃ k : Nat, (N : ℝ) ≤ inefficiencyCoefficient k w := by
+  intro N
+  exact ⟨2 * N + 1, inefficiencyCoefficient_unbounded w hw N⟩
+
+/-- A coarse repeated-carrier envelope for the duplicated payload component of
+the canonical trace: one wrapper-cell budget per payload-bearing position. -/
+def repeatedCarrierMass (wrapSize paySize i : Nat) : Nat :=
+  (i + 1) * (wrapSize + paySize)
+
+/-- An explicit description-length model for the canonical trace stage:
+one seed description, one wrapper-symbol description, a binary-size code for
+the step index, and constant glue overhead. -/
+def explicitDescriptionLength
+    (wrapSize paySize glue i : Nat) : Nat :=
+  wrapSize + paySize + Nat.size (i + 1) + glue
+
+@[simp] theorem repeatedCarrierMass_def (wrapSize paySize i : Nat) :
+    repeatedCarrierMass wrapSize paySize i = (i + 1) * (wrapSize + paySize) := rfl
+
+@[simp] theorem explicitDescriptionLength_def
+    (wrapSize paySize glue i : Nat) :
+    explicitDescriptionLength wrapSize paySize glue i
+      = wrapSize + paySize + Nat.size (i + 1) + glue := rfl
+
+/-- The explicit description length grows by only logarithmic index overhead
+on top of one seed description and one wrapper-symbol description. -/
+theorem explicitDescriptionLength_upper_bound
+    (wrapSize paySize glue i : Nat) :
+    explicitDescriptionLength wrapSize paySize glue i
+      ≤ wrapSize + paySize + (i + 1) + glue := by
+  unfold explicitDescriptionLength
+  have hsize : Nat.size (i + 1) ≤ i + 1 := by
+    apply Nat.not_lt.mp
+    intro hlt
+    have hpow : 2 ^ (i + 1) ≤ i + 1 := (Nat.lt_size).1 hlt
+    exact ((i + 1).lt_two_pow_self).not_ge hpow
+  omega
+
+/-- The repeated carrier mass and explicit description length differ by an
+exact linear term plus the logarithmic index code. -/
+theorem repeatedCarrierMass_description_balance
+    (wrapSize paySize glue i : Nat) :
+    i * (wrapSize + paySize) + explicitDescriptionLength wrapSize paySize glue i
+      = repeatedCarrierMass wrapSize paySize i + Nat.size (i + 1) + glue := by
+  unfold repeatedCarrierMass explicitDescriptionLength
+  ring
+
+/-- **Paper 2 Proposition 3.20 (schema-mechanized form).** After subtracting
+the explicit description length, the repeated-carrier envelope retains an
+exact linear gap `i · (|b| + |G|)` up to the logarithmic index code
+`Nat.size (i + 1)` and fixed glue overhead. -/
+theorem explicitDescription_linear_gap
+    (wrapSize paySize glue i : Nat) :
     i * (wrapSize + paySize)
-      ≤ (i + 1) * (wrapSize + paySize) - (wrapSize + paySize) := by
-  have h : (i + 1) * (wrapSize + paySize)
-         = i * (wrapSize + paySize) + (wrapSize + paySize) := by ring
-  rw [h]
+      = repeatedCarrierMass wrapSize paySize i + Nat.size (i + 1) + glue
+          - explicitDescriptionLength wrapSize paySize glue i := by
+  have h :=
+    repeatedCarrierMass_description_balance wrapSize paySize glue i
   omega
 
 end BaseDuplicatingSystem
