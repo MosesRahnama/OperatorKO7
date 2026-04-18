@@ -327,25 +327,23 @@ theorem proof_entropy_tendsto_one
           nlinarith [hi, Nat.succ_le_succ (Nat.zero_le payloadSize)]
         omega
       exact_mod_cast hden_pos_nat.ne'
-    have hnum_eq_nat :
-        i * (payloadSize + 1) =
-          proofEntropyTotalSize k i (payloadSize + 1) wrapSize cStar
-            - proofEntropyOverhead k i wrapSize cStar := by
+    have hsplit_nat :
+        proofEntropyTotalSize k i (payloadSize + 1) wrapSize cStar
+          = i * (payloadSize + 1) + proofEntropyOverhead k i wrapSize cStar := by
       unfold proofEntropyTotalSize proofEntropyOverhead
       calc
-        i * (payloadSize + 1)
-          = (i * (payloadSize + 1) + (i * wrapSize + (k - i) + cStar))
-              - (i * wrapSize + (k - i) + cStar) := by
-                exact (Nat.add_sub_cancel_left (i * (payloadSize + 1))
-                  (i * wrapSize + (k - i) + cStar)).symm
-        _ = i * (wrapSize + (payloadSize + 1)) + (k - i) + cStar
-              - (i * wrapSize + (k - i) + cStar) := by
-                ring_nf
+        i * (wrapSize + (payloadSize + 1)) + (k - i) + cStar
+          = i * wrapSize + i * (payloadSize + 1) + (k - i) + cStar := by ring_nf
+        _ = i * (payloadSize + 1) + (i * wrapSize + (k - i) + cStar) := by ac_rfl
     have hnum_eq :
         (i * (payloadSize + 1) : ℝ)
           = (proofEntropyTotalSize k i (payloadSize + 1) wrapSize cStar : ℝ) - C := by
+      have hsplit_real :
+          (proofEntropyTotalSize k i (payloadSize + 1) wrapSize cStar : ℝ)
+            = (i * (payloadSize + 1) : ℝ) + (proofEntropyOverhead k i wrapSize cStar : ℝ) := by
+        exact_mod_cast hsplit_nat
       dsimp [C, Cnat]
-      exact_mod_cast hnum_eq_nat
+      nlinarith
     calc
       proofEntropyValue k i (payloadSize + 1) wrapSize cStar
           = ((proofEntropyTotalSize k i (payloadSize + 1) wrapSize cStar : ℝ) - C) /
@@ -354,7 +352,6 @@ theorem proof_entropy_tendsto_one
       _ = 1 - C /
             (proofEntropyTotalSize k i (payloadSize + 1) wrapSize cStar : ℝ) := by
             field_simp [hden_pos]
-            ring
   have hsub :
       Filter.Tendsto
         (fun payloadSize : Nat =>

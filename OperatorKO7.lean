@@ -104,6 +104,9 @@ import OperatorKO7.Meta.MetaHalt_Regress
 import OperatorKO7.Meta.MetaHalt_Soundness
 import OperatorKO7.Meta.MetaHalt_Fracture
 import OperatorKO7.Meta.MetaHalt_PaperInterface
+import OperatorKO7.Meta.InformationAccess
+import OperatorKO7.Meta.ProofTheoreticRegister
+import OperatorKO7.Meta.ReverseMathSupport
 
 /-!
 Public entrypoint for the `OperatorKO7` Lean library.

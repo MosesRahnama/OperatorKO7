@@ -24,4 +24,13 @@ example : True := by
   have := @OperatorKO7.MetaOperationalIncompleteness.CertifiedForgettingWitness.ofConfessionMethod
   trivial
 
+example : True := by
+  have := @OperatorKO7.ProofTheoreticRegister.dp_confession_is_reflection_family_ascent
+  trivial
+
+example :
+    OperatorKO7.ReverseMathSupport.artsGieslTheoryWindow.status =
+      OperatorKO7.ReverseMathSupport.CalibrationStatus.conjectural :=
+  OperatorKO7.ReverseMathSupport.artsGieslTheoryWindow_status
+
 end CrossPaperAPIReach

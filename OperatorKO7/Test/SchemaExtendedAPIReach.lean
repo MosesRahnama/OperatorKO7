@@ -28,4 +28,12 @@ example : True := by
   have := @OperatorKO7.StepDuplicating.StepDuplicatingSchema.nat_direct_escape_trichotomy
   trivial
 
+example : True := by
+  have := @OperatorKO7.InformationAccess.PrimitiveDuplicatorTerm.live_computation_vs_terminal_record
+  trivial
+
+example : True := by
+  have := @OperatorKO7.StepDuplicating.StepDuplicatingSchema.object_undecidability_not_valid_supervisory_verdict
+  trivial
+
 end SchemaExtendedAPIReach

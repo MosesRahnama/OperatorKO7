@@ -5,6 +5,8 @@ import OperatorKO7.Meta.ConfessionMethod_RouteEvidence
 import OperatorKO7.Meta.ConfessionMethod_Family
 import OperatorKO7.Meta.BenchmarkedPrimitiveRecursionFamily
 import OperatorKO7.Meta.OperationalIncompleteness
+import OperatorKO7.Meta.ProofTheoreticRegister
+import OperatorKO7.Meta.ReverseMathSupport
 
 /-!
 # Cross-Paper API

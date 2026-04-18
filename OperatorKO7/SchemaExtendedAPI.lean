@@ -30,6 +30,8 @@ import OperatorKO7.Meta.BarrierWitness_Extended
 import OperatorKO7.Meta.BarrierWitness_Budgets
 import OperatorKO7.Meta.SynthesisOracle
 import OperatorKO7.Meta.BarrierClass_Classifier
+import OperatorKO7.Meta.InformationAccess
+import OperatorKO7.Meta.SchemaSupervisoryLayer
 import OperatorKO7.Meta.MutualDuplication_General
 import OperatorKO7.Meta.MutualDuplication_CycleFlow
 import OperatorKO7.Meta.MutualDuplication_KNode
