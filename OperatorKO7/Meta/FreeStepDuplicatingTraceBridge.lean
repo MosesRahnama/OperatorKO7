@@ -1,0 +1,289 @@
+import OperatorKO7.Meta.FreeStepDuplicatingSyntax
+import OperatorKO7.Meta.ConfessionMethod_DP
+import OperatorKO7.Meta.ConfessionMethod_CounterProjection
+import OperatorKO7.Meta.ConfessionMethod_SCT
+import OperatorKO7.Meta.ConfessionMethod_ArgumentFiltering
+
+/-!
+# Free Step-Duplicating Syntax to KO7 Trace Bridge
+
+This module connects the free primitive step-duplicating syntax to the full KO7
+carrier `Trace`.
+
+The free syntax already satisfies `GeneratedByConstructors`. The results here
+show how the canonical confession-core ranks on KO7 factor through the embedded
+primitive fragment.
+-/
+
+namespace OperatorKO7.StepDuplicating
+namespace StepDuplicatingSchema
+
+open OperatorKO7.Trace
+open OperatorKO7.ConfessionMethodFamily
+open OperatorKO7.CompositionalImpossibility
+
+/-- Embed the primitive free syntax into the full KO7 carrier. -/
+@[simp] def embedFreeTerm : FreeTerm → Trace
+  | .base => void
+  | .succ t => delta (embedFreeTerm t)
+  | .wrap x y => app (embedFreeTerm x) (embedFreeTerm y)
+  | .recur b s n => recΔ (embedFreeTerm b) (embedFreeTerm s) (embedFreeTerm n)
+
+private def map₂ {α β γ} (f : α → β → γ) :
+    Option α → Option β → Option γ
+  | some a, some b => some (f a b)
+  | _, _ => none
+
+private def map₃ {α β γ δ} (f : α → β → γ → δ) :
+    Option α → Option β → Option γ → Option δ
+  | some a, some b, some c => some (f a b c)
+  | _, _, _ => none
+
+/-- Partial erasure of a KO7 term to the primitive free syntax. Terms using
+    non-schema constructors are rejected with `none`. -/
+@[simp] def eraseTraceToFreeTerm : Trace → Option FreeTerm
+  | void => some FreeTerm.base
+  | delta t => Option.map FreeTerm.succ (eraseTraceToFreeTerm t)
+  | integrate _ => none
+  | merge _ _ => none
+  | app x y => map₂ FreeTerm.wrap (eraseTraceToFreeTerm x) (eraseTraceToFreeTerm y)
+  | recΔ b s n =>
+      map₃ FreeTerm.recur
+        (eraseTraceToFreeTerm b)
+        (eraseTraceToFreeTerm s)
+        (eraseTraceToFreeTerm n)
+  | eqW _ _ => none
+
+/-- The erase/embed roundtrip is exact on the primitive fragment. -/
+@[simp] theorem erase_embedFreeTerm (t : FreeTerm) :
+    eraseTraceToFreeTerm (embedFreeTerm t) = some t := by
+  induction t with
+  | base =>
+      rfl
+  | succ t ih =>
+      simp [embedFreeTerm, eraseTraceToFreeTerm, ih]
+  | wrap x y ihx ihy =>
+      simp [embedFreeTerm, eraseTraceToFreeTerm, map₂, ihx, ihy]
+  | recur b s n ihb ihs ihn =>
+      simp [embedFreeTerm, eraseTraceToFreeTerm, map₃, ihb, ihs, ihn]
+
+/-- The embedding of the primitive fragment into `Trace` is injective. -/
+theorem embedFreeTerm_injective :
+    Function.Injective embedFreeTerm := by
+  intro x y hxy
+  have := congrArg eraseTraceToFreeTerm hxy
+  simpa using this
+
+/-- Early helper: the canonical KO7 DP projection rank restricts to the free
+    counter-depth rank on the embedded primitive fragment. -/
+@[simp] theorem dpProjection_on_embedFreeTerm_aux (t : FreeTerm) :
+    dpProjection (embedFreeTerm t) = freeCounterDepth t := by
+  induction t with
+  | base =>
+      rfl
+  | succ t ih =>
+      simp [embedFreeTerm, dpProjection, freeCounterDepth, ih]
+  | wrap x y ihx ihy =>
+      simp [embedFreeTerm, dpProjection, freeCounterDepth]
+  | recur b s n ihb ihs ihn =>
+      simp [embedFreeTerm, dpProjection, freeCounterDepth, ihn]
+
+/-- A true image shadow of the primitive schema inside the full KO7 carrier. -/
+abbrev PrimitiveTraceImage := { t : Trace // ∃ u : FreeTerm, embedFreeTerm u = t }
+
+/-- The canonical image point corresponding to a free primitive term. -/
+def ofFreeTermToImage (u : FreeTerm) : PrimitiveTraceImage :=
+  ⟨embedFreeTerm u, ⟨u, rfl⟩⟩
+
+/-- Chosen primitive preimage for an element of the image shadow. -/
+noncomputable def primitiveImageSource (x : PrimitiveTraceImage) : FreeTerm :=
+  Classical.choose x.property
+
+@[simp] theorem primitiveImageSource_spec (x : PrimitiveTraceImage) :
+    embedFreeTerm (primitiveImageSource x) = x.1 :=
+  Classical.choose_spec x.property
+
+@[simp] theorem primitiveImageSource_ofFreeTermToImage (u : FreeTerm) :
+    primitiveImageSource (ofFreeTermToImage u) = u := by
+  apply embedFreeTerm_injective
+  exact primitiveImageSource_spec (ofFreeTermToImage u)
+
+/-- Every image-shadow point is definitionally represented by its chosen
+    primitive source. -/
+theorem primitiveTraceImage_eta (x : PrimitiveTraceImage) :
+    x = ofFreeTermToImage (primitiveImageSource x) := by
+  apply Subtype.ext
+  symm
+  exact primitiveImageSource_spec x
+
+/-- The primitive image shadow, viewed itself as a step-duplicating schema. -/
+noncomputable def primitiveTraceImageSchema : StepDuplicatingSchema where
+  T := PrimitiveTraceImage
+  base := ofFreeTermToImage FreeTerm.base
+  succ x := ofFreeTermToImage (FreeTerm.succ (primitiveImageSource x))
+  wrap x y := ofFreeTermToImage (FreeTerm.wrap (primitiveImageSource x) (primitiveImageSource y))
+  recur b s n := ofFreeTermToImage
+    (FreeTerm.recur (primitiveImageSource b) (primitiveImageSource s) (primitiveImageSource n))
+
+/-- The image shadow is genuinely generated by the primitive constructors. -/
+noncomputable def primitiveTraceImageGenerated :
+    GeneratedByConstructors primitiveTraceImageSchema where
+  generated := by
+    intro P hbase hsucc hwrap hrecur x
+    have hx : x = ofFreeTermToImage (primitiveImageSource x) := primitiveTraceImage_eta x
+    rw [hx]
+    let Q : FreeTerm → Prop := fun u => P (ofFreeTermToImage u)
+    have hQ : ∀ u : FreeTerm, Q u := by
+      intro u
+      induction u with
+      | base =>
+          simpa [Q, primitiveTraceImageSchema, ofFreeTermToImage] using hbase
+      | succ t iht =>
+          simpa [Q, primitiveTraceImageSchema, ofFreeTermToImage,
+            primitiveImageSource_ofFreeTermToImage] using
+            hsucc (ofFreeTermToImage t) iht
+      | wrap a b iha ihb =>
+          simpa [Q, primitiveTraceImageSchema, ofFreeTermToImage,
+            primitiveImageSource_ofFreeTermToImage] using
+            hwrap (ofFreeTermToImage a) (ofFreeTermToImage b) iha ihb
+      | recur b s n ihb ihs ihn =>
+          simpa [Q, primitiveTraceImageSchema, ofFreeTermToImage,
+            primitiveImageSource_ofFreeTermToImage] using
+            hrecur (ofFreeTermToImage b) (ofFreeTermToImage s) (ofFreeTermToImage n)
+              ihb ihs ihn
+    exact hQ (primitiveImageSource x)
+
+/-- Counter depth on the image shadow is inherited from the chosen primitive
+    source. -/
+noncomputable def primitiveTraceImageCounterDepth (x : PrimitiveTraceImage) : Nat :=
+  freeCounterDepth (primitiveImageSource x)
+
+/-- The primitive image shadow carries the canonical projection rank. -/
+noncomputable def primitiveTraceImageProjectionRank :
+    ProjectionRank primitiveTraceImageSchema where
+  rank := primitiveTraceImageCounterDepth
+  rank_base := by
+    simp [primitiveTraceImageCounterDepth, primitiveTraceImageSchema]
+  rank_succ := by
+    intro x
+    simp [primitiveTraceImageCounterDepth, primitiveTraceImageSchema]
+  rank_wrap := by
+    intro x y
+    simp [primitiveTraceImageCounterDepth, primitiveTraceImageSchema]
+  rank_recur := by
+    intro b s n
+    simp [primitiveTraceImageCounterDepth, primitiveTraceImageSchema]
+
+/-- On the image shadow, the transported KO7 DP projection agrees with the
+    canonical image-shadow counter depth. -/
+theorem dpProjection_on_primitiveTraceImage (x : PrimitiveTraceImage) :
+    dpConfession.rank x.1 = primitiveTraceImageCounterDepth x := by
+  rw [primitiveTraceImageCounterDepth]
+  have h := dpProjection_on_embedFreeTerm_aux (primitiveImageSource x)
+  simpa [primitiveImageSource_spec x] using h
+
+/-- The same factorization holds for all four confession routes on the image
+    shadow inside `Trace`. -/
+theorem all_confession_routes_factor_through_primitiveTraceImage
+    (x : PrimitiveTraceImage) :
+    dpConfession.rank x.1 = primitiveTraceImageCounterDepth x
+    ∧ counterProjectionConfession.rank x.1 = primitiveTraceImageCounterDepth x
+    ∧ sctConfession.rank x.1 = primitiveTraceImageCounterDepth x
+    ∧ argumentFilteringConfession.rank x.1 = primitiveTraceImageCounterDepth x := by
+  refine ⟨dpProjection_on_primitiveTraceImage x, ?_, ?_, ?_⟩
+  · rw [counterProjection_eq_dp_rank, dpProjection_on_primitiveTraceImage x]
+  · rw [sct_eq_dp_rank, dpProjection_on_primitiveTraceImage x]
+  · rw [argumentFiltering_eq_dp_rank, dpProjection_on_primitiveTraceImage x]
+
+/-- On the image shadow, the canonical projection rank is unique by the
+    generatedness theorem. -/
+theorem primitiveTraceImageProjectionRank_unique
+    (R : ProjectionRank primitiveTraceImageSchema) :
+    R = primitiveTraceImageProjectionRank := by
+  exact projectionRank_unique_of_generated
+    primitiveTraceImageGenerated R primitiveTraceImageProjectionRank
+
+/-- The canonical KO7 DP projection rank restricts to the free counter-depth
+    rank on the primitive fragment. -/
+@[simp] theorem dpProjection_on_embedFreeTerm (t : FreeTerm) :
+    dpProjection (embedFreeTerm t) = freeCounterDepth t := by
+  exact dpProjection_on_embedFreeTerm_aux t
+
+/-- The direct counter-projection route restricts to the same primitive
+    counter-depth rank on the embedded fragment. -/
+@[simp] theorem counterProjectionRankFn_on_embedFreeTerm (t : FreeTerm) :
+    counterProjectionRankFn (embedFreeTerm t) = freeCounterDepth t := by
+  rw [counterProjectionRankFn_eq_dpProjection]
+  exact dpProjection_on_embedFreeTerm t
+
+/-- The SCT route restricts to the same primitive counter-depth rank on the
+    embedded fragment. -/
+@[simp] theorem sctRankFn_on_embedFreeTerm (t : FreeTerm) :
+    sctRankFn (embedFreeTerm t) = freeCounterDepth t := by
+  rw [sctRankFn_eq_dpProjection]
+  exact dpProjection_on_embedFreeTerm t
+
+/-- The argument-filtering route restricts to the same primitive counter-depth
+    rank on the embedded fragment. -/
+@[simp] theorem argumentFilteringRankFn_on_embedFreeTerm (t : FreeTerm) :
+    argumentFilteringRankFn (embedFreeTerm t) = freeCounterDepth t := by
+  rw [argumentFilteringRankFn_eq_dpProjection]
+  exact dpProjection_on_embedFreeTerm t
+
+/-- All four confession routes factor through the primitive free fragment when
+    restricted to that fragment. -/
+theorem all_confession_routes_factor_through_embedFreeTerm (t : FreeTerm) :
+    dpConfession.rank (embedFreeTerm t) = freeCounterDepth t
+    ∧ counterProjectionConfession.rank (embedFreeTerm t) = freeCounterDepth t
+    ∧ sctConfession.rank (embedFreeTerm t) = freeCounterDepth t
+    ∧ argumentFilteringConfession.rank (embedFreeTerm t) = freeCounterDepth t := by
+  exact ⟨dpProjection_on_embedFreeTerm t,
+    counterProjectionRankFn_on_embedFreeTerm t,
+    sctRankFn_on_embedFreeTerm t,
+    argumentFilteringRankFn_on_embedFreeTerm t⟩
+
+/-- Any rank on the free primitive syntax satisfying the confession-core
+    semantic profile recovers the canonical KO7 confession core on the embedded
+    primitive fragment. -/
+theorem free_semantic_profile_recovers_ko7_dp_on_embed
+    {rank : FreeTerm → Nat}
+    (hbase : NormalizedAtBase freeSchema rank)
+    (hsucc : TracksSuccessorDepth freeSchema rank)
+    (hwrap : ForgetsWrapperPayload freeSchema rank)
+    (hrecur : FollowsRecursiveCounter freeSchema rank) :
+    ∀ t, rank t = dpConfession.rank (embedFreeTerm t) := by
+  have huniq :
+      rank = freeProjectionRank.rank := by
+    exact semanticProfile_unique_of_generated freeSchemaGenerated
+      hbase hsucc hwrap hrecur
+      freeProjectionRank.rank_base
+      freeProjectionRank.rank_succ
+      freeProjectionRank.rank_wrap
+      freeProjectionRank.rank_recur
+  intro t
+  rw [huniq]
+  exact (dpProjection_on_embedFreeTerm t).symm
+
+/-- The same generatedness-backed recovery theorem can be stated uniformly for
+    all four confession routes on KO7. -/
+theorem free_semantic_profile_recovers_all_confession_routes_on_embed
+    {rank : FreeTerm → Nat}
+    (hbase : NormalizedAtBase freeSchema rank)
+    (hsucc : TracksSuccessorDepth freeSchema rank)
+    (hwrap : ForgetsWrapperPayload freeSchema rank)
+    (hrecur : FollowsRecursiveCounter freeSchema rank) :
+    ∀ t,
+      rank t = dpConfession.rank (embedFreeTerm t)
+      ∧ rank t = counterProjectionConfession.rank (embedFreeTerm t)
+      ∧ rank t = sctConfession.rank (embedFreeTerm t)
+      ∧ rank t = argumentFilteringConfession.rank (embedFreeTerm t) := by
+  intro t
+  have hdp := free_semantic_profile_recovers_ko7_dp_on_embed hbase hsucc hwrap hrecur t
+  rcases all_confession_routes_factor_through_embedFreeTerm t with ⟨h1, h2, h3, h4⟩
+  refine ⟨hdp, ?_, ?_, ?_⟩
+  · rw [hdp, h1, h2]
+  · rw [hdp, h1, h3]
+  · rw [hdp, h1, h4]
+
+end StepDuplicatingSchema
+end OperatorKO7.StepDuplicating

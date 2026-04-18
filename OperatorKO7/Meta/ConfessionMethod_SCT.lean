@@ -211,6 +211,46 @@ theorem sct_eq_dp_rank :
   simpa [sctConfession, dpConfession, sctDerivedRank, dpProjectionRank] using
     sctRankFn_eq_dpProjection
 
+/-- Richer route-local evidence for the SCT entry route. -/
+structure SCTRouteEvidence where
+  witness : SCTWitness
+  descendingThread :
+    witness.graph.arcs ⟨2, by decide⟩ ⟨2, by decide⟩ = SCArc.strictDecrease
+  baseDiagonalNonIncreasing :
+    witness.graph.arcs ⟨0, by decide⟩ ⟨0, by decide⟩ = SCArc.nonIncreasing
+  stepDiagonalNonIncreasing :
+    witness.graph.arcs ⟨1, by decide⟩ ⟨1, by decide⟩ = SCArc.nonIncreasing
+  constantCounterThread :
+    Nat → Fin 3
+  constantCounterThread_is_counter :
+    ∀ k, constantCounterThread k = ⟨2, by decide⟩
+  thread_descends_at_every_step :
+    ∀ k,
+      witness.graph.arcs (constantCounterThread k) (constantCounterThread (k + 1)) =
+        SCArc.strictDecrease
+
+/-- The concrete rich SCT route evidence on KO7. -/
+def schemaSCTRouteEvidence : SCTRouteEvidence where
+  witness := schemaSCTWitness
+  descendingThread := schemaRecCallGraph_counter_descent
+  baseDiagonalNonIncreasing := schemaRecCallGraph_base_nonincreasing
+  stepDiagonalNonIncreasing := schemaRecCallGraph_step_nonincreasing
+  constantCounterThread := fun _ => ⟨2, by decide⟩
+  constantCounterThread_is_counter := by
+    intro k
+    rfl
+  thread_descends_at_every_step := by
+    intro k
+    simpa using schemaRecCallGraph_counter_descent
+
+/-- The richer SCT evidence entails the generic semantic profile. -/
+theorem sctRouteEvidence_implies_semantic_profile :
+    NormalizedAtBase ko7Schema schemaSCTRouteEvidence.witness.toConfessionCoreWitness.rank
+    ∧ TracksSuccessorDepth ko7Schema schemaSCTRouteEvidence.witness.toConfessionCoreWitness.rank
+    ∧ ForgetsWrapperPayload ko7Schema schemaSCTRouteEvidence.witness.toConfessionCoreWitness.rank
+    ∧ FollowsRecursiveCounter ko7Schema schemaSCTRouteEvidence.witness.toConfessionCoreWitness.rank := by
+  exact schemaSCTRouteEvidence.witness.toConfessionCoreWitness.satisfies_semantic_profile
+
 /-- The SCT witness directly satisfies the generic semantic confession
     profile. -/
 theorem sctWitness_has_semantic_profile :

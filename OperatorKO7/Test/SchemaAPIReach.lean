@@ -17,6 +17,22 @@ example : ∀ {S : StepDuplicatingSchema} (M : AdditiveMeasure S),
     ¬ (∀ b s n, M.eval (S.wrap s (S.recur b s n)) < M.eval (S.recur b s (S.succ n))) :=
   @no_additive_orients_dup_step
 
+example : True := by
+  have := @OperatorKO7.StepDuplicating.StepDuplicatingSchema.freeProjectionRank_unique
+  trivial
+
+example : True := by
+  have := @OperatorKO7.StepDuplicating.StepDuplicatingSchema.primitiveTraceImageProjectionRank_unique
+  trivial
+
+example : True := by
+  have := @OperatorKO7.ConfessionMethodFamily.confession_routes_factor_through_primitiveTraceImage
+  trivial
+
+example : True := by
+  have := @OperatorKO7.ConfessionMethodFamily.all_route_local_evidence_yields_certified_forgetting_witnesses
+  trivial
+
 -- Tropical continuation
 example : @OperatorKO7.StepDuplicating.StepDuplicatingSchema.no_tropical_primary_orients_dup_step_of_unbounded = @no_tropical_primary_orients_dup_step_of_unbounded := rfl
 

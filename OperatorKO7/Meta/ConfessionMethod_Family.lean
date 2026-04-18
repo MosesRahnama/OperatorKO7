@@ -83,6 +83,21 @@ theorem family_certified_forgetting :
   intro C hC
   exact ⟨CertifiedForgettingWitness.ofConfessionMethod C, rfl⟩
 
+/-- The same certified-forgetting conclusion can now be witnessed through the
+    richer route-local evidence packages, not only through the generic
+    `ofConfessionMethod` adapter. -/
+theorem family_certified_forgetting_via_route_evidence :
+    ∀ C ∈ allConfessionMethods,
+      ∃ fw : CertifiedForgettingWitness,
+        fw.rank = C.rank := by
+  intro C hC
+  simp [allConfessionMethods] at hC
+  rcases hC with rfl | rfl | rfl | rfl
+  · exact ⟨dpRouteEvidenceCertifiedForgettingWitness, rfl⟩
+  · exact ⟨directCounterProjectionRouteEvidenceCertifiedForgettingWitness, rfl⟩
+  · exact ⟨sctRouteEvidenceCertifiedForgettingWitness, rfl⟩
+  · exact ⟨argumentFilteringRouteEvidenceCertifiedForgettingWitness, rfl⟩
+
 /-- The four confession methods have four distinct soundness licenses.
     This confirms they are genuinely different methods that happen to
     share the same rank on this schema, not four names for one method. -/

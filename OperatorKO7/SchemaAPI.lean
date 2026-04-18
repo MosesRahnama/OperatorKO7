@@ -1,5 +1,7 @@
 -- Core schema and barrier theorems
 import OperatorKO7.Meta.StepDuplicatingSchema
+import OperatorKO7.Meta.FreeStepDuplicatingSyntax
+import OperatorKO7.Meta.FreeStepDuplicatingTraceBridge
 
 -- Nonlinear scalar barrier extensions
 import OperatorKO7.Meta.QuadraticBarrier
@@ -111,6 +113,9 @@ Core schema definition:
 - `StepDuplicatingSchema`: the four-role schema (base/succ/wrap/recur)
 - `StepDuplicatingSystem`: schema + a step relation containing the dup rule
 - `GlobalOrients`: the property that a measure globally orients a relation
+- free generated schema `freeSchema` and its public uniqueness theorems
+- true image shadow `PrimitiveTraceImage` inside `Trace`, together with the
+  free-to-KO7 bridge on the primitive fragment
 
 Barrier theorems (schema-level):
 - Additive and transparent-compositional impossibility

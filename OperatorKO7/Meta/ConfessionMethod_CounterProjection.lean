@@ -31,6 +31,34 @@ open OperatorKO7.StepDuplicating
 open OperatorKO7.StepDuplicating.StepDuplicatingSchema
 open OperatorKO7.CompositionalImpossibility
 
+/-- Minimal syntactic subterm relation for the direct counter-projection route.
+    We only need enough structure to express that the counter argument is a
+    strict syntactic subterm of `delta n`. -/
+inductive DirectSubterm : Trace → Trace → Prop
+  | delta_arg (n : Trace) : DirectSubterm n (delta n)
+
+/-- Richer original-symbol subterm relation on the full KO7 syntax. This keeps
+    the direct route local to the original recursive symbol rather than marked
+    dependency-pair syntax. -/
+inductive OriginalSymbolSubterm : Trace → Trace → Prop
+  | delta_arg (n : Trace) : OriginalSymbolSubterm n (delta n)
+  | app_left (x y : Trace) : OriginalSymbolSubterm x (app x y)
+  | app_right (x y : Trace) : OriginalSymbolSubterm y (app x y)
+  | recur_base (b s n : Trace) : OriginalSymbolSubterm b (recΔ b s n)
+  | recur_step (b s n : Trace) : OriginalSymbolSubterm s (recΔ b s n)
+  | recur_counter (b s n : Trace) : OriginalSymbolSubterm n (recΔ b s n)
+  | trans {x y z : Trace} :
+      OriginalSymbolSubterm x y →
+      OriginalSymbolSubterm y z →
+      OriginalSymbolSubterm x z
+
+/-- The direct counter-step witness `n ▷ delta n` is also a witness in the
+    richer original-symbol subterm relation. -/
+theorem directSubterm_to_originalSymbolSubterm {x y : Trace}
+    (h : DirectSubterm x y) : OriginalSymbolSubterm x y := by
+  cases h with
+  | delta_arg n => exact OriginalSymbolSubterm.delta_arg n
+
 /-- A direct subterm-projection witness on the original recursive symbol.
     On the step-duplicating schema, the only descent-bearing coordinate is the
     third argument, i.e. the recursion counter. -/
@@ -134,6 +162,59 @@ theorem counterProjection_eq_dp_rank :
     counterProjectionConfession.rank = dpConfession.rank := by
   simpa [counterProjectionConfession, dpConfession, dpProjectionRank,
     counterProjectionDerivedRank] using counterProjectionRankFn_eq_dpProjection
+
+/-- Richer route-local evidence for direct counter projection. -/
+structure DirectCounterProjectionRouteEvidence where
+  witness : DirectCounterProjectionWitness
+  originalSymbolSubterm :
+    ∀ n, DirectSubterm n (delta n)
+  counterSubtermInOriginalCall :
+    ∀ b s n, OriginalSymbolSubterm n (recΔ b s (delta n))
+  payloadSubtermInOriginalCall :
+    ∀ b s n, OriginalSymbolSubterm s (recΔ b s (delta n))
+  strictSubtermDescent :
+    ∀ n, witness.toConfessionCoreWitness.rank (delta n) =
+      witness.toConfessionCoreWitness.rank n + 1
+  payloadDropped :
+    ∀ x y, witness.toConfessionCoreWitness.rank (app x y) = 0
+
+/-- The concrete rich direct counter-projection evidence on KO7. -/
+def schemaDirectCounterProjectionRouteEvidence :
+    DirectCounterProjectionRouteEvidence where
+  witness := schemaDirectCounterProjectionWitness
+  originalSymbolSubterm := by
+    intro n
+    exact DirectSubterm.delta_arg n
+  counterSubtermInOriginalCall := by
+    intro b s n
+    exact OriginalSymbolSubterm.trans
+      (OriginalSymbolSubterm.delta_arg n)
+      (OriginalSymbolSubterm.recur_counter b s (delta n))
+  payloadSubtermInOriginalCall := by
+    intro b s n
+    exact OriginalSymbolSubterm.recur_step b s (delta n)
+  strictSubtermDescent := by
+    intro n
+    rfl
+  payloadDropped := by
+    intro x y
+    rfl
+
+/-- The richer direct counter-projection evidence entails the generic semantic
+    profile. -/
+theorem directCounterProjectionRouteEvidence_implies_semantic_profile :
+    NormalizedAtBase ko7Schema
+      schemaDirectCounterProjectionRouteEvidence.witness.toConfessionCoreWitness.rank
+    ∧ TracksSuccessorDepth ko7Schema
+      schemaDirectCounterProjectionRouteEvidence.witness.toConfessionCoreWitness.rank
+    ∧ ForgetsWrapperPayload ko7Schema
+      schemaDirectCounterProjectionRouteEvidence.witness.toConfessionCoreWitness.rank
+    ∧ FollowsRecursiveCounter ko7Schema
+      schemaDirectCounterProjectionRouteEvidence.witness.toConfessionCoreWitness.rank := by
+  have h :=
+    ConfessionCoreWitness.satisfies_semantic_profile
+      schemaDirectCounterProjectionRouteEvidence.witness.toConfessionCoreWitness
+  simpa [schemaDirectCounterProjectionRouteEvidence] using h
 
 /-- The direct counter-projection witness directly satisfies the generic
     semantic confession profile. -/

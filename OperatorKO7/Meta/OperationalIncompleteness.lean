@@ -1,6 +1,7 @@
 import OperatorKO7.Meta.WitnessOrder
 import OperatorKO7.Meta.CompositionalMeasure_Impossibility
 import OperatorKO7.Meta.ConfessionMethod
+import OperatorKO7.Meta.SchemaForgettingWitness
 
 /-!
 # Operational incompleteness for the duplicated payload coordinate
@@ -85,10 +86,41 @@ def CertifiedForgettingWitness.ofConfessionMethod
     refine ⟨ko7CarrierEquivTrace x, ko7CarrierEquivTrace y, ?_⟩
     simpa [ko7CarrierEquivTrace, OperatorKO7.CompositionalImpossibility.ko7Schema] using hxy
 
+/-- Any generic forgetting witness on `ko7Schema` yields a KO7 certified
+    forgetting witness. This is the route used by the richer route-local
+    evidence layer once it has been converted to a generic
+    `ForgettingWitness ko7Schema`. -/
+def CertifiedForgettingWitness.ofForgettingWitness
+    (W : OperatorKO7.StepDuplicating.StepDuplicatingSchema.ForgettingWitness
+      OperatorKO7.CompositionalImpossibility.ko7Schema) :
+    CertifiedForgettingWitness where
+  rank := fun t => W.rank (ko7CarrierEquivTrace.symm t)
+  orientsDupStep := by
+    intro b s n
+    simpa [ko7CarrierEquivTrace, OperatorKO7.CompositionalImpossibility.ko7Schema] using
+      W.orientsDupStep
+        (ko7CarrierEquivTrace.symm b)
+        (ko7CarrierEquivTrace.symm s)
+        (ko7CarrierEquivTrace.symm n)
+  violatesPayloadLeft := by
+    rcases W.violatesPayloadLeft with ⟨x, y, hxy⟩
+    refine ⟨ko7CarrierEquivTrace x, ko7CarrierEquivTrace y, ?_⟩
+    simpa [ko7CarrierEquivTrace, OperatorKO7.CompositionalImpossibility.ko7Schema] using hxy
+  violatesPayloadRight := by
+    rcases W.violatesPayloadRight with ⟨x, y, hxy⟩
+    refine ⟨ko7CarrierEquivTrace x, ko7CarrierEquivTrace y, ?_⟩
+    simpa [ko7CarrierEquivTrace, OperatorKO7.CompositionalImpossibility.ko7Schema] using hxy
+
 @[simp] theorem CertifiedForgettingWitness.ofConfessionMethod_rank
     (C : ConfessionMethod OperatorKO7.CompositionalImpossibility.ko7Schema) :
     (CertifiedForgettingWitness.ofConfessionMethod C).rank =
       fun t => C.rank (ko7CarrierEquivTrace.symm t) := rfl
+
+@[simp] theorem CertifiedForgettingWitness.ofForgettingWitness_rank
+    (W : OperatorKO7.StepDuplicating.StepDuplicatingSchema.ForgettingWitness
+      OperatorKO7.CompositionalImpossibility.ko7Schema) :
+    (CertifiedForgettingWitness.ofForgettingWitness W).rank =
+      fun t => W.rank (ko7CarrierEquivTrace.symm t) := rfl
 
 /-- Narrow formal package for operational incompleteness at the duplicated
 payload coordinate.

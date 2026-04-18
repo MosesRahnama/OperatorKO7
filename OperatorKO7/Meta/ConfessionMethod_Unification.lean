@@ -4,6 +4,7 @@ import OperatorKO7.Meta.ConfessionMethod_SCT
 import OperatorKO7.Meta.ConfessionMethod_ArgumentFiltering
 import OperatorKO7.Meta.SchemaForgettingWitness
 import OperatorKO7.Meta.OperationalIncompleteness
+import OperatorKO7.Meta.FreeStepDuplicatingTraceBridge
 
 /-!
 # Confession Method Unification
@@ -375,6 +376,116 @@ theorem all_route_local_witnesses_converge_by_extended_semantic_profile :
       (by intro x y; rfl)
       (by intro x y; rfl)
 
+/-- The richer route-local evidence records also imply the generic semantic
+    profile for all four confession routes. -/
+theorem all_route_local_evidence_implies_semantic_profile :
+    (NormalizedAtBase ko7Schema schemaDPRouteEvidence.witness.toConfessionCoreWitness.rank
+      ∧ TracksSuccessorDepth ko7Schema schemaDPRouteEvidence.witness.toConfessionCoreWitness.rank
+      ∧ ForgetsWrapperPayload ko7Schema schemaDPRouteEvidence.witness.toConfessionCoreWitness.rank
+      ∧ FollowsRecursiveCounter ko7Schema schemaDPRouteEvidence.witness.toConfessionCoreWitness.rank)
+    ∧ (NormalizedAtBase ko7Schema
+        schemaDirectCounterProjectionRouteEvidence.witness.toConfessionCoreWitness.rank
+      ∧ TracksSuccessorDepth ko7Schema
+        schemaDirectCounterProjectionRouteEvidence.witness.toConfessionCoreWitness.rank
+      ∧ ForgetsWrapperPayload ko7Schema
+        schemaDirectCounterProjectionRouteEvidence.witness.toConfessionCoreWitness.rank
+      ∧ FollowsRecursiveCounter ko7Schema
+        schemaDirectCounterProjectionRouteEvidence.witness.toConfessionCoreWitness.rank)
+    ∧ (NormalizedAtBase ko7Schema schemaSCTRouteEvidence.witness.toConfessionCoreWitness.rank
+      ∧ TracksSuccessorDepth ko7Schema schemaSCTRouteEvidence.witness.toConfessionCoreWitness.rank
+      ∧ ForgetsWrapperPayload ko7Schema schemaSCTRouteEvidence.witness.toConfessionCoreWitness.rank
+      ∧ FollowsRecursiveCounter ko7Schema schemaSCTRouteEvidence.witness.toConfessionCoreWitness.rank)
+    ∧ (NormalizedAtBase ko7Schema
+        schemaArgumentFilteringRouteEvidence.witness.toConfessionCoreWitness.rank
+      ∧ TracksSuccessorDepth ko7Schema
+        schemaArgumentFilteringRouteEvidence.witness.toConfessionCoreWitness.rank
+      ∧ ForgetsWrapperPayload ko7Schema
+        schemaArgumentFilteringRouteEvidence.witness.toConfessionCoreWitness.rank
+      ∧ FollowsRecursiveCounter ko7Schema
+        schemaArgumentFilteringRouteEvidence.witness.toConfessionCoreWitness.rank) := by
+  exact ⟨dpRouteEvidence_implies_semantic_profile,
+    directCounterProjectionRouteEvidence_implies_semantic_profile,
+    sctRouteEvidence_implies_semantic_profile,
+    argumentFilteringRouteEvidence_implies_semantic_profile⟩
+
+/-- The richer route-local evidence records also yield generic forgetting
+    witnesses directly through the semantic-profile bridge. -/
+abbrev dpRouteEvidenceForgettingWitness : ForgettingWitness ko7Schema :=
+  ForgettingWitness.ofSemanticProfile
+    schemaDPRouteEvidence.witness.toConfessionCoreWitness.rank
+    dpRouteEvidence_implies_semantic_profile.1
+    dpRouteEvidence_implies_semantic_profile.2.1
+    dpRouteEvidence_implies_semantic_profile.2.2.1
+    dpRouteEvidence_implies_semantic_profile.2.2.2
+
+abbrev directCounterProjectionRouteEvidenceForgettingWitness :
+    ForgettingWitness ko7Schema :=
+  ForgettingWitness.ofSemanticProfile
+    schemaDirectCounterProjectionRouteEvidence.witness.toConfessionCoreWitness.rank
+    directCounterProjectionRouteEvidence_implies_semantic_profile.1
+    directCounterProjectionRouteEvidence_implies_semantic_profile.2.1
+    directCounterProjectionRouteEvidence_implies_semantic_profile.2.2.1
+    directCounterProjectionRouteEvidence_implies_semantic_profile.2.2.2
+
+abbrev sctRouteEvidenceForgettingWitness : ForgettingWitness ko7Schema :=
+  ForgettingWitness.ofSemanticProfile
+    schemaSCTRouteEvidence.witness.toConfessionCoreWitness.rank
+    sctRouteEvidence_implies_semantic_profile.1
+    sctRouteEvidence_implies_semantic_profile.2.1
+    sctRouteEvidence_implies_semantic_profile.2.2.1
+    sctRouteEvidence_implies_semantic_profile.2.2.2
+
+abbrev argumentFilteringRouteEvidenceForgettingWitness :
+    ForgettingWitness ko7Schema :=
+  ForgettingWitness.ofSemanticProfile
+    schemaArgumentFilteringRouteEvidence.witness.toConfessionCoreWitness.rank
+    argumentFilteringRouteEvidence_implies_semantic_profile.1
+    argumentFilteringRouteEvidence_implies_semantic_profile.2.1
+    argumentFilteringRouteEvidence_implies_semantic_profile.2.2.1
+    argumentFilteringRouteEvidence_implies_semantic_profile.2.2.2
+
+/-- These route-evidence-derived forgetting witnesses recover the same ranks as
+    the corresponding concrete confession routes. -/
+theorem all_route_local_evidence_yields_forgetting_witnesses :
+    dpRouteEvidenceForgettingWitness.rank = dpConfession.rank
+    ∧ directCounterProjectionRouteEvidenceForgettingWitness.rank = counterProjectionConfession.rank
+    ∧ sctRouteEvidenceForgettingWitness.rank = sctConfession.rank
+    ∧ argumentFilteringRouteEvidenceForgettingWitness.rank = argumentFilteringConfession.rank := by
+  exact ⟨rfl, rfl, rfl, rfl⟩
+
+/-- The richer route-local evidence records also lift all the way to the KO7
+    `CertifiedForgettingWitness` layer. -/
+abbrev dpRouteEvidenceCertifiedForgettingWitness :
+    OperatorKO7.MetaOperationalIncompleteness.CertifiedForgettingWitness :=
+  OperatorKO7.MetaOperationalIncompleteness.CertifiedForgettingWitness.ofForgettingWitness
+    dpRouteEvidenceForgettingWitness
+
+abbrev directCounterProjectionRouteEvidenceCertifiedForgettingWitness :
+    OperatorKO7.MetaOperationalIncompleteness.CertifiedForgettingWitness :=
+  OperatorKO7.MetaOperationalIncompleteness.CertifiedForgettingWitness.ofForgettingWitness
+    directCounterProjectionRouteEvidenceForgettingWitness
+
+abbrev sctRouteEvidenceCertifiedForgettingWitness :
+    OperatorKO7.MetaOperationalIncompleteness.CertifiedForgettingWitness :=
+  OperatorKO7.MetaOperationalIncompleteness.CertifiedForgettingWitness.ofForgettingWitness
+    sctRouteEvidenceForgettingWitness
+
+abbrev argumentFilteringRouteEvidenceCertifiedForgettingWitness :
+    OperatorKO7.MetaOperationalIncompleteness.CertifiedForgettingWitness :=
+  OperatorKO7.MetaOperationalIncompleteness.CertifiedForgettingWitness.ofForgettingWitness
+    argumentFilteringRouteEvidenceForgettingWitness
+
+/-- The route-evidence-derived certified-forgetting witnesses recover the same
+    rank functions as the corresponding concrete confession methods. -/
+theorem all_route_local_evidence_yields_certified_forgetting_witnesses :
+    dpRouteEvidenceCertifiedForgettingWitness.rank = dpConfession.rank
+    ∧ directCounterProjectionRouteEvidenceCertifiedForgettingWitness.rank =
+        counterProjectionConfession.rank
+    ∧ sctRouteEvidenceCertifiedForgettingWitness.rank = sctConfession.rank
+    ∧ argumentFilteringRouteEvidenceCertifiedForgettingWitness.rank =
+        argumentFilteringConfession.rank := by
+  exact ⟨rfl, rfl, rfl, rfl⟩
+
 /-- Route-local semantic-profile forgetting witnesses, obtained directly from
     the witness-local evidence rather than from projection-core equality. -/
 abbrev dpSemanticForgettingWitness : ForgettingWitness ko7Schema :=
@@ -441,6 +552,49 @@ theorem all_confession_routes_share_rank_core :
   · simpa [confessionProjectionCore] using counterProjection_eq_dp_rank
   · simpa [confessionProjectionCore] using sct_eq_dp_rank
   · simpa [confessionProjectionCore] using argumentFiltering_eq_dp_rank
+
+/-- The common confession core factors through the embedded primitive free
+    fragment. This is the first KO7-facing bridge from the concrete `Trace`
+    carrier back to a schema-generated carrier satisfying
+    `GeneratedByConstructors`. -/
+theorem confession_routes_factor_through_free_shadow (t : FreeTerm) :
+    dpConfession.rank (embedFreeTerm t) = freeCounterDepth t
+    ∧ counterProjectionConfession.rank (embedFreeTerm t) = freeCounterDepth t
+    ∧ sctConfession.rank (embedFreeTerm t) = freeCounterDepth t
+    ∧ argumentFilteringConfession.rank (embedFreeTerm t) = freeCounterDepth t := by
+  exact all_confession_routes_factor_through_embedFreeTerm t
+
+/-- Generatedness-backed recovery theorem on the primitive free fragment,
+    re-exported into the confession-method unification layer. -/
+theorem generated_free_shadow_recovers_all_confession_routes
+    {rank : FreeTerm → Nat}
+    (hbase : NormalizedAtBase freeSchema rank)
+    (hsucc : TracksSuccessorDepth freeSchema rank)
+    (hwrap : ForgetsWrapperPayload freeSchema rank)
+    (hrecur : FollowsRecursiveCounter freeSchema rank) :
+    ∀ t,
+      rank t = dpConfession.rank (embedFreeTerm t)
+      ∧ rank t = counterProjectionConfession.rank (embedFreeTerm t)
+      ∧ rank t = sctConfession.rank (embedFreeTerm t)
+      ∧ rank t = argumentFilteringConfession.rank (embedFreeTerm t) := by
+  exact free_semantic_profile_recovers_all_confession_routes_on_embed
+    hbase hsucc hwrap hrecur
+
+/-- The same KO7-facing factorization can be stated on the true image shadow
+    sitting inside `Trace` itself. -/
+theorem confession_routes_factor_through_primitiveTraceImage
+    (x : PrimitiveTraceImage) :
+    dpConfession.rank x.1 = primitiveTraceImageCounterDepth x
+    ∧ counterProjectionConfession.rank x.1 = primitiveTraceImageCounterDepth x
+    ∧ sctConfession.rank x.1 = primitiveTraceImageCounterDepth x
+    ∧ argumentFilteringConfession.rank x.1 = primitiveTraceImageCounterDepth x := by
+  exact all_confession_routes_factor_through_primitiveTraceImage x
+
+/-- On the primitive free fragment, the common confession core is exactly the
+    canonical free projection rank transported along the embedding. -/
+theorem confession_core_on_embedFreeTerm (t : FreeTerm) :
+    confessionCoreWitness.rank (embedFreeTerm t) = freeProjectionRank.rank t := by
+  exact dpProjection_on_embedFreeTerm t
 
 /-- The four concrete routes viewed through the schema-level forgetting-witness
     interface. -/

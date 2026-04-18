@@ -138,6 +138,85 @@ theorem argumentFiltering_eq_dp_rank :
   simpa [argumentFilteringConfession, dpConfession, argumentFilteringDerivedRank,
     dpProjectionRank] using argumentFilteringRankFn_eq_dpProjection
 
+/-- The filtered counter-only target syntax used by the argument-filtering
+    route. -/
+inductive FilteredCounterTerm
+  | zero : FilteredCounterTerm
+  | succ : FilteredCounterTerm → FilteredCounterTerm
+  deriving DecidableEq, Repr
+
+/-- The filtered counter-only step semantics. -/
+inductive FilteredCounterStep : FilteredCounterTerm → FilteredCounterTerm → Prop
+  | succ_step (n : FilteredCounterTerm) : FilteredCounterStep (.succ n) n
+
+/-- The route-local argument filter on KO7 traces:
+    - keep the counter through `recΔ`
+    - keep the unique argument through `delta`
+    - project `app` to its recursive-call payload side
+    - reject non-schema constructors. -/
+@[simp] def argumentFilterTrace : Trace → Option FilteredCounterTerm
+  | void => some FilteredCounterTerm.zero
+  | delta t => Option.map FilteredCounterTerm.succ (argumentFilterTrace t)
+  | integrate _ => none
+  | merge _ _ => none
+  | app _ y => argumentFilterTrace y
+  | recΔ _ _ n => argumentFilterTrace n
+  | eqW _ _ => none
+
+/-- Richer route-local evidence for argument filtering. -/
+structure ArgumentFilteringRouteEvidence where
+  witness : ArgumentFilteringWitness
+  filteredDupLhs :
+    ∀ b s n,
+      argumentFilterTrace (recΔ b s (delta n)) =
+        Option.map FilteredCounterTerm.succ (argumentFilterTrace n)
+  filteredDupRhs :
+    ∀ b s n,
+      argumentFilterTrace (app s (recΔ b s n)) = argumentFilterTrace n
+  payloadErased :
+    ∀ s n,
+      argumentFilterTrace (app s n) = argumentFilterTrace n
+  filteredStepShape :
+    ∀ b s n m,
+      argumentFilterTrace n = some m →
+      argumentFilterTrace (recΔ b s (delta n)) = some (FilteredCounterTerm.succ m)
+      ∧ argumentFilterTrace (app s (recΔ b s n)) = some m
+      ∧ FilteredCounterStep (FilteredCounterTerm.succ m) m
+
+/-- The concrete rich argument-filtering route evidence on KO7. -/
+def schemaArgumentFilteringRouteEvidence : ArgumentFilteringRouteEvidence where
+  witness := schemaArgumentFilteringWitness
+  filteredDupLhs := by
+    intro b s n
+    rfl
+  filteredDupRhs := by
+    intro b s n
+    rfl
+  payloadErased := by
+    intro s n
+    rfl
+  filteredStepShape := by
+    intro b s n m hm
+    refine ⟨?_, ?_, FilteredCounterStep.succ_step m⟩
+    · simp [argumentFilterTrace, hm]
+    · simpa [argumentFilterTrace] using hm
+
+/-- The richer argument-filtering evidence entails the generic semantic
+    profile. -/
+theorem argumentFilteringRouteEvidence_implies_semantic_profile :
+    NormalizedAtBase ko7Schema
+      schemaArgumentFilteringRouteEvidence.witness.toConfessionCoreWitness.rank
+    ∧ TracksSuccessorDepth ko7Schema
+      schemaArgumentFilteringRouteEvidence.witness.toConfessionCoreWitness.rank
+    ∧ ForgetsWrapperPayload ko7Schema
+      schemaArgumentFilteringRouteEvidence.witness.toConfessionCoreWitness.rank
+    ∧ FollowsRecursiveCounter ko7Schema
+      schemaArgumentFilteringRouteEvidence.witness.toConfessionCoreWitness.rank := by
+  have h :=
+    ConfessionCoreWitness.satisfies_semantic_profile
+      schemaArgumentFilteringRouteEvidence.witness.toConfessionCoreWitness
+  simpa [schemaArgumentFilteringRouteEvidence] using h
+
 /-- The argument-filtering witness directly satisfies the generic semantic
     confession profile. -/
 theorem argumentFilteringWitness_has_semantic_profile :
