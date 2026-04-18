@@ -33,6 +33,22 @@ example : True := by
   have := @OperatorKO7.ConfessionMethodFamily.all_route_local_evidence_yields_certified_forgetting_witnesses
   trivial
 
+example : True := by
+  have := @OperatorKO7.ConfessionMethodFamily.schemaDPPairProblemEvidence
+  trivial
+
+example : True := by
+  have := @OperatorKO7.ConfessionMethodFamily.directSubterm_to_originalSymbolSubterm
+  trivial
+
+example : True := by
+  have := @OperatorKO7.ConfessionMethodFamily.schemaSCTClosureSummary
+  trivial
+
+example : True := by
+  have := @OperatorKO7.ConfessionMethodFamily.argumentFilterTrace_eq_applyConstructorwiseFilter
+  trivial
+
 -- Tropical continuation
 example : @OperatorKO7.StepDuplicating.StepDuplicatingSchema.no_tropical_primary_orients_dup_step_of_unbounded = @no_tropical_primary_orients_dup_step_of_unbounded := rfl
 

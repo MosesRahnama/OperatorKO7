@@ -468,6 +468,90 @@ theorem satisfies_semantic_profile {S : StepDuplicatingSchema}
 
 end ConfessionCoreWitness
 
+/-- Generic route-evidence adapter layer above concrete method-specific witness
+    records. A `RouteEvidence S` packages only the schema-semantic profile that
+    a concrete route has established, without committing to any particular
+    route-specific witness vocabulary. -/
+structure RouteEvidence (S : StepDuplicatingSchema) where
+  rank : S.T → Nat
+  rank_base : rank S.base = 0
+  rank_succ : ∀ t, rank (S.succ t) = rank t + 1
+  rank_wrap : ∀ x y, rank (S.wrap x y) = 0
+  rank_recur : ∀ b s n, rank (S.recur b s n) = rank n
+
+namespace RouteEvidence
+
+/-- Every route-evidence object packages to the shared confession core. -/
+def toConfessionCoreWitness {S : StepDuplicatingSchema}
+    (E : RouteEvidence S) : ConfessionCoreWitness S where
+  rank := E.rank
+  rank_base := E.rank_base
+  rank_succ := E.rank_succ
+  rank_wrap := E.rank_wrap
+  rank_recur := E.rank_recur
+
+/-- Every route-evidence object packages to the corresponding projection rank. -/
+def toProjectionRank {S : StepDuplicatingSchema}
+    (E : RouteEvidence S) : ProjectionRank S where
+  rank := E.rank
+  rank_base := E.rank_base
+  rank_succ := E.rank_succ
+  rank_wrap := E.rank_wrap
+  rank_recur := E.rank_recur
+
+/-- Any confession-core witness can be viewed as generic route evidence. -/
+def ofConfessionCoreWitness {S : StepDuplicatingSchema}
+    (W : ConfessionCoreWitness S) : RouteEvidence S where
+  rank := W.rank
+  rank_base := W.rank_base
+  rank_succ := W.rank_succ
+  rank_wrap := W.rank_wrap
+  rank_recur := W.rank_recur
+
+/-- Any projection rank can be viewed as generic route evidence. -/
+def ofProjectionRank {S : StepDuplicatingSchema}
+    (R : ProjectionRank S) : RouteEvidence S where
+  rank := R.rank
+  rank_base := R.rank_base
+  rank_succ := R.rank_succ
+  rank_wrap := R.rank_wrap
+  rank_recur := R.rank_recur
+
+@[simp] theorem toConfessionCoreWitness_rank {S : StepDuplicatingSchema}
+    (E : RouteEvidence S) :
+    E.toConfessionCoreWitness.rank = E.rank := rfl
+
+@[simp] theorem toProjectionRank_rank {S : StepDuplicatingSchema}
+    (E : RouteEvidence S) :
+    E.toProjectionRank.rank = E.rank := rfl
+
+@[simp] theorem ofConfessionCoreWitness_rank {S : StepDuplicatingSchema}
+    (W : ConfessionCoreWitness S) :
+    (ofConfessionCoreWitness W).rank = W.rank := rfl
+
+@[simp] theorem ofProjectionRank_rank {S : StepDuplicatingSchema}
+    (R : ProjectionRank S) :
+    (ofProjectionRank R).rank = R.rank := rfl
+
+@[ext] theorem ext_rank {S : StepDuplicatingSchema}
+    (E₁ E₂ : RouteEvidence S)
+    (h : ∀ t, E₁.rank t = E₂.rank t) : E₁ = E₂ := by
+  cases E₁
+  cases E₂
+  simp at h
+  cases h
+  rfl
+
+theorem satisfies_semantic_profile {S : StepDuplicatingSchema}
+    (E : RouteEvidence S) :
+    NormalizedAtBase S E.rank
+    ∧ TracksSuccessorDepth S E.rank
+    ∧ ForgetsWrapperPayload S E.rank
+    ∧ FollowsRecursiveCounter S E.rank := by
+  exact ⟨E.rank_base, E.rank_succ, E.rank_wrap, E.rank_recur⟩
+
+end RouteEvidence
+
 /-- The projection rank orients the duplicating step by tracking only the recursion counter. -/
 theorem projection_orients_dup_step {S : StepDuplicatingSchema} (R : ProjectionRank S)
     (b s n : S.T) :

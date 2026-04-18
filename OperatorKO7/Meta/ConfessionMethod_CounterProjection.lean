@@ -57,7 +57,7 @@ inductive OriginalSymbolSubterm : Trace → Trace → Prop
 theorem directSubterm_to_originalSymbolSubterm {x y : Trace}
     (h : DirectSubterm x y) : OriginalSymbolSubterm x y := by
   cases h with
-  | delta_arg n => exact OriginalSymbolSubterm.delta_arg n
+  | delta_arg => exact OriginalSymbolSubterm.delta_arg x
 
 /-- A direct subterm-projection witness on the original recursive symbol.
     On the step-duplicating schema, the only descent-bearing coordinate is the
@@ -199,6 +199,21 @@ def schemaDirectCounterProjectionRouteEvidence :
   payloadDropped := by
     intro x y
     rfl
+
+/-- Forget the direct-counter-projection-specific witness vocabulary and keep
+    only the generic schema-semantic profile. -/
+def DirectCounterProjectionRouteEvidence.toRouteEvidence
+    (E : DirectCounterProjectionRouteEvidence) : RouteEvidence ko7Schema where
+  rank := E.witness.toConfessionCoreWitness.rank
+  rank_base := E.witness.toConfessionCoreWitness.rank_base
+  rank_succ := E.witness.toConfessionCoreWitness.rank_succ
+  rank_wrap := E.witness.toConfessionCoreWitness.rank_wrap
+  rank_recur := E.witness.toConfessionCoreWitness.rank_recur
+
+/-- The concrete direct counter-projection route evidence packaged through the
+    generic adapter. -/
+abbrev schemaDirectCounterProjectionGenericRouteEvidence : RouteEvidence ko7Schema :=
+  schemaDirectCounterProjectionRouteEvidence.toRouteEvidence
 
 /-- The richer direct counter-projection evidence entails the generic semantic
     profile. -/

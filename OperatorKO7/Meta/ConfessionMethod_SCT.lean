@@ -45,12 +45,39 @@ inductive SCArc
   | untracked        -- no relation asserted between this pair
   deriving DecidableEq, Repr
 
+/-- Strength ordering on SCT arcs for summary/composition purposes. -/
+def SCArc.join : SCArc → SCArc → SCArc
+  | .strictDecrease, _ => .strictDecrease
+  | _, .strictDecrease => .strictDecrease
+  | .nonIncreasing, _ => .nonIncreasing
+  | _, .nonIncreasing => .nonIncreasing
+  | .untracked, .untracked => .untracked
+
+/-- Composition of two size-change arc summaries. Any strict descent on either
+    side remains strict; otherwise two non-increasing steps remain
+    non-increasing; any other combination is treated as untracked. -/
+def SCArc.comp : SCArc → SCArc → SCArc
+  | .strictDecrease, .strictDecrease => .strictDecrease
+  | .strictDecrease, .nonIncreasing => .strictDecrease
+  | .nonIncreasing, .strictDecrease => .strictDecrease
+  | .nonIncreasing, .nonIncreasing => .nonIncreasing
+  | _, _ => .untracked
+
 /-- A size-change graph for a function with `arity` arguments is a matrix
     of arcs from caller argument positions to callee argument positions.
     Entry `(i, j)` records the size-change relation between the caller's
     `i`-th argument and the callee's `j`-th argument. -/
 structure SizeChangeGraph (arity : Nat) where
   arcs : Fin arity → Fin arity → SCArc
+
+/-- Single-step composition summary specialized to the arity-3 schema case. -/
+def SizeChangeGraph.comp3 (G H : SizeChangeGraph 3) : SizeChangeGraph 3 where
+  arcs := fun i j =>
+    SCArc.join
+      (SCArc.join
+        (SCArc.comp (G.arcs i ⟨0, by decide⟩) (H.arcs ⟨0, by decide⟩ j))
+        (SCArc.comp (G.arcs i ⟨1, by decide⟩) (H.arcs ⟨1, by decide⟩ j)))
+      (SCArc.comp (G.arcs i ⟨2, by decide⟩) (H.arcs ⟨2, by decide⟩ j))
 
 /-- The size-change graph for the schema's single recursive call site.
 
@@ -81,6 +108,42 @@ theorem schemaRecCallGraph_base_nonincreasing :
 theorem schemaRecCallGraph_step_nonincreasing :
     schemaRecCallGraph.arcs ⟨1, by omega⟩ ⟨1, by omega⟩ = SCArc.nonIncreasing := by
   native_decide
+
+/-- Closure summary: composing the single schema graph with itself preserves
+    the same diagonal summary. This is the concrete reason the single-call case
+    collapses to one persistent descending thread rather than needing a larger
+    graph-monoid analysis. -/
+theorem schemaRecCallGraph_comp3_counter_descent :
+    (SizeChangeGraph.comp3 schemaRecCallGraph schemaRecCallGraph).arcs
+      ⟨2, by omega⟩ ⟨2, by omega⟩ = SCArc.strictDecrease := by
+  native_decide
+
+theorem schemaRecCallGraph_comp3_base_nonincreasing :
+    (SizeChangeGraph.comp3 schemaRecCallGraph schemaRecCallGraph).arcs
+      ⟨0, by omega⟩ ⟨0, by omega⟩ = SCArc.nonIncreasing := by
+  native_decide
+
+theorem schemaRecCallGraph_comp3_step_nonincreasing :
+    (SizeChangeGraph.comp3 schemaRecCallGraph schemaRecCallGraph).arcs
+      ⟨1, by omega⟩ ⟨1, by omega⟩ = SCArc.nonIncreasing := by
+  native_decide
+
+/-- Closure summary object for the single-call SCT route. -/
+structure SCTClosureSummary where
+  compositeGraph : SizeChangeGraph 3
+  compositeCounterDescent :
+    compositeGraph.arcs ⟨2, by decide⟩ ⟨2, by decide⟩ = SCArc.strictDecrease
+  compositeBaseNonIncreasing :
+    compositeGraph.arcs ⟨0, by decide⟩ ⟨0, by decide⟩ = SCArc.nonIncreasing
+  compositeStepNonIncreasing :
+    compositeGraph.arcs ⟨1, by decide⟩ ⟨1, by decide⟩ = SCArc.nonIncreasing
+
+/-- The concrete closure/composition summary for the schema graph. -/
+def schemaSCTClosureSummary : SCTClosureSummary where
+  compositeGraph := SizeChangeGraph.comp3 schemaRecCallGraph schemaRecCallGraph
+  compositeCounterDescent := by simpa using schemaRecCallGraph_comp3_counter_descent
+  compositeBaseNonIncreasing := by simpa using schemaRecCallGraph_comp3_base_nonincreasing
+  compositeStepNonIncreasing := by simpa using schemaRecCallGraph_comp3_step_nonincreasing
 
 /-- The SCT criterion for a single-call-site system: the call graph has at
     least one strict decrease on the diagonal. For multi-call-site systems,
@@ -228,6 +291,7 @@ structure SCTRouteEvidence where
     ∀ k,
       witness.graph.arcs (constantCounterThread k) (constantCounterThread (k + 1)) =
         SCArc.strictDecrease
+  closureSummary : SCTClosureSummary
 
 /-- The concrete rich SCT route evidence on KO7. -/
 def schemaSCTRouteEvidence : SCTRouteEvidence where
@@ -242,6 +306,20 @@ def schemaSCTRouteEvidence : SCTRouteEvidence where
   thread_descends_at_every_step := by
     intro k
     simpa using schemaRecCallGraph_counter_descent
+  closureSummary := schemaSCTClosureSummary
+
+/-- Forget the SCT-specific witness vocabulary and keep only the generic
+    schema-semantic profile. -/
+def SCTRouteEvidence.toRouteEvidence (E : SCTRouteEvidence) : RouteEvidence ko7Schema where
+  rank := E.witness.toConfessionCoreWitness.rank
+  rank_base := E.witness.toConfessionCoreWitness.rank_base
+  rank_succ := E.witness.toConfessionCoreWitness.rank_succ
+  rank_wrap := E.witness.toConfessionCoreWitness.rank_wrap
+  rank_recur := E.witness.toConfessionCoreWitness.rank_recur
+
+/-- The concrete SCT route evidence packaged through the generic adapter. -/
+abbrev schemaSCTGenericRouteEvidence : RouteEvidence ko7Schema :=
+  schemaSCTRouteEvidence.toRouteEvidence
 
 /-- The richer SCT evidence entails the generic semantic profile. -/
 theorem sctRouteEvidence_implies_semantic_profile :

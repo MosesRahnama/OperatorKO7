@@ -93,6 +93,15 @@ def ofSemanticProfile {S : StepDuplicatingSchema} (rank : S.T → Nat)
     (hrecur : FollowsRecursiveCounter S rank) :
     (ofSemanticProfile rank hbase hsucc hwrap hrecur).rank = rank := rfl
 
+/-- Generic route evidence also yields a generic forgetting witness. -/
+def ofRouteEvidence {S : StepDuplicatingSchema}
+    (E : RouteEvidence S) : ForgettingWitness S :=
+  ofSemanticProfile E.rank E.rank_base E.rank_succ E.rank_wrap E.rank_recur
+
+@[simp] theorem ofRouteEvidence_rank {S : StepDuplicatingSchema}
+    (E : RouteEvidence S) :
+    (ofRouteEvidence E).rank = E.rank := rfl
+
 end ForgettingWitness
 
 end StepDuplicatingSchema

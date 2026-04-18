@@ -408,6 +408,92 @@ theorem all_route_local_evidence_implies_semantic_profile :
     sctRouteEvidence_implies_semantic_profile,
     argumentFilteringRouteEvidence_implies_semantic_profile⟩
 
+/-- The four richer route-local evidence records packaged through the generic
+    route-evidence adapter layer. -/
+abbrev dpGenericRouteEvidence : RouteEvidence ko7Schema :=
+  schemaDPRouteEvidence.toRouteEvidence
+
+abbrev directCounterProjectionGenericRouteEvidence : RouteEvidence ko7Schema :=
+  schemaDirectCounterProjectionRouteEvidence.toRouteEvidence
+
+abbrev sctGenericRouteEvidence : RouteEvidence ko7Schema :=
+  schemaSCTRouteEvidence.toRouteEvidence
+
+abbrev argumentFilteringGenericRouteEvidence : RouteEvidence ko7Schema :=
+  schemaArgumentFilteringRouteEvidence.toRouteEvidence
+
+/-- A generic route-evidence presentation of the common confession core. -/
+abbrev confessionGenericRouteEvidence : RouteEvidence ko7Schema :=
+  RouteEvidence.ofProjectionRank confessionProjectionCore
+
+/-- All four concrete route-evidence packages factor through the generic
+    adapter layer to the same shared confession core. -/
+theorem all_route_local_evidence_share_generic_route_evidence :
+    dpGenericRouteEvidence = confessionGenericRouteEvidence
+    ∧ directCounterProjectionGenericRouteEvidence = confessionGenericRouteEvidence
+    ∧ sctGenericRouteEvidence = confessionGenericRouteEvidence
+    ∧ argumentFilteringGenericRouteEvidence = confessionGenericRouteEvidence := by
+  refine ⟨?_, ?_, ?_, ?_⟩
+  · apply RouteEvidence.ext_rank
+    intro t
+    rfl
+  · apply RouteEvidence.ext_rank
+    intro t
+    simpa [directCounterProjectionGenericRouteEvidence, confessionGenericRouteEvidence,
+      DirectCounterProjectionRouteEvidence.toRouteEvidence, RouteEvidence.ofProjectionRank,
+      confessionProjectionCore, dpProjectionRank] using
+      congrFun counterProjectionRankFn_eq_dpProjection t
+  · apply RouteEvidence.ext_rank
+    intro t
+    simpa [sctGenericRouteEvidence, confessionGenericRouteEvidence,
+      SCTRouteEvidence.toRouteEvidence, RouteEvidence.ofProjectionRank,
+      confessionProjectionCore, dpProjectionRank] using
+      congrFun sctRankFn_eq_dpProjection t
+  · apply RouteEvidence.ext_rank
+    intro t
+    simpa [argumentFilteringGenericRouteEvidence, confessionGenericRouteEvidence,
+      ArgumentFilteringRouteEvidence.toRouteEvidence, RouteEvidence.ofProjectionRank,
+      confessionProjectionCore, dpProjectionRank] using
+      congrFun argumentFilteringRankFn_eq_dpProjection t
+
+/-- The generic route-evidence adapter also recovers the same rank functions as
+    the corresponding confession methods. -/
+theorem all_route_local_evidence_factor_through_generic_route_evidence :
+    dpGenericRouteEvidence.toProjectionRank.rank = dpConfession.rank
+    ∧ directCounterProjectionGenericRouteEvidence.toProjectionRank.rank =
+        counterProjectionConfession.rank
+    ∧ sctGenericRouteEvidence.toProjectionRank.rank = sctConfession.rank
+    ∧ argumentFilteringGenericRouteEvidence.toProjectionRank.rank =
+        argumentFilteringConfession.rank := by
+  exact ⟨rfl, rfl, rfl, rfl⟩
+
+/-- The generic route-evidence adapter layer also yields generic forgetting
+    witnesses. -/
+abbrev dpGenericRouteEvidenceForgettingWitness : ForgettingWitness ko7Schema :=
+  ForgettingWitness.ofRouteEvidence dpGenericRouteEvidence
+
+abbrev directCounterProjectionGenericRouteEvidenceForgettingWitness :
+    ForgettingWitness ko7Schema :=
+  ForgettingWitness.ofRouteEvidence directCounterProjectionGenericRouteEvidence
+
+abbrev sctGenericRouteEvidenceForgettingWitness : ForgettingWitness ko7Schema :=
+  ForgettingWitness.ofRouteEvidence sctGenericRouteEvidence
+
+abbrev argumentFilteringGenericRouteEvidenceForgettingWitness :
+    ForgettingWitness ko7Schema :=
+  ForgettingWitness.ofRouteEvidence argumentFilteringGenericRouteEvidence
+
+/-- The generic route-evidence forgetting witnesses recover the same rank
+    functions as the corresponding concrete confession methods. -/
+theorem all_generic_route_evidence_yields_forgetting_witnesses :
+    dpGenericRouteEvidenceForgettingWitness.rank = dpConfession.rank
+    ∧ directCounterProjectionGenericRouteEvidenceForgettingWitness.rank =
+        counterProjectionConfession.rank
+    ∧ sctGenericRouteEvidenceForgettingWitness.rank = sctConfession.rank
+    ∧ argumentFilteringGenericRouteEvidenceForgettingWitness.rank =
+        argumentFilteringConfession.rank := by
+  exact ⟨rfl, rfl, rfl, rfl⟩
+
 /-- The richer route-local evidence records also yield generic forgetting
     witnesses directly through the semantic-profile bridge. -/
 abbrev dpRouteEvidenceForgettingWitness : ForgettingWitness ko7Schema :=

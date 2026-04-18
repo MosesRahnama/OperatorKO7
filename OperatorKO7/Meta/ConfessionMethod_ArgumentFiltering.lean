@@ -149,6 +149,44 @@ inductive FilteredCounterTerm
 inductive FilteredCounterStep : FilteredCounterTerm → FilteredCounterTerm → Prop
   | succ_step (n : FilteredCounterTerm) : FilteredCounterStep (.succ n) n
 
+/-- Constructorwise argument-filter policy. This makes the argument-filtering
+    route explicit as an object that assigns a filtered interpretation to each
+    constructor rather than only as a recursive function on `Trace`. -/
+structure ConstructorwiseArgumentFilter where
+  onBase : Option FilteredCounterTerm
+  onSucc : Option FilteredCounterTerm → Option FilteredCounterTerm
+  onIntegrate : Option FilteredCounterTerm → Option FilteredCounterTerm
+  onMerge : Option FilteredCounterTerm → Option FilteredCounterTerm → Option FilteredCounterTerm
+  onWrap : Option FilteredCounterTerm → Option FilteredCounterTerm → Option FilteredCounterTerm
+  onRecur :
+    Option FilteredCounterTerm → Option FilteredCounterTerm → Option FilteredCounterTerm →
+      Option FilteredCounterTerm
+  onEqW : Option FilteredCounterTerm → Option FilteredCounterTerm → Option FilteredCounterTerm
+
+/-- Recursive evaluator induced by a constructorwise filter policy. -/
+def applyConstructorwiseFilter (F : ConstructorwiseArgumentFilter) : Trace → Option FilteredCounterTerm
+  | void => F.onBase
+  | delta t => F.onSucc (applyConstructorwiseFilter F t)
+  | integrate t => F.onIntegrate (applyConstructorwiseFilter F t)
+  | merge x y => F.onMerge (applyConstructorwiseFilter F x) (applyConstructorwiseFilter F y)
+  | app x y => F.onWrap (applyConstructorwiseFilter F x) (applyConstructorwiseFilter F y)
+  | recΔ b s n =>
+      F.onRecur
+        (applyConstructorwiseFilter F b)
+        (applyConstructorwiseFilter F s)
+        (applyConstructorwiseFilter F n)
+  | eqW x y => F.onEqW (applyConstructorwiseFilter F x) (applyConstructorwiseFilter F y)
+
+/-- The concrete counter-only constructorwise filter used by the route. -/
+def counterOnlyConstructorFilter : ConstructorwiseArgumentFilter where
+  onBase := some FilteredCounterTerm.zero
+  onSucc := Option.map FilteredCounterTerm.succ
+  onIntegrate := fun _ => none
+  onMerge := fun _ _ => none
+  onWrap := fun _ y => y
+  onRecur := fun _ _ n => n
+  onEqW := fun _ _ => none
+
 /-- The route-local argument filter on KO7 traces:
     - keep the counter through `recΔ`
     - keep the unique argument through `delta`
@@ -163,9 +201,19 @@ inductive FilteredCounterStep : FilteredCounterTerm → FilteredCounterTerm → 
   | recΔ _ _ n => argumentFilterTrace n
   | eqW _ _ => none
 
+/-- The concrete recursive filter is exactly the evaluator induced by the
+    constructorwise filter object. -/
+theorem argumentFilterTrace_eq_applyConstructorwiseFilter :
+    argumentFilterTrace = applyConstructorwiseFilter counterOnlyConstructorFilter := by
+  funext t
+  induction t <;> simp [argumentFilterTrace, applyConstructorwiseFilter, counterOnlyConstructorFilter, *]
+
 /-- Richer route-local evidence for argument filtering. -/
 structure ArgumentFilteringRouteEvidence where
   witness : ArgumentFilteringWitness
+  constructorFilter : ConstructorwiseArgumentFilter
+  realizesConstructorFilter :
+    argumentFilterTrace = applyConstructorwiseFilter constructorFilter
   filteredDupLhs :
     ∀ b s n,
       argumentFilterTrace (recΔ b s (delta n)) =
@@ -186,6 +234,8 @@ structure ArgumentFilteringRouteEvidence where
 /-- The concrete rich argument-filtering route evidence on KO7. -/
 def schemaArgumentFilteringRouteEvidence : ArgumentFilteringRouteEvidence where
   witness := schemaArgumentFilteringWitness
+  constructorFilter := counterOnlyConstructorFilter
+  realizesConstructorFilter := argumentFilterTrace_eq_applyConstructorwiseFilter
   filteredDupLhs := by
     intro b s n
     rfl
@@ -200,6 +250,21 @@ def schemaArgumentFilteringRouteEvidence : ArgumentFilteringRouteEvidence where
     refine ⟨?_, ?_, FilteredCounterStep.succ_step m⟩
     · simp [argumentFilterTrace, hm]
     · simpa [argumentFilterTrace] using hm
+
+/-- Forget the argument-filtering-specific witness vocabulary and keep only the
+    generic schema-semantic profile. -/
+def ArgumentFilteringRouteEvidence.toRouteEvidence
+    (E : ArgumentFilteringRouteEvidence) : RouteEvidence ko7Schema where
+  rank := E.witness.toConfessionCoreWitness.rank
+  rank_base := E.witness.toConfessionCoreWitness.rank_base
+  rank_succ := E.witness.toConfessionCoreWitness.rank_succ
+  rank_wrap := E.witness.toConfessionCoreWitness.rank_wrap
+  rank_recur := E.witness.toConfessionCoreWitness.rank_recur
+
+/-- The concrete argument-filtering route evidence packaged through the generic
+    adapter. -/
+abbrev schemaArgumentFilteringGenericRouteEvidence : RouteEvidence ko7Schema :=
+  schemaArgumentFilteringRouteEvidence.toRouteEvidence
 
 /-- The richer argument-filtering evidence entails the generic semantic
     profile. -/

@@ -136,6 +136,19 @@ def schemaDPRouteEvidence : DPRouteEvidence where
     rfl
   pairProblemWellFounded := wf_DPPairRev
 
+/-- Forget the DP-specific witness vocabulary and keep only the generic
+    schema-semantic profile. -/
+def DPRouteEvidence.toRouteEvidence (E : DPRouteEvidence) : RouteEvidence ko7Schema where
+  rank := E.witness.toConfessionCoreWitness.rank
+  rank_base := E.witness.toConfessionCoreWitness.rank_base
+  rank_succ := E.witness.toConfessionCoreWitness.rank_succ
+  rank_wrap := E.witness.toConfessionCoreWitness.rank_wrap
+  rank_recur := E.witness.toConfessionCoreWitness.rank_recur
+
+/-- The concrete DP route evidence packaged through the generic adapter. -/
+abbrev schemaDPGenericRouteEvidence : RouteEvidence ko7Schema :=
+  schemaDPRouteEvidence.toRouteEvidence
+
 /-- The richer DP route evidence already entails the generic semantic profile. -/
 theorem dpRouteEvidence_implies_semantic_profile :
     NormalizedAtBase ko7Schema schemaDPRouteEvidence.witness.toConfessionCoreWitness.rank
