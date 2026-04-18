@@ -211,4 +211,13 @@ theorem sct_eq_dp_rank :
   simpa [sctConfession, dpConfession, sctDerivedRank, dpProjectionRank] using
     sctRankFn_eq_dpProjection
 
+/-- The SCT witness directly satisfies the generic semantic confession
+    profile. -/
+theorem sctWitness_has_semantic_profile :
+    NormalizedAtBase ko7Schema schemaSCTWitness.toConfessionCoreWitness.rank
+    ∧ TracksSuccessorDepth ko7Schema schemaSCTWitness.toConfessionCoreWitness.rank
+    ∧ ForgetsWrapperPayload ko7Schema schemaSCTWitness.toConfessionCoreWitness.rank
+    ∧ FollowsRecursiveCounter ko7Schema schemaSCTWitness.toConfessionCoreWitness.rank := by
+  exact schemaSCTWitness.toConfessionCoreWitness.satisfies_semantic_profile
+
 end OperatorKO7.ConfessionMethodFamily

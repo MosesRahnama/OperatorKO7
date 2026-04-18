@@ -1,6 +1,139 @@
 # OperatorKO7: Three-Week Additions Report
 
 **Window.** Approximately 2026-03-28 through 2026-04-18 (last 21 days).
+**Latest pass.** A just-landed semantic-profile layer (see §0 below) that
+introduces four predicates, two generic builders, and a semantic-profile
+convergence theorem linking the four confession routes at an even higher
+level of abstraction than the `ConfessionCoreWitness` layer.
+
+---
+
+## 0. Just landed: semantic-profile abstraction for the confession core
+
+Three files received substantive additions after §1–§16 were written. The
+result is a semantic-profile layer that sits *above* both `ProjectionRank`
+and `ConfessionCoreWitness`, describing the confession core by four
+behavioural predicates rather than by a carrier-indexed record.
+
+### [Meta/StepDuplicatingSchema.lean](OperatorKO7/Meta/StepDuplicatingSchema.lean) — grew from 450 to 525 lines
+
+New semantic-profile layer (lines 387–482):
+
+- `NormalizedAtBase S rank` — predicate `rank S.base = 0`.
+- `TracksSuccessorDepth S rank` — predicate `∀ t, rank (S.succ t) = rank t + 1`.
+- `ForgetsWrapperPayload S rank` — predicate `∀ x y, rank (S.wrap x y) = 0`.
+- `FollowsRecursiveCounter S rank` — predicate `∀ b s n, rank (S.recur b s n) = rank n`.
+- `ConfessionCoreWitness.ofSemanticProfile` — generic builder producing a
+  confession-core witness from the four predicates directly (rather than
+  from a pre-built `ProjectionRank`).
+- `ConfessionCoreWitness.satisfies_semantic_profile` — every confession-core
+  witness satisfies the four predicates (the other direction of the
+  equivalence).
+- `semanticProfile_orients_dup_step` — any rank satisfying the four
+  predicates orients the duplicating step. The `NormalizedAtBase`
+  hypothesis is unused here and the proof uses only the three behavioural
+  predicates `TracksSuccessorDepth`, `ForgetsWrapperPayload`,
+  `FollowsRecursiveCounter`.
+- `semanticProfile_violates_wrap_subterm1` — any such rank violates
+  wrapper sensitivity on the first payload coordinate (needs
+  `NormalizedAtBase`, `TracksSuccessorDepth`, `ForgetsWrapperPayload`).
+- `semanticProfile_violates_wrap_subterm2` — same for the second coordinate.
+
+**What this buys us.** Previously, every confession route had to produce a
+`ConfessionCoreWitness` (a structure with four field-level equations) or
+jump directly to a `ForgettingWitness`. Now a route can produce four
+ordinary behavioural predicates and the schema layer derives both layers
+uniformly. This is the "recognize the confession core by behaviour, not by
+record shape" move.
+
+### [Meta/SchemaForgettingWitness.lean](OperatorKO7/Meta/SchemaForgettingWitness.lean) — grew from 98 to 118 lines
+
+New `ForgettingWitness.ofSemanticProfile` constructor (lines 76–94):
+
+- `ForgettingWitness.ofSemanticProfile` — any rank satisfying the four
+  semantic predicates yields a schema-generic forgetting witness directly,
+  without going through `ProjectionRank` or `ConfessionCoreWitness`. The
+  three clauses of the forgetting witness (orientation,
+  wrapper-left-violation, wrapper-right-violation) are discharged by the
+  three `semanticProfile_*` theorems from `StepDuplicatingSchema.lean`.
+- `ofSemanticProfile_rank` — the expected simp lemma that the new
+  constructor's rank field is the input rank.
+
+**What this buys us.** Consumers can now bootstrap the entire Paper 2
+forgetting-witness interface from four behavioural predicates alone. Paper
+A's §4.10 forgetting-witness proposition now has a second, more direct
+derivation path (semantic profile → forgetting witness) in addition to the
+`ProjectionRank → ForgettingWitness` bridge. Both bridges land on the
+same `ForgettingWitness S` structure.
+
+### [Meta/ConfessionMethod_Unification.lean](OperatorKO7/Meta/ConfessionMethod_Unification.lean) — grew from 197 to 270 lines
+
+New semantic-profile convergence theorems (lines 44–196):
+
+- `confession_core_has_semantic_profile` — the common confession core
+  satisfies all four semantic predicates. Derived from
+  `ConfessionCoreWitness.satisfies_semantic_profile`.
+- `all_route_local_witnesses_share_confession_core_witness_exact` — the
+  four route-local intermediate confession-core witnesses are not just
+  equal up to projection packaging, they are *literally equal* to the
+  common `confessionCoreWitness`, proved by `ConfessionCoreWitness.ext_rank`
+  and the per-route rank-function convergence theorems.
+- `all_confession_methods_share_confession_core_witness_exact` — the same
+  exact equality for the `ConfessionMethod`-derived core witnesses
+  (via `ConfessionMethod.toConfessionCoreWitness`).
+- `all_confession_methods_share_semantic_profile` — all four confession
+  methods satisfy all four semantic predicates. The theorem packages the
+  four-fold ∧ of four-fold ∧: each method satisfies `NormalizedAtBase`,
+  `TracksSuccessorDepth`, `ForgetsWrapperPayload`, and
+  `FollowsRecursiveCounter`.
+- `confession_core_semantic_profile_yields_forgetting_witness_rank` —
+  closes the loop: the common semantic profile yields a forgetting
+  witness whose rank is the canonical DP projection.
+
+**What this buys us.** The confession-family convergence story now has
+three equivalent formulations, each strictly stronger than the last:
+
+1. Rank-function equality: `dpConfession.rank = ... = argumentFilteringConfession.rank`.
+2. Projection-rank equality:
+   `dpConfession.toProjectionRank = ... = argumentFilteringConfession.toProjectionRank`.
+3. Confession-core-witness equality:
+   `dpCoreWitness = counterProjectionCoreWitness = sctCoreWitness
+   = argumentFilteringCoreWitness = confessionCoreWitness`.
+4. Shared semantic-profile: all four rank functions satisfy the same four
+   behavioural predicates (this new layer).
+
+Formulation 4 is the most abstract. It says the confession family is
+characterized by *what it does* to the schema's four constructors (base
+goes to zero, successor increments, wrapper forgets, recursor follows
+counter), not by any specific record structure or equality between ranks.
+
+### What Paper A can now cite (additively)
+
+Paper A's §4.10 "Schema-generic forgetting witness" proposition and §5.4
+"Schema-level operational incompleteness" subsection can be reinforced
+with the new semantic-profile characterization. The four predicates
+(`NormalizedAtBase`, `TracksSuccessorDepth`, `ForgetsWrapperPayload`,
+`FollowsRecursiveCounter`) are individually easy to verify and together
+are sufficient to derive the full forgetting-witness / confession-core
+structure.
+
+A natural addition to the Addendum claim-to-code table would be:
+
+- `StepDuplicatingSchema.NormalizedAtBase`, `TracksSuccessorDepth`,
+  `ForgetsWrapperPayload`, `FollowsRecursiveCounter` — the four
+  behavioural predicates.
+- `ConfessionCoreWitness.ofSemanticProfile`,
+  `ForgettingWitness.ofSemanticProfile` — the two generic builders.
+- `semanticProfile_orients_dup_step`,
+  `semanticProfile_violates_wrap_subterm1`,
+  `semanticProfile_violates_wrap_subterm2` — the three derivation
+  theorems.
+- `all_confession_methods_share_semantic_profile` — the
+  semantic-profile-level convergence of the four confession routes.
+
+---
+
+
 
 **Scope.** Every Lean module, script, and `Docs/` file touched or added in this
 window, classified by the layer it belongs to and the paper proposition it
@@ -273,7 +406,7 @@ Deliberately structure-free; does not reference `StepDuplicatingSchema`.
 - `seedObservable_factors`, `additiveObservable_not_factors` — Cor 3.23
   factorization / non-factorization.
 
-### [Meta/SchemaForgettingWitness.lean](OperatorKO7/Meta/SchemaForgettingWitness.lean)
+### [Meta/SchemaForgettingWitness.lean](OperatorKO7/Meta/SchemaForgettingWitness.lean) — now 118 lines
 
 - `ForgettingWitness` — schema-generic forgetting-witness structure:
   orientation of the duplicating step, violation of wrapper sensitivity
@@ -284,6 +417,10 @@ Deliberately structure-free; does not reference `StepDuplicatingSchema`.
   `ConfessionCoreWitness` intermediate layer.
 - `ConfessionMethod.toForgettingWitness` — bridge from `ConfessionMethod S`
   to a forgetting witness via the underlying projection rank.
+- **Just landed:** `ForgettingWitness.ofSemanticProfile` and
+  `ofSemanticProfile_rank` — build a schema-generic forgetting witness
+  directly from the four behavioural predicates, bypassing the
+  `ProjectionRank` / `ConfessionCoreWitness` intermediaries. See §0.
 
 ### [Meta/SchemaOperationalIncompleteness.lean](OperatorKO7/Meta/SchemaOperationalIncompleteness.lean)
 
@@ -408,7 +545,7 @@ proved by induction.
   `argumentFilteringDerivedRank`.
 - `argumentFiltering_eq_dp_rank`.
 
-### [Meta/ConfessionMethod_Unification.lean](OperatorKO7/Meta/ConfessionMethod_Unification.lean) — 197 lines, **brand new file**
+### [Meta/ConfessionMethod_Unification.lean](OperatorKO7/Meta/ConfessionMethod_Unification.lean) — now 270 lines, **brand new file (197 lines at first landing, expanded with the semantic-profile convergence pass)**
 
 The convergence layer.
 
@@ -441,6 +578,16 @@ The convergence layer.
 - `confession_routes_converge` — **strong convergence summary** bundling
   selected-coordinate / graph-descent / keep-coordinate / rank-equality
   clauses.
+- **Just landed (semantic-profile convergence):**
+  `confession_core_has_semantic_profile`,
+  `all_route_local_witnesses_share_confession_core_witness_exact`
+  (literal equality of the four route-local core witnesses, not only
+  equality after projection packaging),
+  `all_confession_methods_share_confession_core_witness_exact`,
+  `all_confession_methods_share_semantic_profile` (all four methods
+  satisfy all four semantic predicates), and
+  `confession_core_semantic_profile_yields_forgetting_witness_rank`.
+  See §0 for the overall picture.
 
 ### [Meta/ConfessionMethod_Family.lean](OperatorKO7/Meta/ConfessionMethod_Family.lean) — 186 lines
 
@@ -481,9 +628,10 @@ Expanded within the window.
   `ko7_admissible_witness_requires_certified_forgetting`,
   `dp_projection_exhibits_certified_forgetting`.
 
-### [Meta/StepDuplicatingSchema.lean](OperatorKO7/Meta/StepDuplicatingSchema.lean) — 450 lines
+### [Meta/StepDuplicatingSchema.lean](OperatorKO7/Meta/StepDuplicatingSchema.lean) — now 525 lines
 
-Expanded within the window.
+Expanded within the window, and expanded again in the just-landed
+semantic-profile pass (see §0 for the latest additions).
 
 - `ConfessionCoreWitness` — **new** method-agnostic intermediate structure
   sitting between `ProjectionRank` and the per-route witness objects.
@@ -494,6 +642,13 @@ Expanded within the window.
 - `toProjectionRank_rank`, `ofProjectionRank_rank`,
   `ofProjectionRank_toProjectionRank`, `toProjectionRank_ofProjectionRank`
   — the four roundtrip simp lemmas.
+- **Semantic-profile layer (just-landed):**
+  `NormalizedAtBase`, `TracksSuccessorDepth`, `ForgetsWrapperPayload`,
+  `FollowsRecursiveCounter`, `ConfessionCoreWitness.ofSemanticProfile`,
+  `ConfessionCoreWitness.satisfies_semantic_profile`,
+  `semanticProfile_orients_dup_step`,
+  `semanticProfile_violates_wrap_subterm1`,
+  `semanticProfile_violates_wrap_subterm2`. See §0 for details.
 
 ---
 
@@ -869,3 +1024,14 @@ The three-week window landed six major blocks of mechanized content that the ear
 Alongside, the window added one new script (`validate_manuscript_refs.py`), refreshed three (`generate_docs.py`, `make_referee_bundle.py`, `stage_tpdb_submission.py`), and produced three new `Docs/` files driving the META-HALT formalization (`EXECUTION_BIBLE`, `FORMALIZATION_PLAN`, `PROGRESS`).
 
 Paper A now cites every new Lean result through §3 canonical-trace, §4 forgetting-witness, §5 schema-level diagnostic, the Addendum module map, and the claim-to-code table. Paper 2's §5–7 formal stack is mechanically backed end-to-end, modulo the items Paper 2 itself marks as open.
+
+The just-landed semantic-profile pass (§0) adds a fourth level to the
+confession-family convergence story: the four routes do not just share a
+rank function, a projection rank, and a confession-core witness; they all
+satisfy the same four behavioural predicates (`NormalizedAtBase`,
+`TracksSuccessorDepth`, `ForgetsWrapperPayload`,
+`FollowsRecursiveCounter`). Two new generic builders
+(`ConfessionCoreWitness.ofSemanticProfile`,
+`ForgettingWitness.ofSemanticProfile`) let downstream consumers land on
+the confession core by verifying four easy equations, without building
+a record structure first.

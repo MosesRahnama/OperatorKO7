@@ -73,6 +73,26 @@ def ofConfessionCoreWitness {S : StepDuplicatingSchema}
     (W : ConfessionCoreWitness S) :
     (ofConfessionCoreWitness W).rank = W.rank := rfl
 
+/-- Any rank satisfying the semantic confession-core profile yields a generic
+    forgetting witness directly. -/
+def ofSemanticProfile {S : StepDuplicatingSchema} (rank : S.T → Nat)
+    (hbase : NormalizedAtBase S rank)
+    (hsucc : TracksSuccessorDepth S rank)
+    (hwrap : ForgetsWrapperPayload S rank)
+    (hrecur : FollowsRecursiveCounter S rank) : ForgettingWitness S where
+  rank := rank
+  orientsDupStep := semanticProfile_orients_dup_step hbase hsucc hwrap hrecur
+  violatesPayloadLeft := semanticProfile_violates_wrap_subterm1 hbase hsucc hwrap
+  violatesPayloadRight := semanticProfile_violates_wrap_subterm2 hbase hsucc hwrap
+
+@[simp] theorem ofSemanticProfile_rank {S : StepDuplicatingSchema}
+    (rank : S.T → Nat)
+    (hbase : NormalizedAtBase S rank)
+    (hsucc : TracksSuccessorDepth S rank)
+    (hwrap : ForgetsWrapperPayload S rank)
+    (hrecur : FollowsRecursiveCounter S rank) :
+    (ofSemanticProfile rank hbase hsucc hwrap hrecur).rank = rank := rfl
+
 end ForgettingWitness
 
 end StepDuplicatingSchema

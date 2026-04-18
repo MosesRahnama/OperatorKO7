@@ -135,4 +135,13 @@ theorem counterProjection_eq_dp_rank :
   simpa [counterProjectionConfession, dpConfession, dpProjectionRank,
     counterProjectionDerivedRank] using counterProjectionRankFn_eq_dpProjection
 
+/-- The direct counter-projection witness directly satisfies the generic
+    semantic confession profile. -/
+theorem directCounterProjectionWitness_has_semantic_profile :
+    NormalizedAtBase ko7Schema schemaDirectCounterProjectionWitness.toConfessionCoreWitness.rank
+    ∧ TracksSuccessorDepth ko7Schema schemaDirectCounterProjectionWitness.toConfessionCoreWitness.rank
+    ∧ ForgetsWrapperPayload ko7Schema schemaDirectCounterProjectionWitness.toConfessionCoreWitness.rank
+    ∧ FollowsRecursiveCounter ko7Schema schemaDirectCounterProjectionWitness.toConfessionCoreWitness.rank := by
+  exact schemaDirectCounterProjectionWitness.toConfessionCoreWitness.satisfies_semantic_profile
+
 end OperatorKO7.ConfessionMethodFamily

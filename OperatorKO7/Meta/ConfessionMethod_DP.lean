@@ -69,4 +69,12 @@ theorem dpWitness_toConfessionCoreWitness_eq_core :
     schemaDPWitness.toConfessionCoreWitness.toProjectionRank = dpProjectionRank := by
   rfl
 
+/-- The DP witness directly satisfies the generic semantic confession profile. -/
+theorem dpWitness_has_semantic_profile :
+    NormalizedAtBase ko7Schema schemaDPWitness.toConfessionCoreWitness.rank
+    ∧ TracksSuccessorDepth ko7Schema schemaDPWitness.toConfessionCoreWitness.rank
+    ∧ ForgetsWrapperPayload ko7Schema schemaDPWitness.toConfessionCoreWitness.rank
+    ∧ FollowsRecursiveCounter ko7Schema schemaDPWitness.toConfessionCoreWitness.rank := by
+  exact schemaDPWitness.toConfessionCoreWitness.satisfies_semantic_profile
+
 end OperatorKO7.ConfessionMethodFamily

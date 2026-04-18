@@ -138,4 +138,13 @@ theorem argumentFiltering_eq_dp_rank :
   simpa [argumentFilteringConfession, dpConfession, argumentFilteringDerivedRank,
     dpProjectionRank] using argumentFilteringRankFn_eq_dpProjection
 
+/-- The argument-filtering witness directly satisfies the generic semantic
+    confession profile. -/
+theorem argumentFilteringWitness_has_semantic_profile :
+    NormalizedAtBase ko7Schema schemaArgumentFilteringWitness.toConfessionCoreWitness.rank
+    ∧ TracksSuccessorDepth ko7Schema schemaArgumentFilteringWitness.toConfessionCoreWitness.rank
+    ∧ ForgetsWrapperPayload ko7Schema schemaArgumentFilteringWitness.toConfessionCoreWitness.rank
+    ∧ FollowsRecursiveCounter ko7Schema schemaArgumentFilteringWitness.toConfessionCoreWitness.rank := by
+  exact schemaArgumentFilteringWitness.toConfessionCoreWitness.satisfies_semantic_profile
+
 end OperatorKO7.ConfessionMethodFamily
