@@ -1,4 +1,4 @@
-import OperatorKO7.Meta.PumpedBarrierClasses
+import OperatorKO7.Meta.PumpedBarrierClasses_Schema
 
 /-!
 # Standard Pump Lemmas

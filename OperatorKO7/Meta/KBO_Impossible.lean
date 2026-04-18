@@ -1,3 +1,4 @@
+import OperatorKO7.Meta.KBO_Impossible_Schema
 import OperatorKO7.Meta.SymbolicComparatorBarrier
 
 /-!
@@ -37,20 +38,6 @@ Scope note:
 namespace OperatorKO7.KBOImpossible
 
 open OperatorKO7.SymbolicComparatorBarrier
-
-/-- Minimal KBO-facing abstraction used by the KO7 impossibility corollary.
-It is just a symbolic comparator with the standard variable condition. -/
-abbrev KBOStyleOrder := VariableConditionOrder
-
-/-- No KBO-style order can orient the duplicating schema step. -/
-theorem no_kbo_orients_dup_step (K : KBOStyleOrder) :
-    ¬ K.gt dupSrc dupTgt :=
-  not_orients_dup_rule K
-
-/-- No KBO-style order exists that orients the duplicating schema step. -/
-theorem no_kbo_orients_ko7_rec_succ :
-    ¬ ∃ K : KBOStyleOrder, K.gt dupSrc dupTgt :=
-  no_symbolic_variable_condition_orients_dup_step
 
 /-- Trace-level bridge for the KO7 `rec_succ` rule: if a concrete comparator on
 instantiated schema terms satisfies the standard variable condition there, it

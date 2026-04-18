@@ -1,6 +1,6 @@
-import OperatorKO7.Meta.QuadraticBarrier
-import OperatorKO7.Meta.MatrixBarrierLex
-import OperatorKO7.Meta.QuadraticCrossTermBarrier
+import OperatorKO7.Meta.QuadraticBarrier_Schema
+import OperatorKO7.Meta.MatrixBarrierLex_Schema
+import OperatorKO7.Meta.QuadraticCrossTermBarrier_Schema
 
 /-!
 # Coefficient-Table Classifier for Barrier Families

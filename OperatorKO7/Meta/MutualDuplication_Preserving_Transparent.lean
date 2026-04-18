@@ -1,5 +1,5 @@
 import OperatorKO7.Meta.MutualDuplication_Preserving_KNode
-import OperatorKO7.Meta.MatrixBarrierFunctional
+import OperatorKO7.Meta.MatrixBarrierFunctional_Schema
 
 /-!
 # Packet-Transparent Preserving SCC Extension

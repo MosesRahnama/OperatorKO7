@@ -1,5 +1,5 @@
-import OperatorKO7.Meta.MatrixBarrier2
-import OperatorKO7.Meta.MatrixBarrierFunctional
+import OperatorKO7.Meta.MatrixBarrier2_Schema
+import OperatorKO7.Meta.MatrixBarrierFunctional_Schema
 
 /-!
 # Scalar Projection Barrier

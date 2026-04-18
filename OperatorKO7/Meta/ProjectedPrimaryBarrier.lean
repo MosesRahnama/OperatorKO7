@@ -1,5 +1,5 @@
-import OperatorKO7.Meta.MatrixBarrierD
-import OperatorKO7.Meta.MatrixBarrierLexD
+import OperatorKO7.Meta.MatrixBarrierD_Schema
+import OperatorKO7.Meta.MatrixBarrierLexD_Schema
 
 /-!
 # Projected-Primary Dominance Barrier

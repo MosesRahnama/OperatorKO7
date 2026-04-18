@@ -34,6 +34,9 @@ jobs:
       - name: Primitive Schema Boundary Audit
         run: python3 scripts/audit_primitive_schema_api.py
 
+      - name: Schema Extended Boundary Audit
+        run: python3 scripts/audit_schema_extended_api.py
+
       - name: Verify public-root smoke tests
         run: |
           lake env lean OperatorKO7/Test/PrimitiveSchemaAPIReach.lean

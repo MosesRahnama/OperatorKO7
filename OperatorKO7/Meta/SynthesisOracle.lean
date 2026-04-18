@@ -1,5 +1,5 @@
 import OperatorKO7.Meta.BarrierWitness
-import OperatorKO7.Meta.PumpedBarrierClasses
+import OperatorKO7.Meta.PumpedBarrierClasses_Schema
 
 /-!
 # Small synthesis-oracle layer for direct barrier classes
