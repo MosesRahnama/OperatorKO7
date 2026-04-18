@@ -536,11 +536,11 @@ def ofProjectionRank {S : StepDuplicatingSchema}
 @[ext] theorem ext_rank {S : StepDuplicatingSchema}
     (E₁ E₂ : RouteEvidence S)
     (h : ∀ t, E₁.rank t = E₂.rank t) : E₁ = E₂ := by
+  have hr : E₁.rank = E₂.rank := funext h
   cases E₁
   cases E₂
-  simp at h
-  cases h
-  rfl
+  cases hr
+  simp
 
 theorem satisfies_semantic_profile {S : StepDuplicatingSchema}
     (E : RouteEvidence S) :

@@ -31,6 +31,16 @@ jobs:
       - name: Build OperatorKO7
         run: lake build
 
+      - name: Primitive Schema Boundary Audit
+        run: python3 scripts/audit_primitive_schema_api.py
+
+      - name: Verify public-root smoke tests
+        run: |
+          lake env lean OperatorKO7/Test/PrimitiveSchemaAPIReach.lean
+          lake env lean OperatorKO7/Test/SchemaExtendedAPIReach.lean
+          lake env lean OperatorKO7/Test/CrossPaperAPIReach.lean
+          lake env lean OperatorKO7/Test/SchemaAPIReach.lean
+
       - name: Verify TPDB Export Bridge
         run: lake exe verifyTpdbExport
         

@@ -51,10 +51,7 @@ import OperatorKO7.Meta.BarrierClass_Classifier
 
 -- Confession method family (escape side)
 import OperatorKO7.Meta.ConfessionMethod
-import OperatorKO7.Meta.ConfessionMethod_DP
-import OperatorKO7.Meta.ConfessionMethod_CounterProjection
-import OperatorKO7.Meta.ConfessionMethod_SCT
-import OperatorKO7.Meta.ConfessionMethod_ArgumentFiltering
+import OperatorKO7.Meta.ConfessionMethod_RouteEvidence
 import OperatorKO7.Meta.ConfessionMethod_Family
 
 -- Reusable DP fragment (schema-level rank / SCC descent)
@@ -83,6 +80,7 @@ import OperatorKO7.Meta.MutualDuplication_Preserving_KNode
 import OperatorKO7.Meta.MutualDuplication_Preserving_Abstract
 import OperatorKO7.Meta.MutualDuplication_Preserving_Transparent
 import OperatorKO7.Meta.MutualDuplication_PacketGraph
+import OperatorKO7.Meta.EscapeTrichotomy_Schema
 
 -- Cross-paper-capable schema interfaces
 import OperatorKO7.Meta.BenchmarkedPrimitiveRecursionFamily
@@ -99,13 +97,21 @@ import OperatorKO7.Meta.SchemaOperationalIncompleteness
 import OperatorKO7.Meta.SchemaWitnessOrder
 
 /-!
-# Public Schema API: Reusable Barrier Theory for Step-Duplicating Recursors
+# Public Schema API: Hybrid Convenience Root
 
-This module is the **stable public entry point** for the reusable schema-level
-barrier theory. It re-exports the generic impossibility theorems, escape
-characterization infrastructure, SCC-level barrier extensions, and executable
-boundary tooling that apply to **any** step-duplicating schema, not only to
-KO7.
+This module is the **hybrid convenience root** for the step-duplicating
+development. It remains available as the broad one-import surface, but it is no
+longer the only public entry point.
+
+The split public roots are now:
+
+- `OperatorKO7.PrimitiveSchemaAPI`: conservative primitive/schema-parametric core
+- `OperatorKO7.SchemaExtendedAPI`: broader reusable barrier/tooling/SCC layer
+- `OperatorKO7.CrossPaperAPI`: KO7-facing bridge and cross-paper layer
+
+`SchemaAPI` continues to re-export the wider convenience surface for existing
+downstream users. Because it still bundles confession-family and cross-paper
+packaging, it should not be treated as the strict primitive boundary.
 
 What this module provides:
 
@@ -149,6 +155,7 @@ SCC-level barrier extensions:
   projection corollaries, and raw-graph packet formulations.
 - Graph-side utilities: path extraction from transitive-closure proofs,
   finite decidable reachability, and finite-SCC search packaging.
+- Extracted schema half of the escape-trichotomy development.
 
 Strengthened subclasses and pump infrastructure:
 - Pumped subclasses with internalized growth conditions
@@ -173,6 +180,7 @@ Confession-method family (escape side):
 - Direct counter-projection alias
 - Size-change termination (SCT)
 - Argument filtering
+- Shared `RouteEvidence` adapter layer above the four concrete route records
 - Family-level API for rank agreement, certified forgetting, and license tags
 - Reusable DP fragment (schema-level rank / SCC-path descent)
 
@@ -190,7 +198,7 @@ and normalizer, ordinal calibration, MPO/polynomial full-step proofs, TTT2
 `PrecedenceBarrier` — which depends on `merge_cancel`, a KO7-specific
 non-duplicating rule — and the `SafeStep`-based complexity bounds) live in
 the main `OperatorKO7` import path. This module is for users who want
-**only** the reusable barrier theory for their own step-duplicating systems.
+the broad convenience surface rather than one of the stricter split roots.
 
 Usage:
 

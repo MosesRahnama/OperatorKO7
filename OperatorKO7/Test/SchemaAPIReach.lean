@@ -140,6 +140,14 @@ example : True := by
   have := @OperatorKO7.StepDuplicating.StepDuplicatingSchema.ForgettingWitness.ofProjectionRank
   trivial
 
+example : True := by
+  have := @OperatorKO7.StepDuplicating.StepDuplicatingSchema.RouteEvidence.toProjectionRank
+  trivial
+
+example : True := by
+  have := @OperatorKO7.StepDuplicating.StepDuplicatingSchema.ForgettingWitness.ofRouteEvidence
+  trivial
+
 -- Paper 2 schema operational incompleteness
 example : True := by
   have := @OperatorKO7.StepDuplicating.StepDuplicatingSchema.OperationalIncompleteness.ofProjectionRank
@@ -160,6 +168,15 @@ example : True := by
 -- Paper 2 schema witness order
 example : True := by
   have := @OperatorKO7.StepDuplicating.StepDuplicatingSchema.SchemaWitnessTower.OB_iff_no_directWhole
+  trivial
+
+-- Generic route-evidence unification layer
+example : True := by
+  have := @OperatorKO7.ConfessionMethodFamily.all_route_local_evidence_share_generic_route_evidence
+  trivial
+
+example : True := by
+  have := @OperatorKO7.ConfessionMethodFamily.all_generic_route_evidence_yields_forgetting_witnesses
   trivial
 
 end SchemaAPIReach
