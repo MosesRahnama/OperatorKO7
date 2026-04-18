@@ -28,6 +28,18 @@ example : True := by
   have := @OperatorKO7.ProofTheoreticRegister.dp_confession_is_reflection_family_ascent
   trivial
 
+example : True := by
+  have := @OperatorKO7.SupervisoryEngine.supervisoryLoop
+  trivial
+
+example : True := by
+  have := @OperatorKO7.MetaHalt.Regress.supervisoryLoopViaGeneric_terminates_in_catalog_budget
+  trivial
+
+example : True := by
+  have := @OperatorKO7.MetaHalt.Regress.supervisoryLoop_factors_through_generic_engine
+  trivial
+
 example :
     OperatorKO7.ReverseMathSupport.artsGieslTheoryWindow.status =
       OperatorKO7.ReverseMathSupport.CalibrationStatus.conjectural :=
