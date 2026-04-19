@@ -123,6 +123,10 @@ example : True := by
   trivial
 
 example : True := by
+  have := @OperatorKO7.StepDuplicating.StepDuplicatingSchema.BaseDuplicatingSystem.inefficiencyCoefficient_perStep_isTheta_linearLog
+  trivial
+
+example : True := by
   have := @OperatorKO7.StepDuplicating.StepDuplicatingSchema.BaseDuplicatingSystem.explicitDescription_linear_gap
   trivial
 

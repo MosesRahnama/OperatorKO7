@@ -36,4 +36,16 @@ example : True := by
   have := @OperatorKO7.StepDuplicating.StepDuplicatingSchema.object_undecidability_not_valid_supervisory_verdict
   trivial
 
+example : True := by
+  have := @OperatorKO7.StepDuplicating.StepDuplicatingSchema.InternalMetaHaltClaim
+  trivial
+
+example : True := by
+  have := @OperatorKO7.StepDuplicating.StepDuplicatingSchema.ValidSupervisoryMetaHalt
+  trivial
+
+example : True := by
+  have := @OperatorKO7.StepDuplicating.StepDuplicatingSchema.supervisory_no_internal_metahalt
+  trivial
+
 end SchemaExtendedAPIReach

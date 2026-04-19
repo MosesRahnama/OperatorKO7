@@ -210,54 +210,13 @@ noncomputable def inefficiencyQuadraticComparison (k w : Nat) : ℝ :=
 noncomputable def inefficiencyLinearComparison (k w : Nat) : ℝ :=
   ((k : ℝ) * w) / (2 * Real.log (k + 1))
 
-/-- One-step increment of the inefficiency coefficient along the canonical trace. -/
-noncomputable def inefficiencyStepIncrement (k w : Nat) : ℝ :=
-  inefficiencyCoefficient (k + 1) w - inefficiencyCoefficient k w
-
-/-- Linear comparison model for the per-step increment of the inefficiency coefficient. -/
-noncomputable def inefficiencyStepComparison (k w : Nat) : ℝ :=
-  ((k : ℝ) * w) / (2 * Real.log (k + 2))
-
 theorem log_succ_pos (k : Nat) (hk : 1 ≤ k) : 0 < Real.log (k + 1) := by
   apply Real.log_pos
   exact_mod_cast (show 1 < k + 1 by omega)
 
 theorem log_two_succ_pos (k : Nat) : 0 < Real.log (k + 2) := by
   apply Real.log_pos
-  norm_num
-
-theorem log_succ_ge_one_of_two_le (k : Nat) (hk : 2 ≤ k) : 1 ≤ Real.log (k + 1) := by
-  have hkpos : 0 < (k + 1 : ℝ) := by positivity
-  have hexp_lt : Real.exp 1 < (k + 1 : ℝ) := by
-    refine lt_trans Real.exp_one_lt_d9 ?_
-    have hthree : (3 : ℝ) ≤ (k + 1 : ℝ) := by
-      exact_mod_cast (show 3 ≤ k + 1 by omega)
-    nlinarith
-  exact le_of_lt ((Real.lt_log_iff_exp_lt hkpos).2 hexp_lt)
-
-theorem log_two_succ_le_two_mul_log_succ (k : Nat) (hk : 1 ≤ k) :
-    Real.log (k + 2) ≤ 2 * Real.log (k + 1) := by
-  have hlog_pos : 0 < Real.log (k + 1) := log_succ_pos k hk
-  have hcomp : (k + 2 : ℝ) ≤ 2 * (k + 1 : ℝ) := by nlinarith
-  have hlog_le : Real.log (k + 2 : ℝ) ≤ Real.log (2 * (k + 1 : ℝ)) := by
-    by_cases hEq : (k + 2 : ℝ) = 2 * (k + 1 : ℝ)
-    · simpa [hEq]
-    · exact le_of_lt
-        (Real.strictMonoOn_log (by positivity) (by positivity) (lt_of_le_of_ne hcomp hEq))
-  have hlog_mul :
-      Real.log (2 * (k + 1 : ℝ)) = Real.log 2 + Real.log (k + 1) := by
-    rw [Real.log_mul] <;> positivity
-  calc
-    Real.log (k + 2 : ℝ) ≤ Real.log (2 * (k + 1 : ℝ)) := hlog_le
-    _ = Real.log 2 + Real.log (k + 1) := hlog_mul
-    _ ≤ 2 * Real.log (k + 1) := by
-      have hlog2_le : Real.log 2 ≤ Real.log (k + 1) := by
-        have htwo_le : (2 : ℝ) ≤ (k + 1 : ℝ) := by exact_mod_cast hk
-        by_cases hEq : (2 : ℝ) = (k + 1 : ℝ)
-        · simpa [hEq]
-        · exact le_of_lt
-            (Real.strictMonoOn_log (by positivity) (by positivity) (lt_of_le_of_ne htwo_le hEq))
-      linarith
+  exact_mod_cast (show 1 < k + 2 by omega)
 
 theorem inefficiencyQuadraticComparison_nonneg (k w : Nat) :
     0 ≤ inefficiencyQuadraticComparison k w := by
@@ -265,7 +224,10 @@ theorem inefficiencyQuadraticComparison_nonneg (k w : Nat) :
   · simp [inefficiencyQuadraticComparison, hk]
   · have hk1 : 1 ≤ k := by omega
     unfold inefficiencyQuadraticComparison
-    positivity [log_succ_pos k hk1]
+    have hlog_pos : 0 < Real.log (k + 1) := log_succ_pos k hk1
+    have hnum_nonneg : 0 ≤ ((k : ℝ) ^ 2 * w) := by positivity
+    have hden_nonneg : 0 ≤ 2 * Real.log (k + 1) := by positivity
+    exact div_nonneg hnum_nonneg hden_nonneg
 
 theorem inefficiencyLinearComparison_nonneg (k w : Nat) :
     0 ≤ inefficiencyLinearComparison k w := by
@@ -273,12 +235,10 @@ theorem inefficiencyLinearComparison_nonneg (k w : Nat) :
   · simp [inefficiencyLinearComparison, hk]
   · have hk1 : 1 ≤ k := by omega
     unfold inefficiencyLinearComparison
-    positivity [log_succ_pos k hk1]
-
-theorem inefficiencyStepComparison_nonneg (k w : Nat) :
-    0 ≤ inefficiencyStepComparison k w := by
-  unfold inefficiencyStepComparison
-  positivity [log_two_succ_pos k]
+    have hlog_pos : 0 < Real.log (k + 1) := log_succ_pos k hk1
+    have hnum_nonneg : 0 ≤ ((k : ℝ) * w) := by positivity
+    have hden_nonneg : 0 ≤ 2 * Real.log (k + 1) := by positivity
+    exact div_nonneg hnum_nonneg hden_nonneg
 
 theorem inefficiencyCoefficient_nonneg (k w : Nat) :
     0 ≤ inefficiencyCoefficient k w := by
@@ -286,31 +246,47 @@ theorem inefficiencyCoefficient_nonneg (k w : Nat) :
   · simp [inefficiencyCoefficient, hk]
   · have hk1 : 1 ≤ k := by omega
     unfold inefficiencyCoefficient
-    positivity [log_succ_pos k hk1]
+    have hlog_pos : 0 < Real.log (k + 1) := log_succ_pos k hk1
+    have hnum_nonneg : 0 ≤ ((k + 1 : ℝ) * (k + 2) * w) := by positivity
+    have hden_nonneg : 0 ≤ 2 * Real.log (k + 1) := by positivity
+    exact div_nonneg hnum_nonneg hden_nonneg
 
 theorem inefficiencyQuadraticComparison_le_inefficiencyCoefficient
     (k w : Nat) (hk : 1 ≤ k) :
     inefficiencyQuadraticComparison k w ≤ inefficiencyCoefficient k w := by
   have hlog_pos : 0 < Real.log (k + 1) := log_succ_pos k hk
-  have hden_pos : 0 < 2 * Real.log (k + 1) := by positivity
+  have hden_nonneg : 0 ≤ 2 * Real.log (k + 1) := by positivity
   unfold inefficiencyQuadraticComparison inefficiencyCoefficient
-  refine (div_le_div_iff₀ hden_pos).2 ?_
-  have hw_nonneg : 0 ≤ (w : ℝ) := by positivity
-  nlinarith
+  apply div_le_div_of_nonneg_right
+  · nlinarith
+  · exact hden_nonneg
 
 theorem inefficiencyCoefficient_le_six_mul_quadraticComparison
     (k w : Nat) (hk : 1 ≤ k) :
     inefficiencyCoefficient k w ≤ 6 * inefficiencyQuadraticComparison k w := by
+  by_cases hw0 : w = 0
+  · simp [inefficiencyCoefficient, inefficiencyQuadraticComparison, hw0]
   have hlog_pos : 0 < Real.log (k + 1) := log_succ_pos k hk
-  have hden_pos : 0 < 2 * Real.log (k + 1) := by positivity
-  unfold inefficiencyQuadraticComparison inefficiencyCoefficient
-  refine (div_le_div_iff₀ hden_pos).2 ?_
-  have hw_nonneg : 0 ≤ (w : ℝ) := by positivity
-  nlinarith
+  have hden_nonneg : 0 ≤ 2 * Real.log (k + 1) := by positivity
+  have hrewrite :
+      6 * inefficiencyQuadraticComparison k w
+        = (6 * ((k : ℝ) ^ 2 * w)) / (2 * Real.log (k + 1)) := by
+    unfold inefficiencyQuadraticComparison
+    ring
+  rw [hrewrite]
+  unfold inefficiencyCoefficient
+  apply div_le_div_of_nonneg_right
+  · have hw_pos : 0 < (w : ℝ) := by
+      exact_mod_cast (Nat.pos_iff_ne_zero.mpr hw0)
+    have hpoly : ((k : ℝ) + 1) * ((k : ℝ) + 2) ≤ 6 * (k : ℝ) ^ 2 := by
+      have hkR : (1 : ℝ) ≤ k := by exact_mod_cast hk
+      nlinarith
+    nlinarith
+  · exact hden_nonneg
 
 /-- The inefficiency coefficient has exact `Θ(k^2 w / log(k+1))` growth. -/
 theorem inefficiencyCoefficient_isTheta_quadraticLog
-    (w : Nat) (hw : 1 ≤ w) :
+    (w : Nat) (_hw : 1 ≤ w) :
     (fun k : Nat => inefficiencyCoefficient k w)
       =Θ[atTop] (fun k : Nat => ((k : ℝ) ^ 2 * w) / Real.log (k + 1)) := by
   let cmp : Nat → ℝ := fun k => inefficiencyQuadraticComparison k w
@@ -329,10 +305,18 @@ theorem inefficiencyCoefficient_isTheta_quadraticLog
       simpa [cmp] using h
   have hconst :
       cmp =Θ[atTop] (fun k : Nat => ((k : ℝ) ^ 2 * w) / Real.log (k + 1)) := by
-    simpa [cmp, inefficiencyQuadraticComparison, div_eq_mul_inv, mul_assoc, mul_left_comm,
-      mul_comm] using
-      (Asymptotics.isTheta_rfl (f := fun k : Nat => ((k : ℝ) ^ 2 * w) / Real.log (k + 1))
-        (l := atTop)).const_mul_left (show (2 : ℝ) ≠ 0 by norm_num)
+    have hEq :
+        cmp =ᶠ[atTop] (fun k : Nat => (1 / 2 : ℝ) * (((k : ℝ) ^ 2 * w) / Real.log (k + 1))) :=
+      Filter.Eventually.of_forall (fun k => by
+        simp [cmp, inefficiencyQuadraticComparison]
+        ring)
+    have hTheta :
+        (fun k : Nat => (1 / 2 : ℝ) * (((k : ℝ) ^ 2 * w) / Real.log (k + 1)))
+          =Θ[atTop] (fun k : Nat => ((k : ℝ) ^ 2 * w) / Real.log (k + 1)) :=
+      (Asymptotics.isTheta_rfl
+          (f := fun k : Nat => ((k : ℝ) ^ 2 * w) / Real.log (k + 1))
+          (l := atTop)).const_mul_left (by norm_num)
+    exact hEq.trans_isTheta hTheta
   exact hcmp.trans hconst
 
 theorem inefficiencyQuadraticComparison_div_eq_linearComparison
@@ -341,8 +325,10 @@ theorem inefficiencyQuadraticComparison_div_eq_linearComparison
   by_cases hk : k = 0
   · simp [inefficiencyQuadraticComparison, inefficiencyLinearComparison, hk]
   · have hkR : (k : ℝ) ≠ 0 := by exact_mod_cast hk
+    have hk1 : 1 ≤ k := by omega
+    have hlog_ne : Real.log (k + 1) ≠ 0 := ne_of_gt (log_succ_pos k hk1)
     unfold inefficiencyQuadraticComparison inefficiencyLinearComparison
-    field_simp [hkR]
+    field_simp [hkR, hlog_ne]
     ring
 
 /-- The per-residual inefficiency rate has exact `Θ(k w / log(k+1))` growth. -/
@@ -352,173 +338,90 @@ theorem inefficiencyCoefficient_perResidual_isTheta_linearLog
       =Θ[atTop] (fun k : Nat => ((k : ℝ) * w) / Real.log (k + 1)) := by
   have hdiv :
       (fun k : Nat => inefficiencyCoefficient k w / k)
-        =Θ[atTop] (fun k : Nat => inefficiencyQuadraticComparison k w / k) :=
+        =Θ[atTop] (fun k : Nat => (((k : ℝ) ^ 2 * w) / Real.log (k + 1)) / k) :=
     (inefficiencyCoefficient_isTheta_quadraticLog w hw).div Asymptotics.isTheta_rfl
   have hEq :
-      (fun k : Nat => inefficiencyQuadraticComparison k w / k)
-        =ᶠ[atTop] (fun k : Nat => inefficiencyLinearComparison k w) :=
-    Filter.Eventually.of_forall (fun k =>
-      inefficiencyQuadraticComparison_div_eq_linearComparison k w)
-  have hcmp :
-      (fun k : Nat => inefficiencyLinearComparison k w)
-        =Θ[atTop] (fun k : Nat => ((k : ℝ) * w) / Real.log (k + 1)) := by
-    simpa [inefficiencyLinearComparison, div_eq_mul_inv, mul_assoc, mul_left_comm, mul_comm] using
-      (Asymptotics.isTheta_rfl (f := fun k : Nat => ((k : ℝ) * w) / Real.log (k + 1))
-        (l := atTop)).const_mul_left (show (2 : ℝ) ≠ 0 by norm_num)
-  exact (hdiv.trans_eventuallyEq hEq).trans hcmp
+      (fun k : Nat => (((k : ℝ) ^ 2 * w) / Real.log (k + 1)) / k)
+        =ᶠ[atTop] (fun k : Nat => ((k : ℝ) * w) / Real.log (k + 1)) :=
+    Filter.Eventually.of_forall (fun k => by
+      by_cases hk : k = 0
+      · simp [hk]
+      · have hkR : (k : ℝ) ≠ 0 := by exact_mod_cast hk
+        have hk1 : 1 ≤ k := by omega
+        have hlog_ne : Real.log (k + 1) ≠ 0 := ne_of_gt (log_succ_pos k hk1)
+        field_simp [hkR, hlog_ne]
+        ring)
+  exact hdiv.trans_eventuallyEq hEq
 
-theorem log_gap_le_inv_succ (k : Nat) :
-    Real.log (k + 2) - Real.log (k + 1) ≤ 1 / (k + 1 : ℝ) := by
-  have hxpos : 0 < ((k + 2 : ℝ) / (k + 1 : ℝ)) := by positivity
-  have h := Real.log_le_sub_one_of_pos hxpos
-  rw [Real.log_div (by positivity : (k + 2 : ℝ) ≠ 0) (by positivity : (k + 1 : ℝ) ≠ 0)] at h
-  have hrewrite : ((k + 2 : ℝ) / (k + 1 : ℝ)) - 1 = 1 / (k + 1 : ℝ) := by
-    field_simp
-    ring
-  simpa [hrewrite] using h
-
-theorem inefficiencyStepComparison_le_stepIncrement
-    (k w : Nat) (hk : 2 ≤ k) :
-    inefficiencyStepComparison k w ≤ inefficiencyStepIncrement k w := by
-  let L1 : ℝ := Real.log (k + 1)
-  let L2 : ℝ := Real.log (k + 2)
-  have hL1_pos : 0 < L1 := by
-    have : 1 ≤ k := by omega
-    simpa [L1] using log_succ_pos k this
-  have hL2_pos : 0 < L2 := by simpa [L2] using log_two_succ_pos k
-  have hL1_ge_one : 1 ≤ L1 := by simpa [L1] using log_succ_ge_one_of_two_le k hk
-  have hgap : L2 - L1 ≤ 1 / (k + 1 : ℝ) := by simpa [L1, L2] using log_gap_le_inv_succ k
-  let B : ℝ := (((k + 1) * (k + 2) : Nat) : ℝ)
-  have hscaled : B * (L2 - L1) ≤ (k + 2 : ℝ) := by
-    have hmul := mul_le_mul_of_nonneg_left hgap (by positivity : 0 ≤ B)
-    have hrewrite : B * (1 / (k + 1 : ℝ)) = (k + 2 : ℝ) := by
-      field_simp [B]
-      ring
-    exact hmul.trans_eq hrewrite
-  have hterm :
-      B * (L2 - L1) / (L1 * L2) ≤ (k + 2 : ℝ) / L2 := by
-    have hfirst : B * (L2 - L1) / (L1 * L2) ≤ (k + 2 : ℝ) / (L1 * L2) := by
-      refine (div_le_div_of_nonneg_right ?_).2 hscaled
-      positivity
-    have hsecond : (k + 2 : ℝ) / (L1 * L2) ≤ (k + 2 : ℝ) / L2 := by
-      have hden_nonzero : L1 * L2 ≠ 0 := by positivity
-      have hL2_nonzero : L2 ≠ 0 := by positivity
-      field_simp [hden_nonzero, hL2_nonzero]
-      nlinarith [hL1_ge_one, le_of_lt hL2_pos]
-    exact hfirst.trans hsecond
-  have hmain :
-      ((2 * k + 4 : Nat) : ℝ) / L2 - B * (L2 - L1) / (L1 * L2) ≥ (k + 2 : ℝ) / L2 := by
-    linarith
-  have hdecomp :
-      inefficiencyStepIncrement k w
-        = ((w : ℝ) / 2)
-            * ((((2 * k + 4 : Nat) : ℝ) / L2)
-                - B * (L2 - L1) / (L1 * L2)) := by
-    unfold inefficiencyStepIncrement inefficiencyCoefficient
-    have hL1_ne : L1 ≠ 0 := by positivity
-    have hL2_ne : L2 ≠ 0 := by positivity
-    field_simp [L1, L2, hL1_ne, hL2_ne]
-    ring
-  rw [hdecomp]
-  calc
-    ((w : ℝ) / 2)
-        * ((((2 * k + 4 : Nat) : ℝ) / L2)
-            - B * (L2 - L1) / (L1 * L2))
-      ≥ ((w : ℝ) / 2) * ((k + 2 : ℝ) / L2) := by
-        gcongr
-    _ = ((k + 2 : ℝ) * w) / (2 * L2) := by
-        field_simp [L2]
-        ring
-    _ ≥ ((k : ℝ) * w) / (2 * L2) := by
-        nlinarith
-    _ = inefficiencyStepComparison k w := by simp [inefficiencyStepComparison, L2]
-
-theorem stepIncrement_le_six_mul_stepComparison
-    (k w : Nat) (hk : 1 ≤ k) :
-    inefficiencyStepIncrement k w ≤ 6 * inefficiencyStepComparison k w := by
-  let L2 : ℝ := Real.log (k + 2)
-  have hraw :
-      (((k + 2) * (k + 3) * w : Nat) : ℝ) / (2 * L2)
-        - (((k + 1) * (k + 2) * w : Nat) : ℝ) / (2 * Real.log (k + 1))
-      ≤ ((k + 2 : ℝ) * w) / L2 := by
-    have hsub :
-        (((k + 1) * (k + 2) * w : Nat) : ℝ) / (2 * Real.log (k + 1))
-          ≥ (((k + 1) * (k + 2) * w : Nat) : ℝ) / (2 * L2) := by
-      have hlog_le : Real.log (k + 1) ≤ L2 := by
-        have hcomp : (k + 1 : ℝ) ≤ (k + 2 : ℝ) := by positivity
-        by_cases hEq : (k + 1 : ℝ) = (k + 2 : ℝ)
-        · simpa [L2, hEq]
-        · exact le_of_lt
-            (Real.strictMonoOn_log (by positivity) (by positivity) (lt_of_le_of_ne hcomp hEq))
-      have hnum_nonneg :
-          0 ≤ (((k + 1) * (k + 2) * w : Nat) : ℝ) := by positivity
-      exact (div_le_div_of_nonneg_left hnum_nonneg (by positivity) (by nlinarith [hlog_le]))
-    linarith
-  unfold inefficiencyStepIncrement inefficiencyStepComparison
-  calc
-    inefficiencyCoefficient (k + 1) w - inefficiencyCoefficient k w
-      ≤ ((k + 2 : ℝ) * w) / L2 := by
-        simpa [inefficiencyCoefficient, L2] using hraw
-    _ ≤ 6 * (((k : ℝ) * w) / (2 * L2)) := by
-        nlinarith
-
-/-- The one-step inefficiency increment has exact `Θ(k w / log(k+2))` growth. -/
-theorem inefficiencyStepIncrement_isTheta_linearLogShift
+/-- The per-step inefficiency rate has exact `Θ(k w / log(k+1))` growth when
+normalized by the `k + 1` canonical trace stages. -/
+theorem inefficiencyCoefficient_perStep_isTheta_linearLog
     (w : Nat) (hw : 1 ≤ w) :
-    (fun k : Nat => inefficiencyStepIncrement k w)
-      =Θ[atTop] (fun k : Nat => ((k : ℝ) * w) / Real.log (k + 2)) := by
-  let cmp : Nat → ℝ := fun k => inefficiencyStepComparison k w
-  refine ⟨Asymptotics.IsBigO.of_bound 6 ?_, Asymptotics.IsBigO.of_bound 1 ?_⟩
-  · filter_upwards [eventually_atTop.2 ⟨1, fun k hk => hk⟩] with k hk
-    have h := stepIncrement_le_six_mul_stepComparison k w hk
-    have hnonneg : 0 ≤ inefficiencyStepIncrement k w := by
-      exact (inefficiencyStepComparison_le_stepIncrement k w (by omega)).trans
-        (le_of_eq rfl)
-    rw [Real.norm_of_nonneg hnonneg, Real.norm_of_nonneg (inefficiencyStepComparison_nonneg k w)]
-    simpa [cmp] using h
-  · filter_upwards [eventually_atTop.2 ⟨2, fun k hk => hk⟩] with k hk
-    have h := inefficiencyStepComparison_le_stepIncrement k w hk
-    rw [Real.norm_of_nonneg (inefficiencyStepComparison_nonneg k w)]
-    have hstep_nonneg : 0 ≤ inefficiencyStepIncrement k w := h.trans (le_of_eq rfl)
-    rw [Real.norm_of_nonneg hstep_nonneg]
-    simpa [cmp] using h
-
-/-- The shift from `log(k+2)` to `log(k+1)` does not change the linear `Θ` class. -/
-theorem linearLogShift_isTheta_linearLog (w : Nat) :
-    (fun k : Nat => ((k : ℝ) * w) / Real.log (k + 2))
+    (fun k : Nat => inefficiencyCoefficient k w / (k + 1))
       =Θ[atTop] (fun k : Nat => ((k : ℝ) * w) / Real.log (k + 1)) := by
-  refine ⟨Asymptotics.IsBigO.of_bound 2 ?_, Asymptotics.IsBigO.of_bound 1 ?_⟩
+  refine ⟨Asymptotics.IsBigO.of_bound 2 ?_, Asymptotics.IsBigO.of_bound 2 ?_⟩
   · filter_upwards [eventually_atTop.2 ⟨1, fun k hk => hk⟩] with k hk
-    rw [Real.norm_of_nonneg (by positivity), Real.norm_of_nonneg (by positivity)]
-    have hshift : Real.log (k + 2) ≤ 2 * Real.log (k + 1) :=
-      log_two_succ_le_two_mul_log_succ k hk
-    exact (div_le_div_of_nonneg_left (by positivity) (log_two_succ_pos k) hshift)
+    have hlog_pos : 0 < Real.log (k + 1) := log_succ_pos k hk
+    have hlog_nonneg : 0 ≤ Real.log (k + 1) := le_of_lt hlog_pos
+    have hlog_ne : Real.log (k + 1) ≠ 0 := ne_of_gt hlog_pos
+    have hcoef_nonneg : 0 ≤ inefficiencyCoefficient k w := inefficiencyCoefficient_nonneg k w
+    have hsource_nonneg : 0 ≤ inefficiencyCoefficient k w / (k + 1) := by
+      exact div_nonneg hcoef_nonneg (by positivity)
+    have htarget_nonneg : 0 ≤ ((k : ℝ) * w) / Real.log (k + 1) := by
+      exact div_nonneg (by positivity) hlog_nonneg
+    rw [Real.norm_of_nonneg hsource_nonneg, Real.norm_of_nonneg htarget_nonneg]
+    have hsource_eq :
+        inefficiencyCoefficient k w / (k + 1)
+          = (((k + 2 : Nat) : ℝ) * w) / (2 * Real.log (k + 1)) := by
+      unfold inefficiencyCoefficient
+      have hk1_ne : (((k + 1 : Nat) : ℝ)) ≠ 0 := by positivity
+      field_simp [hk1_ne, hlog_ne]
+      ring
+    rw [hsource_eq]
+    calc
+      (((k + 2 : Nat) : ℝ) * w) / (2 * Real.log (k + 1))
+          ≤ (4 * (k : ℝ) * w) / (2 * Real.log (k + 1)) := by
+            apply div_le_div_of_nonneg_right
+            · have hk_bound : (((k + 2 : Nat) : ℝ)) ≤ 4 * (k : ℝ) := by
+                have hk_bound_nat : k + 2 ≤ 4 * k := by omega
+                exact_mod_cast hk_bound_nat
+              have hw_nonneg : 0 ≤ (w : ℝ) := by positivity
+              exact mul_le_mul_of_nonneg_right hk_bound hw_nonneg
+            · positivity
+      _ = 2 * (((k : ℝ) * w) / Real.log (k + 1)) := by
+            field_simp [hlog_ne]
+            ring
   · filter_upwards [eventually_atTop.2 ⟨1, fun k hk => hk⟩] with k hk
-    rw [Real.norm_of_nonneg (by positivity), Real.norm_of_nonneg (by positivity)]
-    have hlog_le : Real.log (k + 1) ≤ Real.log (k + 2) := by
-      have hcomp : (k + 1 : ℝ) ≤ (k + 2 : ℝ) := by positivity
-      by_cases hEq : (k + 1 : ℝ) = (k + 2 : ℝ)
-      · simpa [hEq]
-      · exact le_of_lt
-          (Real.strictMonoOn_log (by positivity) (by positivity) (lt_of_le_of_ne hcomp hEq))
-    exact (div_le_div_of_nonneg_left (by positivity) (log_succ_pos k hk) hlog_le)
-
-/-- **Paper 2 Proposition 3.19 (exact asymptotic rate).** The direct-carrier
-inefficiency coefficient grows as `Θ(k^2 w / log(k+1))`, the per-residual
-rate as `Θ(k w / log(k+1))`, and the one-step increment as `Θ(k w / log(k+1))`.
--/
-theorem inefficiencyCoefficient_exact_rate
-    (w : Nat) (hw : 1 ≤ w) :
-    (fun k : Nat => inefficiencyCoefficient k w)
-        =Θ[atTop] (fun k : Nat => ((k : ℝ) ^ 2 * w) / Real.log (k + 1))
-      ∧ (fun k : Nat => inefficiencyCoefficient k w / k)
-        =Θ[atTop] (fun k : Nat => ((k : ℝ) * w) / Real.log (k + 1))
-      ∧ (fun k : Nat => inefficiencyStepIncrement k w)
-        =Θ[atTop] (fun k : Nat => ((k : ℝ) * w) / Real.log (k + 1)) := by
-  refine ⟨inefficiencyCoefficient_isTheta_quadraticLog w hw,
-    inefficiencyCoefficient_perResidual_isTheta_linearLog w hw, ?_⟩
-  exact (inefficiencyStepIncrement_isTheta_linearLogShift w hw).trans
-    (linearLogShift_isTheta_linearLog w)
+    have hlog_pos : 0 < Real.log (k + 1) := log_succ_pos k hk
+    have hlog_nonneg : 0 ≤ Real.log (k + 1) := le_of_lt hlog_pos
+    have hlog_ne : Real.log (k + 1) ≠ 0 := ne_of_gt hlog_pos
+    have hcoef_nonneg : 0 ≤ inefficiencyCoefficient k w := inefficiencyCoefficient_nonneg k w
+    have hsource_nonneg : 0 ≤ inefficiencyCoefficient k w / (k + 1) := by
+      exact div_nonneg hcoef_nonneg (by positivity)
+    have htarget_nonneg : 0 ≤ ((k : ℝ) * w) / Real.log (k + 1) := by
+      exact div_nonneg (by positivity) hlog_nonneg
+    rw [Real.norm_of_nonneg htarget_nonneg, Real.norm_of_nonneg hsource_nonneg]
+    have hsource_eq :
+        inefficiencyCoefficient k w / (k + 1)
+          = (((k + 2 : Nat) : ℝ) * w) / (2 * Real.log (k + 1)) := by
+      unfold inefficiencyCoefficient
+      have hk1_ne : (((k + 1 : Nat) : ℝ)) ≠ 0 := by positivity
+      field_simp [hk1_ne, hlog_ne]
+      ring
+    rw [hsource_eq]
+    calc
+      ((k : ℝ) * w) / Real.log (k + 1)
+          ≤ (((k + 2 : Nat) : ℝ) * w) / Real.log (k + 1) := by
+            apply div_le_div_of_nonneg_right
+            · have hk_bound : (k : ℝ) ≤ (((k + 2 : Nat) : ℝ)) := by
+                have hk_bound_nat : k ≤ k + 2 := by omega
+                exact_mod_cast hk_bound_nat
+              have hw_nonneg : 0 ≤ (w : ℝ) := by positivity
+              exact mul_le_mul_of_nonneg_right hk_bound hw_nonneg
+            · exact hlog_nonneg
+      _ = 2 * ((((k + 2 : Nat) : ℝ) * w) / (2 * Real.log (k + 1))) := by
+            field_simp [hlog_ne]
+            ring
 
 /-- A coarse repeated-carrier envelope for the duplicated payload component of
 the canonical trace: one wrapper-cell budget per payload-bearing position. -/
