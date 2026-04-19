@@ -122,6 +122,15 @@ def benchmarkTransportComparison : ConcreteComparisonProfile where
   resolutionLabel := "first admissible witness at transformed-call"
   licensedReimportLabel := "transported transformed-call admission"
 
+/-- Typed historical annotation for the benchmark transport comparison layer. -/
+def benchmarkTransportHistoricalAnnotation :
+    OperatorKO7.ClassicalAscentProfile.HistoricalComparisonAnnotation where
+  baseKind := HistoricalBaseKind.benchmarkContractKO7
+  obstructionKind := HistoricalObstructionKind.noDirectWholeWitness
+  frameworkKind := HistoricalFrameworkKind.transformedCallTransport
+  resolutionKind := HistoricalResolutionKind.transformedCallWitness
+  reimportKind := HistoricalReimportKind.contractLicensedWitness
+
 theorem benchmarkTransportAscentProfile_realizesSixStep :
     RealizesSixStepShape benchmarkTransportAscentProfile.shape := by
   refine ⟨trivial, trivial, ?_, ?_, ?_, ?_⟩

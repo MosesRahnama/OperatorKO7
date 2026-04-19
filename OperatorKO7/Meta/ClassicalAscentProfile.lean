@@ -42,6 +42,45 @@ structure ConcreteComparisonProfile where
   resolutionLabel : String
   licensedReimportLabel : String
 
+/-- Coarse historical base-system tag for paper-facing comparison objects. -/
+inductive HistoricalBaseKind
+  | peanoArithmetic
+  | benchmarkContractKO7
+  deriving DecidableEq, Repr
+
+/-- Coarse historical obstruction tag. -/
+inductive HistoricalObstructionKind
+  | godelSentence
+  | noDirectWholeWitness
+  deriving DecidableEq, Repr
+
+/-- Coarse historical stronger-framework tag. -/
+inductive HistoricalFrameworkKind
+  | externalReflection
+  | transformedCallTransport
+  deriving DecidableEq, Repr
+
+/-- Coarse historical resolution tag. -/
+inductive HistoricalResolutionKind
+  | strongerTheoryTruth
+  | transformedCallWitness
+  deriving DecidableEq, Repr
+
+/-- Coarse historical reimport tag. -/
+inductive HistoricalReimportKind
+  | licensedTruthAdmission
+  | contractLicensedWitness
+  deriving DecidableEq, Repr
+
+/-- Typed historical annotation sitting above a concrete paper-facing
+comparison profile. This stays deliberately coarse and artifact honest. -/
+structure HistoricalComparisonAnnotation where
+  baseKind : HistoricalBaseKind
+  obstructionKind : HistoricalObstructionKind
+  frameworkKind : HistoricalFrameworkKind
+  resolutionKind : HistoricalResolutionKind
+  reimportKind : HistoricalReimportKind
+
 /-- The mechanized DP confession viewed as a comparison-ready ascent profile. -/
 def dpAsClassicalAscentProfile : AscentProfile where
   shape := dpSixStepStructuralProfile
@@ -90,6 +129,14 @@ def godel1931PaperComparison : ConcreteComparisonProfile where
   strongerFrameworkLabel := "external reflection / stronger metatheory"
   resolutionLabel := "truth proved at the stronger level"
   licensedReimportLabel := "externally licensed truth admission"
+
+/-- Typed historical annotation for the paper-facing Gödel-side comparison. -/
+def godel1931HistoricalAnnotation : HistoricalComparisonAnnotation where
+  baseKind := HistoricalBaseKind.peanoArithmetic
+  obstructionKind := HistoricalObstructionKind.godelSentence
+  frameworkKind := HistoricalFrameworkKind.externalReflection
+  resolutionKind := HistoricalResolutionKind.strongerTheoryTruth
+  reimportKind := HistoricalReimportKind.licensedTruthAdmission
 
 theorem godel1931PaperAscentProfile_realizesSixStep :
     RealizesSixStepShape godel1931PaperAscentProfile.shape := by

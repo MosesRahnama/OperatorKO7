@@ -79,4 +79,32 @@ theorem artsGieslTheoremLowerBound_supported :
   · rfl
   · exact artsGieslTheoremLowerBound_le_target
 
+/-- The current theorem-level lower bound does not yet hit the exact theory
+target `RCA₀ + WO(ω^3)`. -/
+theorem artsGieslTheoremLowerBound_theory_ne_target :
+    artsGieslTheoremLowerBound.theoryProfile.theory ≠ FormalTheory.RCA0_WO_omega3 := by
+  simp [artsGieslTheoremLowerBound, artsGieslPi02FloorProfile]
+
+/-- The current theorem-level lower bound does not yet carry the exact ordinal
+target `ω^3`; its ordinal assignment is still absent. -/
+theorem artsGieslTheoremLowerBound_ordinal_ne_target :
+    artsGieslTheoremLowerBound.theoryProfile.ordinalCeiling? ≠ some omegaPowThree := by
+  simp [artsGieslTheoremLowerBound, artsGieslPi02FloorProfile]
+
+/-- Sharpening target for a future theorem-level exact lower bound. This records
+the exact deliverable needed on the lower-bound side. -/
+structure ArtsGieslSharpTheoremLowerBound where
+  bound : ReverseMathLowerBound artsGieslPrincipleProfile
+  theoryEq : bound.theoryProfile.theory = FormalTheory.RCA0_WO_omega3
+  ordinalEq : bound.theoryProfile.ordinalCeiling? = some omegaPowThree
+  theoremLevel : bound.evidenceStatus = EvidenceStatus.theoremLevel
+
+/-- Public summary of the lower-bound sharpening target. -/
+theorem ArtsGieslSharpTheoremLowerBound.supported
+    (L : ArtsGieslSharpTheoremLowerBound) :
+    L.bound.theoryProfile.theory = FormalTheory.RCA0_WO_omega3
+      ∧ L.bound.theoryProfile.ordinalCeiling? = some omegaPowThree
+      ∧ L.bound.evidenceStatus = EvidenceStatus.theoremLevel := by
+  exact ⟨L.theoryEq, L.ordinalEq, L.theoremLevel⟩
+
 end OperatorKO7.ArtsGieslLowerBound

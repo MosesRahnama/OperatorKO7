@@ -25,6 +25,18 @@ structure ComparisonWitness
   sameFamily : left.family = right.family
   sameShape : StagewiseEquivalent left.shape right.shape
 
+/-- Packaged concrete comparison object: a named right-hand profile together
+with its explicit comparison witness against the mechanized DP profile. -/
+structure HistoricalComparisonObject where
+  concrete : ConcreteComparisonProfile
+  comparison : ComparisonWitness concrete.profile dpAsClassicalAscentProfile
+
+/-- Stronger packaged comparison object carrying a typed historical annotation
+above the concrete comparison profile and its theorem-backed witness. -/
+structure AnnotatedHistoricalComparisonObject where
+  annotation : HistoricalComparisonAnnotation
+  historical : HistoricalComparisonObject
+
 /-- Structural-identity comparison preserves six-step realization from left to
 right. -/
 theorem ComparisonWitness.right_realizes
@@ -107,5 +119,83 @@ theorem benchmarkTransport_has_dp_structural_identity :
           dpAsClassicalAscentProfile.shape := by
   exact compatible_profile_has_dp_structural_identity
     benchmarkTransportAscentProfile benchmarkTransportAscentProfile_compatible
+
+/-- Any packaged concrete comparison object inherits a theorem-backed
+structural-identity statement against the mechanized DP profile. -/
+theorem HistoricalComparisonObject.supported
+    (H : HistoricalComparisonObject) :
+    RealizesSixStepShape H.concrete.profile.shape
+      ∧ H.concrete.profile.family = dpAsClassicalAscentProfile.family
+      ∧ StagewiseEquivalent H.concrete.profile.shape
+          dpAsClassicalAscentProfile.shape := by
+  refine ⟨H.comparison.left_realizes structural_identity, ?_, ?_⟩
+  · exact H.comparison.sameFamily
+  · exact H.comparison.sameShape
+
+/-- Packaged paper-facing Gödel-side comparison object. -/
+def godel1931HistoricalComparisonObject : HistoricalComparisonObject where
+  concrete := godel1931PaperComparison
+  comparison := godel1931PaperComparisonAgainstDp
+
+/-- Packaged benchmark-transport comparison object. -/
+def benchmarkTransportHistoricalComparisonObject : HistoricalComparisonObject where
+  concrete := benchmarkTransportComparison
+  comparison := benchmarkTransportComparisonAgainstDp
+
+/-- Typed Gödel-side historical comparison object. -/
+def godel1931AnnotatedHistoricalComparisonObject :
+    AnnotatedHistoricalComparisonObject where
+  annotation := godel1931HistoricalAnnotation
+  historical := godel1931HistoricalComparisonObject
+
+/-- Typed benchmark-transport historical comparison object. -/
+def benchmarkTransportAnnotatedHistoricalComparisonObject :
+    AnnotatedHistoricalComparisonObject where
+  annotation := benchmarkTransportHistoricalAnnotation
+  historical := benchmarkTransportHistoricalComparisonObject
+
+/-- Supported form of the paper-facing Gödel-side comparison object. -/
+theorem godel1931HistoricalComparison_supported :
+    RealizesSixStepShape godel1931HistoricalComparisonObject.concrete.profile.shape
+      ∧ godel1931HistoricalComparisonObject.concrete.profile.family =
+          dpAsClassicalAscentProfile.family
+      ∧ StagewiseEquivalent
+          godel1931HistoricalComparisonObject.concrete.profile.shape
+          dpAsClassicalAscentProfile.shape := by
+  exact godel1931HistoricalComparisonObject.supported
+
+/-- Supported form of the benchmark-transport comparison object. -/
+theorem benchmarkTransportHistoricalComparison_supported :
+    RealizesSixStepShape
+        benchmarkTransportHistoricalComparisonObject.concrete.profile.shape
+      ∧ benchmarkTransportHistoricalComparisonObject.concrete.profile.family =
+          dpAsClassicalAscentProfile.family
+      ∧ StagewiseEquivalent
+          benchmarkTransportHistoricalComparisonObject.concrete.profile.shape
+          dpAsClassicalAscentProfile.shape := by
+  exact benchmarkTransportHistoricalComparisonObject.supported
+
+/-- Typed Gödel-side historical comparison object remains theorem-backed. -/
+theorem godel1931AnnotatedHistoricalComparison_supported :
+    RealizesSixStepShape
+        godel1931AnnotatedHistoricalComparisonObject.historical.concrete.profile.shape
+      ∧ godel1931AnnotatedHistoricalComparisonObject.historical.concrete.profile.family =
+          dpAsClassicalAscentProfile.family
+      ∧ StagewiseEquivalent
+          godel1931AnnotatedHistoricalComparisonObject.historical.concrete.profile.shape
+          dpAsClassicalAscentProfile.shape := by
+  exact godel1931AnnotatedHistoricalComparisonObject.historical.supported
+
+/-- Typed benchmark-transport historical comparison object remains
+theorem-backed. -/
+theorem benchmarkTransportAnnotatedHistoricalComparison_supported :
+    RealizesSixStepShape
+        benchmarkTransportAnnotatedHistoricalComparisonObject.historical.concrete.profile.shape
+      ∧ benchmarkTransportAnnotatedHistoricalComparisonObject.historical.concrete.profile.family =
+          dpAsClassicalAscentProfile.family
+      ∧ StagewiseEquivalent
+          benchmarkTransportAnnotatedHistoricalComparisonObject.historical.concrete.profile.shape
+          dpAsClassicalAscentProfile.shape := by
+  exact benchmarkTransportAnnotatedHistoricalComparisonObject.historical.supported
 
 end OperatorKO7.StructuralIdentityComparison

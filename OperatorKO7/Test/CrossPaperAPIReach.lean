@@ -92,6 +92,29 @@ example :
 #check OperatorKO7.ArtsGieslReverseMathCalibration.ArtsGieslMatchingBounds
 #check OperatorKO7.ArtsGieslReverseMathCalibration.artsGiesl_exactCalibration_exists_if_witnessed_matching_bounds
 
+example :
+    OperatorKO7.ArtsGieslReverseMathCalibration.artsGieslCurrentTheoremBoundGap.lowerTheory =
+      OperatorKO7.ProofTheoreticRegister.FormalTheory.RCA0 := rfl
+
+example :
+    OperatorKO7.ArtsGieslReverseMathCalibration.artsGieslCurrentTheoremBoundGap.targetTheory =
+      OperatorKO7.ProofTheoreticRegister.FormalTheory.RCA0_WO_omega3 := rfl
+
+example :
+    OperatorKO7.ArtsGieslReverseMathCalibration.artsGieslCurrentTheoremBoundGap.upperTheory =
+      OperatorKO7.ProofTheoreticRegister.FormalTheory.WO_epsilon0 := rfl
+
+example :
+    OperatorKO7.ArtsGieslReverseMathCalibration.artsGieslCurrentTheoremBoundGap.lowerTheory ≠
+        OperatorKO7.ArtsGieslReverseMathCalibration.artsGieslCurrentTheoremBoundGap.targetTheory
+      ∧ OperatorKO7.ArtsGieslReverseMathCalibration.artsGieslCurrentTheoremBoundGap.targetTheory ≠
+        OperatorKO7.ArtsGieslReverseMathCalibration.artsGieslCurrentTheoremBoundGap.upperTheory :=
+  OperatorKO7.ArtsGieslReverseMathCalibration.artsGiesl_exactCalibration_still_requires_bound_sharpening
+
+example :
+    ¬ OperatorKO7.ArtsGieslReverseMathCalibration.ArtsGieslMatchingBounds :=
+  OperatorKO7.ArtsGieslReverseMathCalibration.artsGieslMatchingBounds_uninhabited
+
 example : True := by
   have := OperatorKO7.ReflectionSchema.dpStagewiseRealization
   trivial
@@ -114,6 +137,22 @@ example : True := by
 
 example : True := by
   have := OperatorKO7.StructuralIdentityComparison.benchmarkTransportComparisonAgainstDp
+  trivial
+
+example : True := by
+  have := OperatorKO7.StructuralIdentityComparison.godel1931HistoricalComparison_supported
+  trivial
+
+example : True := by
+  have := OperatorKO7.StructuralIdentityComparison.benchmarkTransportHistoricalComparison_supported
+  trivial
+
+example : True := by
+  have := OperatorKO7.StructuralIdentityComparison.godel1931AnnotatedHistoricalComparison_supported
+  trivial
+
+example : True := by
+  have := OperatorKO7.StructuralIdentityComparison.benchmarkTransportAnnotatedHistoricalComparison_supported
   trivial
 
 example : True := by

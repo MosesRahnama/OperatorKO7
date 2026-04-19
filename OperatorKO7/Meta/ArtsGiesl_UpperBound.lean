@@ -77,4 +77,36 @@ theorem artsGieslTheoremUpperBound_supported :
   · exact artsGiesl_targetTheory_le_theoremUpperBound
   · exact artsGiesl_targetOrdinal_lt_theoremUpperBound
 
+/-- The current theorem-level upper bound does not yet hit the exact theory
+target `RCA₀ + WO(ω^3)`. -/
+theorem artsGieslTheoremUpperBound_theory_ne_target :
+    artsGieslTheoremUpperBound.theoryProfile.theory ≠ FormalTheory.RCA0_WO_omega3 := by
+  simp [artsGieslTheoremUpperBound, woEpsilon0TheoryProfile]
+
+/-- The current theorem-level upper bound does not yet hit the exact ordinal
+target `ω^3`. -/
+theorem artsGieslTheoremUpperBound_ordinal_ne_target :
+    artsGieslTheoremUpperBound.theoryProfile.ordinalCeiling? ≠ some omegaPowThree := by
+  intro h
+  have h' : ε₀ = omegaPowThree := by
+    simpa [artsGieslTheoremUpperBound, woEpsilon0TheoryProfile] using h
+  exact omegaPowThree_lt_epsilon0.ne h'.symm
+
+/-- Sharpening target for a future theorem-level exact upper bound. This does
+not assert that the witness exists now; it records exactly what a successful
+upper-bound improvement must deliver. -/
+structure ArtsGieslSharpTheoremUpperBound where
+  bound : ReverseMathUpperBound artsGieslPrincipleProfile
+  theoryEq : bound.theoryProfile.theory = FormalTheory.RCA0_WO_omega3
+  ordinalEq : bound.theoryProfile.ordinalCeiling? = some omegaPowThree
+  theoremLevel : bound.evidenceStatus = EvidenceStatus.theoremLevel
+
+/-- Public summary of the sharpening target. -/
+theorem ArtsGieslSharpTheoremUpperBound.supported
+    (U : ArtsGieslSharpTheoremUpperBound) :
+    U.bound.theoryProfile.theory = FormalTheory.RCA0_WO_omega3
+      ∧ U.bound.theoryProfile.ordinalCeiling? = some omegaPowThree
+      ∧ U.bound.evidenceStatus = EvidenceStatus.theoremLevel := by
+  exact ⟨U.theoryEq, U.ordinalEq, U.theoremLevel⟩
+
 end OperatorKO7.ArtsGieslUpperBound

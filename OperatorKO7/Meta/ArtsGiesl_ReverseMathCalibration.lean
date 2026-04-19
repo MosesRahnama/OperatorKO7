@@ -105,6 +105,14 @@ structure ArtsGieslMatchingBounds where
   lowerOrdinal :
     artsGieslTheoremLowerBound.theoryProfile.ordinalCeiling? = some omegaPowThree
 
+/-- The current theorem-level upper/lower packages do not yet match the target
+profile, so the exact-calibration witness object is still uninhabited. -/
+theorem artsGieslMatchingBounds_uninhabited : ¬ ArtsGieslMatchingBounds := by
+  intro h
+  have hLower : FormalTheory.RCA0 = FormalTheory.RCA0_WO_omega3 := by
+    simpa [artsGieslTheoremLowerBound, artsGieslPi02FloorProfile] using h.lowerTheory
+  cases hLower
+
 /-- Unbundled exact-calibration schema for the Arts--Giesl license. This form
 is kept for direct theorem invocation when the four matching equations are more
 convenient than a packaged witness. -/
@@ -229,5 +237,109 @@ theorem artsGiesl_exactCalibration_exists_if_witnessed_matching_bounds
       C.status = CalibrationStatus.exact := by
   exact artsGiesl_exactCalibration_exists_if_matching_bounds
     h.upperTheory h.upperOrdinal h.lowerTheory h.lowerOrdinal
+
+/-- The current theorem-level Arts--Giesl calibration gap, stated as a precise
+artifact object: the lower bound is still below the target theory and the upper
+bound is still above it. -/
+structure ArtsGieslTheoremBoundGap where
+  lowerTheory : FormalTheory
+  targetTheory : FormalTheory
+  upperTheory : FormalTheory
+  lowerLeTarget : lowerTheory ≤ targetTheory
+  targetLeUpper : targetTheory ≤ upperTheory
+  lowerNeTarget : lowerTheory ≠ targetTheory
+  targetNeUpper : targetTheory ≠ upperTheory
+
+/-- Current theorem-level AG gap object. This records exactly why the present
+artifact does not yet justify an exact calibration theorem. -/
+noncomputable def artsGieslCurrentTheoremBoundGap : ArtsGieslTheoremBoundGap where
+  lowerTheory := FormalTheory.RCA0
+  targetTheory := FormalTheory.RCA0_WO_omega3
+  upperTheory := FormalTheory.WO_epsilon0
+  lowerLeTarget := by decide
+  targetLeUpper := by decide
+  lowerNeTarget := by decide
+  targetNeUpper := by decide
+
+/-- The current theorem-level lower bound is still strictly weaker than the
+target theory. -/
+theorem artsGieslCurrentTheoremBoundGap_has_strict_lower_gap :
+    artsGieslCurrentTheoremBoundGap.lowerTheory ≠
+      artsGieslCurrentTheoremBoundGap.targetTheory :=
+  artsGieslCurrentTheoremBoundGap.lowerNeTarget
+
+/-- The current theorem-level upper bound is still strictly above the target
+theory. -/
+theorem artsGieslCurrentTheoremBoundGap_has_strict_upper_gap :
+    artsGieslCurrentTheoremBoundGap.targetTheory ≠
+      artsGieslCurrentTheoremBoundGap.upperTheory :=
+  artsGieslCurrentTheoremBoundGap.targetNeUpper
+
+/-- Exact calibration is not yet available from the current theorem-level
+bounds alone: the current lower and upper theorem bounds still leave a genuine
+gap around the target profile. -/
+theorem artsGiesl_exactCalibration_still_requires_bound_sharpening :
+    artsGieslCurrentTheoremBoundGap.lowerTheory ≠
+        artsGieslCurrentTheoremBoundGap.targetTheory
+      ∧ artsGieslCurrentTheoremBoundGap.targetTheory ≠
+        artsGieslCurrentTheoremBoundGap.upperTheory := by
+  exact ⟨artsGieslCurrentTheoremBoundGap_has_strict_lower_gap,
+    artsGieslCurrentTheoremBoundGap_has_strict_upper_gap⟩
+
+/-- Exact calibration from genuinely sharpened theorem-level upper/lower
+packages. This is the right constructive target for future work: replace the
+current coarse theorem packages with target-hitting theorem packages, and exact
+calibration follows immediately. -/
+noncomputable def artsGieslExactCalibrationOfSharpBounds
+    (U : ArtsGieslSharpTheoremUpperBound)
+    (L : ArtsGieslSharpTheoremLowerBound) :
+    ReverseMathCalibration artsGieslPrincipleProfile where
+  targetProfile := rca0WoOmega3TheoryProfile
+  upperBound := U.bound
+  lowerBound? := some L.bound
+  targetLeUpper := by
+    rw [U.theoryEq]
+    decide
+  lowerLeTarget := by
+    rw [L.theoryEq]
+    decide
+  status := CalibrationStatus.exact
+
+@[simp] theorem artsGieslExactCalibrationOfSharpBounds_status
+    (U : ArtsGieslSharpTheoremUpperBound)
+    (L : ArtsGieslSharpTheoremLowerBound) :
+    (artsGieslExactCalibrationOfSharpBounds U L).status = CalibrationStatus.exact := rfl
+
+/-- Sharp theorem-level upper/lower packages are sufficient for exact Arts--
+Giesl calibration. -/
+theorem artsGiesl_exactCalibration_of_sharp_bounds
+    (U : ArtsGieslSharpTheoremUpperBound)
+    (L : ArtsGieslSharpTheoremLowerBound) :
+    let C := artsGieslExactCalibrationOfSharpBounds U L
+    C.status = CalibrationStatus.exact
+      ∧ C.targetProfile.theory = FormalTheory.RCA0_WO_omega3
+      ∧ C.targetProfile.ordinalCeiling? = some omegaPowThree
+      ∧ C.upperBound.evidenceStatus = EvidenceStatus.theoremLevel
+      ∧ (match C.lowerBound? with
+          | some lb => lb.evidenceStatus = EvidenceStatus.theoremLevel
+          | none => False) := by
+  constructor
+  · rfl
+  constructor
+  · rfl
+  constructor
+  · rfl
+  constructor
+  · exact U.theoremLevel
+  · simpa [artsGieslExactCalibrationOfSharpBounds] using L.theoremLevel
+
+/-- Exact-calibration existence follows from a sharpened theorem-level upper
+bound together with a sharpened theorem-level lower bound. -/
+theorem artsGiesl_exactCalibration_exists_if_sharp_bounds
+    (U : ArtsGieslSharpTheoremUpperBound)
+    (L : ArtsGieslSharpTheoremLowerBound) :
+    ∃ C : ReverseMathCalibration artsGieslPrincipleProfile,
+      C.status = CalibrationStatus.exact := by
+  exact ⟨artsGieslExactCalibrationOfSharpBounds U L, rfl⟩
 
 end OperatorKO7.ArtsGieslReverseMathCalibration
