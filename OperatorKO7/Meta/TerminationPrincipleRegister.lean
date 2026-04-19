@@ -74,6 +74,16 @@ structure PrincipleAlignment
   sharedOrdinalTarget? : Option Ordinal := none
   evidenceStatus : EvidenceStatus
 
+/-- The exact missing bridge for the Arts--Giesl/SCT calibration program: a
+theorem-level alignment, not merely a profile-level shared target note. -/
+structure ArtsGieslSctTheoremAlignment extends PrincipleAlignment artsGieslEntry sctEntry where
+  sharedTheoryExact :
+    sharedTheoryTarget? = some FormalTheory.RCA0_WO_omega3
+  sharedOrdinalExact :
+    sharedOrdinalTarget? = some omegaPowThree
+  theoremLevel :
+    evidenceStatus = EvidenceStatus.theoremLevel
+
 /-- Current AG/SCT alignment used in the paper's reverse-mathematical
 discussion: exact on the SCT side, conjectural on the AG side, with a shared
 candidate target. -/
@@ -82,6 +92,20 @@ noncomputable def artsGieslSctAlignment :
   sharedTheoryTarget? := some FormalTheory.RCA0_WO_omega3
   sharedOrdinalTarget? := some omegaPowThree
   evidenceStatus := EvidenceStatus.profileLevel
+
+@[simp] theorem artsGieslSctAlignment_status :
+    artsGieslSctAlignment.evidenceStatus = EvidenceStatus.profileLevel := rfl
+
+/-- The current AG/SCT alignment is only profile-level, not theorem-level. -/
+theorem artsGieslSctAlignment_not_theoremLevel :
+    artsGieslSctAlignment.evidenceStatus ≠ EvidenceStatus.theoremLevel := by
+  simp [artsGieslSctAlignment]
+
+/-- The current alignment object is not yet an inhabitant of the stronger
+theorem-level alignment schema. -/
+theorem artsGieslSctAlignment_still_below_theoremAlignment :
+    artsGieslSctAlignment.evidenceStatus ≠ EvidenceStatus.theoremLevel := by
+  exact artsGieslSctAlignment_not_theoremLevel
 
 @[simp] theorem sctEntry_status :
     sctEntry.calibrationStatus = CalibrationStatus.exact := by

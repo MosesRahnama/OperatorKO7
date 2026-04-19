@@ -81,6 +81,59 @@ structure HistoricalComparisonAnnotation where
   resolutionKind : HistoricalResolutionKind
   reimportKind : HistoricalReimportKind
 
+/-- Base-theory profile for the richer external classical comparison layer. -/
+structure HistoricalBaseTheoryProfile where
+  label : String
+  registerApprox? : Option FormalTheory := none
+  hasBaseSystem : Prop
+
+/-- Explicit obstruction witness family for the richer external comparison
+layer. -/
+structure HistoricalObstructionWitness where
+  label : String
+  hasSelfObstruction : Prop
+  blockedInBase : Prop
+
+/-- Explicit stronger-framework operator for the richer external comparison
+layer. -/
+structure HistoricalFrameworkOperator where
+  label : String
+  frameworkAvailable : Prop
+  resolvesInFramework : Prop
+
+/-- Explicit reimport / licensed-admission map for the richer external
+comparison layer. -/
+structure HistoricalReimportMap where
+  label : String
+  licensedReimport : Prop
+
+/-- Richer external classical comparison object.
+
+This goes beyond labels and annotations: it packages the base-theory profile,
+obstruction witness, stronger-framework operator, and reimport map together
+with a concrete ascent profile and a theorem that the resulting profile is
+compatible with the mechanized DP-side profile. -/
+structure ExternalClassicalComparisonObject where
+  baseTheory : HistoricalBaseTheoryProfile
+  obstruction : HistoricalObstructionWitness
+  strongerFramework : HistoricalFrameworkOperator
+  reimport : HistoricalReimportMap
+  family : AscentFamily
+  profile : AscentProfile
+  profileShape :
+    profile.shape = {
+      hasBaseSystem := baseTheory.hasBaseSystem
+      hasSelfObstruction := obstruction.hasSelfObstruction
+      blockedInBase := obstruction.blockedInBase
+      hasStrongerFramework := strongerFramework.frameworkAvailable
+      resolvedInFramework := strongerFramework.resolvesInFramework
+      licensedReimport := reimport.licensedReimport
+    }
+  profileFamily : profile.family = family
+  compatible :
+    StagewiseEquivalent profile.shape dpSixStepStructuralProfile
+      ∧ profile.family = AscentFamily.reflection
+
 /-- The mechanized DP confession viewed as a comparison-ready ascent profile. -/
 def dpAsClassicalAscentProfile : AscentProfile where
   shape := dpSixStepStructuralProfile
@@ -188,5 +241,53 @@ theorem compatibleWithDp_resolvedInFramework_iff
     (hC : CompatibleWithDp C) :
     C.shape.resolvedInFramework ↔ dpSixStepStructuralProfile.resolvedInFramework :=
   hC.1 StructuralStage.resolvedInFramework
+
+/-- Any richer external classical comparison object is theorem-backed at the
+profile level. -/
+theorem ExternalClassicalComparisonObject.supported
+    (E : ExternalClassicalComparisonObject) :
+    RealizesSixStepShape E.profile.shape
+      ∧ E.profile.family = AscentFamily.reflection
+      ∧ StagewiseEquivalent E.profile.shape dpAsClassicalAscentProfile.shape := by
+  refine ⟨compatibleWithDp_realizesSixStep E.profile E.compatible, ?_, ?_⟩
+  · exact E.compatible.2
+  · simpa [dpAsClassicalAscentProfile] using E.compatible.1
+
+/-- Richer base-theory profile for the paper-facing Gödel-side comparison. -/
+def godel1931BaseTheoryProfile : HistoricalBaseTheoryProfile where
+  label := "PA"
+  hasBaseSystem := True
+
+/-- Richer obstruction witness for the paper-facing Gödel-side comparison. -/
+def godel1931ObstructionWitness : HistoricalObstructionWitness where
+  label := "self-referential Gödel sentence"
+  hasSelfObstruction := True
+  blockedInBase := True
+
+/-- Richer stronger-framework operator for the paper-facing Gödel-side
+comparison. -/
+def godel1931StrongerFrameworkOperator : HistoricalFrameworkOperator where
+  label := "external reflection / stronger metatheory"
+  frameworkAvailable := True
+  resolvesInFramework := True
+
+/-- Richer reimport map for the paper-facing Gödel-side comparison. -/
+def godel1931ReimportMap : HistoricalReimportMap where
+  label := "externally licensed truth admission"
+  licensedReimport := True
+
+/-- Richer external classical comparison object for the paper-facing
+Gödel-side comparison. -/
+def godel1931ExternalClassicalComparisonObject :
+    ExternalClassicalComparisonObject where
+  baseTheory := godel1931BaseTheoryProfile
+  obstruction := godel1931ObstructionWitness
+  strongerFramework := godel1931StrongerFrameworkOperator
+  reimport := godel1931ReimportMap
+  family := AscentFamily.reflection
+  profile := godel1931PaperAscentProfile
+  profileShape := rfl
+  profileFamily := rfl
+  compatible := godel1931PaperAscentProfile_compatible
 
 end OperatorKO7.ClassicalAscentProfile

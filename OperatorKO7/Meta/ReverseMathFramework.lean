@@ -109,6 +109,31 @@ structure ReverseMathCalibration (P : PrincipleProfile) where
     | some lb => lb.theoryProfile.theory ≤ targetProfile.theory
   status : CalibrationStatus
 
+/-- Witness-bearing exact-calibration transport between proof principles.
+
+This is intentionally stronger than a shared-target or status-only note: it
+packages
+
+- a source exact calibration,
+- an explicit witness-preserving constant-overhead transport, and
+- theorem-level destination upper/lower packages whose theory profiles match
+  the source target exactly.
+
+Within the coarse reverse-mathematical framework used by this repository, such
+an object is enough to transfer exact calibration from the source principle to
+the destination principle without appealing to external prose. -/
+structure ExactCalibrationTransfer
+    (src dst : PrincipleProfile) where
+  sourceCalibration : ReverseMathCalibration src
+  sourceExact : sourceCalibration.status = CalibrationStatus.exact
+  witnessTransport : ConstantOverheadTransformation
+  dstUpper : ReverseMathUpperBound dst
+  dstLower : ReverseMathLowerBound dst
+  upperMatchesSourceTarget : dstUpper.theoryProfile = sourceCalibration.targetProfile
+  lowerMatchesSourceTarget : dstLower.theoryProfile = sourceCalibration.targetProfile
+  upperTheoremLevel : dstUpper.evidenceStatus = EvidenceStatus.theoremLevel
+  lowerTheoremLevel : dstLower.evidenceStatus = EvidenceStatus.theoremLevel
+
 namespace SecondOrderTheoryProfile
 
 @[simp] theorem theoryImplication_refl (A : SecondOrderTheoryProfile) :
@@ -127,6 +152,62 @@ theorem has_upperBound {P : PrincipleProfile} (C : ReverseMathCalibration P) :
   C.targetLeUpper
 
 end ReverseMathCalibration
+
+namespace ExactCalibrationTransfer
+
+/-- Assemble an exact destination calibration from a witness-bearing exact
+transport object. -/
+noncomputable def transferredCalibration
+    {src dst : PrincipleProfile}
+    (T : ExactCalibrationTransfer src dst) :
+    ReverseMathCalibration dst where
+  targetProfile := T.sourceCalibration.targetProfile
+  upperBound := T.dstUpper
+  lowerBound? := some T.dstLower
+  targetLeUpper := by
+    rw [T.upperMatchesSourceTarget]
+    cases T.sourceCalibration.targetProfile.theory <;> decide
+  lowerLeTarget := by
+    change T.dstLower.theoryProfile.theory ≤ T.sourceCalibration.targetProfile.theory
+    rw [T.lowerMatchesSourceTarget]
+    cases T.sourceCalibration.targetProfile.theory <;> decide
+  status := CalibrationStatus.exact
+
+@[simp] theorem transferredCalibration_status
+    {src dst : PrincipleProfile}
+    (T : ExactCalibrationTransfer src dst) :
+    T.transferredCalibration.status = CalibrationStatus.exact := rfl
+
+@[simp] theorem transferredCalibration_targetProfile
+    {src dst : PrincipleProfile}
+    (T : ExactCalibrationTransfer src dst) :
+    T.transferredCalibration.targetProfile = T.sourceCalibration.targetProfile := rfl
+
+@[simp] theorem transferredCalibration_upperBound
+    {src dst : PrincipleProfile}
+    (T : ExactCalibrationTransfer src dst) :
+    T.transferredCalibration.upperBound = T.dstUpper := rfl
+
+@[simp] theorem transferredCalibration_lowerBound
+    {src dst : PrincipleProfile}
+    (T : ExactCalibrationTransfer src dst) :
+    T.transferredCalibration.lowerBound? = some T.dstLower := rfl
+
+theorem transferredCalibration_supported
+    {src dst : PrincipleProfile}
+    (T : ExactCalibrationTransfer src dst) :
+    T.transferredCalibration.status = CalibrationStatus.exact
+      ∧ T.transferredCalibration.upperBound.evidenceStatus = EvidenceStatus.theoremLevel
+      ∧ (match T.transferredCalibration.lowerBound? with
+          | some lb => lb.evidenceStatus = EvidenceStatus.theoremLevel
+          | none => False) := by
+  constructor
+  · rfl
+  constructor
+  · simpa using T.upperTheoremLevel
+  · simpa using T.lowerTheoremLevel
+
+end ExactCalibrationTransfer
 
 /-! ## Concrete framework-level profiles already supported by the artifact -/
 
