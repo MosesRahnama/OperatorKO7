@@ -550,10 +550,55 @@ outcomes and `below_threshold_forces_metahalt`),
 Paper-facing alias layer mapping META-HALT Lean identifiers to Paper 2's
 Theorem / Proposition / Definition labels.
 
+### [Meta/GenericSupervisoryEngine.lean](OperatorKO7/Meta/GenericSupervisoryEngine.lean) **[NEW]**
+
+Reusable parametric supervisory engine factored out of the concrete
+META-HALT loop. Provides a generic `supervisoryLoop` /
+`supervisoryLoopWithSteps`, generic terminal-form dichotomy, and a generic
+termination bound against a supplied catalog interface and lift policy.
+The concrete META-HALT loop from
+[`Meta/MetaHalt_Regress.lean`](OperatorKO7/Meta/MetaHalt_Regress.lean) is
+now an instantiation of this engine, not a parallel implementation. Other
+catalog-and-admissibility instantiations (future supervisory variants)
+reuse the same termination and terminal-form machinery.
+
+### [Meta/MetaHalt_Regress.lean](OperatorKO7/Meta/MetaHalt_Regress.lean) — factorization extension [2026-04-19]
+
+Four new theorems close the executable supervisory-engine lift at
+theorem-level rather than partial:
+
+- `supervisoryLoop_factors_through_generic_engine` — the concrete
+  supervisory loop is extensionally equal to an instantiation of the
+  reusable generic engine in `GenericSupervisoryEngine.lean` (modulo the
+  trivial audit-record wrapper).
+- `supervisoryLoopWithSteps_factors_through_generic_engine` — the same
+  exact factorization at the step-counted level.
+- `supervisoryLoop_terminates_via_generic_engine` — the concrete
+  termination bound within `Catalog.totalBudgetPlusOne C` recovered
+  through the generic factorization, not reproved directly.
+- `supervisoryLoop_emits_audit_or_accept_via_generic_engine` — the
+  concrete terminal-form dichotomy (audit-C3 or accepted-witness)
+  recovered through the same factorization.
+
+The public reach test
+[`Test/CrossPaperAPIReach.lean`](OperatorKO7/Test/CrossPaperAPIReach.lean)
+was extended to touch `supervisoryLoop_factors_through_generic_engine`.
+The roadmap entry in
+[`SCHEMA_GAP_ROADMAP.md`](../SCHEMA_GAP_ROADMAP.md) is now recorded as
+theorem-level closed.
+
+**Paper C threading.** The factorization is cited in the Paper C abstract
+and introduction file-lists, threaded into §6 as a new remark
+(`rem:generic-engine-factorization`) after Definition 6.6, and listed as
+four named bullets in the §Mechanized Backing supervisory/META-HALT
+subsection.
+
 **Where Layer 10 fits.** Imports Layer 3 (`WitnessOrder`,
 `OperationalIncompleteness`), Layer 4 (confession-method family for T3
 output type), Layer 11 (structural minimality for the fracture theorem's
-hypothesis). Produces Paper 2 §5–7 in mechanized form end-to-end.
+hypothesis). Produces Paper 2 §5–7 in mechanized form end-to-end, with
+the concrete loop now a definitional instance of the parametric engine in
+`GenericSupervisoryEngine.lean`.
 
 ---
 

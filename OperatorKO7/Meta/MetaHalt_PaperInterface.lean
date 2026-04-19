@@ -42,6 +42,23 @@ abbrev below_threshold_forces_metahalt :=
 abbrev no_c4_above_nonzero_gap :=
   OperatorKO7.MetaHalt.Fracture.no_c4_above_nonzero_gap
 
+/-- Paper alias: budgeted catalog exhaustion gap. -/
+abbrev catalog_exhaustion_gap :=
+  OperatorKO7.MetaHalt.Fracture.catalogExhaustionGap
+
+/-- Paper alias: valid T4 typed abstention requires full below-threshold
+catalog exhaustion. -/
+abbrev t4_requires_exhaustion_work :=
+  OperatorKO7.MetaHalt.Fracture.t4_requires_exhaustion_work
+
+/-- Paper alias: primitive-recursor exhaustion-gap lower bound. -/
+abbrev exhaustion_gap_recursor :=
+  OperatorKO7.MetaHalt.Fracture.exhaustion_gap_recursor
+
+/-- Paper alias: primitive-recursor PRT supervisory lower bound. -/
+abbrev exhaustion_gap_prt_lower_bound :=
+  OperatorKO7.MetaHalt.Fracture.exhaustion_gap_prt_lower_bound
+
 /-- Paper alias: Pre-Undecidability Fracture Theorem. -/
 abbrev pre_undecidability_fracture :=
   OperatorKO7.MetaHalt.Fracture.pre_undecidability_fracture

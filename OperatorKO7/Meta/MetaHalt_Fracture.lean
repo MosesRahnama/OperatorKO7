@@ -5,6 +5,7 @@ import OperatorKO7.Meta.MetaHalt_Soundness
 import OperatorKO7.Meta.WitnessOrder
 import OperatorKO7.Meta.OperationalIncompleteness
 import OperatorKO7.Meta.ConfessionMethod_Family
+import Mathlib.Tactic
 
 /-!
 # Pre-Undecidability Fracture Theorem
@@ -182,6 +183,146 @@ theorem pre_undecidability_fracture
     exact hc4.2 (TypedOutput.T5_impossibilityCert metaThm cert) metaThm cert rfl
   · exact ⟨hOI.certifiedForgetting, rfl⟩
   · simp [isTypedOutputDisciplineViolation]
+
+/-! ## Budgeted catalog exhaustion gap
+
+The earlier `exhaustionGap` definition tracks missing task operations.
+The manuscript's later quantitative strengthening uses a different object:
+the sum of per-level catalog budgets strictly below the first adequate witness
+level. We formalize that layer separately here rather than overloading the
+operations-based notion above.
+-/
+
+/-- Per-level catalog budget used by the quantitative exhaustion-gap layer. -/
+abbrev WitnessLevelBudget := WLevel → Nat
+
+/-- The budgeted exhaustion gap: total catalog work strictly below the target
+threshold witness level. -/
+def catalogExhaustionGap (B : WitnessLevelBudget) (κ : WLevel) : Nat :=
+  match κ with
+  | .directWhole => 0
+  | .importedWhole => B .directWhole
+  | .transformedCall => B .directWhole + B .importedWhole
+  | .externalCert => B .directWhole + B .importedWhole + B .transformedCall
+
+/-- Per-level failure ledger carried by a typed supervisory audit. -/
+structure LevelFailureLedger where
+  directWholeFailures : Nat
+  importedWholeFailures : Nat
+  transformedCallFailures : Nat
+  externalCertFailures : Nat
+  deriving DecidableEq, Repr
+
+/-- Read the failure count at a given witness-language level. -/
+def LevelFailureLedger.failuresAt (L : LevelFailureLedger) : WLevel → Nat
+  | .directWhole => L.directWholeFailures
+  | .importedWhole => L.importedWholeFailures
+  | .transformedCall => L.transformedCallFailures
+  | .externalCert => L.externalCertFailures
+
+/-- Total recorded audit work. -/
+def LevelFailureLedger.totalFailures (L : LevelFailureLedger) : Nat :=
+  L.directWholeFailures + L.importedWholeFailures
+    + L.transformedCallFailures + L.externalCertFailures
+
+/-- The audit ledger covers every catalog item strictly below `κ`. -/
+def CoversBudgetBelow
+    (B : WitnessLevelBudget) (κ : WLevel) (L : LevelFailureLedger) : Prop :=
+  match κ with
+  | .directWhole => True
+  | .importedWhole =>
+      B .directWhole ≤ L.failuresAt .directWhole
+  | .transformedCall =>
+      B .directWhole ≤ L.failuresAt .directWhole
+        ∧ B .importedWhole ≤ L.failuresAt .importedWhole
+  | .externalCert =>
+      B .directWhole ≤ L.failuresAt .directWhole
+        ∧ B .importedWhole ≤ L.failuresAt .importedWhole
+        ∧ B .transformedCall ≤ L.failuresAt .transformedCall
+
+/-- Audit-side representation of a typed T4 abstention plus the failure ledger
+that justifies it. -/
+structure TypedAbstentionAudit where
+  output : TypedOutput
+  failures : LevelFailureLedger
+  deriving Repr
+
+/-- A valid T4 audit is a well-formed typed abstention whose ledger covers the
+entire below-threshold catalog. -/
+def ValidT4Audit
+    (B : WitnessLevelBudget) (κ : WLevel) (A : TypedAbstentionAudit) : Prop :=
+  ∃ dim cons rej,
+    A.output = TypedOutput.T4_abstention dim cons rej
+      ∧ dim ≠ ""
+      ∧ cons ≠ []
+      ∧ rej ≠ []
+      ∧ CoversBudgetBelow B κ A.failures
+
+/-- Covering the full below-threshold catalog forces the audit ledger to have
+at least the summed exhaustion budget. -/
+theorem coversBudgetBelow_totalFailures_ge_gap
+    (B : WitnessLevelBudget) (κ : WLevel) (L : LevelFailureLedger)
+    (hcover : CoversBudgetBelow B κ L) :
+    catalogExhaustionGap B κ ≤ L.totalFailures := by
+  cases κ <;>
+    simp [catalogExhaustionGap, CoversBudgetBelow,
+      LevelFailureLedger.totalFailures, LevelFailureLedger.failuresAt] at hcover ⊢ <;> omega
+
+/-- Budgeted form of Proposition 6.2: a valid T4 typed abstention must carry
+enough explicit failure certificates to cover the full below-threshold catalog.
+-/
+theorem t4_requires_exhaustion_work
+    (B : WitnessLevelBudget) (κ : WLevel) (A : TypedAbstentionAudit)
+    (hvalid : ValidT4Audit B κ A) :
+    catalogExhaustionGap B κ ≤ A.failures.totalFailures := by
+  rcases hvalid with ⟨_, _, _, _, _, _, _, hcover⟩
+  exact coversBudgetBelow_totalFailures_ge_gap B κ A.failures hcover
+
+/-- A short ledger cannot license a valid T4 typed abstention. -/
+theorem invalid_t4_of_insufficient_exhaustion
+    (B : WitnessLevelBudget) (κ : WLevel) (A : TypedAbstentionAudit)
+    (hshort : A.failures.totalFailures < catalogExhaustionGap B κ) :
+    ¬ ValidT4Audit B κ A := by
+  intro hvalid
+  exact Nat.not_le_of_lt hshort (t4_requires_exhaustion_work B κ A hvalid)
+
+/-- Paper-facing budget profile for the primitive recursor:
+12 formalized direct-measure barriers and a configurable imported-whole
+catalog size. -/
+def recursorBudgetProfile (w1CatalogSize : Nat) : WitnessLevelBudget
+  | .directWhole => 12
+  | .importedWhole => w1CatalogSize
+  | .transformedCall => 0
+  | .externalCert => 0
+
+/-- On the primitive recursor, the budgeted exhaustion gap up to the first
+adequate transformed-call witness is exactly `12 + |W1-catalog|`. -/
+theorem recursor_exhaustion_gap_eq
+    (w1CatalogSize : Nat) :
+    catalogExhaustionGap (recursorBudgetProfile w1CatalogSize) WLevel.transformedCall
+      = 12 + w1CatalogSize := by
+  simp [catalogExhaustionGap, recursorBudgetProfile]
+
+/-- Corollary 6.10: any valid T4 audit on the primitive recursor must record at
+least the direct-barrier budget and the full imported-whole catalog. -/
+theorem exhaustion_gap_recursor
+    (w1CatalogSize : Nat) (A : TypedAbstentionAudit)
+    (hvalid : ValidT4Audit (recursorBudgetProfile w1CatalogSize)
+      WLevel.transformedCall A) :
+    12 + w1CatalogSize ≤ A.failures.totalFailures := by
+  simpa [recursor_exhaustion_gap_eq] using
+    t4_requires_exhaustion_work (recursorBudgetProfile w1CatalogSize)
+      WLevel.transformedCall A hvalid
+
+/-- Corollary 6.11: any purported T4 supervisory record for the primitive
+recursor that falls short of the direct-plus-imported budget is unlicensed. -/
+theorem exhaustion_gap_prt_lower_bound
+    (w1CatalogSize : Nat) (A : TypedAbstentionAudit)
+    (hshort : A.failures.totalFailures < 12 + w1CatalogSize) :
+    ¬ ValidT4Audit (recursorBudgetProfile w1CatalogSize)
+      WLevel.transformedCall A := by
+  apply invalid_t4_of_insufficient_exhaustion
+  simpa [recursor_exhaustion_gap_eq] using hshort
 
 /-- Definition 7.1: a fault-line-complete architecture for the obligation
     family. -/
