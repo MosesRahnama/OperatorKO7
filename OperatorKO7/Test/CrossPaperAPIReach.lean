@@ -45,4 +45,64 @@ example :
       OperatorKO7.ReverseMathSupport.CalibrationStatus.conjectural :=
   OperatorKO7.ReverseMathSupport.artsGieslTheoryWindow_status
 
+example :
+    OperatorKO7.ReverseMathFramework.sctExactCalibration.status =
+      OperatorKO7.ReverseMathSupport.CalibrationStatus.exact :=
+  OperatorKO7.ReverseMathFramework.sctExactCalibration_status
+
+example :
+    OperatorKO7.ReverseMathFramework.artsGieslConjecturalCalibration.status =
+      OperatorKO7.ReverseMathSupport.CalibrationStatus.conjectural :=
+  OperatorKO7.ReverseMathFramework.artsGieslConjecturalCalibration_status
+
+example :
+    OperatorKO7.TerminationPrincipleRegister.artsGieslEntry.targetTheory? =
+      OperatorKO7.TerminationPrincipleRegister.sctEntry.targetTheory? :=
+  OperatorKO7.TerminationPrincipleRegister.artsGiesl_and_sct_share_registry_target_theory
+
+example :
+    OperatorKO7.TerminationPrincipleRegister.artsGieslEntry.targetOrdinal? =
+      OperatorKO7.TerminationPrincipleRegister.sctEntry.targetOrdinal? :=
+  OperatorKO7.TerminationPrincipleRegister.artsGiesl_and_sct_share_registry_target_ordinal
+
+example :
+    OperatorKO7.ArtsGieslUpperBound.artsGieslTheoremUpperBound.evidenceStatus =
+      OperatorKO7.ReverseMathFramework.EvidenceStatus.theoremLevel
+      ∧ OperatorKO7.ReverseMathFramework.rca0WoOmega3TheoryProfile.theory ≤
+          OperatorKO7.ArtsGieslUpperBound.artsGieslTheoremUpperBound.theoryProfile.theory
+      ∧ OperatorKO7.ReverseMathSupport.omegaPowThree < Ordinal.epsilon 0 :=
+  OperatorKO7.ArtsGieslUpperBound.artsGieslTheoremUpperBound_supported
+
+example :
+    OperatorKO7.ArtsGieslLowerBound.artsGieslTheoremLowerBound.evidenceStatus =
+        OperatorKO7.ReverseMathFramework.EvidenceStatus.theoremLevel
+      ∧ OperatorKO7.ArtsGieslLowerBound.artsGieslTheoremLowerBound.theoryProfile.theory =
+          OperatorKO7.ProofTheoreticRegister.FormalTheory.RCA0
+      ∧ OperatorKO7.ArtsGieslLowerBound.artsGieslTheoremLowerBound.theoryProfile.complexityFloor? =
+          some OperatorKO7.ProofTheoreticRegister.FormulaClass.pi02
+      ∧ OperatorKO7.ArtsGieslLowerBound.artsGieslTheoremLowerBound.theoryProfile.theory ≤
+          OperatorKO7.ReverseMathFramework.rca0WoOmega3TheoryProfile.theory :=
+  OperatorKO7.ArtsGieslLowerBound.artsGieslTheoremLowerBound_supported
+
+example :
+    OperatorKO7.ArtsGieslReverseMathCalibration.artsGieslCurrentCalibration.status =
+      OperatorKO7.ReverseMathSupport.CalibrationStatus.conjectural :=
+  OperatorKO7.ArtsGieslReverseMathCalibration.artsGieslCurrentCalibration_status
+
+example : True := by
+  have := OperatorKO7.ReflectionSchema.dpStagewiseRealization
+  trivial
+
+example : True := by
+  have := OperatorKO7.ClassicalAscentProfile.dpAsClassicalAscentProfile_compatible
+  trivial
+
+example : True := by
+  have := OperatorKO7.StructuralIdentityComparison.dpStructuralIdentitySelfComparison
+  trivial
+
+example : True := by
+  have := @OperatorKO7.ProjectionAsConservativeExtension.benchmarkContract_projection_extension_sound
+  trivial
+
 end CrossPaperAPIReach

@@ -107,6 +107,15 @@ import OperatorKO7.Meta.MetaHalt_PaperInterface
 import OperatorKO7.Meta.InformationAccess
 import OperatorKO7.Meta.ProofTheoreticRegister
 import OperatorKO7.Meta.ReverseMathSupport
+import OperatorKO7.Meta.ReverseMathFramework
+import OperatorKO7.Meta.TerminationPrincipleRegister
+import OperatorKO7.Meta.ArtsGiesl_UpperBound
+import OperatorKO7.Meta.ArtsGiesl_LowerBound
+import OperatorKO7.Meta.ArtsGiesl_ReverseMathCalibration
+import OperatorKO7.Meta.ReflectionSchema
+import OperatorKO7.Meta.ClassicalAscentProfile
+import OperatorKO7.Meta.StructuralIdentityComparison
+import OperatorKO7.Meta.ProjectionAsConservativeExtension
 
 /-!
 Public entrypoint for the `OperatorKO7` Lean library.
