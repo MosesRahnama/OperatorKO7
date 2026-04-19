@@ -1,4 +1,4 @@
-import OperatorKO7.Meta.WitnessOrder
+import OperatorKO7.Meta.ClassicalAscentProfile
 
 /-!
 # Projection as Conservative Extension
@@ -14,6 +14,15 @@ relevant transformed-call witness is already mechanized.
 namespace OperatorKO7.ProjectionAsConservativeExtension
 
 open OperatorKO7.WitnessOrder
+open OperatorKO7.ProofTheoreticRegister
+open OperatorKO7.ClassicalAscentProfile
+
+private theorem iff_of_true {P Q : Prop} (hP : P) (hQ : Q) : P ↔ Q := by
+  constructor
+  · intro _
+    exact hQ
+  · intro _
+    exact hP
 
 /-- Named witness-language profile. -/
 structure WitnessLanguage where
@@ -85,5 +94,70 @@ theorem benchmarkContract_projection_extension_kappaLe
       transformedCallLanguage.level := by
   exact ConservativeExtension.transports_kappaLe benchmarkContractProjectionExtension
     (by decide) hBase
+
+/-- Concrete comparison-ready profile backed by the benchmark contract's
+transformed-call witness-language transport. -/
+def benchmarkTransportAscentProfile : AscentProfile where
+  shape := {
+    hasBaseSystem := True
+    hasSelfObstruction := True
+    blockedInBase := ¬ HasWitness ko7Tower WLevel.directWhole
+    hasStrongerFramework := Nonempty
+      (ConservativeExtension (contractTower ko7Tower benchmarkContract)
+        importedWholeLanguage transformedCallLanguage)
+    resolvedInFramework := kappaLe (contractTower ko7Tower benchmarkContract)
+      WLevel.transformedCall
+    licensedReimport := kappaLe (contractTower ko7Tower benchmarkContract)
+      WLevel.transformedCall
+  }
+  family := AscentFamily.reflection
+
+/-- Named benchmark-contract transport comparison object. -/
+def benchmarkTransportComparison : ConcreteComparisonProfile where
+  profile := benchmarkTransportAscentProfile
+  baseSystemLabel := "benchmark contract over KO7"
+  obstructionLabel := "contract blocks imported-whole witnesses"
+  blockedLabel := "no direct whole-term witness"
+  strongerFrameworkLabel := "conservative importedWhole → transformedCall transport"
+  resolutionLabel := "first admissible witness at transformed-call"
+  licensedReimportLabel := "transported transformed-call admission"
+
+theorem benchmarkTransportAscentProfile_realizesSixStep :
+    RealizesSixStepShape benchmarkTransportAscentProfile.shape := by
+  refine ⟨trivial, trivial, ?_, ?_, ?_, ?_⟩
+  · exact ko7_no_directWhole_witness
+  · exact ⟨benchmarkContractProjectionExtension⟩
+  · exact ko7_kappaContract_le_transformedCall
+  · exact ko7_kappaContract_le_transformedCall
+
+/-- The benchmark-contract conservative-extension layer now directly yields a
+concrete comparison profile, not only an abstract transport theorem. -/
+theorem benchmarkContractProjectionExtension_instantiates_concreteComparison :
+    RealizesSixStepShape benchmarkTransportAscentProfile.shape
+      ∧ benchmarkTransportAscentProfile.family = AscentFamily.reflection := by
+  exact ⟨benchmarkTransportAscentProfile_realizesSixStep, rfl⟩
+
+/-- Concrete theorem-backed transport-side profile instantiation compatible with
+the mechanized DP ascent profile. -/
+theorem benchmarkTransportAscentProfile_compatible :
+    CompatibleWithDp benchmarkTransportAscentProfile := by
+  rcases OperatorKO7.ProofTheoreticRegister.structural_identity with
+    ⟨hBase, hSelf, hBlocked, hStronger, hResolved, hLicensed⟩
+  constructor
+  · intro s
+    cases s with
+    | baseSystem =>
+        exact iff_of_true trivial hBase
+    | selfObstruction =>
+        exact iff_of_true trivial hSelf
+    | blockedInBase =>
+        exact iff_of_true ko7_no_directWhole_witness hBlocked
+    | strongerFramework =>
+        exact iff_of_true ⟨benchmarkContractProjectionExtension⟩ hStronger
+    | resolvedInFramework =>
+        exact iff_of_true ko7_kappaContract_le_transformedCall hResolved
+    | licensedReimport =>
+        exact iff_of_true ko7_kappaContract_le_transformedCall hLicensed
+  · rfl
 
 end OperatorKO7.ProjectionAsConservativeExtension

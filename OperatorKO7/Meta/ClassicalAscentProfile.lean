@@ -16,12 +16,31 @@ namespace OperatorKO7.ClassicalAscentProfile
 open OperatorKO7.ProofTheoreticRegister
 open OperatorKO7.ReflectionSchema
 
+private theorem iff_of_true {P Q : Prop} (hP : P) (hQ : Q) : P ↔ Q := by
+  constructor
+  · intro _
+    exact hQ
+  · intro _
+    exact hP
+
 /-- Comparison-ready ascent profile. -/
 structure AscentProfile where
   shape : SixStepStructuralProfile
   family : AscentFamily
   complexity? : Option FormulaClass := none
   targetTheory? : Option FormalTheory := none
+
+/-- Concrete paper-facing comparison profile with named stage labels. This is a
+disciplined artifact object, not a formalization of the surrounding historical
+arithmetic. -/
+structure ConcreteComparisonProfile where
+  profile : AscentProfile
+  baseSystemLabel : String
+  obstructionLabel : String
+  blockedLabel : String
+  strongerFrameworkLabel : String
+  resolutionLabel : String
+  licensedReimportLabel : String
 
 /-- The mechanized DP confession viewed as a comparison-ready ascent profile. -/
 def dpAsClassicalAscentProfile : AscentProfile where
@@ -46,6 +65,57 @@ theorem dpAsClassicalAscentProfile_compatible : CompatibleWithDp dpAsClassicalAs
   constructor
   · intro s
     rfl
+  · rfl
+
+/-- Named paper-facing right-hand profile for the Gödel-side comparison. The
+shape is intentionally concrete and fully realized inside the artifact, while
+the surrounding historical interpretation remains outside the Lean claim. -/
+def godel1931PaperAscentProfile : AscentProfile where
+  shape := {
+    hasBaseSystem := True
+    hasSelfObstruction := True
+    blockedInBase := True
+    hasStrongerFramework := True
+    resolvedInFramework := True
+    licensedReimport := True
+  }
+  family := AscentFamily.reflection
+
+/-- Named stage labels for the paper-facing Gödel-side comparison object. -/
+def godel1931PaperComparison : ConcreteComparisonProfile where
+  profile := godel1931PaperAscentProfile
+  baseSystemLabel := "PA"
+  obstructionLabel := "self-referential Gödel sentence"
+  blockedLabel := "base-language incompleteness"
+  strongerFrameworkLabel := "external reflection / stronger metatheory"
+  resolutionLabel := "truth proved at the stronger level"
+  licensedReimportLabel := "externally licensed truth admission"
+
+theorem godel1931PaperAscentProfile_realizesSixStep :
+    RealizesSixStepShape godel1931PaperAscentProfile.shape := by
+  simp [godel1931PaperAscentProfile, RealizesSixStepShape]
+
+/-- Concrete theorem-backed classical-side comparison instantiation for the
+paper-facing Gödel profile. -/
+theorem godel1931PaperAscentProfile_compatible :
+    CompatibleWithDp godel1931PaperAscentProfile := by
+  rcases structural_identity with
+    ⟨hBase, hSelf, hBlocked, hStronger, hResolved, hLicensed⟩
+  constructor
+  · intro s
+    cases s with
+    | baseSystem =>
+        exact iff_of_true trivial hBase
+    | selfObstruction =>
+        exact iff_of_true trivial hSelf
+    | blockedInBase =>
+        exact iff_of_true trivial hBlocked
+    | strongerFramework =>
+        exact iff_of_true trivial hStronger
+    | resolvedInFramework =>
+        exact iff_of_true trivial hResolved
+    | licensedReimport =>
+        exact iff_of_true trivial hLicensed
   · rfl
 
 /-- Any comparison-ready profile that matches the DP stagewise shape and keeps

@@ -59,8 +59,19 @@ Artifact-facing docs:
 
 ## Recommended Entry Points
 
+- `OperatorKO7/PrimitiveSchemaAPI.lean`:
+  conservative public root for the strict primitive/schema-parametric core.
+- `OperatorKO7/SchemaExtendedAPI.lean`:
+  broader reusable schema root for the barrier/tooling/SCC stack, including the
+  `_Schema` companion files, `Meta/InformationAccess.lean`, and
+  `Meta/SchemaSupervisoryLayer.lean`.
+- `OperatorKO7/CrossPaperAPI.lean`:
+  KO7-facing cross-paper root for confession-family packaging, the supervisory
+  engine / META-HALT stack, reverse-mathematical support, and comparative
+  proof-theoretic layers.
 - `OperatorKO7/SchemaAPI.lean`:
-  single-import public API for the reusable schema-level barrier theory, separate from KO7-specific certification and artifact plumbing.
+  hybrid convenience root kept for one-import compatibility; no longer the
+  strict public boundary.
 - `OperatorKO7/Kernel.lean`:
   start here for the core syntax and root rewrite relation.
 - `OperatorKO7/Meta/StepDuplicatingSchema.lean`:
@@ -71,6 +82,9 @@ Artifact-facing docs:
   full unguarded context-closed strong normalization in Lean.
 - `OperatorKO7/Meta/PolyInterpretation_FullStep.lean` and `OperatorKO7/Meta/MPO_FullStep.lean`:
   the two internal full root-step orientation proofs.
+- `OperatorKO7/Meta/InformationAccess.lean` and `OperatorKO7/Meta/SchemaSupervisoryLayer.lean`:
+  the abstract Section 2 and Section 6 schema-facing mechanization files for the
+  Failure Floor paper.
 - `OperatorKO7/Meta/WitnessOrder.lean` and `OperatorKO7/Meta/OperationalIncompleteness.lean`:
   four-level witness-language hierarchy (`WLevel`) with truth-tower and contract-tower split,
   bundled four-part summary `ko7_three_kappa_summary`, and the paper-facing
@@ -121,8 +135,15 @@ Artifact-facing docs:
   Lake package configuration; declares the `OperatorKO7` library root and the `verifyTpdbExport` executable target.
 - `OperatorKO7.lean`:
   public library import surface; collects the canonical modules built by `lake build OperatorKO7`.
+- `OperatorKO7/PrimitiveSchemaAPI.lean`:
+  strict primitive public root.
+- `OperatorKO7/SchemaExtendedAPI.lean`:
+  broader reusable schema/tooling root, including the `_Schema` barrier
+  companions and the Failure-Floor schema layer.
+- `OperatorKO7/CrossPaperAPI.lean`:
+  KO7-facing cross-paper root.
 - `OperatorKO7/SchemaAPI.lean`:
-  stable public API surface for downstream users who want only the reusable schema-level barrier theory and executable boundary tooling.
+  hybrid convenience surface retained for compatibility.
 - `VerifyTpdbExport.lean`:
   executable root for `lake exe verifyTpdbExport`; checks the embedded TPDB text against the on-disk `.trs` artifact.
 
@@ -138,6 +159,15 @@ Artifact-facing docs:
 This subsection packages the artifact interface consumed by the operational-incompleteness paper.
 Every module here encodes a structural concept used by that paper (witness-language hierarchy,
 $\kappa^*$, operational incompleteness, confession-method class, structural minimality).
+
+- `OperatorKO7/Meta/InformationAccess.lean`:
+  finite-discrete mechanization of Failure-Floor Section 2: non-vacuous query,
+  direct retrieval, sequential uncertainty reduction, hidden-progress necessity,
+  and terminal-record recovery.
+- `OperatorKO7/Meta/SchemaSupervisoryLayer.lean`:
+  schema-level abstract copies of the Section 6 supervisory layer:
+  typed supervisory outputs, valid supervisory META-HALT, witness-shift
+  discipline, PRT boundary objects, and false-formal-legitimacy detection.
 
 - `OperatorKO7/Meta/WitnessOrder.lean`:
   four-level witness-language hierarchy `WLevel` (`directWhole`, `importedWhole`, `transformedCall`,

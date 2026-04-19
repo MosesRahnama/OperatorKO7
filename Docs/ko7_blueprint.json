@@ -1,7 +1,7 @@
 {
   "artifact": "OperatorKO7",
   "paper": "Rahnama_The_Orientation_Boundary.tex",
-  "updated": "2026-04-15",
+  "updated": "2026-04-19",
   "paper_to_lean": [
     {
       "label": "thm:schema-barrier",
@@ -689,6 +689,31 @@
         "prop:no-c4-above-gap",
         "thm:pre-decidability-collapse",
         "prop:flc-necessary"
+      ]
+    },
+    {
+      "label": "paperC:info-sequentiality",
+      "module": "OperatorKO7/Meta/InformationAccess.lean",
+      "declarations": [
+        "information_seeking_character_of_nonvacuous_query",
+        "sequential_resolution_requires_hidden_state",
+        "meta_trace_mutual_information_at_terminal"
+      ],
+      "depends_on": []
+    },
+    {
+      "label": "paperC:schema-supervisory-layer",
+      "module": "OperatorKO7/Meta/SchemaSupervisoryLayer.lean",
+      "declarations": [
+        "ValidSupervisoryMetaHalt",
+        "object_undecidability_not_valid_supervisory_verdict",
+        "supervisory_no_internal_metahalt",
+        "prt_boundary_object_rejects_internal_terminal_verdict",
+        "prt_failure_detects_false_formal_legitimacy"
+      ],
+      "depends_on": [
+        "paperC:info-sequentiality",
+        "thm:pre-decidability-collapse"
       ]
     }
   ]

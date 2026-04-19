@@ -89,6 +89,9 @@ example :
       OperatorKO7.ReverseMathSupport.CalibrationStatus.conjectural :=
   OperatorKO7.ArtsGieslReverseMathCalibration.artsGieslCurrentCalibration_status
 
+#check OperatorKO7.ArtsGieslReverseMathCalibration.ArtsGieslMatchingBounds
+#check OperatorKO7.ArtsGieslReverseMathCalibration.artsGiesl_exactCalibration_exists_if_witnessed_matching_bounds
+
 example : True := by
   have := OperatorKO7.ReflectionSchema.dpStagewiseRealization
   trivial
@@ -98,11 +101,27 @@ example : True := by
   trivial
 
 example : True := by
+  have := OperatorKO7.ClassicalAscentProfile.godel1931PaperAscentProfile_compatible
+  trivial
+
+example : True := by
   have := OperatorKO7.StructuralIdentityComparison.dpStructuralIdentitySelfComparison
   trivial
 
 example : True := by
+  have := OperatorKO7.StructuralIdentityComparison.godel1931PaperComparisonAgainstDp
+  trivial
+
+example : True := by
+  have := OperatorKO7.StructuralIdentityComparison.benchmarkTransportComparisonAgainstDp
+  trivial
+
+example : True := by
   have := @OperatorKO7.ProjectionAsConservativeExtension.benchmarkContract_projection_extension_sound
+  trivial
+
+example : True := by
+  have := OperatorKO7.ProjectionAsConservativeExtension.benchmarkContractProjectionExtension_instantiates_concreteComparison
   trivial
 
 end CrossPaperAPIReach

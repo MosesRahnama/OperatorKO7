@@ -91,4 +91,143 @@ theorem artsGieslCurrentCalibration_supported :
   · exact artsGieslTheoremUpperBound_status
   · simp [artsGieslCurrentCalibration, artsGieslTheoremLowerBound_status]
 
+/-- Exact-calibration schema for the Arts--Giesl license. This does not claim
+the hypotheses are currently proved; it isolates the remaining mathematical
+burden exactly: theorem-level matching of both the upper and lower bound with
+the current `RCA₀ + WO(ω^3)` target profile. -/
+structure ArtsGieslMatchingBounds where
+  upperTheory :
+    artsGieslTheoremUpperBound.theoryProfile.theory = FormalTheory.RCA0_WO_omega3
+  upperOrdinal :
+    artsGieslTheoremUpperBound.theoryProfile.ordinalCeiling? = some omegaPowThree
+  lowerTheory :
+    artsGieslTheoremLowerBound.theoryProfile.theory = FormalTheory.RCA0_WO_omega3
+  lowerOrdinal :
+    artsGieslTheoremLowerBound.theoryProfile.ordinalCeiling? = some omegaPowThree
+
+/-- Unbundled exact-calibration schema for the Arts--Giesl license. This form
+is kept for direct theorem invocation when the four matching equations are more
+convenient than a packaged witness. -/
+noncomputable def artsGieslExactCalibrationOfMatchingBounds
+    (hUpperTheory :
+      artsGieslTheoremUpperBound.theoryProfile.theory = FormalTheory.RCA0_WO_omega3)
+    (hUpperOrdinal :
+      artsGieslTheoremUpperBound.theoryProfile.ordinalCeiling? = some omegaPowThree)
+    (hLowerTheory :
+      artsGieslTheoremLowerBound.theoryProfile.theory = FormalTheory.RCA0_WO_omega3)
+    (hLowerOrdinal :
+      artsGieslTheoremLowerBound.theoryProfile.ordinalCeiling? = some omegaPowThree) :
+    ReverseMathCalibration artsGieslPrincipleProfile where
+  targetProfile := rca0WoOmega3TheoryProfile
+  upperBound := artsGieslTheoremUpperBound
+  lowerBound? := some artsGieslTheoremLowerBound
+  targetLeUpper := by
+    let _ := hUpperTheory
+    let _ := hUpperOrdinal
+    exact artsGiesl_targetTheory_le_theoremUpperBound
+  lowerLeTarget := by
+    let _ := hLowerTheory
+    let _ := hLowerOrdinal
+    exact artsGieslTheoremLowerBound_le_target
+  status := CalibrationStatus.exact
+
+@[simp] theorem artsGieslExactCalibrationOfMatchingBounds_status
+    (hUpperTheory :
+      artsGieslTheoremUpperBound.theoryProfile.theory = FormalTheory.RCA0_WO_omega3)
+    (hUpperOrdinal :
+      artsGieslTheoremUpperBound.theoryProfile.ordinalCeiling? = some omegaPowThree)
+    (hLowerTheory :
+      artsGieslTheoremLowerBound.theoryProfile.theory = FormalTheory.RCA0_WO_omega3)
+    (hLowerOrdinal :
+      artsGieslTheoremLowerBound.theoryProfile.ordinalCeiling? = some omegaPowThree) :
+    (artsGieslExactCalibrationOfMatchingBounds
+      hUpperTheory hUpperOrdinal hLowerTheory hLowerOrdinal).status =
+        CalibrationStatus.exact := rfl
+
+/-- Once the theorem-level upper and lower bounds match the current target
+exactly, the AG calibration closes to an exact theorem-level package. -/
+theorem artsGiesl_exactCalibration_of_matching_bounds
+    (hUpperTheory :
+      artsGieslTheoremUpperBound.theoryProfile.theory = FormalTheory.RCA0_WO_omega3)
+    (hUpperOrdinal :
+      artsGieslTheoremUpperBound.theoryProfile.ordinalCeiling? = some omegaPowThree)
+    (hLowerTheory :
+      artsGieslTheoremLowerBound.theoryProfile.theory = FormalTheory.RCA0_WO_omega3)
+    (hLowerOrdinal :
+      artsGieslTheoremLowerBound.theoryProfile.ordinalCeiling? = some omegaPowThree) :
+    let C := artsGieslExactCalibrationOfMatchingBounds
+      hUpperTheory hUpperOrdinal hLowerTheory hLowerOrdinal
+    C.status = CalibrationStatus.exact
+      ∧ C.targetProfile.theory = FormalTheory.RCA0_WO_omega3
+      ∧ C.targetProfile.ordinalCeiling? = some omegaPowThree
+      ∧ C.upperBound.evidenceStatus = EvidenceStatus.theoremLevel
+      ∧ (match C.lowerBound? with
+          | some lb => lb.evidenceStatus = EvidenceStatus.theoremLevel
+          | none => False) := by
+  constructor
+  · rfl
+  constructor
+  · rfl
+  constructor
+  · rfl
+  constructor
+  · exact artsGieslTheoremUpperBound_status
+  · simp [artsGieslExactCalibrationOfMatchingBounds, artsGieslTheoremLowerBound_status]
+
+/-- Exact-calibration existence schema: once the theorem-level upper and lower
+bounds coincide with the current target profile, exact Arts--Giesl calibration
+follows. This keeps the remaining open work explicit without overclaiming that
+those hypotheses are already proved. -/
+theorem artsGiesl_exactCalibration_exists_if_matching_bounds
+    (hUpperTheory :
+      artsGieslTheoremUpperBound.theoryProfile.theory = FormalTheory.RCA0_WO_omega3)
+    (hUpperOrdinal :
+      artsGieslTheoremUpperBound.theoryProfile.ordinalCeiling? = some omegaPowThree)
+    (hLowerTheory :
+      artsGieslTheoremLowerBound.theoryProfile.theory = FormalTheory.RCA0_WO_omega3)
+    (hLowerOrdinal :
+      artsGieslTheoremLowerBound.theoryProfile.ordinalCeiling? = some omegaPowThree) :
+    ∃ C : ReverseMathCalibration artsGieslPrincipleProfile,
+      C.status = CalibrationStatus.exact := by
+  exact ⟨artsGieslExactCalibrationOfMatchingBounds
+    hUpperTheory hUpperOrdinal hLowerTheory hLowerOrdinal, rfl⟩
+
+/-- Bundled exact-calibration schema: package the remaining matching-bounds
+burden into one explicit witness object. -/
+noncomputable def artsGieslExactCalibrationOfWitnessedMatchingBounds
+    (h : ArtsGieslMatchingBounds) :
+    ReverseMathCalibration artsGieslPrincipleProfile :=
+  artsGieslExactCalibrationOfMatchingBounds
+    h.upperTheory h.upperOrdinal h.lowerTheory h.lowerOrdinal
+
+/-- Witnessed exact-calibration package closes with exact status as soon as the
+matching-bounds witness exists. -/
+@[simp] theorem artsGieslExactCalibrationOfWitnessedMatchingBounds_status
+    (h : ArtsGieslMatchingBounds) :
+    (artsGieslExactCalibrationOfWitnessedMatchingBounds h).status =
+      CalibrationStatus.exact := rfl
+
+/-- Witnessed exact-calibration theorem in bundled form. -/
+theorem artsGiesl_exactCalibration_of_witnessed_matching_bounds
+    (h : ArtsGieslMatchingBounds) :
+    let C := artsGieslExactCalibrationOfWitnessedMatchingBounds h
+    C.status = CalibrationStatus.exact
+      ∧ C.targetProfile.theory = FormalTheory.RCA0_WO_omega3
+      ∧ C.targetProfile.ordinalCeiling? = some omegaPowThree
+      ∧ C.upperBound.evidenceStatus = EvidenceStatus.theoremLevel
+      ∧ (match C.lowerBound? with
+          | some lb => lb.evidenceStatus = EvidenceStatus.theoremLevel
+          | none => False) := by
+  exact artsGiesl_exactCalibration_of_matching_bounds
+    h.upperTheory h.upperOrdinal h.lowerTheory h.lowerOrdinal
+
+/-- Bundled existence schema: exact calibration follows from a witnessed
+matching-bounds package. -/
+theorem artsGiesl_exactCalibration_exists_if_witnessed_matching_bounds
+    (h : ArtsGieslMatchingBounds) :
+    ∃ C : ReverseMathCalibration artsGieslPrincipleProfile,
+      C.status = CalibrationStatus.exact := by
+  exact artsGiesl_exactCalibration_exists_if_matching_bounds
+    h.upperTheory h.upperOrdinal h.lowerTheory h.lowerOrdinal
+
 end OperatorKO7.ArtsGieslReverseMathCalibration

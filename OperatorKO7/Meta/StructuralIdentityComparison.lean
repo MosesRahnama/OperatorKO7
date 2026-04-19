@@ -1,4 +1,5 @@
 import OperatorKO7.Meta.ClassicalAscentProfile
+import OperatorKO7.Meta.ProjectionAsConservativeExtension
 
 /-!
 # Structural Identity Comparison
@@ -16,6 +17,7 @@ namespace OperatorKO7.StructuralIdentityComparison
 open OperatorKO7.ProofTheoreticRegister
 open OperatorKO7.ReflectionSchema
 open OperatorKO7.ClassicalAscentProfile
+open OperatorKO7.ProjectionAsConservativeExtension
 
 /-- Comparison object between two ascent profiles. -/
 structure ComparisonWitness
@@ -70,5 +72,40 @@ def dpStructuralIdentitySelfComparison :
     ComparisonWitness dpAsClassicalAscentProfile dpAsClassicalAscentProfile where
   sameFamily := rfl
   sameShape := by intro s; rfl
+
+/-- Concrete comparison witness instantiating the right-hand profile with the
+named paper-facing Gödel-side object. -/
+def godel1931PaperComparisonAgainstDp :
+    ComparisonWitness godel1931PaperAscentProfile dpAsClassicalAscentProfile :=
+  comparisonAgainstDp godel1931PaperAscentProfile
+    godel1931PaperAscentProfile_compatible
+
+/-- Concrete theorem-backed structural identity for the named paper-facing
+Gödel-side comparison object. -/
+theorem godel1931Paper_has_dp_structural_identity :
+    RealizesSixStepShape godel1931PaperAscentProfile.shape
+      ∧ godel1931PaperAscentProfile.family = dpAsClassicalAscentProfile.family
+      ∧ StagewiseEquivalent godel1931PaperAscentProfile.shape
+          dpAsClassicalAscentProfile.shape := by
+  exact compatible_profile_has_dp_structural_identity
+    godel1931PaperAscentProfile godel1931PaperAscentProfile_compatible
+
+/-- Concrete comparison witness instantiating the right-hand profile with the
+benchmark conservative-extension transport object. -/
+def benchmarkTransportComparisonAgainstDp :
+    ComparisonWitness benchmarkTransportAscentProfile dpAsClassicalAscentProfile :=
+  comparisonAgainstDp benchmarkTransportAscentProfile
+    benchmarkTransportAscentProfile_compatible
+
+/-- Concrete theorem-backed structural identity for the benchmark transport
+comparison profile. This is the direct link from the conservative-extension
+layer to the six-step comparison layer. -/
+theorem benchmarkTransport_has_dp_structural_identity :
+    RealizesSixStepShape benchmarkTransportAscentProfile.shape
+      ∧ benchmarkTransportAscentProfile.family = dpAsClassicalAscentProfile.family
+      ∧ StagewiseEquivalent benchmarkTransportAscentProfile.shape
+          dpAsClassicalAscentProfile.shape := by
+  exact compatible_profile_has_dp_structural_identity
+    benchmarkTransportAscentProfile benchmarkTransportAscentProfile_compatible
 
 end OperatorKO7.StructuralIdentityComparison
